@@ -49,19 +49,32 @@ jobs:
           sudo apt-get install -y -qq qemu-system-x86 qemu-utils
           command -v qemu-system-x86_64 qemu-img curl python3
 
-      # installing TrueNAS takes a quarter of an hour and comes out the same every time, so the disk it was installed onto is kept between runs:
-      # it is made again when the script or the program that drives the installer changes
-      - name: Keep the disk TrueNAS was installed onto
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # installing TrueNAS comes out the same every time, and most of the wait is fetching the installer disc, so the disk it was installed onto is
+      # kept between runs: it is made again when the script or the program that drives the installer changes. it is kept as soon as it is made,
+      # so that a run whose tests then fail does not throw the install away with them
+      - name: Fetch the disk TrueNAS was installed onto
+        id: installed
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/truenas-mcp/testenv/installed-*.qcow2
           key: truenas-installed-${{ hashFiles('.scripts/testenv.sh', 'acceptance/testnas/installer.go') }}
 
-      # make owns the machine's life, so CI runs exactly what a developer with such a machine runs. the installer disc is over 2 GB and is only
-      # needed for the install, so it is not kept
-      - name: Run the live suite
+      # the installer disc is over 2 GB and is only needed for the install, so it is not kept
+      - name: Install TrueNAS
+        if: steps.installed.outputs.cache-hit != 'true'
         env:
           TRUENAS_TEST_KEEP_ISO: "0"
+        run: .scripts/testenv.sh image
+
+      - name: Keep the disk TrueNAS was installed onto
+        if: steps.installed.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/truenas-mcp/testenv/installed-*.qcow2
+          key: truenas-installed-${{ hashFiles('.scripts/testenv.sh', 'acceptance/testnas/installer.go') }}
+
+      # make owns the machine's life, so CI runs exactly what a developer with such a machine runs
+      - name: Run the live suite
         run: make testacc
 
       - name: Keep what the machine said and showed

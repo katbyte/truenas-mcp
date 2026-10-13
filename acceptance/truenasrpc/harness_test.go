@@ -1,8 +1,10 @@
 //go:build acceptance
 
-// Package truenasrpc_test is the connection run against a real TrueNAS: the throwaway one .scripts/testenv.sh makes in a virtual machine and sets up
-// with what acceptance/layout says. It is the only place a claim about what a real NAS does is tested and not read out of its source. It runs
-// with "make testacc", which makes the NAS, or "make test-live" against one already up.
+// Package truenasrpc_test is the SDK run against a real TrueNAS: the throwaway one .scripts/testenv.sh installs in a virtual machine. The tests
+// are handed the NAS as its installer left it, with nothing on it, and the first of them makes everything acceptance/layout describes, a step at a
+// time, reading the NAS back after each: setting a NAS up from nothing is the hardest thing the SDK is asked to do, so it is done here and not
+// in a script. It is the only place a claim about what a real NAS does is tested and not read out of its source. It runs with "make testacc",
+// which makes the NAS, or "make test-live" against one already up.
 package truenasrpc_test
 
 import (
@@ -15,22 +17,25 @@ import (
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/acceptance/setup"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
-// nas is the test NAS as the environment describes it.
+// nas is the test NAS as the environment describes it: where it is, the certificate it shows, and its administrator's password, which is all a
+// NAS has when it comes out of its installer. Everything else the tests make.
 var nas struct {
-	server, version, certificate string
-	username, token, password    string
-	readOnlyUser, readOnlyToken  string
+	server, certificate string
+	username, password  string
+}
+
+// held is what the journey made of the NAS, for the tests after it: a key for its administrator and one for the user who may only read.
+var held struct {
+	mu   sync.Mutex
+	made *setup.Made
 }
 
 func TestMain(m *testing.M) {
-	for name, into := range map[string]*string{
-		"TRUENAS_TEST_SERVER": &nas.server, "TRUENAS_TEST_VERSION": &nas.version, "TRUENAS_TEST_CERTIFICATE_FILE": &nas.certificate,
-		"TRUENAS_TEST_USERNAME": &nas.username, "TRUENAS_TEST_TOKEN": &nas.token, "TRUENAS_TEST_PASSWORD": &nas.password,
-		"TRUENAS_TEST_READONLY_USERNAME": &nas.readOnlyUser, "TRUENAS_TEST_READONLY_TOKEN": &nas.readOnlyToken,
-	} {
+	for name, into := range map[string]*string{"TRUENAS_TEST_SERVER": &nas.server, "TRUENAS_TEST_CERTIFICATE_FILE": &nas.certificate, "TRUENAS_TEST_USERNAME": &nas.username, "TRUENAS_TEST_PASSWORD": &nas.password} {
 		if into == nil {
 			continue
 		}
@@ -40,17 +45,12 @@ func TestMain(m *testing.M) {
 		}
 	}
 
-	// these tests make and remove things. They run against the NAS that was made to be thrown away and no other, and the name it was given when
-	// it was set up is how they know it
+	// these tests make and remove things. They run against a NAS that was made to be thrown away and no other: one that already goes by a test
+	// NAS's name, or one with nothing on it
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-	conn, err := truenasrpc.New(nas.server, truenasrpc.APIKey(nas.username, nas.token), truenasrpc.WithCertificateFile(nas.certificate))
+	conn, err := truenasrpc.New(nas.server, truenasrpc.Password(nas.username, nas.password), truenasrpc.WithCertificateFile(nas.certificate))
 	if err == nil {
-		var info struct {
-			Hostname string `json:"hostname"`
-		}
-		if err = conn.Call(ctx, "system.info", nil, &info); err == nil && info.Hostname != layout.Hostname {
-			err = fmt.Errorf("it is named %q, and the live tests only run against a NAS named %q, which is what the test environment names the one it makes", info.Hostname, layout.Hostname)
-		}
+		err = (&setup.NAS{Conn: conn}).Disposable(ctx)
 		_ = conn.Close()
 	}
 	cancel()
@@ -99,17 +99,43 @@ func as(t *testing.T, cred truenasrpc.Credential, opts ...truenasrpc.Option) *tr
 	return conn
 }
 
+// root is a connection as the administrator by password, which is the only way into a NAS nothing has been made on yet.
+func root(t *testing.T, opts ...truenasrpc.Option) *truenasrpc.Conn {
+	t.Helper()
+
+	return as(t, truenasrpc.Password(nas.username, nas.password), opts...)
+}
+
+// made is what the journey made of the NAS. A test run by itself, with no journey before it, has the NAS set up the plain way first: the steps
+// make only what is missing, so a NAS that is set up already is left as it is and given two more keys.
+func made(t *testing.T) *setup.Made {
+	t.Helper()
+
+	held.mu.Lock()
+	defer held.mu.Unlock()
+
+	if held.made == nil {
+		out, err := (&setup.NAS{Conn: root(t), Logf: t.Logf}).All(within(t, 20*time.Minute))
+		if err != nil {
+			t.Fatalf("setting the NAS up: %v", err)
+		}
+		held.made = out
+	}
+
+	return held.made
+}
+
 // admin is a connection as the administrator, by key, and reader one as the user who may only read.
 func admin(t *testing.T, opts ...truenasrpc.Option) *truenasrpc.Conn {
 	t.Helper()
 
-	return as(t, truenasrpc.APIKey(nas.username, nas.token), opts...)
+	return as(t, truenasrpc.APIKey(nas.username, made(t).Key), opts...)
 }
 
 func reader(t *testing.T) *truenasrpc.Conn {
 	t.Helper()
 
-	return as(t, truenasrpc.APIKey(nas.readOnlyUser, nas.readOnlyToken))
+	return as(t, truenasrpc.APIKey(layout.ReadOnlyUser, made(t).ReadOnlyKey))
 }
 
 // within is the test's context with a limit on it, so that a NAS that stops answering fails the one test and not the whole run's time.

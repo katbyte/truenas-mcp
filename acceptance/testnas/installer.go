@@ -119,8 +119,11 @@ func (i *installer) call(ctx context.Context, method string, params []any, into 
 // install has the installer at an address put TrueNAS on the one disk of the size given, with layout.AdminUser as its administrator and the password
 // given, and then switch the machine off. The disk is picked by its size and not its name, since which name a disk comes up under is not ours to
 // say; every other disk the machine has must be of another size.
-func install(ctx context.Context, address, password string, bootBytes int64, logf func(string, ...any)) error {
-	i, err := dialInstaller(ctx, address, logf)
+func install(ctx context.Context, address, password string, bootBytes int64, answerWithin time.Duration, logf func(string, ...any)) error {
+	// a machine that has not got as far as answering in this long is not going to, and is not waited on for as long as an install may take
+	dialling, cancel := context.WithTimeoutCause(ctx, answerWithin, fmt.Errorf("it had %s to start", answerWithin))
+	i, err := dialInstaller(dialling, address, logf)
+	cancel()
 	if err != nil {
 		return err
 	}

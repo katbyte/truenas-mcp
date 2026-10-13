@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -295,7 +296,7 @@ func (j *job) account() map[string]any {
 		if invalid, ok := errors.AsType[*InvalidError](j.failure); ok {
 			rows := make([][]any, 0, len(invalid.Invalid))
 			for _, i := range invalid.Invalid {
-				rows = append(rows, []any{i.Attribute, i.Message, i.Errno})
+				rows = append(rows, i.row())
 			}
 			account["error"] = invalid.Reason
 			account["exc_info"] = map[string]any{"repr": "ValidationErrors()", "type": "VALIDATION", "errno": nil, "extra": rows}
@@ -364,7 +365,7 @@ func (n *NAS) waitFor(ctx context.Context, params []json.RawMessage) (any, error
 	n.mu.Unlock()
 
 	if j == nil {
-		return nil, &Error{Errno: 2, ErrName: "ENOENT", Reason: "Job " + strings.TrimSpace(string(params[0])) + " does not exist"}
+		return nil, NoSuchInstance("Job with id " + strconv.Itoa(id))
 	}
 
 	select {
@@ -387,7 +388,7 @@ func (n *NAS) abort(params []json.RawMessage) error {
 	n.mu.Unlock()
 
 	if j == nil {
-		return &Error{Errno: 2, ErrName: "ENOENT", Reason: "Job " + strings.TrimSpace(string(params[0])) + " does not exist"}
+		return NoSuchInstance("Job with id " + strconv.Itoa(id))
 	}
 	n.move(j, "ABORTED", nil, nil)
 

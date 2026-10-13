@@ -1,11 +1,13 @@
-// Command testnas makes a throwaway TrueNAS for the live tests out of a virtual machine: it drives TrueNAS's installer with nobody at the keyboard,
-// and then sets the installed NAS up with what the tests expect to find. .scripts/testenv.sh runs the machine and calls this for the two things a
-// shell cannot do, which are both conversations over a websocket.
+// Command testnas is the part of making a throwaway TrueNAS that a shell cannot do. .scripts/testenv.sh runs the virtual machine and calls this
+// for the conversations: with TrueNAS's installer, which is driven with nobody at the keyboard, and with the NAS that results.
 //
 //	testnas install   -installer ws://127.0.0.1:18080/ws -boot-bytes 17179869184
+//	testnas wait      -server https://127.0.0.1:18443 -certificate-file nas.pem
 //	testnas provision -server https://127.0.0.1:18443 -certificate-file nas.pem
 //
-// The administrator's password is read from TRUENAS_TEST_PASSWORD. provision prints, as export lines, what a test needs to log in.
+// wait leaves the NAS as its installer left it, for the live tests to set up themselves, which is the first and hardest thing they test.
+// provision sets it up (acceptance/setup), for anything else that wants a NAS that is ready. Both print, as export lines, what is needed to
+// log in. The administrator's password is read from TRUENAS_TEST_PASSWORD.
 package main
 
 import (
@@ -18,6 +20,7 @@ import (
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/acceptance/setup"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -32,7 +35,7 @@ func logf(format string, args ...any) { fmt.Fprintf(os.Stderr, "==> "+format+"\n
 
 func run(args []string) error {
 	if len(args) == 0 {
-		return errors.New("say what to do: install or provision")
+		return errors.New("say what to do: install, wait or provision")
 	}
 
 	password := os.Getenv("TRUENAS_TEST_PASSWORD")
@@ -47,6 +50,7 @@ func run(args []string) error {
 	case "install":
 		address := flags.String("installer", "ws://127.0.0.1:18080/ws", "where the installer answers")
 		bootBytes := flags.Int64("boot-bytes", 0, "the size in bytes of the one disk to install onto")
+		answerWithin := flags.Duration("answer-within", 10*time.Minute, "how long the installer has to start answering")
 		if err := flags.Parse(args[1:]); err != nil {
 			return err
 		}
@@ -57,9 +61,9 @@ func run(args []string) error {
 		ctx, cancel := context.WithTimeout(context.Background(), *wait)
 		defer cancel()
 
-		return install(ctx, *address, password, *bootBytes, logf)
+		return install(ctx, *address, password, *bootBytes, *answerWithin, logf)
 
-	case "provision":
+	case "wait", "provision":
 		server := flags.String("server", "https://127.0.0.1:18443", "the address of the NAS that was installed")
 		certificate := flags.String("certificate-file", "", "where to write the certificate the NAS shows")
 		if err := flags.Parse(args[1:]); err != nil {
@@ -72,27 +76,34 @@ func run(args []string) error {
 		ctx, cancel := context.WithTimeout(context.Background(), *wait)
 		defer cancel()
 
-		return setUp(ctx, *server, password, *certificate)
+		return ready(ctx, *server, password, *certificate, args[0] == "provision")
 
 	default:
-		return fmt.Errorf("%s is neither install nor provision", args[0])
+		return fmt.Errorf("%s is not install, wait or provision", args[0])
 	}
 }
 
-// setUp waits for a newly installed NAS to come up, takes its certificate, sets it up, and prints what a test needs to log into it.
-func setUp(ctx context.Context, server, password, certificate string) error {
+// ready waits for a newly installed NAS to come up and takes its certificate, sets it up if asked to, and prints what is needed to log into it.
+func ready(ctx context.Context, server, password, certificate string, setUp bool) error {
 	conn, err := waitFor(ctx, server, password, certificate)
 	if err != nil {
 		return err
 	}
 	defer func() { _ = conn.Close() }()
 
-	out, err := provision(ctx, conn, logf)
-	if err != nil {
+	n := &setup.NAS{Conn: conn, Logf: logf}
+	if err := n.Disposable(ctx); err != nil {
 		return err
 	}
 
-	for _, line := range exports(server, password, certificate, out) {
+	var made *setup.Made
+	if setUp {
+		if made, err = n.All(ctx); err != nil {
+			return err
+		}
+	}
+
+	for _, line := range exports(server, password, certificate, made) {
 		fmt.Println(line)
 	}
 
@@ -147,23 +158,28 @@ func connect(ctx context.Context, server, password, certificate string) (*truena
 	return conn, nil
 }
 
-// exports is what a test needs to log into the test NAS, as lines a shell takes: this repository's names, and those the truenas-metrics exporter's
-// live suite reads, so that both run off the one NAS. The exporter is given the user who may only read.
-func exports(server, password, certificate string, out *made) []string {
+// exports is what is needed to log into the test NAS, as lines a shell takes: the address, the certificate and the administrator's password
+// always, and for a NAS that was set up, its keys too, under this repository's names and under those the truenas-metrics exporter's live suite
+// reads, so that both run off the one NAS. The exporter is given the user who may only read.
+func exports(server, password, certificate string, made *setup.Made) []string {
 	values := [][2]string{
 		{"TRUENAS_TEST_SERVER", server},
-		{"TRUENAS_TEST_VERSION", out.Version},
-		{"TRUENAS_TEST_HOSTNAME", layout.Hostname},
 		{"TRUENAS_TEST_USERNAME", layout.AdminUser},
 		{"TRUENAS_TEST_PASSWORD", password},
-		{"TRUENAS_TEST_TOKEN", out.Key},
-		{"TRUENAS_TEST_READONLY_USERNAME", layout.ReadOnlyUser},
-		{"TRUENAS_TEST_READONLY_TOKEN", out.ReadOnlyKey},
 		{"TRUENAS_TEST_CERTIFICATE_FILE", certificate},
-		{"TRUENAS_METRICS_TEST_SERVER", server},
-		{"TRUENAS_METRICS_TEST_USERNAME", layout.ReadOnlyUser},
-		{"TRUENAS_METRICS_TEST_API_KEY", out.ReadOnlyKey},
-		{"TRUENAS_METRICS_TEST_CERTIFICATE_FILE", certificate},
+	}
+	if made != nil {
+		values = append(values, [][2]string{
+			{"TRUENAS_TEST_VERSION", made.Version},
+			{"TRUENAS_TEST_HOSTNAME", layout.Hostname},
+			{"TRUENAS_TEST_TOKEN", made.Key},
+			{"TRUENAS_TEST_READONLY_USERNAME", layout.ReadOnlyUser},
+			{"TRUENAS_TEST_READONLY_TOKEN", made.ReadOnlyKey},
+			{"TRUENAS_METRICS_TEST_SERVER", server},
+			{"TRUENAS_METRICS_TEST_USERNAME", layout.ReadOnlyUser},
+			{"TRUENAS_METRICS_TEST_API_KEY", made.ReadOnlyKey},
+			{"TRUENAS_METRICS_TEST_CERTIFICATE_FILE", certificate},
+		}...)
 	}
 
 	lines := make([]string, 0, len(values))

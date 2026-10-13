@@ -92,6 +92,22 @@ var (
 	ErrNotFound      = &Error{Errno: 2, ErrName: "ENOENT", Reason: "the thing asked for does not exist"}
 )
 
+// NoSuchInstance is the refusal a TrueNAS gives a call that asks, by id or name, for something it has not got: what is "Pool 7", "Job with id
+// 12". A real NAS does not say this as a failure of the call. It refuses the argument, naming none, with the number for "not there" beside it,
+// which is what this is.
+func NoSuchInstance(what string) *InvalidError {
+	return &InvalidError{Reason: "[ENOENT] None: " + what + " does not exist", Invalid: []Invalid{{Message: what + " does not exist", Errno: 2}}}
+}
+
+// row is one refused argument as a NAS writes it: an argument with no name is written as nothing, not as an empty name.
+func (i Invalid) row() []any {
+	if i.Attribute == "" {
+		return []any{nil, i.Message, i.Errno}
+	}
+
+	return []any{i.Attribute, i.Message, i.Errno}
+}
+
 // Call is one call the stand-in was sent.
 type Call struct {
 	Method string
@@ -115,6 +131,8 @@ type NAS struct {
 	sessions map[*session]struct{}
 	jobs     map[int]*job
 	lastJob  int
+	// keys are the keys added since the stand-in was made, each with the user it is for
+	keys map[string]string
 	// tokens each let one web request in, to fetch the file of the job they are for or to upload when that is 0, and files are what jobs have
 	// made and not yet handed over
 	tokens  map[string]int
@@ -193,6 +211,11 @@ func Stranger() Option {
 	return func(n *NAS) { n.onSocket, n.stranger = true, true }
 }
 
+// WithUsername sets the name of the stand-in's user, for a test of something that goes by a particular one.
+func WithUsername(username string) Option {
+	return func(n *NAS) { n.username = username }
+}
+
 // WithPassword sets the password of the stand-in's user.
 func WithPassword(password string) Option {
 	return func(n *NAS) { n.password = password }
@@ -243,7 +266,7 @@ func SelfSigned(tb testing.TB, key *ecdsa.PrivateKey, name string, until time.Ti
 func New(tb testing.TB, opts ...Option) *NAS {
 	tb.Helper()
 
-	n := &NAS{username: DefaultUsername, key: DefaultKey, password: DefaultPassword, handlers: map[string]handler{}, sockets: map[*websocket.Conn]context.CancelFunc{}, sessions: map[*session]struct{}{}, jobs: map[int]*job{}, tokens: map[string]int{}, files: map[int]*file{}}
+	n := &NAS{username: DefaultUsername, key: DefaultKey, password: DefaultPassword, handlers: map[string]handler{}, sockets: map[*websocket.Conn]context.CancelFunc{}, sessions: map[*session]struct{}{}, jobs: map[int]*job{}, tokens: map[string]int{}, files: map[int]*file{}, keys: map[string]string{}}
 	n.server = httptest.NewUnstartedServer(http.HandlerFunc(n.serve))
 	for _, opt := range opts {
 		opt(n)
@@ -380,6 +403,15 @@ func (n *NAS) KeyFile() string {
 
 // Password is the password of the stand-in's user.
 func (n *NAS) Password() string { return n.password }
+
+// AddKey has the stand-in take another key, for the user named, beside the one it starts with: as a NAS does once a key is made on it. Such a
+// key logs in the older way, by being sent.
+func (n *NAS) AddKey(username, key string) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
+	n.keys[key] = username
+}
 
 // Username and Key are what the stand-in is logged into with.
 func (n *NAS) Username() string { return n.username }
@@ -767,7 +799,7 @@ func (s *session) answer(ctx context.Context, id json.RawMessage, method string,
 	if invalid, ok := errors.AsType[*InvalidError](err); ok {
 		rows := make([][]any, 0, len(invalid.Invalid))
 		for _, i := range invalid.Invalid {
-			rows = append(rows, []any{i.Attribute, i.Message, i.Errno})
+			rows = append(rows, i.row())
 		}
 		s.refuse(ctx, id, -32602, "Invalid params", map[string]any{"error": 22, "errname": "EINVAL", "reason": invalid.Reason, "trace": nil, "extra": rows})
 
@@ -843,7 +875,7 @@ func (s *session) login(method string, params []json.RawMessage) (any, error) {
 		if len(params) > 0 {
 			_ = json.Unmarshal(params[0], &key)
 		}
-		ok := !revoked && key == n.key
+		ok := !revoked && (key == n.key || n.added(key) != "")
 		if ok {
 			taken()
 		}
@@ -866,7 +898,7 @@ func (s *session) login(method string, params []json.RawMessage) (any, error) {
 		switch {
 		case revoked:
 			return map[string]any{"response_type": "EXPIRED"}, nil
-		case sent.Username == n.username && sent.APIKey == n.key:
+		case sent.Username == n.username && sent.APIKey == n.key, sent.Username != "" && n.added(sent.APIKey) == sent.Username:
 			return taken(), nil
 		default:
 			return refused, nil
@@ -901,6 +933,14 @@ func (s *session) login(method string, params []json.RawMessage) (any, error) {
 	default:
 		return nil, &InvalidError{Reason: "[EINVAL] login_data.mechanism: Input tag '" + sent.Mechanism + "' found using 'mechanism' does not match any of the expected tags", Invalid: []Invalid{{Attribute: "login_data.mechanism", Message: "Input tag does not match any of the expected tags", Errno: 22}}}
 	}
+}
+
+// added is the user a key added since the stand-in was made is for, or nothing for a key it has not got.
+func (n *NAS) added(key string) string {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
+	return n.keys[key]
 }
 
 // exchange is a newer login part way through: what the caller opened with, and what the stand-in answered.

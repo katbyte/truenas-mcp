@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -53,9 +54,19 @@ func (e *Error) Error() string {
 	case CodeTooManyCalls:
 		return e.Method + ": the TrueNAS is running too many calls for this connection at once"
 	case CodeInvalidParams:
+		// a thing that is not there is refused as a bad argument, and is no such thing: the NAS's sentence is the whole of it
+		if rows := e.Invalid(); e.missing() {
+			return fmt.Sprintf("%s: %s (%s)", e.Method, rows[0].Message, ErrnoName(errnoNotFound))
+		}
+
 		said := make([]string, 0, 1)
 		for _, i := range e.Invalid() {
-			said = append(said, strings.TrimSpace(i.Attribute+": "+i.Message))
+			if i.Attribute == "" {
+				said = append(said, i.Message)
+
+				continue
+			}
+			said = append(said, i.Attribute+": "+i.Message)
 		}
 		if len(said) == 0 {
 			said = append(said, e.words())
@@ -79,6 +90,17 @@ func (e *Error) words() string {
 	default:
 		return fmt.Sprintf("the TrueNAS answered error %d", e.Code)
 	}
+}
+
+// errnoNotFound is the number for a thing that is not there, ENOENT.
+const errnoNotFound = 2
+
+// missing reports whether the refusal is of something asked for by its id or name that the NAS has not got. A TrueNAS does not say that as a
+// failure of the call: it refuses the argument, with no argument named and the number for "not there" beside it.
+func (e *Error) missing() bool {
+	rows := e.Invalid()
+
+	return len(rows) > 0 && !slices.ContainsFunc(rows, func(i Invalid) bool { return i.Errno != errnoNotFound })
 }
 
 // Invalid is each argument the NAS refused, or nothing when the error is not about arguments.
@@ -192,18 +214,19 @@ func IsNotAllowed(err error) bool {
 	return ok && (e.ErrName == "EACCES" || e.ErrName == "EPERM") && !IsNotLoggedIn(err)
 }
 
-// IsInvalid reports whether the NAS refused the arguments it was sent.
+// IsInvalid reports whether the NAS refused the arguments it was sent, for what they were. A NAS refuses an id it has nothing for the same way,
+// which is IsNotFound and not this.
 func IsInvalid(err error) bool {
 	e, ok := errors.AsType[*Error](err)
 
-	return ok && e.Code == CodeInvalidParams
+	return ok && e.Code == CodeInvalidParams && !e.missing()
 }
 
 // IsNotFound reports whether the NAS has nothing of the id or name a call asked for.
 func IsNotFound(err error) bool {
 	e, ok := errors.AsType[*Error](err)
 
-	return ok && e.ErrName == "ENOENT"
+	return ok && (e.ErrName == "ENOENT" || e.missing())
 }
 
 // IsTooManyCalls reports whether the NAS refused a call because the connection, or the address it comes from, is asking too much at once.

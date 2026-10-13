@@ -108,7 +108,7 @@ func (n *NAS) jobLogs(message json.RawMessage, params []json.RawMessage) (any, e
 
 	switch {
 	case j == nil:
-		return nil, &Error{Errno: 2, ErrName: "ENOENT", Reason: "Job " + strconv.Itoa(id) + " does not exist"}
+		return nil, NoSuchInstance("Job with id " + strconv.Itoa(id))
 	case logged == "":
 		return nil, &Error{Errno: 14, ErrName: "EFAULT", Reason: "This job has no logs"}
 	}

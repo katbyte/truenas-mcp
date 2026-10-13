@@ -69,6 +69,8 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **A NAS starts sending a file before it knows it can finish it.** One that fails part way is simply cut short, with a web answer that says all is well. The job that made the file is asked how it ended once the file stops, and its failure is the download's. `TestAFileTheNASCouldNotFinishIsSaidNotToBeWhole`
 
+**A thing that is not there is refused as a bad argument.** Asked for a dataset, a pool or a job by an id it has nothing for, a NAS does not answer that the call failed. It answers "Invalid params", with no argument named and the number for "not there" beside the sentence. That is told apart from a real bad argument, so `IsNotFound` is true of it and `IsInvalid` is not. Found by the first live run, where the stand-in had it wrong. `TestARefusalSaysWhatKindItIs`, and live in `TestARealNASsRefusalsAreToldApart`
+
 **Over its own socket a NAS logs a connection in as it opens.** It can see which user is at the other end, and takes root or any user it has an account for with nothing sent. The connection asks who is logged in, so that a user the NAS does not know is told so when it connects and not at its first call. `TestAProgramOnTheNASItselfIsLoggedInByWhoItRunsAs`, `TestAUserTheNASDoesNotKnowIsToldSoAndTheSocketsLoginIsOnlyForTheSocket`
 
 **A trace hides every secret the source marks, and three it does not.** A trace hides by name and by method, not by the list above, so the list is what holds it to account: a marker is planted at each of the 1,040 places and looked for in what a trace would print. That found a mail account's password (sent as `pass`), a Kerberos keytab (`file`) and a container registry's user name being shown, and they no longer are. The source leaves three generated secrets unmarked, the answers of `auth.generate_token`, `nvmet.host.generate_key` and `tn_connect.generate_claim_token`; those are found from the description, as bare text it calls a key, a password or a token. `TestEverySecretTheSourceMarksIsHiddenInATrace`, `TestNoMethodShowsASecretItTakesByPositionOrAnswersBare`, `TestWhatATraceShowsOfAMessage`, `TestNoSecretReachesTheLogOrAnError`
@@ -87,9 +89,11 @@ TrueNAS documents only an install by someone at a keyboard. Its installer also a
 
 The installer lists no disk under 8 GB, and names disks as the machine happens to find them, so the disk to install onto is told from the others by its size.
 
+Seen on the first run, on a GitHub runner, 13 October 2026: the installer disc starts that API unasked and answers half a minute after the machine starts; the install itself takes a little over a minute; the installed NAS takes a minute and a half to come up the first time; and a virtual disk's serial reaches the NAS as it was given. Fetching the installer disc, at seven minutes, is most of the wait.
+
 ## Not yet held by a test
 
-- the live tests themselves. `make testacc` and everything under `acceptance/` have been checked as far as they can be without a virtual machine, and have not yet installed a TrueNAS: whether the installer disc starts its API unasked, how long a first start takes, and whether a disk's serial reaches the NAS as it was given are all still to be seen on the first run
+- a query told to answer the one match (`get`) when there is none. The source raises something other than "not there" for it, which has not been tried against a real NAS
 
 - which methods only read. The description does not say, but it lists the roles that may call each method, and a method the read-only administrator role may call is a read: 386 of the 769. Three are not reads despite that (`api_key.create`, `api_key.update`, `api_key.delete`, which a read-only administrator may use on its own keys), and 33 methods list no role at all
 - a query can answer a list of rows, one row or a count, and the description of the one row leaves out the shape of any model inside it: `cloudsync.query` describes a row's `credentials` in full in the list, and as a title with no shape in the single row

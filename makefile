@@ -194,17 +194,18 @@ test: build ## Run the unit tests, with the race detector
 LIVE_TIMEOUT?=30m
 
 test-live: ## Run the live tests against a test NAS that is already up (see testenv-up)
-	@[ -n "${TRUENAS_TEST_SERVER}" ] && [ -n "${TRUENAS_TEST_TOKEN}" ] || \
+	@[ -n "${TRUENAS_TEST_SERVER}" ] && [ -n "${TRUENAS_TEST_PASSWORD}" ] || \
 		(echo 'TRUENAS_TEST_SERVER and the rest must be set: eval "$$(make testenv-up)", or use "make testacc"'; exit 1)
 	go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
 
-# start the machine, run the suite, remove the machine: what the machine said and showed is printed and kept when anything fails
+# start the machine, run the suite, remove the machine: what the machine said and showed is printed and kept when anything fails. the NAS is
+# handed to the suite as its installer left it, since making everything on it is the first thing the suite tests
 testacc: ## Run the live tests against a throwaway TrueNAS in a virtual machine
 	@echo "==> live tests..."
 	@set -e; \
 		env=".testenv.sh"; \
 		trap 'st=$$?; [ $$st -eq 0 ] || .scripts/testenv.sh logs || true; .scripts/testenv.sh down; rm -f '"$$env"'; exit $$st' EXIT; \
-		.scripts/testenv.sh up > "$$env"; \
+		.scripts/testenv.sh boot > "$$env"; \
 		. ./"$$env"; \
 		go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
 

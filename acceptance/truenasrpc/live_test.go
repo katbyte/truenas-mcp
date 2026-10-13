@@ -33,14 +33,14 @@ func TestAKeyLogsInAndTheNASSaysWhatItRuns(t *testing.T) {
 	if err := conn.Call(within(t, time.Minute), "system.info", nil, &info); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(info.Version, nas.version) && !strings.Contains(nas.version, info.Version) {
-		t.Errorf("the NAS says it runs %q, and the environment installed %q", info.Version, nas.version)
+	if info.Version == "" || info.Version != made(t).Version {
+		t.Errorf("the NAS says it runs %q, and said %q when it was set up", info.Version, made(t).Version)
 	}
 	if err := conn.Ping(within(t, time.Minute)); err != nil {
 		t.Errorf("ping: %v", err)
 	}
 
-	_, secret, _ := strings.Cut(nas.token, "-")
+	_, secret, _ := strings.Cut(made(t).Key, "-")
 	if text := log.text(); strings.Contains(text, secret) || !strings.Contains(text, "system.info") {
 		t.Errorf("the key is in the log, or the call is not: %d bytes logged", len(text))
 	}
@@ -50,54 +50,16 @@ func TestAKeyLogsInAndTheNASSaysWhatItRuns(t *testing.T) {
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
 func TestAPasswordAndAKeyAloneLogInToo(t *testing.T) {
-	if err := as(t, truenasrpc.Password(nas.username, nas.password)).Connect(within(t, time.Minute)); err != nil {
+	if err := root(t).Connect(within(t, time.Minute)); err != nil {
 		t.Errorf("a password: %v", err)
 	}
-	if err := as(t, truenasrpc.APIKeyOnly(nas.token)).Connect(within(t, time.Minute)); err != nil {
+	if err := as(t, truenasrpc.APIKeyOnly(made(t).Key)).Connect(within(t, time.Minute)); err != nil {
 		t.Errorf("a key alone: %v", err)
 	}
 
 	err := as(t, truenasrpc.APIKey(nas.username, "999-notAKeyThisNASEverMade")).Connect(within(t, time.Minute))
 	if login, ok := errors.AsType[*truenasrpc.LoginError](err); !ok || login.Response != "AUTH_ERR" {
 		t.Errorf("a wrong key answered %v, want a refused login", err)
-	}
-}
-
-// What the setup made is what every other live test, and the exporter's, counts on finding.
-//
-//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
-func TestTheNASHoldsWhatItWasSetUpWith(t *testing.T) {
-	conn := admin(t)
-
-	var pools []struct {
-		Name     string `json:"name"`
-		Status   string `json:"status"`
-		Healthy  bool   `json:"healthy"`
-		Topology struct {
-			Data []struct {
-				Type     string            `json:"type"`
-				Children []json.RawMessage `json:"children"`
-			} `json:"data"`
-		} `json:"topology"`
-	}
-	if err := conn.Call(within(t, time.Minute), "pool.query", nil, &pools); err != nil {
-		t.Fatal(err)
-	}
-	if len(pools) != 1 || pools[0].Name != layout.Pool || pools[0].Status != "ONLINE" || !pools[0].Healthy {
-		t.Fatalf("the NAS has %+v, want the one pool %s, online and healthy", pools, layout.Pool)
-	}
-	if data := pools[0].Topology.Data; len(data) != 1 || data[0].Type != "MIRROR" || len(data[0].Children) != 2 {
-		t.Errorf("the pool is laid out as %+v, want one mirror of two disks", data)
-	}
-
-	var datasets []struct {
-		ID string `json:"id"`
-	}
-	if err := conn.Call(within(t, time.Minute), "pool.dataset.query", []any{[]any{[]any{"id", "in", layout.Datasets}}}, &datasets); err != nil {
-		t.Fatal(err)
-	}
-	if len(datasets) != len(layout.Datasets) {
-		t.Errorf("of the datasets %v the NAS has %+v", layout.Datasets, datasets)
 	}
 }
 
@@ -296,7 +258,7 @@ func TestTheNASHasEveryMethodItsDescriptionNames(t *testing.T) {
 
 	for _, document := range documents {
 		version := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(document), "truenas-methods-"), ".json")
-		if !strings.Contains(nas.version, version) {
+		if !strings.Contains(made(t).Version, version) {
 			continue
 		}
 

@@ -166,10 +166,12 @@ make testacc    # the live tests, against a throwaway TrueNAS in a virtual machi
 
 ### Live tests
 
-`make testacc` installs a real TrueNAS in a virtual machine, sets it up with a pool, two datasets and two users, runs the tests in `acceptance/` against it, and removes it. Nothing of yours is ever a target: the tests refuse to run against a NAS that is not named `throwaway-nas`, and the setup refuses a NAS that already has a pool.
+`make testacc` installs a real TrueNAS in a virtual machine and hands it to the tests in `acceptance/` as its installer left it: an administrator and nothing else. The first test then sets it up through the SDK, a step at a time, and reads the NAS back after each step: a name, a mirrored pool whose making is followed as a job, two datasets, a user who may only read and is refused a write, and a key for each user. Setting a NAS up from nothing is the hardest thing the SDK is asked to do, so it is a test and not a script. The tests after it use what it made, and the machine is removed at the end.
+
+Nothing of yours is ever a target: the tests and the setup both refuse a NAS that has a pool and is not named `throwaway-nas`.
 
 It needs QEMU and an x86-64 Linux machine with `/dev/kvm`, which a GitHub runner is, so the `acceptance` workflow is where it runs. TrueNAS does not run on ARM, so on a Mac it would have to be emulated, which is refused unless `TRUENAS_TEST_ALLOW_EMULATION=1`.
 
-`eval "$(make testenv-up)"` starts the same NAS and leaves it up, with what is needed to log into it in the environment; `make test-live` runs the tests against it and `make testenv-down` removes it. What the NAS holds is written down in `acceptance/layout`.
+`eval "$(make testenv-up)"` starts the same NAS, set up by the same steps (`acceptance/setup`), and leaves it up with what is needed to log into it in the environment; `make test-live` runs the tests against it and `make testenv-down` removes it. What the NAS holds is written down in `acceptance/layout`.
 
-**This has been written and not yet run.** The pieces that can be tested without a virtual machine are (the installer's protocol against a stand-in written from its source, the setup against the stand-in NAS, every setup call against the NAS's own API description), but no TrueNAS has yet been installed by it. Its first run is the workflow.
+What a real NAS does differently from its source and its description is what this is there to find, and each thing found is written into [api-defs/README.md](api-defs/README.md) with the test that now holds it.

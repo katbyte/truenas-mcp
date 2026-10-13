@@ -410,7 +410,8 @@ func TestARefusalSaysWhatKindItIs(t *testing.T) {
 
 	nas := truenastest.New(t)
 	nas.Refuse("pool.create", truenastest.ErrNotAuthorized)
-	nas.Refuse("pool.get_instance", &truenastest.Error{Errno: 2, ErrName: "ENOENT", Reason: "Pool 7 does not exist"})
+	nas.Refuse("pool.get_instance", truenastest.NoSuchInstance("Pool 7"))
+	nas.Refuse("filesystem.stat", &truenastest.Error{Errno: 2, ErrName: "ENOENT", Reason: "Path /mnt/nowhere not found"})
 	nas.Refuse("pool.dataset.create", &truenastest.InvalidError{Reason: "[EINVAL] pool_dataset_create.name: Dataset name is required", Invalid: []truenastest.Invalid{{Attribute: "pool_dataset_create.name", Message: "Dataset name is required", Errno: 22}}})
 	conn := connect(t, nas)
 
@@ -420,7 +421,10 @@ func TestARefusalSaysWhatKindItIs(t *testing.T) {
 		reads  string
 	}{
 		{"pool.create", truenasrpc.IsNotAllowed, "pool.create: Not authorized (EACCES)"},
+		// a real NAS says a thing it was asked for by id is not there as an argument it refuses, and anything else not there as a call that
+		// failed: both are "not found", and the first is not a bad argument
 		{"pool.get_instance", truenasrpc.IsNotFound, "pool.get_instance: Pool 7 does not exist (ENOENT)"},
+		{"filesystem.stat", truenasrpc.IsNotFound, "filesystem.stat: Path /mnt/nowhere not found (ENOENT)"},
 		{"pool.dataset.create", truenasrpc.IsInvalid, "pool.dataset.create: the TrueNAS refused what it was sent: pool_dataset_create.name: Dataset name is required"},
 		{"pool.no_such_thing", truenasrpc.IsNoSuchMethod, "the TrueNAS has no method pool.no_such_thing"},
 	} {
@@ -445,9 +449,9 @@ func TestARefusalSaysWhatKindItIs(t *testing.T) {
 		}
 	}
 
-	// the connection is none the worse for four refusals
+	// the connection is none the worse for five refusals
 	if nas.Dials() != 1 {
-		t.Errorf("four refusals dialled the NAS %d times, want once", nas.Dials())
+		t.Errorf("five refusals dialled the NAS %d times, want once", nas.Dials())
 	}
 }
 
