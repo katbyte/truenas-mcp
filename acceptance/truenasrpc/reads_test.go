@@ -37,6 +37,7 @@ type surprise struct {
 var surprises = map[string]surprise{
 	"app.available_space":             {refused: "No pool configured for Docker", why: "the test NAS has no pool chosen for apps to live on"},
 	"tn_connect.get_registration_uri": {refused: "TrueNAS Connect is not enabled", why: "the test NAS is not joined to TrueNAS Connect"},
+	"sharing.smb.share_precheck":      {refused: "at least one local SMB user", why: "the test NAS has no user who may use SMB, and saying so is what the check is for"},
 	// the description says it needs no argument. TestReadsThatAreToldWhatToReadAnswerTheWayTheirDescriptionSays asks it with a limit
 	"audit.query": {refused: "query-options must be set to either gather row count or contain a limit", why: "a NAS will not list its whole audit log: it wants a limit on the rows, or to be asked only how many there are"},
 }
@@ -322,9 +323,22 @@ func TestReadsThatAreToldWhatToReadAnswerTheWayTheirDescriptionSays(t *testing.T
 				t.Fatalf("%s is not a read: the description sorts it as %q", name, m.Kind())
 			}
 
+			// what is refused with no argument is asked here with one, so only a method never called bare can be known to be refused
+			known := surprises[name]
+			if m.Kind() == described.Read {
+				known = surprise{}
+			}
+
 			var answer json.RawMessage
-			if err := conn.Call(within(t, readWait), name, params, &answer); err != nil {
+			err := conn.Call(within(t, readWait), name, params, &answer)
+
+			switch {
+			case err != nil && known.refused != "" && strings.Contains(err.Error(), known.refused):
+				return
+			case err != nil:
 				t.Fatalf("refused: %v", err)
+			case known.refused != "":
+				t.Fatalf("answered, where it was known to be refused with %q (%s)", known.refused, known.why)
 			}
 
 			heldTo(t, m, answer, false)
