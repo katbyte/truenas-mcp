@@ -436,11 +436,12 @@ func TestAReplicationThatWouldOverwriteWhatIsThereFailsAndIsSaidToHave(t *testin
 	}
 }
 
-// A task that takes snapshots is run, takes one, and keeps how the run went. How it says so before it has ever run and after is read here,
-// since the description gives it no shape and a check of tasks reads nothing else.
+// A task that takes snapshots is run, takes one, and keeps how the run went: pending before it has ever run, finished after, and failed, with
+// why, when it is run again in the same minute and the snapshot it would take is already there. The description gives none of that a shape,
+// and a check of tasks reads nothing else. A task that failed is said in an alert as well.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
-func TestASnapshotTaskTakesASnapshotAndKeepsHowItsLastRunWent(t *testing.T) {
+func TestASnapshotTaskKeepsHowItsLastRunWentAndSaysSoWhenItFails(t *testing.T) {
 	conn := admin(t)
 	ctx := within(t, 8*time.Minute)
 	of := layout.Datasets[0]
@@ -455,7 +456,7 @@ func TestASnapshotTaskTakesASnapshotAndKeepsHowItsLastRunWent(t *testing.T) {
 	type snapshot struct {
 		Name string `json:"name"`
 	}
-	taken := func() []snapshot {
+	taken := func(ctx context.Context) []snapshot {
 		var all, kept []snapshot
 		if err := conn.Call(ctx, "pool.snapshot.query", []any{[]any{[]any{"dataset", "=", of}}}, &all); err != nil {
 			t.Fatalf("listing the snapshots: %v", err)
@@ -472,20 +473,28 @@ func TestASnapshotTaskTakesASnapshotAndKeepsHowItsLastRunWent(t *testing.T) {
 		if err := conn.Call(context.WithoutCancel(ctx), "pool.snapshottask.delete", []any{made.ID}, nil); err != nil {
 			t.Errorf("removing the task: %v", err)
 		}
-		for _, one := range taken() {
+		for _, one := range taken(context.WithoutCancel(ctx)) {
 			if err := conn.Call(context.WithoutCancel(ctx), "pool.snapshot.delete", []any{one.Name}, nil); err != nil {
 				t.Errorf("removing the snapshot %s: %v", one.Name, err)
 			}
 		}
 	})
 
-	t.Logf("before it has run, the task says: %s", task(ctx, t, conn, "pool.snapshottask.query", made.ID).State)
+	before := task(ctx, t, conn, "pool.snapshottask.query", made.ID)
+	if state, _ := before.state(); state != "PENDING" {
+		t.Errorf("before it has run, the task says: %s; want it pending", before.State)
+	}
+
+	// early in a minute, so that the second run falls in the same one
+	if into := time.Now().Second(); into > 40 {
+		time.Sleep(time.Duration(62-into) * time.Second)
+	}
 
 	if err := conn.Call(ctx, "pool.snapshottask.run", []any{made.ID}, nil); err != nil {
 		t.Fatalf("running the task: %v", err)
 	}
-	if !eventually(ctx, 2*time.Minute, func() bool { return len(taken()) == 1 }) {
-		t.Fatalf("the task was run and took %d snapshots, want 1", len(taken()))
+	if !eventually(ctx, 2*time.Minute, func() bool { return len(taken(ctx)) == 1 }) {
+		t.Fatalf("the task was run and took %d snapshots, want 1", len(taken(ctx)))
 	}
 
 	var after tasked
@@ -497,14 +506,38 @@ func TestASnapshotTaskTakesASnapshotAndKeepsHowItsLastRunWent(t *testing.T) {
 	}) {
 		t.Errorf("having taken its snapshot, the task says: %s", after.State)
 	}
-	t.Logf("after it has run, the task says: %s", after.State)
+	var finished struct {
+		LastSnapshot string `json:"last_snapshot"`
+	}
+	if err := json.Unmarshal(after.State, &finished); err != nil || finished.LastSnapshot != taken(ctx)[0].Name {
+		t.Errorf("the task says the last snapshot it took is %q (%v), and it took %s", finished.LastSnapshot, err, taken(ctx)[0].Name)
+	}
 
-	// run again in the same minute, it has a snapshot of that name already
+	// run again in the same minute, the snapshot it would take is there already
 	if err := conn.Call(ctx, "pool.snapshottask.run", []any{made.ID}, nil); err != nil {
 		t.Fatalf("running the task again: %v", err)
 	}
-	time.Sleep(10 * time.Second)
-	t.Logf("run a second time at once, the task says: %s, and has %d snapshots", task(ctx, t, conn, "pool.snapshottask.query", made.ID).State, len(taken()))
+
+	var failed tasked
+	if !eventually(ctx, time.Minute, func() bool {
+		failed = task(ctx, t, conn, "pool.snapshottask.query", made.ID)
+		state, _ := failed.state()
+
+		return state == "ERROR"
+	}) {
+		t.Fatalf("run a second time in the same minute, the task says: %s; want it failed", failed.State)
+	}
+	if _, why := failed.state(); !strings.Contains(why, "already exists") || len(taken(ctx)) != 1 {
+		t.Errorf("the task failed with %q and has %d snapshots; want it to say the snapshot is already there, and one", why, len(taken(ctx)))
+	}
+
+	var said []alert
+	if !eventually(ctx, 4*time.Minute, func() bool { said = alerted(ctx, t, conn, "SnapshotFailed"); return len(said) > 0 }) {
+		t.Error("the NAS raised no alert for a snapshot task that failed")
+	}
+	for _, one := range said {
+		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
+	}
 
 	var raw json.RawMessage
 	if err := conn.Call(ctx, "pool.snapshottask.query", nil, &raw); err != nil {

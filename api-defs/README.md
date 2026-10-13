@@ -117,6 +117,12 @@ None of this is in the description: an alert's text is whatever the NAS writes, 
 
 **A copy task that fails says so three ways.** The run fails (`[EFAULT] rsync command returned 10 - SOCKETIO. Check logs for further information.`), the task's row keeps the job of its last run with `state` `FAILED`, and an alert of class `RsyncFailed`, level `CRITICAL`, is raised at once: `Rsync "PUSH" task for "/mnt/tank/alpha" failed.` That alert stays until somebody dismisses it, and dismissed it is still listed, marked `dismissed`. `TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed`
 
+**A task keeps how its last run went under `state`, which the description gives no shape.** Read from a real NAS, for a snapshot task and a replication alike: `{"state": "PENDING"}` before it has ever run; `{"state": "FINISHED", "datetime": {"$date": ...}, "last_snapshot": "tank/alpha@kept-2026-10-12_22-08"}` after a run that worked; and `{"state": "ERROR", "datetime": ..., "error": "...", "last_snapshot": ...}` after one that did not, with the reason in words. A failed task that is enabled is in the alerts within a minute or two as well, class `SnapshotFailed` or `ReplicationFailed`, level `CRITICAL`. `TestASnapshotTaskKeepsHowItsLastRunWentAndSaysSoWhenItFails`, `TestAReplicationThatWouldOverwriteWhatIsThereFailsAndIsSaidToHave`
+
+**A snapshot task run twice in one minute fails the second time.** Its snapshots are named by the minute, so the second finds the name taken: `cannot create snapshot 'tank/alpha@kept-2026-10-12_22-08': dataset already exists.` It is the easiest honest way to have a snapshot task that failed.
+
+**A replication will not overwrite files.** Copying a dataset onto one that holds files and shares no snapshot with it fails, and says which file it found: `Target dataset 'tank/beta' does not have matching snapshots but has data (e.g. 'in-the-way.txt') and replication from scratch is not allowed. Refusing to overwrite existing data.`
+
 ## Making a NAS to test against
 
 TrueNAS documents only an install by someone at a keyboard. Its installer also answers a small API of its own while it sits at its menu (`truenas/truenas-installer`, read at the release's tag): a websocket on port 8080 that lists the disks, installs onto the ones named with an administrator's password, says how far along it is, and switches the machine off. That is what `.scripts/testenv.sh` drives to make the NAS the live tests run against. `TestTheInstallerIsDrivenWithNobodyAtTheKeyboard`, `TestAnInstallThatCannotBeSureOfItsDiskOrIsRefusedSaysSo`
