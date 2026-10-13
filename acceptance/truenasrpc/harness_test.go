@@ -199,9 +199,9 @@ func made(t *testing.T) *setup.Made {
 	return held.made
 }
 
-// description is what the NAS's own version says of its API, as api-defs keeps it. A NAS of a version nothing is kept for cannot be held to
+// release is the version the NAS runs, as api-defs names what it keeps for it. A NAS of a version nothing is kept for cannot be held to
 // anything, so the test asking stops.
-func description(t *testing.T) map[string]described.Method {
+func release(t *testing.T) string {
 	t.Helper()
 
 	documents, err := filepath.Glob("../../api-defs/truenas-methods-*.json")
@@ -210,22 +210,26 @@ func description(t *testing.T) map[string]described.Method {
 	}
 
 	for _, document := range documents {
-		release := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(document), "truenas-methods-"), ".json")
-		if !strings.Contains(made(t).Version, release) {
-			continue
+		if release := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(document), "truenas-methods-"), ".json"); strings.Contains(made(t).Version, release) {
+			return release
 		}
-
-		methods, err := described.Load(filepath.Dir(document), release)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		return methods
 	}
 
 	t.Fatalf("the NAS runs %s, and api-defs holds no description of that version", made(t).Version)
 
-	return nil
+	return ""
+}
+
+// description is what the NAS's own version says of its API, as api-defs keeps it.
+func description(t *testing.T) map[string]described.Method {
+	t.Helper()
+
+	methods, err := described.Load("../../api-defs", release(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return methods
 }
 
 // admin is a connection as the administrator, by key, and reader one as the user who may only read.

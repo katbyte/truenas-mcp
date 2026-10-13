@@ -2,7 +2,9 @@ package truenasrpc_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/netip"
+	"strings"
 	"testing"
 	"time"
 
@@ -65,6 +67,55 @@ func TestTheValuesTrueNASWritesItsOwnWayAreReadAndWrittenBack(t *testing.T) {
 				t.Errorf("%s was read into a %T", wrong, into)
 			}
 		}
+	}
+}
+
+// A user who may only read is answered "********" where a secret is, whatever the secret is: a list of password hashes and a certificate with its
+// key come back as that one piece of text. Seen on a real TrueNAS 25.10.7, in mail.config, system.general.config and user.query. A secret reads
+// either way, says which it was, writes back as it was read, and says nothing of itself when printed.
+func TestASecretTheNASKeptBackIsReadAsOneAndNeverPrinted(t *testing.T) {
+	t.Parallel()
+
+	type certificate struct {
+		Name       string `json:"name"`
+		PrivateKey string `json:"privatekey"`
+	}
+	var got struct {
+		History     truenasrpc.Secret[[]string]     `json:"password_history"`
+		Certificate truenasrpc.Secret[certificate]  `json:"ui_certificate"`
+		Password    truenasrpc.Secret[string]       `json:"pass"`
+		Shown       truenasrpc.Secret[[]string]     `json:"shown"`
+		Whole       truenasrpc.Secret[certificate]  `json:"whole"`
+		None        truenasrpc.Secret[*certificate] `json:"none"`
+	}
+
+	const wire = `{"password_history":"********","ui_certificate":"********","pass":"********","shown":["a-hash","another"],"whole":{"name":"truenas_default","privatekey":"a-private-key"},"none":null}`
+	if err := json.Unmarshal([]byte(wire), &got); err != nil {
+		t.Fatalf("an answer with its secrets kept back does not read: %v", err)
+	}
+
+	if !got.History.Hidden || got.History.Value != nil || !got.Certificate.Hidden || got.Certificate.Value != (certificate{}) || !got.Password.Hidden || got.Password.Value != "" {
+		t.Errorf("secrets the NAS kept back read as shown: %t %t %t", got.History.Hidden, got.Certificate.Hidden, got.Password.Hidden)
+	}
+	if got.Shown.Hidden || len(got.Shown.Value) != 2 || got.Whole.Hidden || got.Whole.Value.PrivateKey != "a-private-key" || got.None.Hidden || got.None.Value != nil {
+		t.Errorf("secrets the NAS showed read as kept back, or not as they were: %t %d, %t, %t", got.Shown.Hidden, len(got.Shown.Value), got.Whole.Hidden, got.None.Hidden)
+	}
+
+	back, err := json.Marshal(got)
+	if err != nil || string(back) != wire {
+		t.Errorf("written back as %s (%v), want %s", back, err, wire)
+	}
+
+	for _, format := range []string{"%v", "%+v", "%s", "%#v"} {
+		if printed := fmt.Sprintf(format, got.Whole) + fmt.Sprintf(format, &got.Whole) + fmt.Sprintf(format, got); strings.Contains(printed, "a-private-key") || strings.Contains(printed, "a-hash") {
+			t.Errorf("printed with %s, a secret shows: %s", format, printed)
+		}
+	}
+
+	// a secret read once as kept back and then as shown is the second, not a mix of the two
+	again := truenasrpc.Secret[string]{Hidden: true}
+	if err := json.Unmarshal([]byte(`"swordfish"`), &again); err != nil || again.Hidden || again.Value != "swordfish" {
+		t.Errorf("read again as %q hidden=%t (%v)", again.Value, again.Hidden, err)
 	}
 }
 

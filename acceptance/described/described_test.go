@@ -140,23 +140,25 @@ func TestAnAnswerIsHeldToItsDescription(t *testing.T) {
 		described, answer string
 		want              []string
 	}{
-		"an answer that fits":                       {row, `{"id":1,"name":"tank","state":"ONLINE","kind":"POOL","size":null}`, nil},
-		"a name the description always has":         {row, `{"id":1}`, []string{"$ has no name, which the description says it always has"}},
-		"a name it does not have":                   {row, `{"id":1,"name":"tank","guid":"7"}`, []string{"$ has a guid, which the description does not name"}},
-		"a value of another kind":                   {row, `{"id":"1","name":"tank"}`, []string{"$.id is a string, and the description says integer"}},
-		"a number that is not whole":                {row, `{"id":1.5,"name":"tank"}`, []string{"$.id is a number (1.5), and the description says integer"}},
-		"a whole number written with a point":       {row, `{"id":2.0,"name":"tank"}`, nil},
-		"a value not among those allowed":           {row, `{"id":1,"name":"tank","state":"FAULTED"}`, []string{`$.state is "FAULTED", which is not one of the 2 values the description allows`}},
-		"a value other than the one it must be":     {row, `{"id":1,"name":"tank","kind":"DATASET"}`, []string{`$.kind is "DATASET", which is not one of the 1 values the description allows`}},
-		"none of the kinds it may be":               {row, `{"id":1,"name":"tank","size":"big"}`, []string{"$.size is a string, and the description says integer"}},
-		"a moment written the way a NAS writes one": {row, `{"id":1,"name":"tank","made":{"$date":1760000000000}}`, nil},
-		"names that are all of one kind":            {row, `{"id":1,"name":"tank","extra":{"a":1,"b":"two"}}`, []string{"$.extra.* is a string, and the description says integer"}},
-		"names nothing is said of":                  {row, `{"id":1,"name":"tank","loose":{"a":1,"b":"two"}}`, nil},
-		"the closest of the shapes it may be":       {row, `{"id":1,"name":"tank","either":{"b":1,"c":2}}`, []string{"$.either.c is a number (2), and the description says string"}},
-		"rows wrong the same way are told of once":  {`{"type":"array","items":[` + row + `]}`, `[{"id":1},{"id":2},{"id":"3","name":"x"}]`, []string{"$[] has no name, which the description says it always has", "$[].id is a string, and the description says integer"}},
-		"a list where anything may be":              {`{"type":"array","items":[{}]}`, `[1,"two",null]`, nil},
-		"nothing where a list is described":         {`{"type":"array","items":[{}]}`, `null`, []string{"$ is null, and the description says array"}},
-		"an answer that is not JSON":                {row, `{`, []string{"the answer is not JSON: unexpected EOF"}},
+		"an answer that fits":                         {row, `{"id":1,"name":"tank","state":"ONLINE","kind":"POOL","size":null}`, nil},
+		"a name the description always has":           {row, `{"id":1}`, []string{"$ has no name, which the description says it always has"}},
+		"a name it does not have":                     {row, `{"id":1,"name":"tank","guid":"7"}`, []string{"$ has a guid, which the description does not name"}},
+		"a value of another kind":                     {row, `{"id":"1","name":"tank"}`, []string{"$.id is a string, and the description says integer"}},
+		"a number that is not whole":                  {row, `{"id":1.5,"name":"tank"}`, []string{"$.id is a number (1.5), and the description says integer"}},
+		"a whole number written with a point":         {row, `{"id":2.0,"name":"tank"}`, nil},
+		"a value not among those allowed":             {row, `{"id":1,"name":"tank","state":"FAULTED"}`, []string{`$.state is "FAULTED", which is not one of the 2 values the description allows`}},
+		"a value other than the one it must be":       {row, `{"id":1,"name":"tank","kind":"DATASET"}`, []string{`$.kind is "DATASET", which is not one of the 1 values the description allows`}},
+		"none of the kinds it may be":                 {row, `{"id":1,"name":"tank","size":"big"}`, []string{"$.size is a string, and the description says integer"}},
+		"a moment written the way a NAS writes one":   {row, `{"id":1,"name":"tank","made":{"$date":1760000000000}}`, nil},
+		"names that are all of one kind":              {row, `{"id":1,"name":"tank","extra":{"a":1,"b":"two"}}`, []string{"$.extra.* is a string, and the description says integer"}},
+		"names nothing is said of":                    {row, `{"id":1,"name":"tank","loose":{"a":1,"b":"two"}}`, nil},
+		"the closest of the shapes it may be":         {row, `{"id":1,"name":"tank","either":{"b":1,"c":2}}`, []string{"$.either.c is a number (2), and the description says string"}},
+		"rows wrong the same way are told of once":    {`{"type":"array","items":[` + row + `]}`, `[{"id":1},{"id":2},{"id":"3","name":"x"}]`, []string{"$[] has no name, which the description says it always has", "$[].id is a string, and the description says integer"}},
+		"a secret the NAS kept back, whatever it is":  {row, `{"id":1,"name":"tank","extra":"********","size":"********"}`, nil},
+		"a list held to the list, not to the one row": {`{"anyOf":[{"type":"array","items":[` + row + `]},` + row + `,{"type":"integer"}]}`, `[{"id":1,"name":"a","guid":1},{"id":"2","name":"b","guid":2}]`, []string{"$[] has a guid, which the description does not name", "$[].id is a string, and the description says integer"}},
+		"a list where anything may be":                {`{"type":"array","items":[{}]}`, `[1,"two",null]`, nil},
+		"nothing where a list is described":           {`{"type":"array","items":[{}]}`, `null`, []string{"$ is null, and the description says array"}},
+		"an answer that is not JSON":                  {row, `{`, []string{"the answer is not JSON: unexpected EOF"}},
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -177,6 +179,26 @@ func TestTheFormsANASWritesValuesInAreFound(t *testing.T) {
 	want := []string{"$.made is a $date", "$.rows[].at is a $time"}
 	if !slices.Equal(got, want) {
 		t.Errorf("the forms found are %q, want %q", got, want)
+	}
+}
+
+// A secret a user may not see comes back as one piece of text in its place. Each place is found, written the way api-defs writes where the
+// secrets are, so the two can be held against each other.
+func TestWhereTheNASKeptASecretBackIsFound(t *testing.T) {
+	t.Parallel()
+
+	got := described.Blanked(json.RawMessage(`[{"pass":"********","oauth":"********","name":"x","keys":[{"key":"********"},{"key":"shown"}]},{"pass":"********"}]`))
+	want := []string{"$[].keys[].key", "$[].oauth", "$[].pass"}
+	if !slices.Equal(got, want) {
+		t.Errorf("the places found are %q, want %q", got, want)
+	}
+
+	secrets, err := described.Secrets("../../api-defs", release)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if places := secrets["mail.config"]; !slices.Contains(places, "$.oauth") || !slices.Contains(places, "$.pass") {
+		t.Errorf("the secrets of mail.config are read as %q, want $.oauth and $.pass among them", places)
 	}
 }
 

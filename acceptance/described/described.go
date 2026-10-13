@@ -169,6 +169,69 @@ func Forms(answer json.RawMessage) []string {
 	return slices.Compact(found)
 }
 
+// KeptBack is what a NAS answers in place of a secret the caller may not see, whatever kind of value the secret is.
+const KeptBack = "********"
+
+// Blanked says where an answer holds a secret the NAS kept back, each place once, written the way api-defs writes where the secrets are.
+func Blanked(answer json.RawMessage) []string {
+	value, err := read(answer)
+	if err != nil {
+		return nil
+	}
+
+	var found []string
+	var walk func(value any, at string)
+	walk = func(value any, at string) {
+		switch v := value.(type) {
+		case string:
+			if v == KeptBack {
+				found = append(found, at)
+			}
+
+		case map[string]any:
+			for _, name := range sorted(v) {
+				walk(v[name], at+"."+name)
+			}
+
+		case []any:
+			for _, item := range v {
+				walk(item, at+"[]")
+			}
+		}
+	}
+	walk(value, "$")
+	slices.Sort(found)
+
+	return slices.Compact(found)
+}
+
+// Secrets is where the secrets are in each method's answer, as api-defs keeps them for the release named: made from the TrueNAS source, which
+// marks them, where the description does not.
+func Secrets(dir, release string) (map[string][]string, error) {
+	raw, err := os.ReadFile(filepath.Join(dir, "truenas-secrets-"+release+".json")) //nolint:gosec // G304: the file is the repository's own
+	if err != nil {
+		return nil, err
+	}
+
+	var kept struct {
+		Methods map[string]struct {
+			Result []string `json:"result"`
+		} `json:"methods"`
+	}
+	if err := json.Unmarshal(raw, &kept); err != nil {
+		return nil, fmt.Errorf("the secrets of %s cannot be read: %w", release, err)
+	}
+
+	places := map[string][]string{}
+	for name, method := range kept.Methods {
+		if len(method.Result) > 0 {
+			places[name] = method.Result
+		}
+	}
+
+	return places, nil
+}
+
 func read(answer json.RawMessage) (any, error) {
 	dec := json.NewDecoder(bytes.NewReader(answer))
 	dec.UseNumber()
@@ -202,15 +265,27 @@ func differences(described json.RawMessage, value any, at string) []string {
 		return nil
 	}
 
+	// a secret the NAS kept back is one piece of text whatever the description says is there, and is told of by KeptBack
+	if value == KeptBack {
+		return nil
+	}
+
 	if options := append(slices.Clone(s.AnyOf), s.OneOf...); len(options) > 0 {
+		// what is wrong is said against the shape the answer is nearest to: one of its own kind, a list held to the list and not to the one row
+		// or the count a query may also answer, and of those the one with the least wrong
 		var closest []string
+		var nearest bool
 		for i, option := range options {
 			found := differences(option, value, at)
 			if len(found) == 0 {
 				return nil
 			}
-			if i == 0 || len(found) < len(closest) {
-				closest = found
+
+			var one schema
+			var kind string
+			near := json.Unmarshal(option, &one) == nil && (json.Unmarshal(one.Type, &kind) != nil || fits(kind, value))
+			if i == 0 || (near && !nearest) || (near == nearest && len(found) < len(closest)) {
+				closest, nearest = found, near
 			}
 		}
 

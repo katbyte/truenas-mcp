@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/described"
+	"github.com/katbyte/truenas-mcp/acceptance/layout"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -33,10 +34,21 @@ type surprise struct {
 }
 
 // surprises is every read a real TrueNAS 25.10.7 answers some other way than its description says, found by running these tests.
-var surprises = map[string]surprise{}
+var surprises = map[string]surprise{
+	"app.available_space":             {refused: "No pool configured for Docker", why: "the test NAS has no pool chosen for apps to live on"},
+	"tn_connect.get_registration_uri": {refused: "TrueNAS Connect is not enabled", why: "the test NAS is not joined to TrueNAS Connect"},
+	// the description says it needs no argument. TestReadsThatAreToldWhatToReadAnswerTheWayTheirDescriptionSays asks it with a limit
+	"audit.query": {refused: "query-options must be set to either gather row count or contain a limit", why: "a NAS will not list its whole audit log: it wants a limit on the rows, or to be asked only how many there are"},
+}
 
-// held to the description, answer by answer: what is wrong is said by where it is, and what is known to be wrong has to be wrong still.
-func heldTo(t *testing.T, m described.Method, answer json.RawMessage) {
+// keyed is what a kind of thing is fetched by, where that is not its id: a row of the list has no id at all.
+var keyed = map[string]string{
+	"disk": "identifier",
+}
+
+// heldTo holds an answer to the description: what is wrong is said by where it is, and what is known to be wrong has to be wrong still. A
+// secret the NAS kept back has to be somewhere api-defs says a secret is, and the administrator is shown them all.
+func heldTo(t *testing.T, m described.Method, answer json.RawMessage, administrator bool) {
 	t.Helper()
 
 	got, want := m.Differences(answer), surprises[m.Name].differs
@@ -50,38 +62,70 @@ func heldTo(t *testing.T, m described.Method, answer json.RawMessage) {
 			t.Errorf("as described after all, where it was known not to be: %s", difference)
 		}
 	}
+
+	for _, place := range described.Blanked(answer) {
+		switch {
+		case administrator:
+			t.Errorf("a secret was kept back from the administrator, at %s", place)
+		case !slices.Contains(secrets(t)[m.Name], place):
+			t.Errorf("something was kept back at %s, where api-defs lists no secret", place)
+		}
+	}
 }
 
-// Every method that reads and needs no argument is called, as the user who may only read, and its answer held to the description. It is the
-// one test every such method gets, and it is where a description that is wrong is found before anything generated from it is.
+// secrets is where the secrets are in each method's answer, as api-defs keeps them for the NAS's version.
+func secrets(t *testing.T) map[string][]string {
+	t.Helper()
+
+	places, err := described.Secrets("../../api-defs", release(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return places
+}
+
+// Every method that reads and needs no argument is called, and its answer held to the description. It is the one test every such method gets,
+// and it is where a description that is wrong is found before anything generated from it is. Each is asked twice: by the user who may only
+// read, who is answered with every secret kept back, and by the administrator, who is shown them.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
 func TestEveryReadIsAnsweredTheWayItsDescriptionSays(t *testing.T) {
 	methods := description(t)
-	conn := reader(t)
 
-	forms := map[string][]string{}
-	for _, name := range named(methods, described.Read) {
-		t.Run(name, func(t *testing.T) {
-			known := surprises[name]
+	forms, kept := map[string][]string{}, map[string][]string{}
+	for _, by := range []struct {
+		name          string
+		conn          *truenasrpc.Conn
+		administrator bool
+	}{{"asked by the user who may only read", reader(t), false}, {"asked by the administrator", admin(t), true}} {
+		t.Run(by.name, func(t *testing.T) {
+			for _, name := range named(methods, described.Read) {
+				t.Run(name, func(t *testing.T) {
+					known := surprises[name]
 
-			var answer json.RawMessage
-			err := conn.Call(within(t, readWait), name, nil, &answer)
+					var answer json.RawMessage
+					err := by.conn.Call(within(t, readWait), name, nil, &answer)
 
-			switch {
-			case err != nil && known.outside:
-				t.Skipf("it asks a server out on the internet, which did not answer: %v", err)
-			case err != nil && known.refused != "" && strings.Contains(err.Error(), known.refused):
-				return
-			case err != nil:
-				t.Fatalf("refused: %v", err)
-			case known.refused != "":
-				t.Fatalf("answered, where it was known to be refused with %q (%s)", known.refused, known.why)
-			}
+					switch {
+					case err != nil && known.outside:
+						t.Skipf("it asks a server out on the internet, which did not answer: %v", err)
+					case err != nil && known.refused != "" && strings.Contains(err.Error(), known.refused):
+						return
+					case err != nil:
+						t.Fatalf("refused: %v", err)
+					case known.refused != "":
+						t.Fatalf("answered, where it was known to be refused with %q (%s)", known.refused, known.why)
+					}
 
-			heldTo(t, methods[name], answer)
-			for _, form := range described.Forms(answer) {
-				forms[form] = append(forms[form], name)
+					heldTo(t, methods[name], answer, by.administrator)
+					for _, form := range described.Forms(answer) {
+						if !slices.Contains(forms[form], name) {
+							forms[form] = append(forms[form], name)
+						}
+					}
+					kept[name] = append(kept[name], described.Blanked(answer)...)
+				})
 			}
 		})
 	}
@@ -92,9 +136,16 @@ func TestEveryReadIsAnsweredTheWayItsDescriptionSays(t *testing.T) {
 		}
 	}
 
-	// the forms a NAS writes values in are what anything that reads an answer has to know, so the run says which it met and where
+	// the forms a NAS writes values in, and the secrets it keeps back, are what anything that reads an answer has to know, so the run says
+	// which it met and where
 	for _, form := range sortedKeys(forms) {
 		t.Logf("a value in a form of the NAS's own: %s (%s)", form, strings.Join(forms[form], ", "))
+	}
+	for _, name := range sortedKeys(kept) {
+		if len(kept[name]) == 0 {
+			continue
+		}
+		t.Logf("kept back from the user who may only read: %s %s", name, strings.Join(kept[name], " "))
 	}
 }
 
@@ -128,10 +179,15 @@ func TestWhatIsListedIsFetchedByItsIDAndWhatIsNotThereIsMissing(t *testing.T) {
 			}
 			t.Logf("%d listed", len(rows))
 
+			by := "id"
+			if other, ok := keyed[kind]; ok {
+				by = other
+			}
+
 			for _, row := range rows[:min(len(rows), 3)] {
-				id, has := row["id"]
+				id, has := row[by]
 				if !has {
-					t.Fatal("what is listed has no id to fetch it by")
+					t.Fatalf("what is listed has no %s to fetch it by", by)
 				}
 
 				var one json.RawMessage
@@ -140,13 +196,11 @@ func TestWhatIsListedIsFetchedByItsIDAndWhatIsNotThereIsMissing(t *testing.T) {
 
 					continue
 				}
-				heldTo(t, methods[name], one)
+				heldTo(t, methods[name], one, false)
 
-				var fetched struct {
-					ID json.RawMessage `json:"id"`
-				}
-				if err := json.Unmarshal(one, &fetched); err != nil || !bytes.Equal(fetched.ID, id) {
-					t.Errorf("asked for %s, the NAS handed over %s (%v)", id, fetched.ID, err)
+				var fetched map[string]json.RawMessage
+				if err := json.Unmarshal(one, &fetched); err != nil || !bytes.Equal(fetched[by], id) {
+					t.Errorf("asked for %s, the NAS handed over %s (%v)", id, fetched[by], err)
 				}
 			}
 
@@ -195,4 +249,85 @@ func sortedKeys[V any](m map[string]V) []string {
 	slices.Sort(keys)
 
 	return keys
+}
+
+// A read that has to be told what to read is asked about something the journey made, or something every NAS has, and its answer held to the
+// description the same way. What is not asked here needs something the test NAS does not have yet: an app, a virtual machine, a task.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestReadsThatAreToldWhatToReadAnswerTheWayTheirDescriptionSays(t *testing.T) {
+	methods := description(t)
+	conn := reader(t)
+
+	var pools []struct {
+		ID int64 `json:"id"`
+	}
+	if err := conn.Call(within(t, readWait), "pool.query", []any{[]any{[]any{"name", "=", layout.Pool}}}, &pools); err != nil || len(pools) != 1 {
+		t.Fatalf("the pool the journey made is not found: %d found, %v", len(pools), err)
+	}
+
+	var disks []struct {
+		Name string `json:"name"`
+	}
+	if err := conn.Call(within(t, readWait), "disk.query", nil, &disks); err != nil || len(disks) == 0 {
+		t.Fatalf("the NAS lists no disks: %v", err)
+	}
+	names := make([]string, len(disks))
+	for i, disk := range disks {
+		names[i] = disk.Name
+	}
+
+	pool, dataset, path := pools[0].ID, layout.Datasets[0], "/mnt/"+layout.Datasets[0]
+	for name, params := range map[string][]any{
+		"filesystem.stat":                         {path},
+		"filesystem.statfs":                       {path},
+		"filesystem.listdir":                      {"/mnt/" + layout.Pool},
+		"filesystem.getacl":                       {path},
+		"filesystem.get_zfs_attributes":           {path},
+		"filesystem.acltemplate.by_path":          {map[string]any{"path": path}},
+		"pool.attachments":                        {pool},
+		"pool.processes":                          {pool},
+		"pool.is_upgraded":                        {pool},
+		"pool.validate_name":                      {"another"},
+		"pool.dataset.attachments":                {dataset},
+		"pool.dataset.processes":                  {dataset},
+		"pool.dataset.get_quota":                  {dataset, "USER"},
+		"pool.dataset.snapshot_count":             {dataset},
+		"pool.dataset.recommended_zvol_blocksize": {layout.Pool},
+		"disk.temperature_agg":                    {names, 7},
+		"disk.temperature_alerts":                 {names},
+		"device.get_info":                         {map[string]any{"type": "DISK"}},
+		"group.get_group_obj":                     {map[string]any{"groupname": "root"}},
+		"user.get_user_obj":                       {map[string]any{"username": "root"}},
+		"group.has_password_enabled_user":         {[]int{0}},
+		"service.started":                         {"ssh"},
+		"service.started_or_enabled":              {"ssh"},
+		"system.feature_enabled":                  {"DEDUP"},
+		"reporting.netdata_graph":                 {"cpu"},
+		"reporting.netdata_get_data":              {[]any{map[string]any{"name": "cpu"}}},
+		"reporting.graph":                         {"cpu"},
+		"reporting.get_data":                      {[]any{map[string]any{"name": "cpu"}}},
+		// the address a machine run this way is given as its way out
+		"route.ipv4gw_reachable":               {"10.0.2.2"},
+		"nvmet.port.transport_address_choices": {"TCP"},
+		"sharing.smb.share_precheck":           {map[string]any{"name": "nothing-shared"}},
+		"virt.device.gpu_choices":              {"PHYSICAL"},
+		"virt.device.nic_choices":              {"BRIDGED"},
+		// the description says it needs no argument, and a NAS refuses it without a limit on the rows
+		"audit.query": {map[string]any{"query-options": map[string]any{"limit": 10}}},
+	} {
+		t.Run(name, func(t *testing.T) {
+			m, ok := methods[name]
+			if !ok || (m.Kind() != described.ReadWithArguments && m.Kind() != described.Read) {
+				t.Fatalf("%s is not a read: the description sorts it as %q", name, m.Kind())
+			}
+
+			var answer json.RawMessage
+			if err := conn.Call(within(t, readWait), name, params, &answer); err != nil {
+				t.Fatalf("refused: %v", err)
+			}
+
+			heldTo(t, m, answer, false)
+		})
+	}
 }
