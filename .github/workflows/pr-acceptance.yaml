@@ -1,0 +1,77 @@
+---
+name: acceptance
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    types: ['opened', 'synchronize']
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'vendor/**'
+      - 'makefile'
+      - 'api-defs/**'
+      - '.scripts/testenv.sh'
+      - 'acceptance/**'
+      - '.github/workflows/pr-acceptance.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # the one place a claim about what a real TrueNAS does is tested and not read out of its source: TrueNAS is installed in a virtual machine on
+  # the runner, set up with a pool and two users, and the connection is run against it
+  acceptance:
+    name: acceptance (against a real TrueNAS in a virtual machine)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ./.go-version
+
+      # a hosted runner can run a virtual machine at full speed, once its user is allowed to open /dev/kvm
+      - name: Allow virtual machines
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 qemu-utils
+          command -v qemu-system-x86_64 qemu-img curl python3
+
+      # installing TrueNAS takes a quarter of an hour and comes out the same every time, so the disk it was installed onto is kept between runs:
+      # it is made again when the script or the program that drives the installer changes
+      - name: Keep the disk TrueNAS was installed onto
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/truenas-mcp/testenv/installed-*.qcow2
+          key: truenas-installed-${{ hashFiles('.scripts/testenv.sh', 'acceptance/testnas/installer.go') }}
+
+      # make owns the machine's life, so CI runs exactly what a developer with such a machine runs. the installer disc is over 2 GB and is only
+      # needed for the install, so it is not kept
+      - name: Run the live suite
+        env:
+          TRUENAS_TEST_KEEP_ISO: "0"
+        run: make testacc
+
+      - name: Keep what the machine said and showed
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-machine
+          path: ~/.cache/truenas-mcp/testenv/logs/
+          if-no-files-found: ignore
+
+      - name: Tear down
+        if: always()
+        run: .scripts/testenv.sh down || true

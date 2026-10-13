@@ -1,0 +1,62 @@
+---
+name: coverage
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    types: ['opened', 'synchronize']
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - 'vendor/**'
+      - 'makefile'
+      - '.github/workflows/coverage.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # the badge is pushed to a branch, so only a run on main may write
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # publish-coverage-badge.sh needs the remote refs to find or create
+          # the orphan branch
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ./.go-version
+
+      - name: Run the tests with coverage
+        run: make cover
+
+      - name: Summarise
+        id: cov
+        run: |
+          pct=$(go tool cover -func=.coverage/coverage.out | tail -1 | grep -oE '[0-9]+\.[0-9]+' | tail -1)
+          echo "pct=${pct}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## coverage: ${pct}%"
+            echo
+            echo '```'
+            go tool cover -func=.coverage/coverage.out
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish the badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          PCT: ${{ steps.cov.outputs.pct }}
+          # the checkout persists no credentials, so the push is given the
+          # job's own token (the job asks for contents: write above)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash ./.scripts/publish-coverage-badge.sh

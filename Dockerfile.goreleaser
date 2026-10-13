@@ -1,0 +1,17 @@
+# Used by goreleaser (dockers_v2 in .goreleaser.yaml) to publish ghcr.io/katbyte/truenas-mcp on
+# tag: the build context holds the prebuilt binary per platform, so this only copies it onto
+# alpine. Dockerfile (from source) is what make docker uses; keep the two final stages in sync.
+# alpine comes from Google's mirror of Docker Hub, which does not turn a shared release runner
+# away for having pulled too much (see release.yaml).
+FROM mirror.gcr.io/library/alpine:3.24
+RUN apk add --no-cache ca-certificates tzdata \
+    && adduser -D -H -u 65532 truenas
+ARG TARGETPLATFORM
+COPY $TARGETPLATFORM/truenas-mcp /usr/local/bin/truenas-mcp
+USER truenas
+ENV TRUENAS_LISTEN=:8080
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD wget -q --spider http://127.0.0.1:8080/healthz || exit 1
+ENTRYPOINT ["truenas-mcp"]
+CMD ["serve"]

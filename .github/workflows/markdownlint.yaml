@@ -1,0 +1,31 @@
+name: markdownlint
+
+# Checks the repo's markdown with markdownlint-cli2 (config in .markdownlint.yml).
+# make npm installs the version pinned in the makefile into .tools.
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    types: ['opened', 'synchronize']
+    paths:
+      - '**.md'
+      - '.markdownlint.yml'
+      - '.github/workflows/markdownlint.yaml'
+      - 'makefile'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 'markdownlint-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: make markdownlint

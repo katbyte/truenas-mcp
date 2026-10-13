@@ -1,0 +1,28 @@
+# Configuration for typos (https://github.com/crate-ci/typos), run by `make typos` and
+# .github/workflows/typos.yaml. It checks every file type and splits identifiers, so misspelled
+# function and variable names are caught as well as prose.
+#
+# locale is "en" (accept both UK and US spellings): our own text is Canadian English, which takes
+# -ize like the US but -our/-re like the UK, and names mirroring the TrueNAS API are American.
+
+[files]
+ignore-hidden = false # the default skips dotfiles, which would leave .github/ workflows unchecked
+extend-exclude = [
+  ".git/",
+  ".idea/",
+  ".tools/bin/", # gitignored tool installs (make tools)
+  ".tools/npm/",
+  ".tools/venv/",
+  "**/vendor/",
+  "**/go.mod", # commit hashes in pinned versions
+  "**/go.sum",
+  "api-defs/*.json", # TrueNAS's own description of its API, its words and not ours
+]
+
+[default]
+locale = "en"
+
+[default.extend-words]
+# linter names
+decorder = "decorder"
+importas = "importas"

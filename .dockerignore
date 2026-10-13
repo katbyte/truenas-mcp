@@ -1,0 +1,12 @@
+.git
+.github
+.idea
+.tools/bin
+.tools/venv
+.tools/npm
+dist
+docs
+truenas-mcp
+*.md
+docker-compose.yml
+.env*

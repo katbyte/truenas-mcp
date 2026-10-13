@@ -1,0 +1,95 @@
+version: 2
+
+project_name: truenas-mcp
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+      - -mod=vendor
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    goos:
+      - linux
+      - darwin
+      - windows
+      - freebsd
+      - openbsd
+      - solaris
+    goarch:
+      - '386'
+      - amd64
+      - arm
+      - arm64
+      - riscv64
+    goarm:
+      - '6'
+      - '7'
+    ignore:
+      - goos: darwin
+        goarch: '386'
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: riscv64
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: riscv64
+      - goos: solaris
+        goarch: '386'
+      - goos: solaris
+        goarch: arm
+      - goos: solaris
+        goarch: arm64
+      - goos: solaris
+        goarch: riscv64
+      - goos: openbsd
+        goarch: arm
+      - goos: freebsd
+        goarch: riscv64
+      - goos: openbsd
+        goarch: riscv64
+    ldflags:
+      - -s -w
+      - -X github.com/katbyte/go-kt/version.Version={{ .Tag }}
+      - -X github.com/katbyte/go-kt/version.GitCommit={{ .ShortCommit }}
+
+universal_binaries:
+  - replace: false # also ship a single fat darwin binary alongside amd64/arm64
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+# multi-arch image pushed to ghcr.io on release (needs docker login + buildx in the workflow).
+# tags: v1.2.3, v1.2 and latest (latest skipped for prereleases such as v1.2.3-rc1)
+dockers_v2:
+  - images:
+      - ghcr.io/katbyte/truenas-mcp
+    dockerfile: Dockerfile.goreleaser
+    tags:
+      - '{{ .Tag }}'
+      - 'v{{ .Major }}.{{ .Minor }}'
+      - '{{ if not .Prerelease }}latest{{ end }}'
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    annotations:
+      org.opencontainers.image.title: '{{ .ProjectName }}'
+      org.opencontainers.image.description: 'MCP server and CLI for looking after a TrueNAS'
+      org.opencontainers.image.source: 'https://github.com/katbyte/truenas-mcp'
+      org.opencontainers.image.version: '{{ .Version }}'
+      org.opencontainers.image.revision: '{{ .FullCommit }}'
+      org.opencontainers.image.licenses: 'GPL-3.0-only'
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  filters:
+    exclude:
+      - '^Bump '
+      - 'merge main'

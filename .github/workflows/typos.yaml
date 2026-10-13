@@ -1,0 +1,26 @@
+name: typos
+
+# Checks spelling in code, comments and docs with typos (config in .typos.toml).
+# make downloads the version pinned in the makefile into .tools/bin.
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    types: ['opened', 'synchronize']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 'typos-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  typos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: make typos

@@ -1,0 +1,45 @@
+---
+name: build
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    types: ['opened', 'synchronize']
+    paths:
+      - '.github/**'
+      - '**.go'
+      - 'vendor/**'
+      - '.github/workflows/**'
+      - 'Dockerfile'
+      - '.dockerignore'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ./.go-version
+      - run: make build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # from Google's mirror of Docker Hub, which the Dockerfile names, and from Docker Hub
+      # itself when the mirror gives nothing: Docker Hub turns a runner away once its shared
+      # address has pulled too much, so it is the one asked second
+      - run: |
+          docker build --build-arg VERSION=ci --build-arg COMMIT="${GITHUB_SHA::7}" -t truenas-mcp . || docker build --build-arg REGISTRY=docker.io/library --build-arg VERSION=ci --build-arg COMMIT="${GITHUB_SHA::7}" -t truenas-mcp .
+      # the version the image reports is the one the build was given: a
+      # build that reports dev has lost its -X flags
+      - name: smoke test the image
+        run: docker run --rm truenas-mcp version | grep -F 'truenas-mcp ci'

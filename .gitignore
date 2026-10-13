@@ -1,0 +1,14 @@
+.claude/
+.DS_Store
+.idea/
+dist/
+truenas-mcp
+.tools/bin/
+.tools/venv/
+.tools/npm/
+.env
+.truenas-mcp
+.coverage/
+
+# what the live tests need to log into the throwaway NAS, written by make testacc
+.testenv.sh

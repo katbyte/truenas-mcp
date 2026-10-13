@@ -1,0 +1,30 @@
+# Configuration for markdownlint (run by .github/workflows/markdownlint.yaml via `make markdownlint`).
+# Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# start from every rule enabled, then adjust or disable below
+default: true
+
+# --------------------------------- adjusted rules ----------------------------------
+# MD007: nested list items must be consistently indented - this repo indents by 2 spaces
+ul-indent:
+  indent: 2
+
+# MD010: no hard tabs - permitted inside code blocks (Go snippets are tab-indented)
+no-hard-tabs:
+  code_blocks: false
+
+# MD024: no duplicate heading text - every release in the changelog repeats Added, Changed and Fixed,
+# so only headings under the same parent are compared
+no-duplicate-heading:
+  siblings_only: true
+
+# --------------------------------- disabled rules ----------------------------------
+
+# MD013: maximum line length - one line per paragraph and per bullet here, however long
+line-length: false
+
+# MD001: headings must increment one level at a time - the README's opening uses smaller headings on purpose
+heading-increment: false
+
+# MD060: table pipes must be padded or aligned - tables here are written compact
+table-column-style: false
