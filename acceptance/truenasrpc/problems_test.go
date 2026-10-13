@@ -1,0 +1,336 @@
+//go:build acceptance
+
+package truenasrpc_test
+
+import (
+	"context"
+	"encoding/json"
+	"io"
+	"math/rand/v2"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
+)
+
+// The tests here give the NAS a real problem, read how it says so, and put it right. They are what an audit has to find, so each is made for
+// real and not described: a pool with a disk gone, a dataset at its limit, a pool with little left, a task that failed.
+
+// alert is one thing a NAS says is wrong with it.
+type alert struct {
+	UUID      string `json:"uuid"`
+	Class     string `json:"klass"`
+	Level     string `json:"level"`
+	Formatted string `json:"formatted"`
+	Dismissed bool   `json:"dismissed"`
+	OneShot   bool   `json:"one_shot"`
+}
+
+// alerted is what the NAS says is wrong with it now, of one class.
+func alerted(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, class string) []alert {
+	t.Helper()
+
+	var all, of []alert
+	if err := conn.Call(ctx, "alert.list", nil, &all); err != nil {
+		t.Fatalf("listing what the NAS says is wrong: %v", err)
+	}
+	for _, one := range all {
+		if one.Class == class {
+			of = append(of, one)
+		}
+	}
+
+	return of
+}
+
+// eventually waits for something to be so, asking every few seconds, and reports whether it came to be in time.
+func eventually(ctx context.Context, limit time.Duration, so func() bool) bool {
+	deadline := time.Now().Add(limit)
+	for !so() {
+		if time.Now().After(deadline) {
+			return false
+		}
+
+		select {
+		case <-ctx.Done():
+			return false
+		case <-time.After(3 * time.Second):
+		}
+	}
+
+	return true
+}
+
+// pooled is the test pool as the NAS has it: its state and the disks it is made of.
+type pooled struct {
+	ID       int64  `json:"id"`
+	Status   string `json:"status"`
+	Healthy  bool   `json:"healthy"`
+	Warning  bool   `json:"warning"`
+	Topology struct {
+		Data []struct {
+			Type     string `json:"type"`
+			Status   string `json:"status"`
+			Children []struct {
+				GUID   string `json:"guid"`
+				Disk   string `json:"disk"`
+				Status string `json:"status"`
+			} `json:"children"`
+		} `json:"data"`
+	} `json:"topology"`
+}
+
+func pool(ctx context.Context, t *testing.T, conn *truenasrpc.Conn) pooled {
+	t.Helper()
+
+	var pools []pooled
+	if err := conn.Call(ctx, "pool.query", []any{[]any{[]any{"name", "=", layout.Pool}}}, &pools); err != nil || len(pools) != 1 {
+		t.Fatalf("the pool the journey made is not found: %d found, %v", len(pools), err)
+	}
+
+	return pools[0]
+}
+
+// A pool that loses one disk of a pair keeps working and is no longer safe. The NAS says so in the pool's own state at once and as an alert
+// within a couple of minutes, and takes both back when the disk returns.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestAPoolThatLosesADiskSaysSoAndIsWholeAgainWhenTheDiskIsBack(t *testing.T) {
+	conn := admin(t)
+	ctx := within(t, 12*time.Minute)
+
+	before := pool(ctx, t, conn)
+	if !before.Healthy || len(before.Topology.Data) != 1 || len(before.Topology.Data[0].Children) != 2 {
+		t.Fatalf("the pool is not the healthy pair of disks the journey made: %+v", before)
+	}
+	gone := before.Topology.Data[0].Children[0]
+
+	back := func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "pool.online", []any{before.ID, map[string]any{"label": gone.GUID}}, nil); err != nil {
+			t.Errorf("putting the disk back: %v", err)
+		}
+	}
+
+	if err := conn.Call(ctx, "pool.offline", []any{before.ID, map[string]any{"label": gone.GUID}}, nil); err != nil {
+		t.Fatalf("taking a disk out of the pool: %v", err)
+	}
+	returned := false
+	t.Cleanup(func() {
+		if !returned {
+			back()
+		}
+	})
+
+	without := pool(ctx, t, conn)
+	if without.Healthy || without.Status != "DEGRADED" || without.Topology.Data[0].Children[0].Status != "OFFLINE" || without.Topology.Data[0].Children[1].Status != "ONLINE" {
+		t.Errorf("with a disk out the pool reads as %s (healthy %t), its disks %s and %s; want DEGRADED, OFFLINE and ONLINE", without.Status, without.Healthy, without.Topology.Data[0].Children[0].Status, without.Topology.Data[0].Children[1].Status)
+	}
+
+	var said []alert
+	if !eventually(ctx, 4*time.Minute, func() bool { said = alerted(ctx, t, conn, "VolumeStatus"); return len(said) > 0 }) {
+		t.Error("the NAS raised no alert for a pool with a disk out")
+	}
+	for _, one := range said {
+		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
+
+		if one.Level != "CRITICAL" || !strings.Contains(one.Formatted, layout.Pool) {
+			t.Errorf("the alert is %s and does not name the pool, or is not critical: %s", one.Level, one.Formatted)
+		}
+	}
+
+	back()
+	returned = true
+
+	var whole pooled
+	if !eventually(ctx, 3*time.Minute, func() bool { whole = pool(ctx, t, conn); return whole.Healthy && whole.Status == "ONLINE" }) {
+		t.Errorf("with the disk back the pool reads as %s (healthy %t)", whole.Status, whole.Healthy)
+	}
+	if !eventually(ctx, 4*time.Minute, func() bool { return len(alerted(ctx, t, conn, "VolumeStatus")) == 0 }) {
+		t.Error("the NAS still says the pool is not healthy, with the disk back")
+	}
+}
+
+// sized is how much of something is used and how much is left, as a NAS says it of a dataset.
+type sized struct {
+	Used      struct{ Parsed int64 } `json:"used"`
+	Available struct{ Parsed int64 } `json:"available"`
+	Refquota  struct{ Parsed int64 } `json:"refquota"`
+}
+
+func dataset(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, name string) sized {
+	t.Helper()
+
+	var found []sized
+	if err := conn.Call(ctx, "pool.dataset.query", []any{[]any{[]any{"id", "=", name}}}, &found); err != nil || len(found) != 1 {
+		t.Fatalf("the dataset %s is not found: %d found, %v", name, len(found), err)
+	}
+
+	return found[0]
+}
+
+// A dataset with a limit on it fills up, and the NAS's own count of what is used and what is left says how near it is: that count is what a
+// check of space reads, since the NAS looks at quotas itself only once an hour. A file that would go over the limit is refused.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestADatasetFilledToItsLimitShowsHowFullItIsAndTakesNoMore(t *testing.T) {
+	conn := admin(t)
+	ctx := within(t, 15*time.Minute)
+
+	const limit = 1 << 30
+	name := layout.Pool + "/full"
+
+	if err := conn.Call(ctx, "pool.dataset.create", []any{map[string]any{"name": name, "refquota": limit, "compression": "OFF"}}, nil); err != nil {
+		t.Fatalf("making a dataset with a limit: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "pool.dataset.delete", []any{name, map[string]any{"recursive": true, "force": true}}, nil); err != nil {
+			t.Errorf("removing the dataset: %v", err)
+		}
+	})
+
+	empty := dataset(ctx, t, conn, name)
+	if empty.Refquota.Parsed != limit || empty.Available.Parsed > limit || empty.Available.Parsed < limit*9/10 {
+		t.Errorf("empty, the dataset reads as limited to %d with %d left; want %d and nearly all of it", empty.Refquota.Parsed, empty.Available.Parsed, limit)
+	}
+
+	// nothing that could be squeezed, so that what is sent is what is used
+	fill := func(file string, size int64) error {
+		ledger.count("filesystem.put")
+
+		job, err := conn.Upload(ctx, "filesystem.put", []any{"/mnt/" + name + "/" + file, map[string]any{}}, io.LimitReader(rand.NewChaCha8([32]byte{1}), size))
+		if err != nil {
+			return err
+		}
+
+		return job.Wait(ctx, nil)
+	}
+
+	started := time.Now()
+	if err := fill("most-of-it", limit*85/100); err != nil {
+		t.Fatalf("filling the dataset: %v", err)
+	}
+	t.Logf("%d MiB went to the NAS in %s", limit*85/100>>20, time.Since(started).Round(time.Second))
+
+	var full sized
+	if !eventually(ctx, time.Minute, func() bool { full = dataset(ctx, t, conn, name); return full.Used.Parsed > limit*8/10 }) {
+		t.Errorf("filled to 85%%, the dataset reads as %d used", full.Used.Parsed)
+	}
+	if of := full.Used.Parsed * 100 / limit; of < 80 || of > 90 || full.Available.Parsed > limit*2/10 {
+		t.Errorf("filled to 85%%, the dataset reads as %d%% used with %d left", of, full.Available.Parsed)
+	}
+
+	err := fill("too-much", limit/2)
+	if err == nil {
+		t.Fatal("a file that goes over the limit was taken")
+	}
+	t.Logf("a file over the limit is refused with: %v", err)
+}
+
+// A pool with most of its space spoken for says so in what its top dataset has left, though nothing has been written: space kept aside for
+// a volume is space nothing else can have. It is the number a check of space has to read, since the pool's own count of what is written does
+// not move.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestAPoolWithMostOfItsSpaceSpokenForShowsLittleLeft(t *testing.T) {
+	conn := admin(t)
+	ctx := within(t, 5*time.Minute)
+
+	// what a dataset just removed took is given back a little after it goes, so the pool is let settle before it is measured
+	var before sized
+	if !eventually(ctx, 2*time.Minute, func() bool {
+		before = dataset(ctx, t, conn, layout.Pool)
+
+		return before.Used.Parsed < (before.Used.Parsed+before.Available.Parsed)/20
+	}) {
+		t.Fatalf("the pool is not nearly empty to start with: %d used, %d left", before.Used.Parsed, before.Available.Parsed)
+	}
+
+	const mib = 1 << 20
+	all := before.Used.Parsed + before.Available.Parsed
+	name, kept := layout.Pool+"/spoken-for", (all*85/100-before.Used.Parsed)/mib*mib
+
+	if err := conn.Call(ctx, "pool.dataset.create", []any{map[string]any{"name": name, "type": "VOLUME", "volsize": kept, "sparse": false, "force_size": true}}, nil); err != nil {
+		t.Fatalf("keeping %d MiB of the pool aside: %v", kept/mib, err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "pool.dataset.delete", []any{name, map[string]any{"recursive": true, "force": true}}, nil); err != nil {
+			t.Errorf("giving the space back: %v", err)
+		}
+	})
+
+	after := dataset(ctx, t, conn, layout.Pool)
+	if of := after.Used.Parsed * 100 / all; of < 80 || of > 92 {
+		t.Errorf("with %d MiB kept aside of %d the pool reads as %d%% used (%d used, %d left)", kept/mib, all/mib, of, after.Used.Parsed, after.Available.Parsed)
+	}
+}
+
+// A task that copies files somewhere else fails when the somewhere else is not there. The NAS says so three ways, and all three have to be
+// read by anything looking for failed tasks: the run itself fails, the task keeps how its last run ended, and an alert is raised that stays
+// until somebody dismisses it.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed(t *testing.T) {
+	conn := admin(t)
+	ctx := within(t, 8*time.Minute)
+
+	var task struct {
+		ID int64 `json:"id"`
+	}
+	if err := conn.Call(ctx, "rsynctask.create", []any{map[string]any{"path": "/mnt/" + layout.Datasets[0], "user": "root", "mode": "MODULE", "remotehost": "127.0.0.1", "remotemodule": "nothing-listens-here", "direction": "PUSH", "desc": "a copy to nowhere", "enabled": false}}, &task); err != nil {
+		t.Fatalf("making the task: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "rsynctask.delete", []any{task.ID}, nil); err != nil {
+			t.Errorf("removing the task: %v", err)
+		}
+	})
+
+	job, err := conn.Start(ctx, "rsynctask.run", []any{task.ID})
+	if err != nil {
+		t.Fatalf("running the task: %v", err)
+	}
+	err = job.Wait(ctx, nil)
+	if err == nil {
+		t.Fatal("a copy to a place that is not there ran without failing")
+	}
+	t.Logf("the run fails with: %v", err)
+
+	var tasks []struct {
+		Job *struct {
+			State string `json:"state"`
+			Error string `json:"error"`
+		} `json:"job"`
+	}
+	if err := conn.Call(ctx, "rsynctask.query", []any{[]any{[]any{"id", "=", task.ID}}}, &tasks); err != nil || len(tasks) != 1 {
+		t.Fatalf("the task is not found: %d found, %v", len(tasks), err)
+	}
+	if tasks[0].Job == nil || tasks[0].Job.State != "FAILED" {
+		t.Errorf("the task does not keep that its last run failed: %+v", tasks[0].Job)
+	}
+
+	said := alerted(ctx, t, conn, "RsyncFailed")
+	if len(said) == 0 {
+		t.Fatal("the NAS raised no alert for a task that failed")
+	}
+	for _, one := range said {
+		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
+	}
+
+	// such an alert stays until it is dismissed, and dismissed it is still listed, marked so
+	if err := conn.Call(ctx, "alert.dismiss", []any{said[0].UUID}, nil); err != nil {
+		t.Fatalf("dismissing the alert: %v", err)
+	}
+	for _, one := range alerted(ctx, t, conn, "RsyncFailed") {
+		if one.UUID == said[0].UUID && !one.Dismissed {
+			t.Error("the alert was dismissed and is not marked so")
+		}
+	}
+
+	var raw json.RawMessage
+	if err := conn.Call(ctx, "alert.list", nil, &raw); err != nil {
+		t.Fatal(err)
+	}
+	heldTo(t, description(t)["alert.list"], raw, true)
+}
