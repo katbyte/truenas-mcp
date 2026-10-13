@@ -65,11 +65,13 @@ func eventually(ctx context.Context, limit time.Duration, so func() bool) bool {
 
 // pooled is the test pool as the NAS has it: its state and the disks it is made of.
 type pooled struct {
-	ID       int64  `json:"id"`
-	Status   string `json:"status"`
-	Healthy  bool   `json:"healthy"`
-	Warning  bool   `json:"warning"`
-	Topology struct {
+	ID        int64  `json:"id"`
+	Status    string `json:"status"`
+	Healthy   bool   `json:"healthy"`
+	Warning   bool   `json:"warning"`
+	Size      int64  `json:"size"`
+	Allocated int64  `json:"allocated"`
+	Topology  struct {
 		Data []struct {
 			Type     string `json:"type"`
 			Status   string `json:"status"`
@@ -264,6 +266,11 @@ func TestAPoolWithMostOfItsSpaceSpokenForShowsLittleLeft(t *testing.T) {
 	if of := after.Used.Parsed * 100 / all; of < 80 || of > 92 {
 		t.Errorf("with %d MiB kept aside of %d the pool reads as %d%% used (%d used, %d left)", kept/mib, all/mib, of, after.Used.Parsed, after.Available.Parsed)
 	}
+
+	// the pool's own count is of what has been written, which is next to nothing: read alone it says the pool is empty
+	if written := pool(ctx, t, conn); written.Size == 0 || written.Allocated*100/written.Size > 10 {
+		t.Errorf("with space only kept aside, the pool says %d of its %d bytes are written", written.Allocated, written.Size)
+	}
 }
 
 // A task that copies files somewhere else fails when the somewhere else is not there. The NAS says so three ways, and all three have to be
@@ -333,4 +340,175 @@ func TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed(t *testing.T) {
 		t.Fatal(err)
 	}
 	heldTo(t, description(t)["alert.list"], raw, true)
+}
+
+// tasked is how a task says its last run went. The description gives this no shape at all, and it is what tells a task that failed from one
+// that has not run yet.
+type tasked struct {
+	ID    int64           `json:"id"`
+	State json.RawMessage `json:"state"`
+}
+
+func (k tasked) state() (state, why string) {
+	var said struct {
+		State string `json:"state"`
+		Error string `json:"error"`
+	}
+	_ = json.Unmarshal(k.State, &said)
+
+	return said.State, said.Error
+}
+
+func task(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, list string, id int64) tasked {
+	t.Helper()
+
+	var found []tasked
+	if err := conn.Call(ctx, list, []any{[]any{[]any{"id", "=", id}}}, &found); err != nil || len(found) != 1 {
+		t.Fatalf("%s: the task is not found: %d found, %v", list, len(found), err)
+	}
+
+	return found[0]
+}
+
+// A copy of a dataset onto another that already holds files, and shares no snapshot with it, would overwrite them, so a NAS refuses to make
+// it. The run fails, the task keeps why, and an alert follows.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestAReplicationThatWouldOverwriteWhatIsThereFailsAndIsSaidToHave(t *testing.T) {
+	conn := admin(t)
+	ctx := within(t, 10*time.Minute)
+	source, target := layout.Datasets[0], layout.Datasets[1]
+
+	ledger.count("filesystem.put")
+	in, err := conn.Upload(ctx, "filesystem.put", []any{"/mnt/" + target + "/in-the-way.txt", map[string]any{}}, strings.NewReader("a file a copy would overwrite\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := in.Wait(ctx, nil); err != nil {
+		t.Fatalf("putting a file in the way: %v", err)
+	}
+
+	if err := conn.Call(ctx, "pool.snapshot.create", []any{map[string]any{"dataset": source, "name": "copied-once"}}, nil); err != nil {
+		t.Fatalf("taking a snapshot to copy: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "pool.snapshot.delete", []any{source + "@copied-once"}, nil); err != nil {
+			t.Errorf("removing the snapshot: %v", err)
+		}
+	})
+
+	var made struct {
+		ID int64 `json:"id"`
+	}
+	if err := conn.Call(ctx, "replication.create", []any{map[string]any{"name": "a copy over what is there", "direction": "PUSH", "transport": "LOCAL", "source_datasets": []string{source}, "target_dataset": target, "recursive": false, "auto": false, "retention_policy": "NONE", "name_regex": "copied-.*"}}, &made); err != nil {
+		t.Fatalf("making the replication: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "replication.delete", []any{made.ID}, nil); err != nil {
+			t.Errorf("removing the replication: %v", err)
+		}
+	})
+
+	before := task(ctx, t, conn, "replication.query", made.ID)
+	t.Logf("before it has run, the task says: %s", before.State)
+
+	job, err := conn.Start(ctx, "replication.run", []any{made.ID})
+	if err != nil {
+		t.Fatalf("running the replication: %v", err)
+	}
+	if err = job.Wait(ctx, nil); err == nil {
+		t.Fatal("a copy over a dataset that holds files ran without failing")
+	}
+	t.Logf("the run fails with: %v", err)
+
+	after := task(ctx, t, conn, "replication.query", made.ID)
+	t.Logf("after it has failed, the task says: %s", after.State)
+	if state, why := after.state(); state != "ERROR" || why == "" {
+		t.Errorf("the task says its state is %q and why %q; want ERROR and a reason", state, why)
+	}
+
+	var said []alert
+	if !eventually(ctx, 4*time.Minute, func() bool { said = alerted(ctx, t, conn, "ReplicationFailed"); return len(said) > 0 }) {
+		t.Error("the NAS raised no alert for a replication that failed")
+	}
+	for _, one := range said {
+		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
+	}
+}
+
+// A task that takes snapshots is run, takes one, and keeps how the run went. How it says so before it has ever run and after is read here,
+// since the description gives it no shape and a check of tasks reads nothing else.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestASnapshotTaskTakesASnapshotAndKeepsHowItsLastRunWent(t *testing.T) {
+	conn := admin(t)
+	ctx := within(t, 8*time.Minute)
+	of := layout.Datasets[0]
+
+	var made struct {
+		ID int64 `json:"id"`
+	}
+	if err := conn.Call(ctx, "pool.snapshottask.create", []any{map[string]any{"dataset": of, "naming_schema": "kept-%Y-%m-%d_%H-%M", "lifetime_value": 1, "lifetime_unit": "HOUR"}}, &made); err != nil {
+		t.Fatalf("making the task: %v", err)
+	}
+
+	type snapshot struct {
+		Name string `json:"name"`
+	}
+	taken := func() []snapshot {
+		var all, kept []snapshot
+		if err := conn.Call(ctx, "pool.snapshot.query", []any{[]any{[]any{"dataset", "=", of}}}, &all); err != nil {
+			t.Fatalf("listing the snapshots: %v", err)
+		}
+		for _, one := range all {
+			if strings.HasPrefix(one.Name, of+"@kept-") {
+				kept = append(kept, one)
+			}
+		}
+
+		return kept
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "pool.snapshottask.delete", []any{made.ID}, nil); err != nil {
+			t.Errorf("removing the task: %v", err)
+		}
+		for _, one := range taken() {
+			if err := conn.Call(context.WithoutCancel(ctx), "pool.snapshot.delete", []any{one.Name}, nil); err != nil {
+				t.Errorf("removing the snapshot %s: %v", one.Name, err)
+			}
+		}
+	})
+
+	t.Logf("before it has run, the task says: %s", task(ctx, t, conn, "pool.snapshottask.query", made.ID).State)
+
+	if err := conn.Call(ctx, "pool.snapshottask.run", []any{made.ID}, nil); err != nil {
+		t.Fatalf("running the task: %v", err)
+	}
+	if !eventually(ctx, 2*time.Minute, func() bool { return len(taken()) == 1 }) {
+		t.Fatalf("the task was run and took %d snapshots, want 1", len(taken()))
+	}
+
+	var after tasked
+	if !eventually(ctx, time.Minute, func() bool {
+		after = task(ctx, t, conn, "pool.snapshottask.query", made.ID)
+		state, _ := after.state()
+
+		return state == "FINISHED"
+	}) {
+		t.Errorf("having taken its snapshot, the task says: %s", after.State)
+	}
+	t.Logf("after it has run, the task says: %s", after.State)
+
+	// run again in the same minute, it has a snapshot of that name already
+	if err := conn.Call(ctx, "pool.snapshottask.run", []any{made.ID}, nil); err != nil {
+		t.Fatalf("running the task again: %v", err)
+	}
+	time.Sleep(10 * time.Second)
+	t.Logf("run a second time at once, the task says: %s, and has %d snapshots", task(ctx, t, conn, "pool.snapshottask.query", made.ID).State, len(taken()))
+
+	var raw json.RawMessage
+	if err := conn.Call(ctx, "pool.snapshottask.query", nil, &raw); err != nil {
+		t.Fatal(err)
+	}
+	heldTo(t, description(t)["pool.snapshottask.query"], raw, true)
 }

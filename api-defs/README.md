@@ -105,9 +105,23 @@ What a real NAS does some other way is written down beside those tests (`surpris
 
 The run ends by saying how many of the NAS's methods the tests called, by kind, and which were not: how much of the API is tested is counted, not claimed. Every connection the tests make is traced to do it, so every answer a real NAS gives also passes through the code that hides secrets, and a key the tests made turning up in any line fails the run. `TestTheRunSaysHowMuchOfTheAPIItTriedAndShowedNoKey`
 
+## How a NAS says something is wrong
+
+None of this is in the description: an alert's text is whatever the NAS writes, and the state a task keeps has no shape there at all. Each was read from a real NAS that was given the problem, and the tests that give it the problem hold what was read.
+
+**A pool with a disk gone says so itself, at once, and in an alert within a minute or two.** With one disk of a pair taken out, the pool's `status` is `DEGRADED`, `healthy` is false, and the disk's own `status` in the topology is `OFFLINE`. The alert is class `VolumeStatus`, level `CRITICAL`, and both clear when the disk is back. The alert's text is HTML, with a list in it, and names the disk by a model it does not have: `Pool tank state is DEGRADED: One or more devices has been taken offline by the administrator. Sufficient replicas exist for the pool to continue functioning in a degraded state.<br>The following devices are not healthy:<ul><li>Disk None TNTEST1 is OFFLINE</li></ul>`. `TestAPoolThatLosesADiskSaysSoAndIsWholeAgainWhenTheDiskIsBack`
+
+**How full a dataset is has to be read from the dataset.** The NAS looks at quotas itself once an hour and at how full a pool is every five minutes, so its alerts say nothing for a while. A dataset's `used`, `available` and `refquota` (each with the number under `parsed`) are right as soon as the file is written. A file that would go over the limit fails with `[Errno 122] Disk quota exceeded`. `TestADatasetFilledToItsLimitShowsHowFullItIsAndTakesNoMore`
+
+**Space kept aside counts as used where it matters.** A volume made with its space reserved takes that space from everything else in the pool though nothing was written to it. What the pool's top dataset says is `used` and `available` shows it. The pool's own `allocated` is a count of what has been written and still reads as next to nothing, so a check of space that reads only the pool calls a pool with nothing left empty. `TestAPoolWithMostOfItsSpaceSpokenForShowsLittleLeft`
+
+**A copy task that fails says so three ways.** The run fails (`[EFAULT] rsync command returned 10 - SOCKETIO. Check logs for further information.`), the task's row keeps the job of its last run with `state` `FAILED`, and an alert of class `RsyncFailed`, level `CRITICAL`, is raised at once: `Rsync "PUSH" task for "/mnt/tank/alpha" failed.` That alert stays until somebody dismisses it, and dismissed it is still listed, marked `dismissed`. `TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed`
+
 ## Making a NAS to test against
 
 TrueNAS documents only an install by someone at a keyboard. Its installer also answers a small API of its own while it sits at its menu (`truenas/truenas-installer`, read at the release's tag): a websocket on port 8080 that lists the disks, installs onto the ones named with an administrator's password, says how far along it is, and switches the machine off. That is what `.scripts/testenv.sh` drives to make the NAS the live tests run against. `TestTheInstallerIsDrivenWithNobodyAtTheKeyboard`, `TestAnInstallThatCannotBeSureOfItsDiskOrIsRefusedSaysSo`
+
+Another repository runs its own live tests against this NAS: truenas-metrics calls `.scripts/testenv.sh` (`image`, `up`, `down`, `logs`), reads the lines `up` prints, and keeps the installed disk by the same two files this repository does. A change to any of those is a change for it too.
 
 The installer lists no disk under 8 GB, and names disks as the machine happens to find them, so the disk to install onto is told from the others by its size.
 
