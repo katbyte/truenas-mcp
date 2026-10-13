@@ -4,6 +4,10 @@ An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking aft
 
 **This is being built, and the MCP server is not here yet.** What works today is the part everything else stands on: the connection to a TrueNAS, and a stand-in NAS to test against.
 
+## Why this exists
+
+I needed a Go SDK for TrueNAS, for [truenas-metrics](https://github.com/katbyte/truenas-metrics), and an MCP server is the best way I know to test an SDK. An exporter reads a handful of things; a server with a tool for everything uses the whole API, and every tool is tried against a real TrueNAS. So the SDK lives here, where it is tested hardest, and the exporter imports it.
+
 ## What is here
 
 | | |

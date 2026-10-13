@@ -6,8 +6,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"os"
-	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -211,6 +209,10 @@ func TestAFileIsHandedOverAndFetchedBackTheSame(t *testing.T) {
 	contents := bytes.Repeat([]byte("a line of a file handed to the test NAS\n"), 5000)
 	path := "/mnt/" + layout.Datasets[0] + "/handed-over.txt"
 
+	ledger.count("filesystem.put")
+	ledger.count("filesystem.get")
+	ledger.count("config.save")
+
 	job, err := conn.Upload(ctx, "filesystem.put", []any{path, map[string]any{}}, bytes.NewReader(contents))
 	if err != nil {
 		t.Fatal(err)
@@ -246,48 +248,28 @@ func TestAFileIsHandedOverAndFetchedBackTheSame(t *testing.T) {
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
 func TestTheNASHasEveryMethodItsDescriptionNames(t *testing.T) {
-	documents, err := filepath.Glob("../../api-defs/truenas-methods-*.json")
-	if err != nil || len(documents) == 0 {
-		t.Fatalf("no description of the API under api-defs (%v)", err)
-	}
+	described := description(t)
 
 	var has map[string]json.RawMessage
 	if err := admin(t).Call(within(t, 5*time.Minute), "core.get_methods", nil, &has); err != nil {
 		t.Fatal(err)
 	}
 
-	for _, document := range documents {
-		version := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(document), "truenas-methods-"), ".json")
-		if !strings.Contains(made(t).Version, version) {
-			continue
+	var missing, undescribed []string
+	for name := range described {
+		if _, ok := has[name]; !ok {
+			missing = append(missing, name)
 		}
+	}
+	for name := range has {
+		if _, ok := described[name]; !ok {
+			undescribed = append(undescribed, name)
+		}
+	}
+	slices.Sort(missing)
+	slices.Sort(undescribed)
 
-		raw, err := os.ReadFile(document) //nolint:gosec // G304: the files are the repository's own, found by the glob above
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		var described map[string]json.RawMessage
-		if err := json.Unmarshal(raw, &described); err != nil {
-			t.Fatal(err)
-		}
-
-		var missing, undescribed []string
-		for name := range described {
-			if _, ok := has[name]; !ok {
-				missing = append(missing, name)
-			}
-		}
-		for name := range has {
-			if _, ok := described[name]; !ok {
-				undescribed = append(undescribed, name)
-			}
-		}
-		slices.Sort(missing)
-		slices.Sort(undescribed)
-
-		if len(missing) > 0 || len(undescribed) > 0 {
-			t.Errorf("%s: the NAS lacks %d methods the description names %v, and has %d it does not %v", document, len(missing), missing, len(undescribed), undescribed)
-		}
+	if len(missing) > 0 || len(undescribed) > 0 {
+		t.Errorf("the NAS lacks %d methods the description names %v, and has %d it does not %v", len(missing), missing, len(undescribed), undescribed)
 	}
 }

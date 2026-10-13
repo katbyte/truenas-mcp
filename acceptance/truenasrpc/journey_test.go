@@ -208,4 +208,5 @@ func TestANASIsSetUpFromNothingAndReadBackAfterEveryStep(t *testing.T) {
 	held.mu.Lock()
 	held.made = out
 	held.mu.Unlock()
+	ledger.secret(out.Key, out.ReadOnlyKey)
 }

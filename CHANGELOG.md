@@ -20,5 +20,6 @@
 - a job's arguments and answer are hidden in a trace the same way its own call's would be, wherever the NAS repeats them
 - a stand-in TrueNAS for tests, `sdk/truenastest`, which can be a 25.10 or a 26, something answering in a NAS's place, or have something sitting in the middle of its connection. It runs jobs with progress, takes subscriptions and says what it is told to
 - live tests against a real TrueNAS (`make testacc`, and the `acceptance` workflow): TrueNAS is installed in a virtual machine with nobody at the keyboard, and the first test sets it up from nothing through the SDK, reading it back after every step
+- every read that needs no argument is called on a real TrueNAS and its answer held to what the NAS's own description says it is, everything listed is fetched by its id, and the run ends by saying how many of the NAS's methods it called and which it did not
 - something asked for by an id the NAS has nothing for is `IsNotFound`, as it is on a real NAS, which reports it as a refused argument
 - `truenas-mcp info` checks an address, a certificate and a key, and prints the version the NAS runs

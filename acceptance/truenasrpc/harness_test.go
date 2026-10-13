@@ -11,11 +11,14 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/katbyte/truenas-mcp/acceptance/described"
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
 	"github.com/katbyte/truenas-mcp/acceptance/setup"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
@@ -73,10 +76,80 @@ func (w *written) Debugf(format string, args ...any) { w.add(format, args...) }
 func (w *written) Tracef(format string, args ...any) { w.add(format, args...) }
 
 func (w *written) add(format string, args ...any) {
+	line := fmt.Sprintf(format, args...)
+	ledger.note(line)
+
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	w.lines = append(w.lines, fmt.Sprintf(format, args...))
+	w.lines = append(w.lines, line)
+}
+
+// ledger is what the whole run did to the NAS: every method called, and how often. Every connection the tests make writes its trace here, so
+// how much of the API the tests reach is counted and not claimed, and every answer a real NAS gives goes through the code that hides secrets:
+// a key the tests made that turns up in a line of trace is kept, and fails the run.
+var ledger = &kept{called: map[string]int{}}
+
+type kept struct {
+	mu      sync.Mutex
+	called  map[string]int
+	secrets []string
+	// showed is the start of each line of trace a secret was in, with the secret taken out
+	showed []string
+}
+
+// sent finds the method in the trace of a call going out.
+var sent = regexp.MustCompile(`"method":"([^"]+)"`)
+
+func (*kept) Debugf(string, ...any) {}
+
+func (k *kept) Tracef(format string, args ...any) { k.note(fmt.Sprintf(format, args...)) }
+
+func (k *kept) note(line string) {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+
+	if call, out := strings.CutPrefix(line, "TrueNAS -> "); out {
+		if method := sent.FindStringSubmatch(call); method != nil {
+			k.called[method[1]]++
+		}
+	}
+
+	for _, secret := range k.secrets {
+		if strings.Contains(line, secret) {
+			shown := strings.ReplaceAll(line, secret, "(the secret)")
+			k.showed = append(k.showed, shown[:min(len(shown), 120)])
+		}
+	}
+}
+
+// secret names a key the tests made, which no line of trace may hold from here on. A key is a number, a dash and the secret; the number is no
+// secret and turns up in every list of keys.
+func (k *kept) secret(keys ...string) {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+
+	for _, key := range keys {
+		if _, secret, ok := strings.Cut(key, "-"); ok && secret != "" {
+			k.secrets = append(k.secrets, secret)
+		}
+	}
+}
+
+// count notes a call the trace cannot name: a file is fetched and sent by a web request, which says nothing of the method it is for.
+func (k *kept) count(method string) {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+
+	k.called[method]++
+}
+
+// took reports how many times a method was called.
+func (k *kept) took(method string) int {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+
+	return k.called[method]
 }
 
 func (w *written) text() string {
@@ -90,7 +163,7 @@ func (w *written) text() string {
 func as(t *testing.T, cred truenasrpc.Credential, opts ...truenasrpc.Option) *truenasrpc.Conn {
 	t.Helper()
 
-	conn, err := truenasrpc.New(nas.server, cred, append([]truenasrpc.Option{truenasrpc.WithCertificateFile(nas.certificate)}, opts...)...)
+	conn, err := truenasrpc.New(nas.server, cred, append([]truenasrpc.Option{truenasrpc.WithCertificateFile(nas.certificate), truenasrpc.WithLog(ledger)}, opts...)...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,9 +193,39 @@ func made(t *testing.T) *setup.Made {
 			t.Fatalf("setting the NAS up: %v", err)
 		}
 		held.made = out
+		ledger.secret(out.Key, out.ReadOnlyKey)
 	}
 
 	return held.made
+}
+
+// description is what the NAS's own version says of its API, as api-defs keeps it. A NAS of a version nothing is kept for cannot be held to
+// anything, so the test asking stops.
+func description(t *testing.T) map[string]described.Method {
+	t.Helper()
+
+	documents, err := filepath.Glob("../../api-defs/truenas-methods-*.json")
+	if err != nil || len(documents) == 0 {
+		t.Fatalf("no description of the API under api-defs (%v)", err)
+	}
+
+	for _, document := range documents {
+		release := strings.TrimSuffix(strings.TrimPrefix(filepath.Base(document), "truenas-methods-"), ".json")
+		if !strings.Contains(made(t).Version, release) {
+			continue
+		}
+
+		methods, err := described.Load(filepath.Dir(document), release)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return methods
+	}
+
+	t.Fatalf("the NAS runs %s, and api-defs holds no description of that version", made(t).Version)
+
+	return nil
 }
 
 // admin is a connection as the administrator, by key, and reader one as the user who may only read.

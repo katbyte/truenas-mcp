@@ -83,6 +83,16 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **A session can be ended by the NAS while the connection stays open.** The next call is answered "Not authenticated". The connection is dropped and the call after it logs in again. `TestASessionTheNASEndedIsLoggedIntoAgain`
 
+**Which methods only read is not said.** The description lists the roles that may call each method, and a method the read-only administrator role may call is nearly always a read: 386 of the 769. Five are not, and nothing in the description tells them apart: a read-only administrator may make, change and remove API keys of its own (`api_key.create`, `api_key.update`, `api_key.delete`) and send a ticket to TrueNAS's support (`support.new_ticket`, `support.attach_ticket`), which the source gives it by name. So the role says who may call a method, not that it changes nothing, and a program that promises only to read cannot go by the role alone. Twenty-five methods are given to that role by name; each was read in the source, and a release that adds one fails a test until it has been too. 33 methods list no role at all: logging in, subscribing, asking after jobs, and a user setting their own password. `TestEveryMethodTheReadOnlyRoleIsGivenByNameHasBeenLookedAt`, `TestEveryMethodIsSortedByHowItCanBeTested`
+
+## What a real NAS answers, held to the description
+
+Everything generated from the description is only as right as the description. So the live tests call every read that needs no argument (252 of them) on a real TrueNAS, as a user who may only read, and hold each answer to what the description says it is: a name it says is always there, a name it does not have, a value of another kind, a value outside the ones allowed. Whatever a NAS lists and can hand over one at a time is fetched by its id as well, and an id nothing has is asked for, since "it is not there" has to be the same answer whatever was asked for. `TestEveryReadIsAnsweredTheWayItsDescriptionSays`, `TestWhatIsListedIsFetchedByItsIDAndWhatIsNotThereIsMissing`
+
+What a real NAS does some other way is written down beside those tests (`surprises`, in `acceptance/truenasrpc/reads_test.go`), each with why. One that stops being true fails too, so the list stays what is known and does not become a way to quiet a test.
+
+The run ends by saying how many of the NAS's methods the tests called, by kind, and which were not: how much of the API is tested is counted, not claimed. Every connection the tests make is traced to do it, so every answer a real NAS gives also passes through the code that hides secrets, and a key the tests made turning up in any line fails the run. `TestTheRunSaysHowMuchOfTheAPIItTriedAndShowedNoKey`
+
 ## Making a NAS to test against
 
 TrueNAS documents only an install by someone at a keyboard. Its installer also answers a small API of its own while it sits at its menu (`truenas/truenas-installer`, read at the release's tag): a websocket on port 8080 that lists the disks, installs onto the ones named with an administrator's password, says how far along it is, and switches the machine off. That is what `.scripts/testenv.sh` drives to make the NAS the live tests run against. `TestTheInstallerIsDrivenWithNobodyAtTheKeyboard`, `TestAnInstallThatCannotBeSureOfItsDiskOrIsRefusedSaysSo`
@@ -95,7 +105,6 @@ Seen on the first run, on a GitHub runner, 13 October 2026: the installer disc s
 
 - a query told to answer the one match (`get`) when there is none. The source raises something other than "not there" for it, which has not been tried against a real NAS
 
-- which methods only read. The description does not say, but it lists the roles that may call each method, and a method the read-only administrator role may call is a read: 386 of the 769. Three are not reads despite that (`api_key.create`, `api_key.update`, `api_key.delete`, which a read-only administrator may use on its own keys), and 33 methods list no role at all
 - a query can answer a list of rows, one row or a count, and the description of the one row leaves out the shape of any model inside it: `cloudsync.query` describes a row's `credentials` in full in the list, and as a title with no shape in the single row
 - which of the values TrueNAS writes its own way turn up in answers. A moment (`{"$date": ...}`) does, in 63 places of the description and in 11 of the 30 real answers the truenas-metrics exporter keeps. A time of day, a day, a set and an address with its network were seen in none of those answers; the description has 5 places that could hold the last (in `smb.config`, `smb.update` and `docker.update`) and 12 lists marked as holding no repeats, and none of them has been read from a real NAS yet
 - downloads and uploads have only been run against the stand-in, written from the 25.10.7 source (`apps/file_app.py`). Whether a NAS serves either through its own socket was not checked, so both are refused there
