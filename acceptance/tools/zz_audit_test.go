@@ -226,10 +226,25 @@ func TestAuditDisksFindsTheDiskThatIsWarm(t *testing.T) {
 }
 
 // The NAS's own certificate is read in its time zone: told to warn of any certificate running out within a hundred years, audit_system finds it.
-// audit_all runs every audit on the NAS and counts each.
+// audit_all runs every audit on the NAS and counts each; a snapshot task switched off is made first, as the NAS otherwise has no task to look at.
 //
 //nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
 func TestAuditSystemReadsTheNASsCertificateAndAuditAllRunsEveryAudit(t *testing.T) {
+	conn, _ := planter(t)
+	ctx := t.Context()
+
+	var task struct {
+		ID int `json:"id"`
+	}
+	if err := conn.Call(ctx, "pool.snapshottask.create", []any{map[string]any{"dataset": layout.Datasets[0], "naming_schema": "audited-%Y-%m-%d_%H-%M", "lifetime_value": 1, "lifetime_unit": "HOUR", "enabled": false}}, &task); err != nil {
+		t.Fatalf("making a snapshot task: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "pool.snapshottask.delete", []any{task.ID}, nil); err != nil {
+			t.Errorf("removing the snapshot task: %v", err)
+		}
+	})
+
 	rows := acctest.Rows(t, suite.Call(t, "audit_system", map[string]any{"certificate_days": 36500})["findings"], "findings")
 	if !slices.ContainsFunc(rows, func(row map[string]any) bool { return row["check"] == "certificate_expiring" }) {
 		t.Errorf("told to warn of any certificate running out within a hundred years, audit_system finds %v", rows)
@@ -253,6 +268,12 @@ func TestAuditSystemReadsTheNASsCertificateAndAuditAllRunsEveryAudit(t *testing.
 		if !slices.Contains(ran, want) {
 			t.Errorf("audit_all ran %v, and not %s", ran, want)
 		}
+	}
+	off := fmt.Sprintf("snapshot_task_off:%s (%d)", layout.Datasets[0], task.ID)
+	if !slices.ContainsFunc(acctest.Rows(t, all["findings"], "findings"), func(row map[string]any) bool {
+		return row["audit"] == "audit_tasks" && acctest.Str(row["check"])+":"+acctest.Str(row["name"]) == off
+	}) {
+		t.Errorf("audit_all does not find %s among %v", off, all["findings"])
 	}
 	t.Logf("audit_all finds %v critical, %v warnings and %v notices on the NAS", all["critical"], all["warning"], all["notice"])
 }
