@@ -26,20 +26,21 @@ type question struct {
 	rows int
 }
 
-// vdev is what the exporter reads of a pool's disk or group of disks, and of each one under it.
-var vdev = []string{"name", "type", "guid", "status", "disk", "children", "stats.read_errors", "stats.write_errors", "stats.checksum_errors", "stats.size", "stats.allocated", "stats.fragmentation"}
+// vdev is what the exporter reads of a pool's disk or group of disks, and of each one under it. It reads which disk each is as well, which
+// only a disk says: a pair of disks has no disk of its own, and no such name at all.
+var vdev = []string{"name", "type", "guid", "status", "children", "stats.read_errors", "stats.write_errors", "stats.checksum_errors", "stats.size", "stats.allocated", "stats.fragmentation"}
 
 // ofPool is what the exporter reads of a pool, which is the same of the pool a NAS starts from.
 func ofPool() []string {
 	whole := []string{"name", "status", "healthy", "warning", "size", "allocated", "free", "freeing", "fragmentation", "scan.function", "scan.state", "scan.start_time", "scan.end_time", "scan.percentage", "scan.bytes_to_process", "scan.bytes_processed", "scan.bytes_issued", "scan.pause", "scan.errors", "scan.total_secs_left", "topology.log", "topology.cache", "topology.spare", "topology.special", "topology.dedup"}
 
-	reads := make([]string, 0, len(whole)+2*len(vdev))
+	reads := make([]string, 0, len(whole)+2*len(vdev)+1)
 	reads = append(reads, whole...)
 	for _, place := range vdev {
 		reads = append(reads, "topology.data[]."+place, "topology.data[].children[]."+place)
 	}
 
-	return reads
+	return append(reads, "topology.data[].children[].disk")
 }
 
 // questions is everything the exporter asks, as it asks it.

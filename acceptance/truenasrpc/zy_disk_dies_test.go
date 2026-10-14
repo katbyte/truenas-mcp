@@ -120,7 +120,10 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 	}
 
 	var said []alert
-	if !eventually(ctx, 4*time.Minute, func() bool { said = alerted(ctx, t, conn, "VolumeStatus"); return len(said) > 0 }) {
+	if !eventually(ctx, 4*time.Minute, func() bool {
+		said = unwell(ctx, t, conn)
+		return len(said) > 0
+	}) {
 		t.Error("the NAS raised no alert for a pool with a dead disk")
 	}
 	for _, one := range said {
@@ -166,7 +169,7 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 		t.Errorf("the pool is whole on %v; want the disk that stayed, %s, and the spare, %s", of, staying.Disk, free[0].Name)
 	}
 
-	if !eventually(ctx, 4*time.Minute, func() bool { return len(alerted(ctx, t, conn, "VolumeStatus")) == 0 }) {
+	if !eventually(ctx, 4*time.Minute, func() bool { return len(unwell(ctx, t, conn)) == 0 }) {
 		t.Error("the NAS still says the pool is not healthy, with a spare in the dead disk's place")
 	}
 }

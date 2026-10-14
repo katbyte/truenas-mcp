@@ -24,7 +24,6 @@ type setting struct {
 type stored struct {
 	ID          string   `json:"id"`
 	Type        string   `json:"type"`
-	Comments    *setting `json:"comments"`
 	Compression setting  `json:"compression"`
 	Atime       setting  `json:"atime"`
 	Readonly    setting  `json:"readonly"`
@@ -47,6 +46,28 @@ func one(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, name string) 
 	}
 
 	return found[0]
+}
+
+// noted checks the note kept on a dataset reads back, and says where a NAS keeps it: the description puts it under "comments", and a real
+// NAS did not answer it there.
+func noted(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, name, note string) {
+	t.Helper()
+
+	var found []map[string]json.RawMessage
+	if err := conn.Call(ctx, "pool.dataset.query", []any{[]any{[]any{"id", "=", name}}}, &found); err != nil || len(found) != 1 {
+		t.Fatalf("the dataset %s is not found: %d found, %v", name, len(found), err)
+	}
+
+	var under []string
+	for key, value := range found[0] {
+		if strings.Contains(string(value), note) {
+			under = append(under, key+": "+string(value))
+		}
+	}
+	if len(under) == 0 {
+		t.Errorf("the note %q kept on %s is nowhere in what the NAS lists of it", note, name)
+	}
+	t.Logf("the note on %s is kept under %.300s", name, strings.Join(under, "; "))
 }
 
 // gone removes a dataset and everything under it when the test ends, whether or not it is still there.
@@ -78,16 +99,18 @@ func TestADatasetIsMadeChangedRenamedAndRemoved(t *testing.T) {
 		t.Fatalf("making the dataset: %v", err)
 	}
 	made := one(ctx, t, conn, name)
-	if made.Type != "FILESYSTEM" || made.Compression.Value != "ZSTD" || made.Atime.Value != "OFF" || made.Comments == nil || made.Comments.Value != "made by the tests" || made.Quota.Parsed != float64(2<<30) {
-		t.Errorf("the dataset reads back as %+v (comments %+v); want what it was made with", made, made.Comments)
+	if made.Type != "FILESYSTEM" || made.Compression.Value != "ZSTD" || made.Atime.Value != "OFF" || made.Quota.Parsed != float64(2<<30) {
+		t.Errorf("the dataset reads back as %+v; want what it was made with", made)
 	}
+	noted(ctx, t, conn, name, "made by the tests")
 
 	if err := conn.Call(ctx, "pool.dataset.update", []any{name, map[string]any{"compression": "LZ4", "comments": "changed by the tests", "readonly": "ON"}}, nil); err != nil {
 		t.Fatalf("changing the dataset: %v", err)
 	}
-	if changed := one(ctx, t, conn, name); changed.Compression.Value != "LZ4" || changed.Comments == nil || changed.Comments.Value != "changed by the tests" || changed.Readonly.Value != "ON" {
-		t.Errorf("changed, the dataset reads back as %+v (comments %+v)", changed, changed.Comments)
+	if changed := one(ctx, t, conn, name); changed.Compression.Value != "LZ4" || changed.Readonly.Value != "ON" {
+		t.Errorf("changed, the dataset reads back as %+v", changed)
 	}
+	noted(ctx, t, conn, name, "changed by the tests")
 
 	// read-only, it takes no file
 	ledger.count("filesystem.put")
@@ -111,8 +134,14 @@ func TestADatasetIsMadeChangedRenamedAndRemoved(t *testing.T) {
 	}
 	one(ctx, t, conn, name+"/deeper")
 
+	// a NAS checks nothing that a rename might break, and will not rename until it is told that is understood
+	err = conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "recursive": true}}, nil)
+	if !truenasrpc.IsInvalid(err) || !strings.Contains(err.Error(), "force") {
+		t.Errorf("a rename that does not say it is understood was answered: %v", err)
+	}
+
 	// renamed, everything under it goes with it
-	if err := conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "recursive": true}}, nil); err != nil {
+	if err := conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "recursive": true, "force": true}}, nil); err != nil {
 		t.Fatalf("renaming the dataset: %v", err)
 	}
 	one(ctx, t, conn, renamed+"/deeper/child")
@@ -287,11 +316,9 @@ func TestAnEncryptedDatasetIsLockedUnlockedAndGivenANewPassphrase(t *testing.T) 
 	if _, err := conn.Download(ctx, "pool.dataset.export_key", []any{keyed, true}, &file); err != nil {
 		t.Fatalf("fetching the dataset's key as a file: %v", err)
 	}
-	var written string
-	if json.Unmarshal(file.Bytes(), &written) != nil {
-		written = strings.TrimSpace(file.String())
-	}
-	if written != key {
-		t.Errorf("the key fetched as a file is %d characters and not the key that was answered", len(written))
+	// as a file the key comes with the name of the dataset it opens, where the answer is the key alone
+	var written map[string]string
+	if err := json.Unmarshal(file.Bytes(), &written); err != nil || len(written) != 1 || written[keyed] != key {
+		t.Errorf("the key fetched as a file is %d bytes naming %d datasets (%v), and not the one key that was answered", file.Len(), len(written), err)
 	}
 }

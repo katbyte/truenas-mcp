@@ -95,6 +95,18 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **A snapshot that something rests on is refused removal, two different ways.** One that a copy was made from is refused as a bad argument: `options.defer: Please set this attribute as 'tank/kept@before' snapshot has dependent clones: tank/kept-copy`. One that is held fails as a call: `[EFAULT] cannot destroy 'tank/kept@before': dataset is busy`. `TestASnapshotBringsBackWhatWasThereIsCopiedHeldAndRemoved`
 
+**A dataset is not renamed until the caller says the risk is understood.** `pool.dataset.rename` is refused as a bad argument unless `force` is true: `No safety checks are performed when renaming ZFS resources; this may break existing usages. If you understand the risks, please set force and proceed.` The description gives `force` a default of false and says nothing of it being needed. `TestADatasetIsMadeChangedRenamedAndRemoved`
+
+**A share's options lack a name the description says is always there.** An SMB share made with nothing said of its options is listed with `options` that have no `purpose` in them, though the description requires one. `TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead`
+
+**A pair of disks has no `disk`.** In a pool's topology only a disk says which disk it is. The pair above it has no such name at all, not a name with nothing in it. `TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead`
+
+**A dataset's key comes two ways.** Asked for as an answer, `pool.dataset.export_key` gives the key alone, 64 characters. Fetched as a file, it is a JSON object of the dataset's name and its key. `TestAnEncryptedDatasetIsLockedUnlockedAndGivenANewPassphrase`
+
+**A pool takes one scrub task.** It is given one when it is made, and a second is refused: `A scrub with this pool already exists`. `TestAPoolIsScrubbedOnAScheduleAndItsCareIsSetAndReadBack`
+
+**A machine can be described on a NAS that cannot run one.** `vm.create` makes a virtual machine on a NAS with no virtualization, as the test NAS is. `TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead`
+
 **Which methods only read is not said.** The description lists the roles that may call each method, and a method the read-only administrator role may call is nearly always a read: 386 of the 769. Five are not, and nothing in the description tells them apart: a read-only administrator may make, change and remove API keys of its own (`api_key.create`, `api_key.update`, `api_key.delete`) and send a ticket to TrueNAS's support (`support.new_ticket`, `support.attach_ticket`), which the source gives it by name. So the role says who may call a method, not that it changes nothing, and a program that promises only to read cannot go by the role alone. Twenty-five methods are given to that role by name; each was read in the source, and a release that adds one fails a test until it has been too. 33 methods list no role at all: logging in, subscribing, asking after jobs, and a user setting their own password. `TestEveryMethodTheReadOnlyRoleIsGivenByNameHasBeenLookedAt`, `TestEveryMethodIsSortedByHowItCanBeTested`
 
 ## What a real NAS answers, held to the description
@@ -119,6 +131,8 @@ None of this is in the description: an alert's text is whatever the NAS writes, 
 
 **A pool with a dead disk can still call itself `ONLINE`.** A disk taken away from under the NAS, so that every read and write of it fails, is `FAULTED` in the pool's topology within seconds of the next write, and the pool's `healthy` is false. Its `status` still read `ONLINE`, and the alert said so too: `Pool tank state is ONLINE: One or more devices are faulted in response to persistent errors. Sufficient replicas exist for the pool to continue functioning in a degraded state.` So a pool's `status` is not to be gone by: `healthy`, and the `status` of each disk under it, are what say a pool is in trouble. What was written with the disk dead is all there, and with a spare put in its place the pool is whole again and the alert clears. `TestADiskThatDiesIsNoticedAndASpareTakesItsPlace`
 
+**A pool that was just removed can still be in the alerts.** For a minute or so after a pool was removed, the NAS listed a critical alert for it: `Pool scratch state is OFFLINE: None`. An alert is what the NAS thought when it last looked, so one that names a pool has to be held against the pools there are now.
+
 **The list of disks says nothing of a dead disk.** `disk.details` lists it as the pool's, with its size, like the disk beside it. Only the pool's topology knows.
 
 **A pool on one disk is healthy as far as the NAS is concerned.** It reads `ONLINE` and `healthy`, with the one disk where a pair has its mirror: the top of its topology is of type `DISK`, not `MIRROR`. That nothing stands behind that disk is something only the layout says. `TestASecondPoolIsMadeOnOneDiskGivenASecondAndRemoved`
@@ -126,6 +140,10 @@ None of this is in the description: an alert's text is whatever the NAS writes, 
 **How full a dataset is has to be read from the dataset.** The NAS looks at quotas itself once an hour and at how full a pool is every five minutes, so its alerts say nothing for a while. A dataset's `used`, `available` and `refquota` (each with the number under `parsed`) are right as soon as the file is written. A file that would go over the limit fails with `[Errno 122] Disk quota exceeded`. `TestADatasetFilledToItsLimitShowsHowFullItIsAndTakesNoMore`
 
 **Space kept aside counts as used where it matters.** A volume made with its space reserved takes that space from everything else in the pool though nothing was written to it. What the pool's top dataset says is `used` and `available` shows it. The pool's own `allocated` is a count of what has been written and still reads as next to nothing, so a check of space that reads only the pool calls a pool with nothing left empty. `TestAPoolWithMostOfItsSpaceSpokenForShowsLittleLeft`
+
+**A dataset that is read-only or locked says so when written to or read.** A file for a read-only dataset fails with `[Errno 30] Read-only file system`. A locked dataset reads as `locked` with `key_loaded` false, and what it held is not there to be read until it is unlocked; asked first (`pool.dataset.encryption_summary`), the NAS says whether a passphrase would open it. `TestADatasetIsMadeChangedRenamedAndRemoved`, `TestAnEncryptedDatasetIsLockedUnlockedAndGivenANewPassphrase`
+
+**A replication that works says `FINISHED`, and the copy holds what the dataset held.** Run again after the dataset changed, the copy holds the change and one more snapshot. `TestAReplicationCopiesADatasetAndThenOnlyWhatChanged`
 
 **A copy task that fails says so three ways.** The run fails (`[EFAULT] rsync command returned 10 - SOCKETIO. Check logs for further information.`), the task's row keeps the job of its last run with `state` `FAILED`, and an alert of class `RsyncFailed`, level `CRITICAL`, is raised at once: `Rsync "PUSH" task for "/mnt/tank/alpha" failed.` That alert stays until somebody dismisses it, and dismissed it is still listed, marked `dismissed`. `TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed`
 

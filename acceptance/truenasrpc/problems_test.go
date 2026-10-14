@@ -45,6 +45,21 @@ func alerted(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, class str
 	return of
 }
 
+// unwell is what the NAS says is wrong now with the pool the journey made. A NAS goes on saying a pool is in trouble for a minute or so after
+// the pool is gone, so what it says of another pool is not what a test of this one is asking after.
+func unwell(ctx context.Context, t *testing.T, conn *truenasrpc.Conn) []alert {
+	t.Helper()
+
+	var of []alert
+	for _, one := range alerted(ctx, t, conn, "VolumeStatus") {
+		if strings.Contains(one.Formatted, "Pool "+layout.Pool+" ") {
+			of = append(of, one)
+		}
+	}
+
+	return of
+}
+
 // eventually waits for something to be so, asking every few seconds, and reports whether it came to be in time.
 func eventually(ctx context.Context, limit time.Duration, so func() bool) bool {
 	deadline := time.Now().Add(limit)
@@ -198,7 +213,10 @@ func TestAPoolThatLosesADiskSaysSoAndIsWholeAgainWhenTheDiskIsBack(t *testing.T)
 	}
 
 	var said []alert
-	if !eventually(ctx, 4*time.Minute, func() bool { said = alerted(ctx, t, conn, "VolumeStatus"); return len(said) > 0 }) {
+	if !eventually(ctx, 4*time.Minute, func() bool {
+		said = unwell(ctx, t, conn)
+		return len(said) > 0
+	}) {
 		t.Error("the NAS raised no alert for a pool with a disk out")
 	}
 	for _, one := range said {
@@ -216,7 +234,7 @@ func TestAPoolThatLosesADiskSaysSoAndIsWholeAgainWhenTheDiskIsBack(t *testing.T)
 	if !eventually(ctx, 3*time.Minute, func() bool { whole = pool(ctx, t, conn); return whole.Healthy && whole.Status == "ONLINE" }) {
 		t.Errorf("with the disk back the pool reads as %s (healthy %t)", whole.Status, whole.Healthy)
 	}
-	if !eventually(ctx, 4*time.Minute, func() bool { return len(alerted(ctx, t, conn, "VolumeStatus")) == 0 }) {
+	if !eventually(ctx, 4*time.Minute, func() bool { return len(unwell(ctx, t, conn)) == 0 }) {
 		t.Error("the NAS still says the pool is not healthy, with the disk back")
 	}
 }

@@ -23,5 +23,7 @@
 - `Secret`, for a value the NAS keeps secret: a user who may only read is answered `********` in its place whatever the value is, a list or an object included, which would otherwise fail to read. It never prints its value
 - every read that needs no argument is called on a real TrueNAS and its answer held to what the NAS's own description says it is, once by a user who may only read and once by the administrator; everything listed is fetched by its id; and the run ends by saying how many of the NAS's methods it called and which it did not
 - the live tests give the NAS real problems and check how it reports each: a disk taken out, a disk that dies and is replaced by a spare, a full dataset, a nearly full pool, and a copy, a replication and a snapshot task that fail
+- a list the NAS keeps as a set reads whether the NAS wrote it wrapped as one or as a plain list, which a real NAS does both of
+- the live tests set up and take down storage and data protection (a second pool's whole life, scrubs, datasets, encryption, replication, snapshot tasks, boot environments), and ask everything truenas-metrics asks, its way, with a key that may only read
 - something asked for by an id the NAS has nothing for is `IsNotFound`, as it is on a real NAS, which reports it as a refused argument
 - `truenas-mcp info` checks an address, a certificate and a key, and prints the version the NAS runs

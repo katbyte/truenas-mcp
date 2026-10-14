@@ -21,7 +21,11 @@ make testacc    # the live tests, against a throwaway TrueNAS in a virtual machi
 
 **A disk dies.** The machine the NAS runs in is told to take one of the pool's disks away, as a dead disk goes. The NAS has to notice by itself, and be whole again with a spare in its place. This runs last, since a dead disk stays dead.
 
-**More is made and removed**: a second pool on one disk, grown to a pair; a snapshot rolled back, copied, held and removed.
+**Storage is set up and taken down.** A second pool goes through its whole life: a spare, a second disk, moved away and brought back. A pool is scrubbed and its care set. A dataset is made, changed, renamed and encrypted. A snapshot is rolled back, copied and held.
+
+**Data protection is run.** A replication copies a dataset and then only what changed. Snapshot tasks and boot environments are made, changed and removed.
+
+**Everything truenas-metrics asks is asked its way**, with a key that may only read, on a NAS that has shares, tasks and a machine on it.
 
 **Each run ends by counting** how many of the NAS's API methods the tests called, by kind, and which they did not. A key the tests made turning up in any line of trace fails the run.
 

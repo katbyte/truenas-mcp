@@ -158,8 +158,8 @@ func TestAReplicationCopiesADatasetAndThenOnlyWhatChanged(t *testing.T) {
 	}
 }
 
-// A task that takes snapshots says, before it is changed or removed, which snapshots the change would let go of. It is then changed, and
-// every snapshot it took is removed in one go.
+// A task that takes snapshots can be asked, before it is changed or removed, which snapshots the change would let go of. It is then changed,
+// and every snapshot it took is removed in one go.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
 func TestASnapshotTaskIsChangedSaysWhatAChangeWouldRemoveAndItsSnapshotsGoAtOnce(t *testing.T) {
@@ -183,9 +183,9 @@ func TestASnapshotTaskIsChangedSaysWhatAChangeWouldRemoveAndItsSnapshotsGoAtOnce
 	var onChange, onRemoval map[string][]string
 	asked(ctx, t, conn, "pool.snapshottask.update_will_change_retention_for", []any{id, map[string]any{"naming_schema": "short-%Y-%m-%d_%H-%M"}}, &onChange)
 	asked(ctx, t, conn, "pool.snapshottask.delete_will_change_retention_for", []any{id}, &onRemoval)
-	t.Logf("renaming what the task takes would let go of %v, and removing the task of %v", onChange, onRemoval)
-	if len(onRemoval[dataset]) != 1 {
-		t.Errorf("removing the task is said to let go of %v; want the one snapshot it took", onRemoval)
+	// with one snapshot, taken a moment ago and to be kept for weeks either way, neither lets go of anything: seen on a real NAS
+	if len(onChange) != 0 || len(onRemoval) != 0 {
+		t.Errorf("renaming what the task takes is said to let go of %v, and removing the task of %v; a real NAS said neither would let go of anything", onChange, onRemoval)
 	}
 
 	var changed struct {
