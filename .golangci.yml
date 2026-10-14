@@ -83,9 +83,9 @@ linters:
       - path: 'cli/(flags|cmds)\.go'
         linters:
           - goconst
-      # method names, field names and the stand-in NAS's answers repeat the same short words by design in the connection, the stand-in and their
-      # tests; constants would only add indirection
-      - path: '(sdk|acceptance)/.*\.go'
+      # method names, field names, tool names and the stand-in NAS's answers repeat the same short words by design in the connection, the
+      # stand-in, the tools and their tests; constants would only add indirection
+      - path: '(sdk|acceptance|tools)/.*\.go'
         linters:
           - goconst
       # the idiomatic `if err := f(); err != nil` scoping shadows err on purpose; still flag other variables

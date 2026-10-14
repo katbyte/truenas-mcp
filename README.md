@@ -4,7 +4,7 @@ An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking aft
 
 **It was made mainly to get a Go SDK for [truenas-metrics](https://github.com/katbyte/truenas-metrics).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
 
-**This is being built, and the MCP server is not here yet.** What works today is the Go connection to a TrueNAS, a stand-in NAS to test against, and a command that checks a connection.
+**This is being built.** What works today is the Go connection to a TrueNAS, a stand-in NAS to test against, and an MCP server with its first tool, `server_info`. The rest of the tools come once the typed Go client is in.
 
 **Detection is code, correction is judgment.** The checks that are coming only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
 
@@ -30,7 +30,11 @@ truenas-mcp info
 
 A TrueNAS comes with a certificate nothing trusts. Download it (Credentials, then Certificates) and pass it with `--certificate-file`. [Connecting](docs/connecting.md) has the other ways, and how the key is kept safe.
 
-There is no server to register with Claude Code yet.
+Register the server with Claude Code. It only reads unless `--enable-write` is given.
+
+```bash
+claude mcp add truenas -e TRUENAS_SERVER=nas.example.net -e TRUENAS_USERNAME=mcp -e TRUENAS_TOKEN=... -- truenas-mcp serve
+```
 
 ## What is here
 
@@ -38,9 +42,12 @@ There is no server to register with Claude Code yet.
 |---|---|
 | `sdk/truenasrpc` | the connection to a TrueNAS |
 | `sdk/truenastest` | a stand-in TrueNAS for tests |
+| `tools` | the MCP tools, and which of them a session gets |
+| `truenas-mcp serve` | the MCP server, over stdio or HTTP |
+| `truenas-mcp tools` | lists the tools the flags would load, with no NAS |
 | `truenas-mcp info` | checks an address, a certificate and a key |
 
-What is coming: a Go client with a method for every TrueNAS API call, then the MCP tools built on it.
+What is coming: a Go client with a method for every TrueNAS API call, then the rest of the tools built on it.
 
 ## Settings
 
@@ -55,9 +62,15 @@ What is coming: a Go client with a method for every TrueNAS API call, then the M
 | `--skip-certificate-check` | `TRUENAS_SKIP_CERTIFICATE_CHECK` | take whatever certificate the NAS shows |
 | `--send-key-unchecked` | `TRUENAS_SEND_KEY_UNCHECKED` | send the key to an unchecked NAS older than 26 |
 | `--no-channel-binding` | `TRUENAS_NO_CHANNEL_BINDING` | for a NAS behind a reverse proxy |
+| `--enable-write` | `TRUENAS_ENABLE_WRITE` | load the tools that change something |
+| `--enable-delete` | `TRUENAS_ENABLE_DELETE` | load the tools that delete too; needs `--enable-write` |
+| `--toolsets` | `TRUENAS_TOOLSETS` | which groups of tools to load; `core` by default, `all` for every one |
+| `--allow-tools`, `--deny-tools` | `TRUENAS_ALLOW_TOOLS`, `TRUENAS_DENY_TOOLS` | add or take away tools by name |
+| `--listen` | `TRUENAS_LISTEN` | serve over HTTP on this address, in place of stdio |
+| `--auth-token` | `TRUENAS_AUTH_TOKEN` | the token an HTTP client must send |
 | | `TRUENAS_LOG` | `INFO`, `DEBUG` or `TRACE` |
 
-The same settings can go in a `.truenas-mcp` file in the working directory or in `$HOME`, as `SERVER=...` lines.
+The same settings can go in a `.truenas-mcp` file in `$HOME`, and in the working directory over it, as `SERVER=...` or `CERTIFICATE_FILE=...` lines.
 
 ## Use it from Go
 
@@ -79,7 +92,7 @@ One connection is shared by any number of calls. It reconnects by itself, and it
 ## How this is built
 
 - I set the design, the scope and the rules, and decide what stays.
-- The SDK is tested against a real TrueNAS in a virtual machine, started clean for every run.
+- The SDK is tested against a real TrueNAS in a virtual machine, started clean for every run. The tools get a machine of their own, and every tool must answer in that run or it fails.
 - Every read the API has that needs no argument is called and checked against the API's own description.
 - The test NAS is given real problems to see how it reports them: a dead disk, a disk that gives back what was never written, a full dataset, copies whose other end goes away, a restart.
 - Everything truenas-metrics asks a NAS is asked the same way, with a key that may only read.

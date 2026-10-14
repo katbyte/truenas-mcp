@@ -22,11 +22,20 @@ permissions:
 
 jobs:
   # the one place a claim about what a real TrueNAS does is tested and not read out of its source: TrueNAS is installed in a virtual machine on
-  # the runner, set up with a pool and two users, and the connection is run against it
+  # the runner, set up with a pool and two users, and the connection is run against it. the SDK's suite and the tools' each get a machine of their
+  # own: the SDK's first test sets its NAS up from nothing, which the tools' suite would otherwise have done before it
   acceptance:
-    name: acceptance (against a real TrueNAS in a virtual machine)
+    name: acceptance of the ${{ matrix.suite }} (against a real TrueNAS in a virtual machine)
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: sdk
+            target: testacc
+          - suite: tools
+            target: testacc-tools
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -75,13 +84,15 @@ jobs:
 
       # make owns the machine's life, so CI runs exactly what a developer with such a machine runs
       - name: Run the live suite
-        run: make testacc
+        env:
+          TARGET: ${{ matrix.target }}
+        run: make "$TARGET"
 
       - name: Keep what the machine said and showed
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: test-machine
+          name: test-machine-${{ matrix.suite }}
           path: ~/.cache/truenas-mcp/testenv/logs/
           if-no-files-found: ignore
 

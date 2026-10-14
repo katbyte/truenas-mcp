@@ -4,9 +4,11 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/katbyte/go-kt/version"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
+	"github.com/katbyte/truenas-mcp/tools"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -62,6 +64,9 @@ Complete documentation is available at https://github.com/katbyte/truenas-mcp`,
 		},
 	})
 
+	root.AddCommand(serveCmd())
+	root.AddCommand(toolsCmd())
+
 	root.AddCommand(&cobra.Command{
 		Use:           "info",
 		Short:         "Check the connection and the key, and print the TrueNAS's version",
@@ -96,4 +101,106 @@ Complete documentation is available at https://github.com/katbyte/truenas-mcp`,
 	}
 
 	return root, nil
+}
+
+// firstSentence trims a tool description to its opening sentence, so the list stays one line per tool. A full stop that ends an abbreviation ends no
+// sentence.
+func firstSentence(s string) string {
+	for from := 0; ; {
+		i := strings.Index(s[from:], ". ")
+		if i < 0 {
+			return s
+		}
+		end := from + i
+		if !endsInAbbreviation(s[:end+1]) {
+			return s[:end+1]
+		}
+		from = end + 2
+	}
+}
+
+// endsInAbbreviation reports whether a stretch of text ends in a dotted abbreviation rather than a sentence.
+func endsInAbbreviation(s string) bool {
+	lower := strings.ToLower(s)
+	for _, abbr := range []string{"e.g.", "i.e.", "etc.", "vs."} {
+		if strings.HasSuffix(lower, abbr) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func toolsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "tools",
+		Short: "List the tools and toolsets, and what the current flags would register",
+		Long: `Lists every tool truenas-mcp would register with the current flags, grouped by toolset, with its kind (read, write or delete) and what it does.
+
+Needs no NAS: it reports what would be registered, not what a NAS accepts.
+
+  truenas-mcp tools                               # the default set (core), reads only
+  truenas-mcp tools --toolsets all                # every tool that only reads
+  truenas-mcp tools --toolsets all --enable-write # and the ones that change something
+  truenas-mcp tools -q                            # names only`,
+		Args:          cobra.NoArgs,
+		SilenceErrors: true,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			cmd.SilenceUsage = true
+			out := cmd.OutOrStdout()
+			quiet, _ := cmd.Flags().GetBool("quiet")
+
+			f := GetFlags()
+			opts, err := f.ToolOptions()
+			if err != nil {
+				return err
+			}
+			list, err := tools.Describe(opts)
+			if err != nil {
+				return err
+			}
+
+			if quiet {
+				for _, t := range list {
+					_, _ = fmt.Fprintln(out, t.Name)
+				}
+
+				return nil
+			}
+
+			byset := map[string][]tools.ToolInfo{}
+			counts := map[string]int{}
+			for _, t := range list {
+				byset[t.Toolset] = append(byset[t.Toolset], t)
+				counts[t.Kind]++
+			}
+
+			for _, set := range tools.ToolsetOrder {
+				in := byset[set]
+				if len(in) == 0 {
+					continue
+				}
+				_, _ = fmt.Fprintf(out, "\n%s (%d)\n", set, len(in))
+				for _, t := range in {
+					_, _ = fmt.Fprintf(out, "  %-32s %-6s %s\n", t.Name, t.Kind, firstSentence(t.Description))
+				}
+			}
+			_, _ = fmt.Fprintf(out, "\n%d tools: %d read, %d write, %d delete\n", len(list), counts["read"], counts["write"], counts["delete"])
+			switch {
+			case !f.EnableWrite:
+				_, _ = fmt.Fprintln(out, "only tools that read are listed; --enable-write registers the ones that change something, and --enable-delete beside it the ones that delete")
+			case !f.EnableDelete:
+				_, _ = fmt.Fprintln(out, "delete tools are hidden; --enable-delete registers them")
+			default:
+			}
+			_, _ = fmt.Fprintf(out, "\ntoolsets: all, %s\n", strings.Join(tools.ToolsetNames(), ", "))
+			_, _ = fmt.Fprintf(out, "families: %s\n", strings.Join(tools.FamilyNames(), ", "))
+			_, _ = fmt.Fprintf(out, "select with --toolsets / TRUENAS_TOOLSETS; core is always included. Default is %s - use --toolsets all for every tool. --allow-tools adds tools to the sets by name, and with no --toolsets registers only the tools it names; --deny-tools takes tools away.\n", strings.Join(DefaultToolsets, ","))
+
+			return nil
+		},
+	}
+	cmd.Flags().BoolP("quiet", "q", false, "print tool names only")
+
+	return cmd
 }

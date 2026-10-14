@@ -59,7 +59,7 @@ func TestMakeBuildsTheCommands(t *testing.T) {
 	if err != nil {
 		t.Fatalf("--help: %v", err)
 	}
-	for _, want := range []string{"info", "version"} {
+	for _, want := range []string{"info", "serve", "tools", "version"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("%q is missing from --help:\n%s", want, out)
 		}

@@ -188,27 +188,44 @@ depscheck: ## Check that go.mod/go.sum and vendor/ are in sync
 test: build ## Run the unit tests, with the race detector
 	go test -race ./... -timeout ${TEST_TIMEOUT}
 
-# the live suite (acceptance/) runs against a real TrueNAS: a throwaway one in a virtual machine, which testacc installs, sets up, runs the suite
+# the live suites (acceptance/) run against a real TrueNAS: a throwaway one in a virtual machine, which testacc installs, sets up, runs the suite
 # against and removes. it needs qemu and an x86-64 Linux machine with /dev/kvm, which a GitHub runner is and a Mac is not, so it is not part of
-# check-all: the acceptance workflow runs it
+# check-all: the acceptance workflow runs it. the SDK's suite and the tools' each get a NAS of their own: the SDK's first test sets its NAS up from
+# nothing, and the tools' suite would otherwise have done that before it
 LIVE_TIMEOUT?=70m
+LIVE_SDK=$$(go list -tags acceptance ./acceptance/... | grep -v /acceptance/tools)
+LIVE_TOOLS=./acceptance/tools/...
 
-test-live: ## Run the live tests against a test NAS that is already up (see testenv-up)
+test-live: ## Run the SDK's live tests against a test NAS that is already up (see testenv-up)
 	@[ -n "${TRUENAS_TEST_SERVER}" ] && [ -n "${TRUENAS_TEST_PASSWORD}" ] || \
 		(echo 'TRUENAS_TEST_SERVER and the rest must be set: eval "$$(make testenv-up)", or use "make testacc"'; exit 1)
-	go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
+	go test -tags acceptance -count=1 -p 1 ${LIVE_SDK} -timeout ${LIVE_TIMEOUT} -v
+
+test-live-tools: ## Run the tools' live tests against a test NAS that is already up (see testenv-up)
+	@[ -n "${TRUENAS_TEST_SERVER}" ] && [ -n "${TRUENAS_TEST_PASSWORD}" ] || \
+		(echo 'TRUENAS_TEST_SERVER and the rest must be set: eval "$$(make testenv-up)", or use "make testacc-tools"'; exit 1)
+	go test -tags acceptance -count=1 ${LIVE_TOOLS} -timeout ${LIVE_TIMEOUT} -v
 
 # start the machine, run the suite, remove the machine: what the machine said and showed is printed and kept when anything fails. the NAS is
 # handed to the suite as its installer left it, since making everything on it is the first thing the suite tests. the suite is told where the
 # machine's console is, since one test breaks a disk from it
-testacc: ## Run the live tests against a throwaway TrueNAS in a virtual machine
+testacc: ## Run the SDK's live tests against a throwaway TrueNAS in a virtual machine
 	@echo "==> live tests..."
 	@set -e; \
 		env=".testenv.sh"; \
 		trap 'st=$$?; [ $$st -eq 0 ] || .scripts/testenv.sh logs || true; .scripts/testenv.sh down; rm -f '"$$env"'; exit $$st' EXIT; \
 		.scripts/testenv.sh boot > "$$env"; \
 		. ./"$$env"; \
-		TRUENAS_TEST_MONITOR="$$(.scripts/testenv.sh dir)/run/monitor.sock" go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
+		TRUENAS_TEST_MONITOR="$$(.scripts/testenv.sh dir)/run/monitor.sock" go test -tags acceptance -count=1 -p 1 ${LIVE_SDK} -timeout ${LIVE_TIMEOUT} -v
+
+testacc-tools: ## Run the tools' live tests against a throwaway TrueNAS of their own
+	@echo "==> live tests of the tools..."
+	@set -e; \
+		env=".testenv.sh"; \
+		trap 'st=$$?; [ $$st -eq 0 ] || .scripts/testenv.sh logs || true; .scripts/testenv.sh down; rm -f '"$$env"'; exit $$st' EXIT; \
+		.scripts/testenv.sh boot > "$$env"; \
+		. ./"$$env"; \
+		go test -tags acceptance -count=1 ${LIVE_TOOLS} -timeout ${LIVE_TIMEOUT} -v
 
 testenv-up: ## Start the throwaway TrueNAS and print the environment the live tests need: eval "$(make testenv-up)"
 	@.scripts/testenv.sh up
@@ -230,4 +247,4 @@ cover-html: cover ## Run the tests with coverage and open the HTML report
 
 check-all: build test lint actionlint yamllint shellcheck typos markdownlint depscheck ## Run build + tests + all linters + depscheck
 
-.PHONY: default all help secrets fmt goimports build docker lint lint-fix actionlint yamllint shellcheck zizmor typos typos-fix markdownlint depscheck check-all install tools test test-live testacc testenv-up testenv-down cover cover-html
+.PHONY: default all help secrets fmt goimports build docker lint lint-fix actionlint yamllint shellcheck zizmor typos typos-fix markdownlint depscheck check-all install tools test test-live test-live-tools testacc testacc-tools testenv-up testenv-down cover cover-html
