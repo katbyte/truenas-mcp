@@ -161,6 +161,8 @@ TrueNAS documents only an install by someone at a keyboard. Its installer also a
 
 Another repository runs its own live tests against this NAS: truenas-metrics calls `.scripts/testenv.sh` (`image`, `up`, `down`, `logs`), reads the lines `up` prints, and keeps the installed disk by the same two files this repository does. A change to any of those is a change for it too.
 
+The machine has six disks: the one TrueNAS is installed on, four plain ones for pools, and one NVMe disk. The NVMe disk is there because it says how hot it is, and the plain ones say nothing, so without it there would be no temperature to read.
+
 The installer lists no disk under 8 GB, and names disks as the machine happens to find them, so the disk to install onto is told from the others by its size.
 
 Seen on the first run, on a GitHub runner, 13 October 2026: the installer disc starts that API unasked and answers half a minute after the machine starts; the install itself takes a little over a minute; the installed NAS takes a minute and a half to come up the first time; and a virtual disk's serial reaches the NAS as it was given. Fetching the installer disc, at seven minutes, is most of the wait.

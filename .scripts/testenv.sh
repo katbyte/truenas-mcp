@@ -16,12 +16,13 @@
 #      installer is told to install onto it, and the machine switched off. That
 #      disk is kept, and is all "image" makes. It takes a quarter of an hour
 #      and is done once for a version.
-#   2. the machine is started from a copy of that disk with four more disks.
+#   2. the machine is started from a copy of that disk with four more disks,
+#      and a fifth of another kind, which can say how hot it is.
 #
 # This script only does what the tests cannot do through the NAS's own API,
 # which is run the machine. "boot" stops there: the NAS has an administrator
 # and nothing else, and making its pool, datasets, users and keys is the live
-# tests' job (acceptance/truenasrpc/journey_test.go), since setting a NAS up
+# tests' job (acceptance/truenasrpc/aa_journey_test.go), since setting a NAS up
 # from nothing is the best test of the SDK there is. "up" runs the same steps
 # (acceptance/setup) itself, for anything else that wants a NAS that is ready.
 #
@@ -217,6 +218,11 @@ start() {
     qemu-img create -q -f qcow2 "${RUN}/data${n}.qcow2" "$DATA_DISK_SIZE"
     disks+=(-drive "if=none,id=data${n},file=${RUN}/data${n}.qcow2,format=qcow2,discard=unmap" -device "virtio-blk-pci,drive=data${n},serial=${DISK_SERIAL}${n}")
   done
+
+  # an NVMe disk says how hot it is, which the others cannot, so whatever
+  # reads a disk's temperature has one to read
+  qemu-img create -q -f qcow2 "${RUN}/nvme.qcow2" "$DATA_DISK_SIZE"
+  disks+=(-drive "if=none,id=nvme,file=${RUN}/nvme.qcow2,format=qcow2,discard=unmap" -device "nvme,drive=nvme,serial=${DISK_SERIAL}NVME")
 
   log "starting TrueNAS ${VERSION}"
   machine "${RUN}/boot.qcow2" -boot order=c "${disks[@]}"

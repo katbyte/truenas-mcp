@@ -14,10 +14,12 @@ const (
 )
 
 // Pool is the one pool the test NAS has: a mirror of the two disks whose serials are DiskSerial with 1 and with 2 after it. The disks numbered 3
-// and 4 are left unused, for a test to make a pool of its own from.
+// and 4 are left unused, for a test to make a pool of its own from. HotDiskSerial is a fifth, also unused, of another kind: an NVMe disk, which
+// says how hot it is where the others say nothing.
 const (
-	Pool       = "tank"
-	DiskSerial = "TNTEST"
+	Pool          = "tank"
+	DiskSerial    = "TNTEST"
+	HotDiskSerial = DiskSerial + "NVME"
 )
 
 // Datasets are the datasets in the pool, by their full names.

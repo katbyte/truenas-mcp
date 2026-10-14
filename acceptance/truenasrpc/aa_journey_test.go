@@ -20,10 +20,20 @@ import (
 // user whose rights have to hold. Each step is taken through the SDK and the NAS is read back after it, so a step that claims to have worked and
 // did not is caught where it happened. The tests after this one use what it made.
 //
-// The file is named so that it runs first. Every step makes only what is missing, so it also passes on a NAS that is already set up.
+// The file is named so that it runs first, and the test fails if it did not. Every step makes only what is missing, so it also passes on a NAS
+// that was set up before the run began.
 //
 //nolint:paralleltest // the tests share one NAS, and this one makes what the rest use
 func TestANASIsSetUpFromNothingAndReadBackAfterEveryStep(t *testing.T) {
+	// a test that ran before this one has had the NAS set up the plain way, and then none of this is done from nothing. It happened once,
+	// when a test file was added whose name sorts before this one's, and nothing said so
+	held.mu.Lock()
+	already := held.made != nil
+	held.mu.Unlock()
+	if already {
+		t.Fatal("another test ran before the journey and set the NAS up: this file has to be the first of the package by name")
+	}
+
 	conn := root(t)
 	n := &setup.NAS{Conn: conn, Logf: t.Logf}
 	ctx := within(t, 20*time.Minute)
