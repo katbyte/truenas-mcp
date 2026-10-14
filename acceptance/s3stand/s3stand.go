@@ -74,6 +74,16 @@ func (s *Server) Port() int {
 // Close stops serving.
 func (s *Server) Close() { _ = s.web.Close() }
 
+// Make makes a bucket, as whoever looks after the storage would: some senders cannot make one themselves.
+func (s *Server) Make(bucket string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, there := s.buckets[bucket]; !there {
+		s.buckets[bucket] = map[string]object{}
+	}
+}
+
 // Gone makes the storage refuse everything, as storage that is down does, until it is told otherwise.
 func (s *Server) Gone(gone bool) {
 	s.mu.Lock()

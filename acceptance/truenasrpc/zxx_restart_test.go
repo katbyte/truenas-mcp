@@ -137,12 +137,18 @@ func TestARestartIsRiddenOutAndWhatIsDifferentAfterItIsRead(t *testing.T) {
 		t.Logf("%s: the furnished task says %s (%s) after the restart", list, state, why)
 	}
 	var copying []struct {
-		Job json.RawMessage `json:"job"`
+		Job *struct {
+			ID       *int64          `json:"id"`
+			State    string          `json:"state"`
+			Error    *string         `json:"error"`
+			Finished json.RawMessage `json:"time_finished"`
+		} `json:"job"`
 	}
-	if err := conn.Call(ctx, "rsynctask.query", []any{[]any{[]any{"desc", "=", layout.CopyTask}}}, &copying); err != nil || len(copying) != 1 {
-		t.Errorf("the furnished copy task is not found after the restart: %d found, %v", len(copying), err)
+	if err := conn.Call(ctx, "rsynctask.query", []any{[]any{[]any{"desc", "=", layout.CopyTask}}}, &copying); err != nil || len(copying) != 1 || copying[0].Job == nil {
+		t.Errorf("the furnished copy task, or its last run, is not found after the restart: %+v, %v", copying, err)
 	} else {
-		t.Logf("the furnished copy task, which failed before the restart, keeps of its last run: %.200s", copying[0].Job)
+		run := copying[0].Job
+		t.Logf("the furnished copy task, which failed before the restart, keeps of its last run: job %v, %s, finished %s, error %v", run.ID, run.State, run.Finished, run.Error)
 	}
 
 	var said []alert

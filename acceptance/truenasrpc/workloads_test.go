@@ -149,7 +149,7 @@ func TestAnAppIsRunStoppedAndRemovedAndOneThatFailsSaysSo(t *testing.T) {
 	}
 }
 
-// A virtual machine is described, given a disk, changed and copied. Whether the NAS can run one is asked, and the machine is started: on a
+// A virtual machine is described, given a disk, changed and copied, under a name of letters and digits only, the only kind a NAS takes for one. Whether the NAS can run one is asked, and the machine is started: on a
 // NAS that can, it runs and is switched off, and on one that cannot, which a NAS inside a virtual machine may be, starting it is refused.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
@@ -176,13 +176,13 @@ func TestAMachineIsGivenADiskChangedCopiedAndStartedWhereItCanBe(t *testing.T) {
 	}
 
 	var copied bool
-	if err := conn.Call(ctx, "vm.clone", []any{machineID, "tried-copy"}, &copied); err != nil || !copied {
+	if err := conn.Call(ctx, "vm.clone", []any{machineID, "triedcopy"}, &copied); err != nil || !copied {
 		t.Fatalf("copying the machine: %t, %v", copied, err)
 	}
 	var copies []struct {
 		ID int64 `json:"id"`
 	}
-	if err := conn.Call(ctx, "vm.query", []any{[]any{[]any{"name", "=", "tried-copy"}}}, &copies); err != nil || len(copies) != 1 {
+	if err := conn.Call(ctx, "vm.query", []any{[]any{[]any{"name", "=", "triedcopy"}}}, &copies); err != nil || len(copies) != 1 {
 		t.Fatalf("the copy of the machine is not listed: %d found, %v", len(copies), err)
 	}
 	t.Cleanup(func() {

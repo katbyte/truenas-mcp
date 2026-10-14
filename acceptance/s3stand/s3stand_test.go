@@ -155,7 +155,7 @@ func TestStorageThatIsGoneRefusesEverythingUntilItIsBack(t *testing.T) {
 	t.Parallel()
 
 	s := started(t)
-	sent(t, s, http.MethodPut, "/kept", nil)
+	s.Make("kept")
 	sent(t, s, http.MethodPut, "/kept/note.txt", strings.NewReader("held"))
 
 	s.Gone(true)
@@ -169,7 +169,7 @@ func TestStorageThatIsGoneRefusesEverythingUntilItIsBack(t *testing.T) {
 	if status, back := sent(t, s, http.MethodGet, "/kept/note.txt", nil); status != http.StatusOK || back != "held" {
 		t.Errorf("with the storage back, the object is %d %q", status, back)
 	}
-	if asked := s.Asked(); asked != 6 {
-		t.Errorf("the storage counts %d requests, and was sent 6", asked)
+	if asked := s.Asked(); asked != 5 {
+		t.Errorf("the storage counts %d requests, and was sent 5", asked)
 	}
 }

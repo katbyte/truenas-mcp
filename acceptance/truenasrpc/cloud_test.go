@@ -68,7 +68,7 @@ func lastRun(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, kind stri
 	return found[0].Job.State
 }
 
-// A cloud sync to a bucket. The NAS makes the bucket and lists it. A sync puts there what the directory holds, and a second run what has
+// A cloud sync to a bucket. The NAS will not make the bucket, which is made for it, and lists it. A sync puts there what the directory holds, and a second run what has
 // changed since, read from the storage itself. Another, set to encrypt, leaves nothing on the storage that can be read: neither a file's
 // name nor what it holds. With the storage down a run fails and is said to have, and with it back the next one works.
 //
@@ -88,12 +88,12 @@ func TestACloudSyncToABucketMirrorsEncryptsAndSaysSoWhenTheStorageIsDown(t *test
 
 	storage, account := bucketed(ctx, t, conn, "storage in a bucket, for a cloud sync")
 
-	if err := conn.Call(ctx, "cloudsync.create_bucket", []any{account, bucket}, nil); err != nil {
-		t.Fatalf("having the NAS make a bucket: %v", err)
+	// a NAS makes buckets only on the few kinds of storage it knows how to, which S3 is not: seen on a real NAS
+	if err := conn.Call(ctx, "cloudsync.create_bucket", []any{account, bucket}, nil); err == nil || !strings.Contains(err.Error(), "can't create buckets") {
+		t.Errorf("asked to make a bucket on S3 storage, which a real NAS was seen to refuse, the NAS answers: %v", err)
 	}
-	if has := storage.Buckets(); !slices.Contains(has, bucket) {
-		t.Fatalf("the NAS says it made a bucket, and the storage holds %v", has)
-	}
+	storage.Make(bucket)
+
 	var listed []struct {
 		Name string `json:"Name"`
 	}
@@ -194,9 +194,7 @@ func TestACloudBackupIsMadeListedBroughtBackAndSaysSoWhenTheStorageIsDown(t *tes
 	put(ctx, t, conn, "/mnt/"+from+"/note.txt", "as it was the first night\n")
 
 	storage, account := bucketed(ctx, t, conn, "storage in a bucket, for a cloud backup")
-	if err := conn.Call(ctx, "cloudsync.create_bucket", []any{account, bucket}, nil); err != nil {
-		t.Fatalf("having the NAS make a bucket: %v", err)
-	}
+	storage.Make(bucket)
 
 	backup := madeOne(ctx, t, conn, "cloud_backup", map[string]any{"description": "the nightly backup", "path": "/mnt/" + from, "credentials": account, "attributes": map[string]any{"bucket": bucket, "folder": "of-the-nas"}, "password": marked("backup-password"), "keep_last": 2, "enabled": false})
 

@@ -81,9 +81,9 @@ One connection is shared by any number of calls. It reconnects by itself, and it
 - I set the design, the scope and the rules, and decide what stays.
 - The SDK is tested against a real TrueNAS in a virtual machine, started clean for every run.
 - Every read the API has that needs no argument is called and checked against the API's own description.
-- The test NAS is given real problems, such as a dead disk and a task that fails, to see how it reports them.
+- The test NAS is given real problems to see how it reports them: a dead disk, a disk that gives back what was never written, a full dataset, copies whose other end goes away, a restart.
 - Everything truenas-metrics asks a NAS is asked the same way, with a key that may only read.
-- Each run counts how much of the API it called: nearly half of its 769 methods so far. Not every method has a live test yet.
+- Each run counts how much of the API it called: about two thirds of its 769 methods so far. Not every method has a live test yet.
 - CI runs on every push to main: build, unit tests with the race detector, the live tests, golangci-lint, CodeQL, govulncheck, a Trivy scan of the binary, zizmor, actionlint, yamllint, shellcheck, typos, markdownlint, and a check of the vendored dependencies.
 
 ## More
