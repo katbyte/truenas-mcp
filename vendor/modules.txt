@@ -24,6 +24,9 @@ github.com/inconshreveable/mousetrap
 github.com/katbyte/go-kt/chttp
 github.com/katbyte/go-kt/clog
 github.com/katbyte/go-kt/version
+# github.com/katbyte/pandorest v0.9.0
+## explicit; go 1.27.0
+github.com/katbyte/pandorest/client
 # github.com/pelletier/go-toml/v2 v2.2.4
 ## explicit; go 1.21.0
 github.com/pelletier/go-toml/v2

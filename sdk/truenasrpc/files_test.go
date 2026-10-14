@@ -89,37 +89,53 @@ func TestAFileIsHandedToTheNASAndTheJobThatDealsWithItAnswered(t *testing.T) {
 	log := &written{}
 	conn := connect(t, nas, truenasrpc.WithLog(log))
 
-	job, err := conn.Upload(t.Context(), "config.upload", []any{map[string]any{"keep": "settings"}}, strings.NewReader(contents), strings.NewReader("a second file"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	// handed over and waited for in one, as the generated client does
 	var answer struct {
 		Restored bool `json:"restored"`
 	}
-	if err := job.Wait(t.Context(), &answer); err != nil || !answer.Restored {
+	if err := conn.Upload(t.Context(), "config.upload", []any{map[string]any{"keep": "settings"}}, &answer, strings.NewReader(contents), strings.NewReader("a second file")); err != nil || !answer.Restored {
 		t.Fatalf("the job that dealt with the file answered %+v, %v", answer, err)
 	}
+
 	if len(got) != 2 || string(got[0]) != contents || string(got[1]) != "a second file" || len(with) != 1 || !strings.Contains(string(with[0]), `"keep":"settings"`) {
 		t.Errorf("the NAS was handed %d files with %s, want both files as sent and the arguments", len(got), with)
+	}
+
+	// or handed over and followed as a job of its own
+	job, err := conn.StartUpload(t.Context(), "config.upload", nil, strings.NewReader("a third file"))
+	if err != nil || job.ID() == 0 {
+		t.Fatalf("handing over a file to follow as a job: %v", err)
+	}
+	if err := job.Wait(t.Context(), nil); err != nil {
+		t.Errorf("the job that dealt with the third file: %v", err)
+	}
+	if len(got) != 1 || string(got[0]) != "a third file" || len(with) != 0 {
+		t.Errorf("the NAS was last handed %d files with %s, want the third file alone and no arguments", len(got), with)
 	}
 
 	if text := log.text(); strings.Contains(text, "a line of a configuration to restore") || strings.Contains(text, nas.Key()) {
 		t.Error("the file, or the key, is in the log")
 	}
-	if tokens := nas.Calls("auth.generate_token"); len(tokens) != 1 || string(tokens[0].Params[3]) != "true" || string(tokens[0].Params[2]) != "true" {
-		t.Errorf("leave to upload was asked for with %+v, want a token good once and only from this address", tokens)
+	// one token for each file handed over, each good once and only from this address
+	tokens := nas.Calls("auth.generate_token")
+	if len(tokens) != 2 {
+		t.Errorf("leave to upload was asked for %d times for two uploads", len(tokens))
+	}
+	for _, token := range tokens {
+		if string(token.Params[3]) != "true" || string(token.Params[2]) != "true" {
+			t.Errorf("leave to upload was asked for with %+v, want a token good once and only from this address", token)
+		}
 	}
 
 	// what cannot work is refused before a file leaves, and what the NAS refuses is said in words
 	six := []string{"1", "2", "3", "4", "5", "6"}
-	if _, err := conn.Upload(t.Context(), "config.upload", nil, strings.NewReader(six[0]), strings.NewReader(six[1]), strings.NewReader(six[2]), strings.NewReader(six[3]), strings.NewReader(six[4]), strings.NewReader(six[5])); err == nil || !strings.Contains(err.Error(), "5 files at once") {
+	if err := conn.Upload(t.Context(), "config.upload", nil, nil, strings.NewReader(six[0]), strings.NewReader(six[1]), strings.NewReader(six[2]), strings.NewReader(six[3]), strings.NewReader(six[4]), strings.NewReader(six[5])); err == nil || !strings.Contains(err.Error(), "5 files at once") {
 		t.Errorf("six files at once answered %v", err)
 	}
-	if _, err := conn.Upload(t.Context(), "config.upload", nil); err == nil || !strings.Contains(err.Error(), "needs a file") {
+	if err := conn.Upload(t.Context(), "config.upload", nil, nil); err == nil || !strings.Contains(err.Error(), "needs a file") {
 		t.Errorf("an upload of no file answered %v", err)
 	}
-	if _, err := conn.Upload(t.Context(), "pool.query", nil, strings.NewReader("x")); err == nil || !strings.Contains(err.Error(), "no such method") {
+	if err := conn.Upload(t.Context(), "pool.query", nil, nil, strings.NewReader("x")); err == nil || !strings.Contains(err.Error(), "no such method") {
 		t.Errorf("a file handed to a method that takes none answered %v", err)
 	}
 }
@@ -173,7 +189,7 @@ func TestAJobsLogIsFetchedAndFilesAreNotHandedOverThroughTheSocket(t *testing.T)
 	if _, err := onNAS.Download(t.Context(), "config.save", nil, &logged); err == nil || !strings.Contains(err.Error(), "web server") {
 		t.Errorf("a download through the socket answered %v, want it said that files go by the web server", err)
 	}
-	if _, err := onNAS.Upload(t.Context(), "config.upload", nil, strings.NewReader("x")); err == nil || !strings.Contains(err.Error(), "web server") {
+	if err := onNAS.Upload(t.Context(), "config.upload", nil, nil, strings.NewReader("x")); err == nil || !strings.Contains(err.Error(), "web server") {
 		t.Errorf("an upload through the socket answered %v, want it said that files go by the web server", err)
 	}
 }

@@ -114,7 +114,7 @@ func TestADatasetIsMadeChangedRenamedAndRemoved(t *testing.T) {
 
 	// read-only, it takes no file
 	ledger.count("filesystem.put")
-	job, err := conn.Upload(ctx, "filesystem.put", []any{"/mnt/" + name + "/refused.txt", map[string]any{}}, strings.NewReader("not to be written\n"))
+	job, err := conn.StartUpload(ctx, "filesystem.put", []any{"/mnt/" + name + "/refused.txt", map[string]any{}}, strings.NewReader("not to be written\n"))
 	if err == nil {
 		err = job.Wait(ctx, nil)
 	}

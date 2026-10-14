@@ -156,7 +156,7 @@ func put(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, path, text st
 	t.Helper()
 	ledger.count("filesystem.put")
 
-	job, err := conn.Upload(ctx, "filesystem.put", []any{path, map[string]any{}}, strings.NewReader(text))
+	job, err := conn.StartUpload(ctx, "filesystem.put", []any{path, map[string]any{}}, strings.NewReader(text))
 	if err == nil {
 		err = job.Wait(ctx, nil)
 	}
@@ -286,7 +286,7 @@ func TestADatasetFilledToItsLimitShowsHowFullItIsAndTakesNoMore(t *testing.T) {
 	fill := func(file string, size int64) error {
 		ledger.count("filesystem.put")
 
-		job, err := conn.Upload(ctx, "filesystem.put", []any{"/mnt/" + name + "/" + file, map[string]any{}}, io.LimitReader(rand.NewChaCha8([32]byte{1}), size))
+		job, err := conn.StartUpload(ctx, "filesystem.put", []any{"/mnt/" + name + "/" + file, map[string]any{}}, io.LimitReader(rand.NewChaCha8([32]byte{1}), size))
 		if err != nil {
 			return err
 		}
@@ -482,7 +482,7 @@ func TestAReplicationThatWouldOverwriteWhatIsThereFailsAndIsSaidToHave(t *testin
 	source, target := layout.Datasets[0], layout.Datasets[1]
 
 	ledger.count("filesystem.put")
-	in, err := conn.Upload(ctx, "filesystem.put", []any{"/mnt/" + target + "/in-the-way.txt", map[string]any{}}, strings.NewReader("a file a copy would overwrite\n"))
+	in, err := conn.StartUpload(ctx, "filesystem.put", []any{"/mnt/" + target + "/in-the-way.txt", map[string]any{}}, strings.NewReader("a file a copy would overwrite\n"))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -16,6 +16,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/katbyte/pandorest/client"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 	"github.com/katbyte/truenas-mcp/sdk/truenastest"
 )
@@ -439,6 +440,12 @@ func TestARefusalSaysWhatKindItIs(t *testing.T) {
 		}
 		if err.Error() != tc.reads {
 			t.Errorf("%s reads %q, want %q", tc.method, err, tc.reads)
+		}
+
+		// the generated client reads a refusal as its own kind, with the same fields
+		var refused *client.CallError
+		if !errors.As(err, &refused) || refused.Method != tc.method && tc.method != "pool.no_such_thing" || refused.Code == 0 {
+			t.Errorf("%s: the refusal does not read as the generated client's kind: %+v", tc.method, refused)
 		}
 
 		kinds := 0

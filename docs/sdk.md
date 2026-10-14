@@ -56,7 +56,10 @@ Eight methods hand a file back (a saved configuration, a debug bundle, a dataset
 var backup bytes.Buffer
 _, err := nas.Download(ctx, "config.save", []any{map[string]any{"secretseed": true}}, &backup)
 
-job, err := nas.Upload(ctx, "config.upload", nil, file) // then job.Wait
+var restored map[string]any
+err = nas.Upload(ctx, "config.upload", nil, &restored, file) // waits for the NAS to deal with it
+
+job, err := nas.StartUpload(ctx, "config.upload", nil, file) // or follow it as a job
 ```
 
 The key is not sent with either: the NAS is asked, over the connection, for leave that is good once and for a few minutes. Nothing of a file's contents is written to a trace. A download that the NAS could not finish is an error, not a short file.
@@ -71,7 +74,9 @@ nas, err := truenasrpc.New("unix://", truenasrpc.LocalUser())
 
 `truenasrpc.Time`, `Date`, `TimeOfDay`, `Set[T]` and `IPInterface` read and write the five kinds of value TrueNAS wraps in an object (`{"$date": ...}` and so on), as fields of whatever struct an answer is read into.
 
-A user who is not an administrator is sent `********` in place of every secret, even where the API's description says a list or an object belongs. `truenasrpc.Secret[T]` reads either, says which it was, and never prints its value.
+A user who is not an administrator is sent `********` in place of every secret, even where the API's description says a list or an object belongs. `truenasrpc.Secret[T]` reads either, says which it was, and never prints its value. It is the same type as pandorest's `client.Secret[T]`, which the generated client uses.
+
+A call the NAS refused is a `*truenasrpc.Error`, and `errors.As` also reads it as pandorest's `*client.CallError`, with the same fields, for code written against a generated client.
 
 What else the NAS does that its API description does not say is written down in [api-defs/README.md](../api-defs/README.md).
 

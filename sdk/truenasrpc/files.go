@@ -78,8 +78,20 @@ func (j *Job) Logs(ctx context.Context, w io.Writer) (int64, error) {
 }
 
 // Upload hands the NAS a file for a method that takes one, a configuration to restore (config.upload) or a file to put somewhere
-// (filesystem.put), and answers the job that deals with it, to wait for or follow. Some methods take more than one file, up to five.
-func (c *Conn) Upload(ctx context.Context, method string, params []any, files ...io.Reader) (*Job, error) {
+// (filesystem.put), waits for the NAS to deal with it, and reads what the method answers into into, or nothing for nil, as Call does. Some
+// methods take more than one file, up to five. It is the form the generated client sends files through.
+func (c *Conn) Upload(ctx context.Context, method string, params []any, into any, files ...io.Reader) error {
+	job, err := c.StartUpload(ctx, method, params, files...)
+	if err != nil {
+		return err
+	}
+
+	return job.Wait(ctx, into)
+}
+
+// StartUpload hands the NAS a file as Upload does, and answers the job that deals with it as soon as the NAS has the file, to wait for or
+// follow, as Start does for a call.
+func (c *Conn) StartUpload(ctx context.Context, method string, params []any, files ...io.Reader) (*Job, error) {
 	switch {
 	case method == "":
 		return nil, errors.New("an upload needs the name of the method that takes the file")

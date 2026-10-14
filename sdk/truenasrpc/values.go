@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/katbyte/pandorest/client"
 )
 
 // A TrueNAS writes a few kinds of value in a way of its own, as an object with a key that starts with a dollar sign. The types here read and write
@@ -208,40 +210,12 @@ func (i *IPInterface) UnmarshalJSON(data []byte) error {
 }
 
 // HiddenSecret is what a TrueNAS answers in place of a secret the caller may not see.
-const HiddenSecret = "********"
+const HiddenSecret = client.SecretPlaceholder
 
 // Secret is a value a TrueNAS keeps secret: a password, a key, a certificate with its key. A caller who is not a full administrator, and may not
 // change that part of the NAS, is answered HiddenSecret in its place whatever kind of value it is, a list and an object included, so a field read
 // as its own kind would fail to read for a user who may only read. Hidden says the NAS kept it back, and Value is then empty.
 //
-// It prints as hidden with fmt, so one written to a log by mistake says nothing: the value is had by asking for Value.
-type Secret[T any] struct {
-	Value  T
-	Hidden bool
-}
-
-func (s Secret[T]) MarshalJSON() ([]byte, error) {
-	if s.Hidden {
-		return json.Marshal(HiddenSecret)
-	}
-
-	return json.Marshal(s.Value)
-}
-
-func (s *Secret[T]) UnmarshalJSON(data []byte) error {
-	var kept string
-	if json.Unmarshal(data, &kept) == nil && kept == HiddenSecret {
-		var none T
-		s.Value, s.Hidden = none, true
-
-		return nil
-	}
-
-	s.Hidden = false
-
-	return json.Unmarshal(data, &s.Value)
-}
-
-func (Secret[T]) String() string { return hidden }
-
-func (Secret[T]) GoString() string { return hidden }
+// It is the generated client's own Secret, so a value read here and one read through sdk/truenas are the same type. It prints as *** with fmt,
+// so one written to a log by mistake says nothing: the value is had by asking for Value.
+type Secret[T any] = client.Secret[T]

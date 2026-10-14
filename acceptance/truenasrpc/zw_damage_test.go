@@ -148,7 +148,7 @@ func TestAScrubFindsADiskThatLiesRepairsItAndSaysWhatCouldNotBeRepaired(t *testi
 	}
 	sent := sha256.New()
 	ledger.count("filesystem.put")
-	job, err := conn.Upload(ctx, "filesystem.put", []any{file, map[string]any{}}, io.TeeReader(io.LimitReader(rand.NewChaCha8([32]byte{7}), size), sent))
+	job, err := conn.StartUpload(ctx, "filesystem.put", []any{file, map[string]any{}}, io.TeeReader(io.LimitReader(rand.NewChaCha8([32]byte{7}), size), sent))
 	if err == nil {
 		err = job.Wait(ctx, nil)
 	}

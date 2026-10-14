@@ -213,7 +213,7 @@ func TestAFileIsHandedOverAndFetchedBackTheSame(t *testing.T) {
 	ledger.count("filesystem.get")
 	ledger.count("config.save")
 
-	job, err := conn.Upload(ctx, "filesystem.put", []any{path, map[string]any{}}, bytes.NewReader(contents))
+	job, err := conn.StartUpload(ctx, "filesystem.put", []any{path, map[string]any{}}, bytes.NewReader(contents))
 	if err != nil {
 		t.Fatal(err)
 	}
