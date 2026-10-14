@@ -47,7 +47,7 @@ var Toolsets = map[string][]string{
 	},
 	// find what is wrong: each audit only reports, and changes nothing
 	"audit": {
-		"audit_pools", "audit_space",
+		"audit_pools", "audit_space", "audit_tasks",
 	},
 	// the machine's disks, whatever pool they are in
 	"disks": {
@@ -119,6 +119,7 @@ func queueTools(r *registry) {
 	registerAlertTools(r)
 	registerPoolAudits(r)
 	registerSpaceAudits(r)
+	registerTaskAudits(r)
 }
 
 // check refuses options that contradict each other.

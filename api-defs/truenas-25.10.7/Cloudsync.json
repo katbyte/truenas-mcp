@@ -1170,12 +1170,9 @@
           "JsonName": "job",
           "Description": "Information regarding the task's job state, e.g. progress.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "Locked",

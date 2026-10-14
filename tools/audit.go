@@ -3,6 +3,7 @@ package tools
 import (
 	"cmp"
 	"slices"
+	"time"
 )
 
 // Severities of what an audit finds, the gravest first: critical is data at risk or lost, warning what will become that if left, notice what is worth
@@ -61,4 +62,13 @@ func (f *findings) answer(in pageIn) auditOut {
 	out.Findings, out.pageOut = pageRows(f.all, in)
 
 	return out
+}
+
+// at is when something happened, as part of a sentence: "" when it is not known.
+func at(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+
+	return " at " + when(t)
 }

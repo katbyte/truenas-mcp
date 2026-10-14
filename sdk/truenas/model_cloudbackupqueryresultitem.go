@@ -37,7 +37,7 @@ type CloudBackupQueryResultItem struct {
 	Include []string `json:"include,omitzero"`
 
 	// Information regarding the task's job state, e.g. progress.
-	Job map[string]any `json:"job,omitzero"`
+	Job *CoreGetJobsItemQueryResultItem `json:"job,omitempty"`
 
 	// How many of the most recent backup snapshots to keep after each backup.
 	KeepLast int `json:"keep_last,omitempty"`

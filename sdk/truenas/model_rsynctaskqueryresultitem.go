@@ -34,7 +34,7 @@ type RsyncTaskQueryResultItem struct {
 	Id int `json:"id,omitempty"`
 
 	// Information about the currently running job. `null` if no job is running.
-	Job map[string]any `json:"job,omitzero"`
+	Job *CoreGetJobsItemQueryResultItem `json:"job,omitempty"`
 
 	// Whether this rsync task is currently locked (running).
 	Locked bool `json:"locked"`

@@ -633,12 +633,9 @@
           "JsonName": "job",
           "Description": "Information about the currently running job. `null` if no job is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "Locked",

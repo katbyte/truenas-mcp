@@ -60,7 +60,7 @@ type ReplicationQueryResultItem struct {
 	Id int `json:"id,omitempty"`
 
 	// Information about the currently running job. `null` if no job is running.
-	Job map[string]any `json:"job,omitzero"`
+	Job *CoreGetJobsItemQueryResultItem `json:"job,omitempty"`
 
 	// Enable large block support for ZFS send streams.
 	LargeBlock bool `json:"large_block"`
@@ -159,7 +159,7 @@ type ReplicationQueryResultItem struct {
 	SshCredentials *KeychainCredentialEntry `json:"ssh_credentials,omitempty"`
 
 	// Current state information for the replication task.
-	State map[string]any `json:"state,omitzero"`
+	State *TaskState `json:"state,omitempty"`
 
 	// `SSH` and `SSH+NETCAT` transports should use sudo (which is expected to be passwordless) to run `zfs`     command on the remote machine.
 	Sudo bool `json:"sudo"`

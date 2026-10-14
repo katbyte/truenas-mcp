@@ -86,3 +86,29 @@ func TestAuditSpaceFindsAPoolFillingAndADatasetAtItsQuota(t *testing.T) {
 		t.Errorf("at 90%%, audit_space found %s", got)
 	}
 }
+
+// A task that failed is critical, one held or copying a locked dataset a warning, and one switched off a notice, whichever kind of task it is; a task
+// whose last run worked is let be.
+func TestAuditTasksFindsTasksThatFailedAreHeldOrCopyNothing(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	nas.Answer("pool.snapshottask.query", json.RawMessage(`[{"id": 1, "dataset": "tank/a", "enabled": true, "state": {"state": "FINISHED", "datetime": {"$date": 1790845202000}}}, {"id": 2, "dataset": "tank/b", "enabled": true, "state": {"state": "ERROR", "datetime": {"$date": 1790845202000}, "error": "No space left."}}]`))
+	nas.Answer("replication.query", json.RawMessage(`[{"id": 1, "name": "to the shelf", "enabled": true, "source_datasets": ["tank/a"], "state": {"state": "HOLD", "reason": "Dataset is locked."}, "job": null}]`))
+	nas.Answer("rsynctask.query", json.RawMessage(`[{"id": 1, "desc": "a copy to nowhere", "path": "/mnt/tank/a", "enabled": false, "locked": false, "job": {"id": 9, "state": "FAILED", "error": "rsync: failed to connect", "time_finished": {"$date": 1790845202000}}}, {"id": 2, "desc": "behind a lock", "path": "/mnt/tank/locked", "enabled": true, "locked": true, "job": {"id": 10, "state": "SUCCESS"}}]`))
+	nas.Answer("cloudsync.query", json.RawMessage(`[{"id": 1, "description": "to the bucket", "path": "/mnt/tank/a", "enabled": true, "locked": false, "job": {"id": 11, "state": "SUCCESS"}}]`))
+	nas.Answer("cloud_backup.query", json.RawMessage(`[{"id": 1, "description": "offsite", "path": "/mnt/tank/b", "enabled": true, "locked": false, "job": {"id": 12, "state": "FAILED", "error": "403 Forbidden"}}]`))
+
+	out := session(t, nas, Options{}).Call(t, "audit_tasks", nil)
+	if got := strings.Join(checksOf(t, out), " "); got != "copy_task_failed:a copy to nowhere (1) cloud_backup_failed:offsite (1) snapshot_task_failed:tank/b (2) task_on_locked_dataset:behind a lock (2) replication_held:to the shelf (1) copy_task_off:a copy to nowhere (1)" {
+		t.Errorf("audit_tasks found %s", got)
+	}
+	if acctest.Num(t, out["checked"], "checked") != 7 {
+		t.Errorf("checked %v, want every task", out["checked"])
+	}
+	for _, row := range acctest.Rows(t, out["findings"], "findings") {
+		if row["check"] == "snapshot_task_failed" && (!strings.Contains(acctest.Str(row["detail"]), "No space left.") || row["pool"] != "tank") {
+			t.Errorf("the failed snapshot task reads as %v", row)
+		}
+	}
+}

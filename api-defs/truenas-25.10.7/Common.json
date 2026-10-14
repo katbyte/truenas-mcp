@@ -1223,6 +1223,281 @@
       ]
     },
     {
+      "Name": "CoreGetJobsItemCredentials",
+      "SchemaName": "CoreGetJobsItemCredentials",
+      "Fields": [
+        {
+          "Name": "Data",
+          "JsonName": "data",
+          "Description": "Authentication data and credentials for the job.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Authentication type used for the job.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemExcInfo",
+      "SchemaName": "CoreGetJobsItemExcInfo",
+      "Fields": [
+        {
+          "Name": "Errno",
+          "JsonName": "errno",
+          "Description": "System error number if applicable. `null` otherwise.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Additional exception information.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Repr",
+          "JsonName": "repr",
+          "Description": "String representation of the exception. `null` if no exception occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Exception type name. `null` if no exception occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemQueryResultItem",
+      "SchemaName": "CoreGetJobsItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Abortable",
+          "JsonName": "abortable",
+          "Description": "Whether this job can be cancelled/aborted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Arguments",
+          "JsonName": "arguments",
+          "Description": "Array of arguments passed to the job method.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "Authentication credentials used for this job. `null` if no authentication required.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemCredentials"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of what this job does. `null` if not provided.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if the job failed. `null` if no error occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ExcInfo",
+          "JsonName": "exc_info",
+          "Description": "Detailed exception information. `null` if no exception occurred.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemExcInfo"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Exception",
+          "JsonName": "exception",
+          "Description": "Exception details if the job encountered an exception. `null` if no exception occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this job.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "LogsExcerpt",
+          "JsonName": "logs_excerpt",
+          "Description": "Brief excerpt from job logs for quick preview. `null` if no logs available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LogsPath",
+          "JsonName": "logs_path",
+          "Description": "File system path to detailed job logs. `null` if no logs available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MessageIds",
+          "JsonName": "message_ids",
+          "Description": "Array of message IDs associated with this job.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Method",
+          "JsonName": "method",
+          "Description": "Name of the method/service being executed by this job.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Progress",
+          "JsonName": "progress",
+          "Description": "Current progress information for the job.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItemProgress"
+          }
+        },
+        {
+          "Name": "Result",
+          "JsonName": "result",
+          "Description": "The result data returned by the job upon successful completion.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "ResultEncodingError",
+          "JsonName": "result_encoding_error",
+          "Description": "Encoding error information if result serialization failed.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current execution state of the job.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TimeFinished",
+          "JsonName": "time_finished",
+          "Description": "Timestamp when the job completed execution. `null` if still running or not started.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "TimeStarted",
+          "JsonName": "time_started",
+          "Description": "Timestamp when the job started execution. `null` if not yet started.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Transient",
+          "JsonName": "transient",
+          "Description": "Whether this is a temporary job that will be automatically cleaned up.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemQueryResultItemProgress",
+      "SchemaName": "CoreGetJobsItemQueryResultItemProgress",
+      "Description": "Current progress information for the job.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the current progress. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Additional progress information specific to the job type.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Percent",
+          "JsonName": "percent",
+          "Description": "Completion percentage of the job. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
       "Name": "CredKRBPrincipal",
       "SchemaName": "CredKRBPrincipal",
       "Fields": [
@@ -8606,6 +8881,73 @@
           "Description": "Whether the device should be mounted in read-only mode.",
           "Type": {
             "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TaskState",
+      "SchemaName": "TaskState",
+      "Description": "Where a snapshot task or a replication stands, as the NAS's replication engine keeps it.",
+      "Fields": [
+        {
+          "Name": "Datetime",
+          "JsonName": "datetime",
+          "Description": "when it came to stand so",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "what went wrong, when it is in ERROR",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LastSnapshot",
+          "JsonName": "last_snapshot",
+          "Description": "the newest snapshot it made or sent",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Progress",
+          "JsonName": "progress",
+          "Description": "how far a run has got, while it runs",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Reason",
+          "JsonName": "reason",
+          "Description": "why it is held or waiting",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "PENDING before it first runs, RUNNING, WAITING, FINISHED, ERROR, or HOLD while something stops it running at all",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Warnings",
+          "JsonName": "warnings",
+          "Description": "what it warned of while it ran",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
           }
         }
       ]

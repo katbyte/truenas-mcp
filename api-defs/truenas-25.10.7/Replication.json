@@ -1411,12 +1411,9 @@
           "JsonName": "job",
           "Description": "Information about the currently running job. `null` if no job is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "LargeBlock",
@@ -1688,10 +1685,8 @@
           "JsonName": "state",
           "Description": "Current state information for the replication task.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
+            "Type": "Reference",
+            "ReferenceName": "TaskState"
           }
         },
         {
@@ -1880,12 +1875,9 @@
           "JsonName": "job",
           "Description": "Information about the currently running job. `null` if no job is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "LargeBlock",
@@ -2157,10 +2149,8 @@
           "JsonName": "state",
           "Description": "Current state information for the replication task.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
+            "Type": "Reference",
+            "ReferenceName": "TaskState"
           }
         },
         {
@@ -2509,12 +2499,9 @@
           "JsonName": "job",
           "Description": "Information about the currently running job. `null` if no job is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "LargeBlock",
@@ -2786,10 +2773,8 @@
           "JsonName": "state",
           "Description": "Current state information for the replication task.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
+            "Type": "Reference",
+            "ReferenceName": "TaskState"
           }
         },
         {
@@ -3002,12 +2987,9 @@
           "JsonName": "job",
           "Description": "Information about the currently running job. `null` if no job is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "LargeBlock",
@@ -3279,10 +3261,8 @@
           "JsonName": "state",
           "Description": "Current state information for the replication task.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
+            "Type": "Reference",
+            "ReferenceName": "TaskState"
           }
         },
         {
@@ -4312,12 +4292,9 @@
           "JsonName": "job",
           "Description": "Information about the currently running job. `null` if no job is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
         },
         {
           "Name": "LargeBlock",
@@ -4589,10 +4566,8 @@
           "JsonName": "state",
           "Description": "Current state information for the replication task.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
+            "Type": "Reference",
+            "ReferenceName": "TaskState"
           }
         },
         {

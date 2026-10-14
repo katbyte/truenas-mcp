@@ -39,6 +39,8 @@
 //   - truenas-pool-records
 //   - truenas-pool-shapes
 //   - truenas-vdev-lists
+//   - truenas-task-records
+//   - truenas-task-shapes
 //   - truenas-secrets
 //   - truenas-sets
 package truenas

@@ -375,4 +375,18 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 			t.Errorf("the pool %s's last scrub reads as %+v", pool.Name, pool.Scan)
 		}
 	}
+
+	// so are a task's state and last run: each furnished task reads as the state it was left in
+	snapshots, err := typed.PoolSnapshottask.Query(within(t, readWait), []any{[]any{"dataset", "=", layout.TaskDataset}}, truenas.PoolSnapshottaskQueryOptions{})
+	if err != nil || len(snapshots.Answer) == 0 || snapshots.Answer[0].State == nil || snapshots.Answer[0].State.State != "FINISHED" || snapshots.Answer[0].State.Datetime.IsZero() {
+		t.Errorf("the furnished snapshot task reads as %+v (%v)", snapshots.Answer, err)
+	}
+	replications, err := typed.Replication.Query(within(t, readWait), []any{[]any{"name", "=", layout.Replication}}, truenas.ReplicationQueryOptions{})
+	if err != nil || len(replications.Answer) == 0 || replications.Answer[0].State == nil || replications.Answer[0].State.State != "PENDING" {
+		t.Errorf("the furnished replication reads as %+v (%v)", replications.Answer, err)
+	}
+	copies, err := typed.Rsynctask.Query(within(t, readWait), []any{[]any{"desc", "=", layout.CopyTask}}, truenas.RsynctaskQueryOptions{})
+	if err != nil || len(copies.Answer) == 0 || copies.Answer[0].Job == nil || copies.Answer[0].Job.State != "FAILED" || copies.Answer[0].Job.TimeFinished.IsZero() || copies.Answer[0].Job.Error == "" {
+		t.Errorf("the furnished copy task reads as %+v (%v)", copies.Answer, err)
+	}
 }

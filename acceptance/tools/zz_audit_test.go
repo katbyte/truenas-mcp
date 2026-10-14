@@ -4,6 +4,7 @@ package tools_test
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"math/rand/v2"
 	"slices"
@@ -157,5 +158,43 @@ func TestAuditSpaceFindsADatasetFilledToItsQuota(t *testing.T) {
 		return slices.Contains(checks, "refquota_full:"+name)
 	}) {
 		t.Errorf("filled to 97%% of its refquota, the dataset is found to have %v", checks)
+	}
+}
+
+// A copy task whose run failed is found, by its description and number.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestAuditTasksFindsACopyTaskThatFailed(t *testing.T) {
+	conn, _ := planter(t)
+	ctx := t.Context()
+
+	var task struct {
+		ID int `json:"id"`
+	}
+	// switched on, so that it is held to its runs, and scheduled once a year, so that the only run is the one made here
+	if err := conn.Call(ctx, "rsynctask.create", []any{map[string]any{"path": "/mnt/" + layout.Datasets[0], "user": "root", "mode": "MODULE", "remotehost": "127.0.0.1", "remotemodule": "nothing-listens-here", "direction": "PUSH", "desc": "an audited copy", "enabled": true, "schedule": map[string]any{"minute": "0", "hour": "0", "dom": "1", "month": "1", "dow": "*"}}}, &task); err != nil {
+		t.Fatalf("making the task: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(ctx), "rsynctask.delete", []any{task.ID}, nil); err != nil {
+			t.Errorf("removing the task: %v", err)
+		}
+	})
+
+	job, err := conn.Start(ctx, "rsynctask.run", []any{task.ID})
+	if err != nil {
+		t.Fatalf("running the task: %v", err)
+	}
+	if err := job.Wait(ctx, nil); err == nil {
+		t.Fatal("a copy to a place that is not there ran without failing")
+	}
+
+	want := fmt.Sprintf("copy_task_failed:an audited copy (%d)", task.ID)
+	var checks []string
+	if !eventually(time.Minute, func() bool {
+		checks = found(t, "audit_tasks")
+		return slices.Contains(checks, want)
+	}) {
+		t.Errorf("with a copy task whose run failed, audit_tasks finds %v", checks)
 	}
 }

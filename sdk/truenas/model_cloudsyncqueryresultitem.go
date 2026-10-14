@@ -58,7 +58,7 @@ type CloudSyncQueryResultItem struct {
 	Include []string `json:"include,omitzero"`
 
 	// Information regarding the task's job state, e.g. progress.
-	Job map[string]any `json:"job,omitzero"`
+	Job *CoreGetJobsItemQueryResultItem `json:"job,omitempty"`
 
 	// A locked task cannot run.
 	Locked bool `json:"locked"`

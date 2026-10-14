@@ -40,3 +40,17 @@ Looks at every pool and every dataset. Each dataset is asked for its sizes alone
 | `refquota_filling` | warning | it uses `quota_percent` of its refquota or more |
 
 Tested on a real NAS by filling a dataset to 97% of its refquota.
+
+## audit_tasks
+
+Looks at every task that protects data: snapshot tasks, replications, copy (rsync) tasks, cloud syncs and cloud backups.
+
+| check | severity | found when |
+|---|---|---|
+| `snapshot_task_failed`, `replication_failed` | critical | the replication engine says the task is in ERROR |
+| `copy_task_failed`, `cloud_sync_failed`, `cloud_backup_failed` | critical | the task's last run failed or was aborted |
+| `snapshot_task_held`, `replication_held` | warning | the task is held and does not run, such as for a locked dataset |
+| `task_on_locked_dataset` | warning | a copy task, cloud sync or cloud backup copies a locked dataset. A copy task run on one ends as a success, having copied nothing, so this is the only place it shows |
+| `snapshot_task_off`, `replication_off`, `copy_task_off`, `cloud_sync_off`, `cloud_backup_off` | notice | the task is switched off |
+
+A task that is switched off and failed when it last ran is told of both ways. Tested on a real NAS by running a copy task to a place that is not there.

@@ -37,7 +37,7 @@ type PoolSnapshotTaskQueryResultItem struct {
 	Schedule *ReplicationTimeCronModel `json:"schedule,omitempty"`
 
 	// Detailed state information for the task.
-	State any `json:"state,omitempty"`
+	State *TaskState `json:"state,omitempty"`
 
 	// Whether VMware VMs are synced before taking snapshots.
 	VmwareSync bool `json:"vmware_sync"`

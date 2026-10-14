@@ -587,7 +587,8 @@
           "JsonName": "state",
           "Description": "Detailed state information for the task.",
           "Type": {
-            "Type": "Any"
+            "Type": "Reference",
+            "ReferenceName": "TaskState"
           }
         },
         {

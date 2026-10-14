@@ -87,3 +87,43 @@ func TestAPoolsScrubAndLayoutReadIntoTypes(t *testing.T) {
 		t.Errorf("the disks read as %+v and %+v", good, gone)
 	}
 }
+
+// A task's state and its last run, which the description leaves shapeless, read into the records sdk/pandorest gives them: where a snapshot task or a
+// replication stands, and how a copy task's last run ended.
+func TestATasksStateAndLastRunReadIntoTypes(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	nas.Answer("pool.snapshottask.query", json.RawMessage(`[{"id": 1, "dataset": "tank/a", "enabled": true, "state": {"state": "ERROR", "datetime": {"$date": 1790845202000}, "error": "No space left.", "warnings": ["slow"]}}]`))
+	nas.Answer("replication.query", json.RawMessage(`[{"id": 1, "name": "to the shelf", "state": {"state": "HOLD", "datetime": {"$date": 1790845202000}, "reason": "Dataset is locked."}, "job": {"id": 7, "method": "replication.run", "state": "SUCCESS", "time_finished": {"$date": 1790845202000}}}]`))
+	nas.Answer("rsynctask.query", json.RawMessage(`[{"id": 1, "desc": "a copy", "job": {"id": 9, "method": "rsynctask.run", "state": "FAILED", "error": "rsync: failed to connect", "time_started": {"$date": 1790845200000}, "time_finished": {"$date": 1790845202000}}}]`))
+
+	typed, err := nasclient.New(connect(t, nas))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	snapshots, err := typed.PoolSnapshottask.Query(t.Context(), nil, truenas.PoolSnapshottaskQueryOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s := snapshots.Answer[0].State; s == nil || s.State != "ERROR" || s.Error != "No space left." || len(s.Warnings) != 1 || !s.Datetime.Equal(time.UnixMilli(1790845202000)) {
+		t.Errorf("the snapshot task's state reads as %+v", s)
+	}
+
+	replications, err := typed.Replication.Query(t.Context(), nil, truenas.ReplicationQueryOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r := replications.Answer[0]; r.State == nil || r.State.State != "HOLD" || r.State.Reason != "Dataset is locked." || r.Job == nil || r.Job.State != "SUCCESS" {
+		t.Errorf("the replication reads as %+v with %+v", r.State, r.Job)
+	}
+
+	copies, err := typed.Rsynctask.Query(t.Context(), nil, truenas.RsynctaskQueryOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if j := copies.Answer[0].Job; j == nil || j.State != "FAILED" || j.Error != "rsync: failed to connect" || j.TimeFinished.Sub(j.TimeStarted.Time) != 2*time.Second {
+		t.Errorf("the copy task's last run reads as %+v", j)
+	}
+}
