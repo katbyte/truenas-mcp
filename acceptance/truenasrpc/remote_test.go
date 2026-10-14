@@ -358,7 +358,14 @@ func TestACloudSyncCopiesAndSaysSoWhenTheStorageIsGone(t *testing.T) {
 	put(ctx, t, conn, "/mnt/"+from+"/note.txt", "kept somewhere else too\n")
 
 	key, _ := reachesItself(ctx, t, conn, "the NAS itself, for a cloud sync")
-	provider := map[string]any{"type": "SFTP", "host": "127.0.0.1", "port": 22, "user": "root", "private_key": key}
+
+	// an account that logs in with a key and has no password breaks the NAS's own code, which reads the password whatever else is given: seen
+	// on a real NAS and in the source (cloud_sync.py, RcloneConfig). An empty password is given beside the key, which it takes
+	keyOnly := map[string]any{"type": "SFTP", "host": "127.0.0.1", "port": 22, "user": "root", "private_key": key}
+	if err := conn.Call(ctx, "cloudsync.credentials.verify", []any{keyOnly}, nil); err == nil || !strings.Contains(err.Error(), "NoneType") {
+		t.Errorf("an SFTP account with a key and no password, which was seen to break the NAS's own code, is answered: %v", err)
+	}
+	provider := map[string]any{"type": "SFTP", "host": "127.0.0.1", "port": 22, "user": "root", "private_key": key, "pass": ""}
 	account := madeOne(ctx, t, conn, "cloudsync.credentials", map[string]any{"name": "storage reached over SFTP", "provider": provider})
 
 	var good struct {

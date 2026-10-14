@@ -33,7 +33,7 @@ func snapshotsOf(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, datas
 }
 
 // asked calls a read with arguments and holds its answer to the description, which is how a method only a journey can reach gets the check
-// every plain read gets.
+// every plain read gets. The user who may only read is answered stars in place of each secret; anyone else is to see them.
 func asked(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, method string, params []any, into any) {
 	t.Helper()
 
@@ -41,7 +41,7 @@ func asked(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, method stri
 	if err := conn.Call(ctx, method, params, &answer); err != nil {
 		t.Fatalf("%s: %v", method, err)
 	}
-	heldTo(t, description(t)[method], answer, true) //nolint:contextcheck // the description is read from the repository, and setting the NAS up, which it may wait on, has a limit of its own
+	heldTo(t, description(t)[method], answer, conn != reader(t)) //nolint:contextcheck // the description is read from the repository, and setting the NAS up, which it may wait on, has a limit of its own
 
 	if into != nil {
 		if err := json.Unmarshal(answer, into); err != nil {

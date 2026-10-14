@@ -15,6 +15,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	_ "time/tzdata" // a NAS's time zone is read here whatever the machine running the tests has installed
 
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
@@ -70,7 +71,8 @@ type certified struct {
 	RenewDays *int     `json:"renew_days"`
 }
 
-// A NAS reads a certificate's dates the way a clock on the wall is read, with no word of where the clock is: they are in UTC.
+// certificateTime is how a NAS writes when a certificate is good from and until: in its own time zone, which the text does not say. Seen on a
+// real NAS set to America/Los_Angeles, a certificate good until 03:04 UTC was said to be good until 20:04 the evening before.
 const certificateTime = "Mon Jan _2 15:04:05 2006"
 
 // A certificate made somewhere else is brought to the NAS, three times over: one that ran out yesterday, one that runs out in five days, and
@@ -84,14 +86,19 @@ func TestACertificateSaysWhenItRunsOutAndOneThatHasIsNotTakenForTheNASItself(t *
 	conn := admin(t)
 	ctx := within(t, 10*time.Minute)
 
-	// the certificate the NAS shows its own pages with, to put back if a test of what it refuses is not refused
+	// the certificate the NAS shows its own pages with, to put back if a test of what it refuses is not refused, and the time zone it keeps
 	var shown struct {
 		Certificate struct {
 			ID int64 `json:"id"`
 		} `json:"ui_certificate"`
+		Zone string `json:"timezone"`
 	}
 	if err := conn.Call(ctx, "system.general.config", nil, &shown); err != nil || shown.Certificate.ID == 0 {
 		t.Fatalf("reading which certificate the NAS shows its pages with: %d, %v", shown.Certificate.ID, err)
+	}
+	zone, err := time.LoadLocation(shown.Zone)
+	if err != nil {
+		t.Fatalf("the NAS keeps the time zone %q, which does not read: %v", shown.Zone, err)
 	}
 
 	now := time.Now().UTC().Truncate(time.Second)
@@ -136,8 +143,8 @@ func TestACertificateSaysWhenItRunsOutAndOneThatHasIsNotTakenForTheNASItself(t *
 		if read.Until == nil || read.From == nil {
 			t.Fatalf("%s does not say when it is good from, or when it runs out", brought.name)
 		}
-		if until, err := time.Parse(certificateTime, *read.Until); err != nil || !until.Equal(brought.until) {
-			t.Errorf("%s is said to run out at %q, which reads as %v (%v); want %v", brought.name, *read.Until, until, err, brought.until)
+		if until, err := time.ParseInLocation(certificateTime, *read.Until, zone); err != nil || !until.Equal(brought.until) {
+			t.Errorf("%s is said to run out at %q, which read in the NAS's time zone, %s, is %v (%v); want %v", brought.name, *read.Until, shown.Zone, until.UTC(), err, brought.until)
 		}
 		if read.Common == nil || *read.Common != brought.name+".tests.example" || read.KeyType == nil || *read.KeyType != "EC" {
 			t.Errorf("%s reads as made out to %v with a key of kind %v", brought.name, read.Common, read.KeyType)
@@ -152,7 +159,7 @@ func TestACertificateSaysWhenItRunsOutAndOneThatHasIsNotTakenForTheNASItself(t *
 		}
 
 		// the NAS will not show its own pages with a certificate that has run out
-		err := conn.Call(ctx, "system.general.update", []any{map[string]any{"ui_certificate": made.ID}}, nil)
+		err = conn.Call(ctx, "system.general.update", []any{map[string]any{"ui_certificate": made.ID}}, nil)
 		if err == nil {
 			t.Error("a certificate that has run out is taken as the NAS's own")
 
