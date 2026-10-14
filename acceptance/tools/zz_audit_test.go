@@ -121,14 +121,16 @@ func TestAuditPoolsFindsADiskTakenOutOfThePool(t *testing.T) {
 	}
 }
 
-// A dataset filled nearly to its refquota is found full, and one with room is not.
+// A dataset with a refquota is let be while it has room, and found filling once it uses more of it than the audit is told to allow. A NAS takes no
+// refquota under 1 GiB, so a tenth of one is written and the audit told to warn past a twentieth; that a full one is critical is held by the
+// stand-in.
 //
 //nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
-func TestAuditSpaceFindsADatasetFilledToItsQuota(t *testing.T) {
+func TestAuditSpaceFindsADatasetFillingItsQuota(t *testing.T) {
 	conn, _ := planter(t)
 	ctx := t.Context()
 
-	const limit = 64 << 20
+	const limit = 1 << 30
 	name := layout.Pool + "/audit-full"
 	if err := conn.Call(ctx, "pool.dataset.create", []any{map[string]any{"name": name, "refquota": limit, "compression": "OFF"}}, nil); err != nil {
 		t.Fatalf("making a dataset with a refquota: %v", err)
@@ -144,20 +146,20 @@ func TestAuditSpaceFindsADatasetFilledToItsQuota(t *testing.T) {
 	}
 
 	// nothing that could be squeezed, so that what is sent is what is used
-	job, err := conn.StartUpload(ctx, "filesystem.put", []any{"/mnt/" + name + "/most-of-it", map[string]any{}}, io.LimitReader(rand.NewChaCha8([32]byte{2}), limit*97/100))
+	job, err := conn.StartUpload(ctx, "filesystem.put", []any{"/mnt/" + name + "/a-tenth", map[string]any{}}, io.LimitReader(rand.NewChaCha8([32]byte{2}), limit/10))
 	if err != nil {
-		t.Fatalf("filling the dataset: %v", err)
+		t.Fatalf("writing to the dataset: %v", err)
 	}
 	if err := job.Wait(ctx, nil); err != nil {
-		t.Fatalf("filling the dataset: %v", err)
+		t.Fatalf("writing to the dataset: %v", err)
 	}
 
-	var checks []string
+	var rows []map[string]any
 	if !eventually(time.Minute, func() bool {
-		checks = found(t, "audit_space")
-		return slices.Contains(checks, "refquota_full:"+name)
+		rows = acctest.Rows(t, suite.Call(t, "audit_space", map[string]any{"quota_percent": 5})["findings"], "findings")
+		return slices.ContainsFunc(rows, func(row map[string]any) bool { return row["check"] == "refquota_filling" && row["name"] == name })
 	}) {
-		t.Errorf("filled to 97%% of its refquota, the dataset is found to have %v", checks)
+		t.Errorf("a tenth full, told to warn past a twentieth, audit_space finds %v", rows)
 	}
 }
 
