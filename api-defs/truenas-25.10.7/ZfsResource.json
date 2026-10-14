@@ -128,7 +128,8 @@
           "JsonName": "guid",
           "Description": "Globally unique identifier for the resource.",
           "Type": {
-            "Type": "Integer"
+            "Type": "Named",
+            "GoType": "uint64"
           }
         },
         {

@@ -127,3 +127,23 @@ func TestATasksStateAndLastRunReadIntoTypes(t *testing.T) {
 		t.Errorf("the copy task's last run reads as %+v", j)
 	}
 }
+
+// A ZFS GUID is an unsigned 64-bit number, written bare, and half of them are larger than a signed one holds: one such reads whole.
+func TestAZFSGUIDLargerThanASignedNumberReads(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	nas.Answer("zfs.resource.query", json.RawMessage(`[{"name": "tank", "pool": "tank", "type": "FILESYSTEM", "guid": 17562920642453302503, "createtxg": 1}]`))
+
+	typed, err := nasclient.New(connect(t, nas))
+	if err != nil {
+		t.Fatal(err)
+	}
+	found, err := typed.ZfsResource.Query(t.Context(), truenas.ZfsResourceQueryData{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(found.Answer) != 1 || found.Answer[0].Guid != 17562920642453302503 {
+		t.Errorf("the dataset reads as %+v", found.Answer)
+	}
+}

@@ -49,6 +49,10 @@ var fixes = []workarounds.Workaround{
 		"S3CredentialsModel.signatures_v2":          "client.Secret[bool]",
 		"S3CredentialsModel.skip_region":            "client.Secret[bool]",
 	}),
+	// a ZFS GUID is an unsigned 64-bit number, half of which do not fit the signed integer the description's "integer" becomes
+	workarounds.NamedTypes(workarounds.About{Name: "truenas-guids", Service: "truenas", Bug: "zfs.resource.query writes a dataset's guid as a bare number, which is often larger than a signed 64-bit integer holds"}, "", map[string]string{
+		"ZFSResourceEntry.guid": "uint64",
+	}),
 	workarounds.NamedTypes(workarounds.About{Name: "truenas-sets", Service: "truenas", Bug: "a list marked as holding no repeats is written as a plain list in one answer and wrapped as a set in another"}, "github.com/katbyte/truenas-mcp/sdk/truenasrpc", map[string]string{ //nolint:gosec // G101: a rule for passwords is named here, and no password
 		"SystemGeneralConfigAnswer.ui_httpsprotocols":            "truenasrpc.Set[$item]",
 		"SystemGeneralUpdateAnswer.ui_httpsprotocols":            "truenasrpc.Set[$item]",

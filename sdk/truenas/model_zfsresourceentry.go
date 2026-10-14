@@ -11,7 +11,7 @@ type ZFSResourceEntry struct {
 	Createtxg int `json:"createtxg,omitempty"`
 
 	// Globally unique identifier for the resource.
-	Guid int `json:"guid,omitempty"`
+	Guid uint64 `json:"guid,omitzero"`
 
 	// The name of the zfs resource.
 	Name string `json:"name,omitempty"`
