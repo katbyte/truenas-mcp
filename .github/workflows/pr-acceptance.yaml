@@ -56,7 +56,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq qemu-system-x86 qemu-utils
-          command -v qemu-system-x86_64 qemu-img curl python3
+          command -v qemu-system-x86_64 qemu-img curl
 
       # installing TrueNAS comes out the same every time, and most of the wait is fetching the installer disc, so the disk it was installed onto is
       # kept between runs: it is made again when the script or the program that drives the installer changes. it is kept as soon as it is made,

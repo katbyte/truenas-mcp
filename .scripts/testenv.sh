@@ -27,7 +27,7 @@
 # (acceptance/setup) itself, for anything else that wants a NAS that is ready.
 #
 # What the NAS is made to hold is in acceptance/layout. It needs
-# qemu-system-x86_64, qemu-img, curl, python3 and go.
+# qemu-system-x86_64, qemu-img, curl and go.
 #
 # TrueNAS runs on x86-64 only. On an x86-64 Linux machine with /dev/kvm the
 # machine runs at full speed. Anywhere else it would have to be emulated, which
@@ -245,16 +245,8 @@ down() {
 logs() {
   [ -d "$RUN" ] || { log "no test machine has been run"; return 0; }
 
-  if running && command -v python3 >/dev/null 2>&1; then
-    python3 - "${RUN}/monitor.sock" "${RUN}/screen.ppm" <<'PY' >&2 || true
-import socket, sys, time
-monitor = socket.socket(socket.AF_UNIX)
-monitor.connect(sys.argv[1])
-monitor.sendall(("screendump %s\n" % sys.argv[2]).encode())
-time.sleep(1)
-monitor.close()
-print("==> a picture of the machine's screen is in " + sys.argv[2])
-PY
+  if running && command -v go >/dev/null 2>&1; then
+    (cd "$REPO" && go run ./acceptance/testnas screen -monitor "${RUN}/monitor.sock" -file "${RUN}/screen.ppm" -timeout 1m) >&2 || true
   fi
 
   local file

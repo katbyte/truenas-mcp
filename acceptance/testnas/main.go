@@ -4,12 +4,15 @@
 //	testnas install   -installer ws://127.0.0.1:18080/ws -boot-bytes 17179869184
 //	testnas wait      -server https://127.0.0.1:18443 -certificate-file nas.pem
 //	testnas provision -server https://127.0.0.1:18443 -certificate-file nas.pem
+//	testnas screen    -monitor run/monitor.sock -file run/screen.ppm
 //
 // wait leaves the NAS as its installer left it, for the live tests to set up themselves, which is the first and hardest thing they test.
 // provision sets it up (acceptance/setup), for anything else that wants a NAS that is ready. Both print, as export lines, what is needed to
 // log in. The administrator's password is read from TRUENAS_TEST_PASSWORD. With TRUENAS_TEST_FURNISHED=1, provision also gives the NAS one of
 // each thing a NAS is watched for (shares, a target, a machine, tasks in each state a task can be left in), for whatever wants more to look
 // at than a pool: acceptance/layout says what.
+//
+// screen has the machine save a picture of its screen, which is where a TrueNAS that will not start says why.
 package main
 
 import (
@@ -37,11 +40,12 @@ func logf(format string, args ...any) { fmt.Fprintf(os.Stderr, "==> "+format+"\n
 
 func run(args []string) error {
 	if len(args) == 0 {
-		return errors.New("say what to do: install, wait or provision")
+		return errors.New("say what to do: install, wait, provision or screen")
 	}
 
+	// a picture of the screen is asked of the machine, not the NAS, and needs no password
 	password := os.Getenv("TRUENAS_TEST_PASSWORD")
-	if len(password) < 6 {
+	if len(password) < 6 && args[0] != "screen" {
 		return errors.New("TRUENAS_TEST_PASSWORD must hold the administrator's password, six characters or more")
 	}
 
@@ -80,8 +84,23 @@ func run(args []string) error {
 
 		return ready(ctx, *server, password, *certificate, args[0] == "provision")
 
+	case "screen":
+		monitor := flags.String("monitor", "", "the machine's console")
+		file := flags.String("file", "", "where the machine is to save a picture of its screen")
+		if err := flags.Parse(args[1:]); err != nil {
+			return err
+		}
+		if *monitor == "" || *file == "" {
+			return errors.New("-monitor must say where the machine's console is, and -file where to save the picture")
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), *wait)
+		defer cancel()
+
+		return screen(ctx, *monitor, *file)
+
 	default:
-		return fmt.Errorf("%s is not install, wait or provision", args[0])
+		return fmt.Errorf("%s is not install, wait, provision or screen", args[0])
 	}
 }
 
