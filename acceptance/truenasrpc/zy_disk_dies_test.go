@@ -115,8 +115,12 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 	// a NAS finds a dead disk when it next uses it, so it is given something to write, and a scrub if that is not enough
 	put(ctx, t, conn, "/mnt/"+layout.Datasets[0]+"/after-the-disk-died.txt", "written with one disk of the pair dead\n")
 
+	// seen on a real NAS: the pool reads as not healthy a moment before the dead disk reads as anything but ONLINE, so both are waited for
 	var without pooled
-	noticed := func() bool { without = pool(ctx, t, conn); return !without.Healthy }
+	noticed := func() bool {
+		without = pool(ctx, t, conn)
+		return !without.Healthy && without.Topology.Data[0].Children[0].Status != "ONLINE"
+	}
 	if !eventually(ctx, 90*time.Second, noticed) {
 		if _, err := conn.Start(ctx, "pool.scrub.scrub", []any{layout.Pool, "START"}); err != nil {
 			t.Logf("starting a scrub: %v", err)
