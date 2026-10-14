@@ -69,11 +69,11 @@ func TestAuditSpaceFindsAPoolFillingAndADatasetAtItsQuota(t *testing.T) {
 
 	nas := truenastest.New(t)
 	nas.Answer("pool.query", json.RawMessage(`[{"id": 1, "name": "tank", "healthy": true, "size": 1000, "allocated": 850, "free": 150}, {"id": 2, "name": "full", "healthy": true, "size": 1000, "allocated": 990, "free": 10}, {"id": 3, "name": "roomy", "healthy": true, "size": 1000, "allocated": 100, "free": 900}]`))
-	nas.Answer("pool.dataset.query", []any{
-		map[string]any{"name": "tank/near", "pool": "tank", "used": prop("920"), "usedbydataset": prop("100"), "quota": prop("1000"), "refquota": prop("0")},
-		map[string]any{"name": "tank/own", "pool": "tank", "used": prop("990"), "usedbydataset": prop("990"), "quota": prop("0"), "refquota": prop("1000")},
-		map[string]any{"name": "tank/free", "pool": "tank", "used": prop("10"), "usedbydataset": prop("10"), "quota": prop("0"), "refquota": prop("0")},
-	})
+	nas.Handle("pool.dataset.query", datasetsAsANASAnswers(
+		map[string]any{"name": "tank/near", "pool": "tank", "type": "FILESYSTEM", "used": prop("920"), "usedbydataset": prop("100"), "quota": prop("1000"), "refquota": prop("0")},
+		map[string]any{"name": "tank/own", "pool": "tank", "type": "FILESYSTEM", "used": prop("990"), "usedbydataset": prop("990"), "quota": prop("0"), "refquota": prop("1000")},
+		map[string]any{"name": "tank/free", "pool": "tank", "type": "VOLUME", "used": prop("10"), "usedbydataset": prop("10"), "quota": prop("0"), "refquota": prop("0")},
+	))
 
 	out := session(t, nas, Options{}).Call(t, "audit_space", nil)
 	if got := strings.Join(checksOf(t, out), " "); got != "pool_full:full refquota_full:tank/own pool_filling:tank quota_filling:tank/near" {

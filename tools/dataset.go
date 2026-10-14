@@ -39,8 +39,15 @@ func datasetRowOf(d truenas.PoolDatasetQueryResultItem) datasetRow {
 	return row
 }
 
-// flat asks for a list of datasets as rows alone: each with no copy of everything under it, which the NAS otherwise nests in every row.
+// flat asks for a list of datasets as rows alone: each with no copy of everything under it, which the NAS otherwise nests in every row. Asked this way
+// with no filter, a NAS goes no deeper than each pool's own dataset, so such a query always carries everyDataset at least.
 var flat = map[string]any{"flat": true, "retrieve_children": false}
+
+// everyDataset is a filter every dataset and volume passes, for a query that would otherwise have none.
+var everyDataset = []any{"type", "in", []string{"FILESYSTEM", "VOLUME"}}
+
+// namesOnly asks for the datasets' names and nothing else, so that counting them is cheap.
+var namesOnly = map[string]any{"flat": true, "retrieve_children": false, "properties": []string{}, "retrieve_user_props": false}
 
 func registerDatasetTools(r *registry) {
 	type datasetListIn struct {
@@ -56,7 +63,7 @@ func registerDatasetTools(r *registry) {
 		Name:        "dataset_list",
 		Description: "List the NAS's datasets and volumes by their whole name, on every pool or one, or under one dataset: each one's space, quotas, compression and whether it is encrypted and locked. The NAS pages the list itself, so a NAS of thousands is read a page at a time. dataset_get describes one.",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in datasetListIn) (*mcp.CallToolResult, datasetListOut, error) {
-		filters := []any{}
+		filters := []any{everyDataset}
 		if in.Pool != "" {
 			filters = append(filters, []any{"pool", "=", in.Pool})
 		}
@@ -64,7 +71,8 @@ func registerDatasetTools(r *registry) {
 			filters = append(filters, []any{"name", "^", strings.TrimSuffix(in.Under, "/") + "/"})
 		}
 
-		count, err := r.typed.PoolDataset.QueryCount(ctx, filters, truenas.PoolDatasetQueryOptions{Extra: flat})
+		// a NAS asked to count datasets counts every one whatever the filters, so the total is how many names pass them
+		names, err := r.typed.PoolDataset.Query(ctx, filters, truenas.PoolDatasetQueryOptions{Extra: namesOnly, Select: []any{"name"}})
 		if err != nil {
 			return nil, datasetListOut{}, fmt.Errorf("counting the datasets: %w", err)
 		}
@@ -78,11 +86,7 @@ func registerDatasetTools(r *registry) {
 		for _, d := range found.Answer {
 			out.Datasets = append(out.Datasets, datasetRowOf(d))
 		}
-		total := len(out.Datasets)
-		if count.Answer != nil {
-			total = *count.Answer
-		}
-		out.pageOut = paged(offset, len(out.Datasets), total)
+		out.pageOut = paged(offset, len(out.Datasets), len(names.Answer))
 
 		return nil, out, nil
 	})

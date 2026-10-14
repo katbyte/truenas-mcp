@@ -30,7 +30,7 @@ func (a spaceAudit) run(ctx context.Context, r *registry) (*findings, error) {
 	if err != nil {
 		return nil, fmt.Errorf("listing the pools: %w", err)
 	}
-	datasets, err := r.typed.PoolDataset.Query(ctx, nil, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": false, "properties": spaceProperties}})
+	datasets, err := r.typed.PoolDataset.Query(ctx, []any{everyDataset}, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": false, "properties": spaceProperties}})
 	if err != nil {
 		return nil, fmt.Errorf("listing the datasets: %w", err)
 	}

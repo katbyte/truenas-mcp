@@ -67,13 +67,28 @@ func TestThePoolIsListedAndDescribedDownToItsDisks(t *testing.T) {
 	}
 }
 
-// The test NAS's datasets are listed by the NAS a page at a time, under the pool, and one is described; the user who may only read sees the same.
+// The test NAS's datasets are listed by the NAS a page at a time, under the pool, and one is described; the user who may only read sees the same. With
+// nothing to narrow it the list goes below the pools, which a NAS asked carelessly does not, and the total is of what is listed, not every dataset.
 //
 //nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
 func TestTheDatasetsAreListedAPageAtATimeAndDescribed(t *testing.T) {
+	everything := suite.Call(t, "dataset_list", nil)
+	listed := acctest.Rows(t, everything["datasets"], "datasets")
+	all := make([]string, 0, len(listed))
+	for _, row := range listed {
+		all = append(all, acctest.Str(row["name"]))
+	}
+	if !slices.Contains(all, layout.Pool) || !slices.Contains(all, layout.Datasets[0]) || acctest.NumOr0(everything["total"]) != len(all) {
+		t.Errorf("with nothing to narrow it, the datasets listed are %v of %v", all, everything["total"])
+	}
+
 	var names []string
+	total := -1
 	for offset := 0; ; {
 		page := suite.Call(t, "dataset_list", map[string]any{"under": layout.Pool, "limit": 1, "offset": offset})
+		if total < 0 {
+			total = acctest.NumOr0(page["total"])
+		}
 		for _, row := range acctest.Rows(t, page["datasets"], "datasets") {
 			names = append(names, acctest.Str(row["name"]))
 		}
@@ -90,6 +105,9 @@ func TestTheDatasetsAreListedAPageAtATimeAndDescribed(t *testing.T) {
 	}
 	if slices.Contains(names, layout.Pool) {
 		t.Errorf("the datasets under %s include the pool's own: %v", layout.Pool, names)
+	}
+	if total != len(names) {
+		t.Errorf("the datasets under %s are said to be %d, and paging through them found %v", layout.Pool, total, names)
 	}
 
 	got := suite.Call(t, "dataset_get", map[string]any{"dataset": layout.Datasets[0]})

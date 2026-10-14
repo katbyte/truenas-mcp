@@ -45,6 +45,10 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **A dataset's snapshot count is left out of its row.** `pool.dataset.query` asked with the extra `snapshots_count` adds `snapshot_count` to each row, and the row's description has no such field, so a typed read dropped it. The client adds it, in `sdk/pandorest/pools.go`. `TestADatasetsSnapshotCountReads`, `TestEverythingTheExporterAsksReadsIntoTheTypedClient`
 
+**A dataset list asked for rows alone and given no filter stops at the pools.** `pool.dataset.query` with `retrieve_children` off goes below each pool's own dataset only when it has a filter to apply (`plugins/pool_/dataset_query_utils.py`), so asked for every dataset that way it answers the pools alone. With `retrieve_children` on it does list every dataset, but nests a copy of everything under each one inside its row. The tools ask with it off and a filter every dataset passes. `TestTheDatasetsAreListedAPageAtATimeAndDescribed`, `TestAuditSpaceFindsADatasetFillingItsQuota`
+
+**A dataset count ignores the filters.** `pool.dataset.query` asked to `count` counts every dataset it walks before the filters are applied, so a count of the datasets on one pool, or under one dataset, is a count of them all. `dataset_list` counts the names a filtered list answers instead. `TestDatasetListIsPagedByTheNASAndSaysWhatEachHolds`, `TestTheDatasetsAreListedAPageAtATimeAndDescribed`
+
 **An API key sent without TLS is revoked on the spot.** The login answers `EXPIRED` and the key is gone for good. An address without TLS is refused before anything is sent. `TestSettingsThatCannotWorkAreRefusedWhenTheConnectionIsMade`, `TestARevokedKeySaysANewOneIsNeeded`
 
 **Logging in with a key and no user name is going away.** `auth.login_with_api_key` is removed in TrueNAS 27; `auth.login_ex` wants the name of the user the key was made for. Both are supported. `TestAKeyAloneLogsInTheOlderWay`
