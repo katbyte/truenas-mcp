@@ -70,10 +70,10 @@ func lastRun(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, kind stri
 
 // A cloud sync to a bucket. The NAS will not make the bucket, which is made for it, and lists it. A sync puts there what the directory holds, and a second run what has
 // changed since, read from the storage itself. Another, set to encrypt, leaves nothing on the storage that can be read: neither a file's
-// name nor what it holds. With the storage down a run fails and is said to have, and with it back the next one works.
+// name nor what it holds. With the storage turning the NAS away a run fails and is said to have, and once it stops the next one works.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
-func TestACloudSyncToABucketMirrorsEncryptsAndSaysSoWhenTheStorageIsDown(t *testing.T) {
+func TestACloudSyncToABucketMirrorsEncryptsAndSaysSoWhenTheStorageTurnsItAway(t *testing.T) {
 	conn := admin(t)
 	ctx := within(t, 15*time.Minute)
 
@@ -143,30 +143,30 @@ func TestACloudSyncToABucketMirrorsEncryptsAndSaysSoWhenTheStorageIsDown(t *test
 		t.Errorf("set to encrypt, nothing reached the storage: it holds %v", storage.Keys(bucket))
 	}
 
-	// the storage goes down, and comes back
-	storage.Gone(true)
+	// the storage turns the NAS away, as it does once the key it was given is taken back, and then takes it again
+	storage.TurnAway(true)
 	err := conn.Call(ctx, "cloudsync.sync", []any{mirror}, nil)
 	if err == nil {
-		t.Fatal("a cloud sync to storage that is down ran without failing")
+		t.Fatal("a cloud sync to storage that turns the NAS away ran without failing")
 	}
-	t.Logf("with the storage down the run fails with: %v", err)
+	t.Logf("with the storage turning the NAS away the run fails with: %v", err)
 	if state := lastRun(ctx, t, conn, "cloudsync", mirror); state != "FAILED" {
-		t.Errorf("after a run with the storage down the cloud sync says its last run was %s, want FAILED", state)
+		t.Errorf("after a run the storage turned away the cloud sync says its last run was %s, want FAILED", state)
 	}
 	said := alertsNaming(ctx, t, conn, "CloudSyncTaskFailed", "a mirror in a bucket")
 	if len(said) == 0 {
-		t.Error("the NAS raised no alert for a cloud sync whose storage was down")
+		t.Error("the NAS raised no alert for a cloud sync the storage turned away")
 	}
 	for _, one := range said {
 		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
 	}
 
-	storage.Gone(false)
+	storage.TurnAway(false)
 	if err := conn.Call(ctx, "cloudsync.sync", []any{mirror}, nil); err != nil {
-		t.Errorf("mirroring with the storage back: %v", err)
+		t.Errorf("mirroring with the storage taking the NAS again: %v", err)
 	}
 	if state := lastRun(ctx, t, conn, "cloudsync", mirror); state != "SUCCESS" {
-		t.Errorf("after a run with the storage back the cloud sync says its last run was %s", state)
+		t.Errorf("after a run the storage took, the cloud sync says its last run was %s", state)
 	}
 	if still := alertsNaming(ctx, t, conn, "CloudSyncTaskFailed", "a mirror in a bucket"); len(still) != 0 {
 		t.Errorf("the NAS still says the cloud sync failed, after a run that worked: %+v", still)
@@ -175,11 +175,11 @@ func TestACloudSyncToABucketMirrorsEncryptsAndSaysSoWhenTheStorageIsDown(t *test
 
 // A cloud backup keeps what a directory held each time it ran, so that any of those can be brought back. Two are made with the file changed
 // between them, each is listed with what it holds, and the first is brought back beside the second: it holds what the file held then. What
-// reaches the storage cannot be read there. With the storage down a run fails and is said to have, and with it back the next one works. A
+// reaches the storage cannot be read there. With the storage turning the NAS away a run fails and is said to have, and once it stops the next one works. A
 // backup made too many is forgotten, by the number the task is told to keep.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
-func TestACloudBackupIsMadeListedBroughtBackAndSaysSoWhenTheStorageIsDown(t *testing.T) {
+func TestACloudBackupIsMadeListedBroughtBackAndSaysSoWhenTheStorageTurnsItAway(t *testing.T) {
 	conn := admin(t)
 	ctx := within(t, 20*time.Minute)
 
@@ -289,27 +289,27 @@ func TestACloudBackupIsMadeListedBroughtBackAndSaysSoWhenTheStorageIsDown(t *tes
 		t.Errorf("renamed, the backup reads as %.200s (%v)", renamed, err)
 	}
 
-	// the storage goes down, and comes back
-	storage.Gone(true)
+	// the storage turns the NAS away, and then takes it again
+	storage.TurnAway(true)
 	err := conn.Call(ctx, "cloud_backup.sync", []any{backup}, nil)
 	if err == nil {
-		t.Fatal("a cloud backup to storage that is down ran without failing")
+		t.Fatal("a cloud backup to storage that turns the NAS away ran without failing")
 	}
-	t.Logf("with the storage down the run fails with: %v", err)
+	t.Logf("with the storage turning the NAS away the run fails with: %v", err)
 	if state := lastRun(ctx, t, conn, "cloud_backup", backup); state != "FAILED" {
-		t.Errorf("after a run with the storage down the backup says its last run was %s, want FAILED", state)
+		t.Errorf("after a run the storage turned away the backup says its last run was %s, want FAILED", state)
 	}
 	said := alerted(ctx, t, conn, "CloudBackupTaskFailed")
 	if len(said) == 0 {
-		t.Error("the NAS raised no alert for a cloud backup whose storage was down")
+		t.Error("the NAS raised no alert for a cloud backup the storage turned away")
 	}
 	for _, one := range said {
 		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
 	}
 
-	storage.Gone(false)
+	storage.TurnAway(false)
 	if err := conn.Call(ctx, "cloud_backup.sync", []any{backup}, nil); err != nil {
-		t.Errorf("making a backup with the storage back: %v", err)
+		t.Errorf("making a backup with the storage taking the NAS again: %v", err)
 	}
 	if still := alerted(ctx, t, conn, "CloudBackupTaskFailed"); len(still) != 0 {
 		t.Errorf("the NAS still says the backup failed, after a run that worked: %+v", still)

@@ -150,24 +150,24 @@ func TestWhatIsSentInChunksOrInPiecesIsKeptWhole(t *testing.T) {
 	}
 }
 
-// Storage that has gone refuses everything, and takes everything again once it is back, with what it held.
-func TestStorageThatIsGoneRefusesEverythingUntilItIsBack(t *testing.T) {
+// Storage that turns everyone away refuses everything, and takes everything again once it stops, with what it held.
+func TestStorageThatTurnsEveryoneAwayRefusesEverythingUntilItStops(t *testing.T) {
 	t.Parallel()
 
 	s := started(t)
 	s.Make("kept")
 	sent(t, s, http.MethodPut, "/kept/note.txt", strings.NewReader("held"))
 
-	s.Gone(true)
+	s.TurnAway(true)
 	for _, path := range []string{"/", "/kept", "/kept/note.txt"} {
-		if status, why := sent(t, s, http.MethodGet, path, nil); status != http.StatusServiceUnavailable || !strings.Contains(why, "ServiceUnavailable") {
-			t.Errorf("with the storage gone, %s answered %d: %s", path, status, why)
+		if status, why := sent(t, s, http.MethodGet, path, nil); status != http.StatusForbidden || !strings.Contains(why, "AccessDenied") {
+			t.Errorf("with the storage turning everyone away, %s answered %d: %s", path, status, why)
 		}
 	}
 
-	s.Gone(false)
+	s.TurnAway(false)
 	if status, back := sent(t, s, http.MethodGet, "/kept/note.txt", nil); status != http.StatusOK || back != "held" {
-		t.Errorf("with the storage back, the object is %d %q", status, back)
+		t.Errorf("with the storage taking requests again, the object is %d %q", status, back)
 	}
 	if asked := s.Asked(); asked != 5 {
 		t.Errorf("the storage counts %d requests, and was sent 5", asked)

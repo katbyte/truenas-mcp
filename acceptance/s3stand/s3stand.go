@@ -1,6 +1,6 @@
 // Package s3stand is storage that speaks enough S3 for a TrueNAS to copy to, kept in memory, for the live tests: a NAS in a virtual machine
 // has no cloud to send a cloud sync or a cloud backup to, and this stands in for one on the machine the tests run on. It takes any key, since
-// who may write is not what is being tested, and it can be told to stop answering, which is how such a copy fails in life.
+// who may write is not what is being tested, and it can be told to turn everyone away, which is how such a copy fails in life.
 package s3stand
 
 import (
@@ -31,7 +31,7 @@ type Server struct {
 	buckets map[string]map[string]object
 	uploads map[string]map[int][]byte
 	asked   int
-	gone    bool
+	away    bool
 }
 
 // object is one thing kept: what it holds and when it was put.
@@ -84,12 +84,13 @@ func (s *Server) Make(bucket string) {
 	}
 }
 
-// Gone makes the storage refuse everything, as storage that is down does, until it is told otherwise.
-func (s *Server) Gone(gone bool) {
+// TurnAway makes the storage refuse everything as not allowed, as storage does once the key it was given is taken back, until it is told
+// otherwise. A sender gives up on such a refusal at once, where storage that says it is down is asked again for a quarter of an hour.
+func (s *Server) TurnAway(away bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	s.gone = gone
+	s.away = away
 }
 
 // Asked is how many requests it has been sent.
@@ -164,11 +165,11 @@ func answer(w http.ResponseWriter, status int, body any) {
 func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	s.asked++
-	gone := s.gone
+	away := s.away
 	s.mu.Unlock()
 
-	if gone {
-		refuse(w, http.StatusServiceUnavailable, "ServiceUnavailable", "the storage is not there")
+	if away {
+		refuse(w, http.StatusForbidden, "AccessDenied", "the storage turns everyone away")
 
 		return
 	}
