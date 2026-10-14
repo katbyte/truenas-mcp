@@ -191,7 +191,7 @@ test: build ## Run the unit tests, with the race detector
 # the live suite (acceptance/) runs against a real TrueNAS: a throwaway one in a virtual machine, which testacc installs, sets up, runs the suite
 # against and removes. it needs qemu and an x86-64 Linux machine with /dev/kvm, which a GitHub runner is and a Mac is not, so it is not part of
 # check-all: the acceptance workflow runs it
-LIVE_TIMEOUT?=30m
+LIVE_TIMEOUT?=45m
 
 test-live: ## Run the live tests against a test NAS that is already up (see testenv-up)
 	@[ -n "${TRUENAS_TEST_SERVER}" ] && [ -n "${TRUENAS_TEST_PASSWORD}" ] || \

@@ -84,6 +84,11 @@ type pooled struct {
 				Status string `json:"status"`
 			} `json:"children"`
 		} `json:"data"`
+		Spare []struct {
+			GUID   string `json:"guid"`
+			Disk   string `json:"disk"`
+			Status string `json:"status"`
+		} `json:"spare"`
 	} `json:"topology"`
 }
 

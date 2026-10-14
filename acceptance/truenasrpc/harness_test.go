@@ -150,6 +150,14 @@ func (k *kept) secret(keys ...string) {
 	}
 }
 
+// hide names a secret the tests were handed whole, which no line of trace may hold from here on.
+func (k *kept) hide(secret string) {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+
+	k.secrets = append(k.secrets, secret)
+}
+
 // count notes a call the trace cannot name: a file is fetched and sent by a web request, which says nothing of the method it is for.
 func (k *kept) count(method string) {
 	k.mu.Lock()
