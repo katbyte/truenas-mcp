@@ -43,6 +43,8 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **A ZFS GUID is written as a bare number too large for a signed 64-bit integer.** `zfs.resource.query` writes each dataset's `guid` as a number, as its description says, and a GUID is an unsigned 64-bit number: about half are larger than a signed one holds, so read into one the whole answer fails. Which half a run's pool falls in is chance, so the typed sweep passed once before it failed. The client holds it as `uint64`. `TestAZFSGUIDLargerThanASignedNumberReads`, `TestEveryReadIsReadIntoTheTypedClient`
 
+**A dataset's snapshot count is left out of its row.** `pool.dataset.query` asked with the extra `snapshots_count` adds `snapshot_count` to each row, and the row's description has no such field, so a typed read dropped it. The client adds it, in `sdk/pandorest/pools.go`. `TestADatasetsSnapshotCountReads`, `TestEverythingTheExporterAsksReadsIntoTheTypedClient`
+
 **An API key sent without TLS is revoked on the spot.** The login answers `EXPIRED` and the key is gone for good. An address without TLS is refused before anything is sent. `TestSettingsThatCannotWorkAreRefusedWhenTheConnectionIsMade`, `TestARevokedKeySaysANewOneIsNeeded`
 
 **Logging in with a key and no user name is going away.** `auth.login_with_api_key` is removed in TrueNAS 27; `auth.login_ex` wants the name of the user the key was made for. Both are supported. `TestAKeyAloneLogsInTheOlderWay`

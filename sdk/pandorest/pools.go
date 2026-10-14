@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/katbyte/pandorest/importer/workarounds"
@@ -132,4 +133,27 @@ func ref(name string) *openapi.Schema { return &openapi.Schema{Ref: openapi.Sche
 
 func listOf(items *openapi.Schema) *openapi.Schema {
 	return &openapi.Schema{Type: openapi.TypeArray, Items: items}
+}
+
+// datasetExtras adds to a dataset's row what a query's extra asks the NAS to add, which the description leaves out of the row altogether.
+type datasetExtras struct{}
+
+func (datasetExtras) Name() string    { return "truenas-dataset-extras" }
+func (datasetExtras) Service() string { return "truenas" }
+
+func (datasetExtras) Bug() string {
+	return "pool.dataset.query asked with the extra snapshots_count adds snapshot_count to each row, which the row's description does not have"
+}
+
+func (datasetExtras) Apply(spec *openapi.Spec) error {
+	row := spec.Components.Schemas["PoolDatasetQueryResultItem"]
+	if row == nil {
+		return errors.New("no schema PoolDatasetQueryResultItem")
+	}
+	if row.Properties["snapshot_count"] != nil {
+		return errors.New("PoolDatasetQueryResultItem has snapshot_count now")
+	}
+	row.Properties["snapshot_count"] = said(integer(), "how many snapshots it has, when the query's extra asks for snapshots_count")
+
+	return nil
 }

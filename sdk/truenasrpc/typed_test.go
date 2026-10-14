@@ -147,3 +147,20 @@ func TestAZFSGUIDLargerThanASignedNumberReads(t *testing.T) {
 		t.Errorf("the dataset reads as %+v", found.Answer)
 	}
 }
+
+// The count of a dataset's snapshots, which a NAS adds to its row when asked and the description leaves out, reads.
+func TestADatasetsSnapshotCountReads(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	nas.Answer("pool.dataset.query", json.RawMessage(`[{"id": "tank/a", "name": "tank/a", "pool": "tank", "type": "FILESYSTEM", "snapshot_count": 12}]`))
+
+	typed, err := nasclient.New(connect(t, nas))
+	if err != nil {
+		t.Fatal(err)
+	}
+	found, err := typed.PoolDataset.Query(t.Context(), nil, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"snapshots_count": true}})
+	if err != nil || len(found.Answer) != 1 || found.Answer[0].SnapshotCount != 12 {
+		t.Errorf("the dataset reads as %+v (%v)", found.Answer, err)
+	}
+}

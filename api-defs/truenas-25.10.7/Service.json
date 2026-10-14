@@ -9,6 +9,7 @@
     "truenas-pool-records",
     "truenas-pool-shapes",
     "truenas-vdev-lists",
+    "truenas-dataset-extras",
     "truenas-task-records",
     "truenas-task-shapes",
     "truenas-secrets",

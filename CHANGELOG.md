@@ -43,5 +43,6 @@
 
 ### Fixed
 
+- a dataset's snapshot count, which a NAS adds to its row when asked and its description leaves out, reads in the typed client
 - a ZFS GUID that `zfs.resource.query` writes larger than a signed 64-bit integer, as about half are, reads in the typed client, which failed on it before
 - a `.truenas-mcp` file now has its two-word settings read (`CERTIFICATE_FILE=...`), and one in the working directory changes only what it names of the one in `$HOME`; before, the first was ignored and the second replaced the whole file

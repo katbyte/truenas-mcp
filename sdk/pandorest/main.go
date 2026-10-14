@@ -24,6 +24,7 @@ var fixes = []workarounds.Workaround{
 	workarounds.DeclaredSchemas(workarounds.About{Name: "truenas-pool-records", Service: "truenas", Bug: "a pool's scrub, expansion, auto-trim setting and vdevs are described as values of no shape, and a NAS writes each the same way"}, poolShapes),
 	workarounds.DeclaredShapes(workarounds.About{Name: "truenas-pool-shapes", Service: "truenas", Bug: "a pool's scan, expand and autotrim are described as records of no fields"}, poolFields),
 	vdevLists{},
+	datasetExtras{},
 	// a task's state and its last run, which the description leaves shapeless (tasks.go)
 	workarounds.DeclaredSchemas(workarounds.About{Name: "truenas-task-records", Service: "truenas", Bug: "a snapshot task's and a replication's state are described as values of no shape, and a NAS writes each the same way"}, taskShapes),
 	workarounds.DeclaredShapes(workarounds.About{Name: "truenas-task-shapes", Service: "truenas", Bug: "a task's state and its last run (job) are described as values or records of no shape, and a NAS writes the job as core.get_jobs lists one"}, taskFields),

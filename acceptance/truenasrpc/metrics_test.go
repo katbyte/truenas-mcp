@@ -385,6 +385,12 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 	if err != nil || len(replications.Answer) == 0 || replications.Answer[0].State == nil || replications.Answer[0].State.State != "PENDING" {
 		t.Errorf("the furnished replication reads as %+v (%v)", replications.Answer, err)
 	}
+	// and so is the count of a dataset's snapshots the exporter asks for, which the description leaves out of a dataset's row: the furnished snapshot
+	// task has made some
+	counted, err := typed.PoolDataset.Query(within(t, readWait), []any{[]any{"name", "=", layout.TaskDataset}}, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": false, "snapshots_count": true}})
+	if err != nil || len(counted.Answer) != 1 || counted.Answer[0].SnapshotCount == 0 {
+		t.Errorf("the furnished task's dataset reads as having %+v snapshots (%v)", counted.Answer, err)
+	}
 	copies, err := typed.Rsynctask.Query(within(t, readWait), []any{[]any{"desc", "=", layout.CopyTask}}, truenas.RsynctaskQueryOptions{})
 	if err != nil || len(copies.Answer) == 0 || copies.Answer[0].Job == nil || copies.Answer[0].Job.State != "FAILED" || copies.Answer[0].Job.TimeFinished.IsZero() || copies.Answer[0].Job.Error == "" {
 		t.Errorf("the furnished copy task reads as %+v (%v)", copies.Answer, err)
