@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
 // machine tells the virtual machine the NAS runs in to do something, the way a person at its console would, and answers what it said back.
@@ -52,12 +53,11 @@ func machine(ctx context.Context, t *testing.T, socket, command string) string {
 	return prompted()
 }
 
-// The last test but one of the run, by its file's name, because what it does cannot be undone: a disk of the pool is taken away from under
-// the NAS, as a disk that has died is, so every read and write of it fails. The NAS has to notice by itself and say the pool is no longer
-// safe, in the pool's state and in an alert. A spare disk is then put in its place, and the pool has to be whole again on the spare.
-//
-//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
-func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
+// console is where the machine the NAS runs in is told what to do. A test that needs it is skipped where there is none, which is anywhere the
+// NAS was not started by this repository's own script.
+func console(t *testing.T) string {
+	t.Helper()
+
 	socket := os.Getenv("TRUENAS_TEST_MONITOR")
 	if socket == "" {
 		home, _ := os.UserHomeDir()
@@ -67,6 +67,33 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 		t.Skipf("the machine the NAS runs in has no console at %s to break a disk from: set TRUENAS_TEST_MONITOR, which \"make testacc\" does", socket)
 	}
 
+	return socket
+}
+
+// drive is the machine's name for a disk the NAS knows by another: the machine numbers its disks, and gave each a serial that ends in its number.
+func drive(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, socket, disk string) string {
+	t.Helper()
+
+	var known []spare
+	if err := conn.Call(ctx, "disk.query", []any{[]any{[]any{"name", "=", disk}}}, &known); err != nil || len(known) != 1 {
+		t.Fatalf("looking up the disk %s: %d found, %v", disk, len(known), err)
+	}
+
+	name := "data" + strings.TrimPrefix(known[0].Serial, layout.DiskSerial)
+	if has := machine(ctx, t, socket, "info block"); !strings.Contains(has, name+" ") {
+		t.Fatalf("the machine has no drive %s for the disk with serial %s: %s", name, known[0].Serial, has)
+	}
+
+	return name
+}
+
+// The last test but one of the run, by its file's name, because what it does cannot be undone: a disk of the pool is taken away from under
+// the NAS, as a disk that has died is, so every read and write of it fails. The NAS has to notice by itself and say the pool is no longer
+// safe, in the pool's state and in an alert. A spare disk is then put in its place, and the pool has to be whole again on the spare.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
+	socket := console(t)
 	conn := admin(t)
 	ctx := within(t, 25*time.Minute)
 
@@ -81,18 +108,9 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 		t.Fatal("the NAS has no disk nothing uses to put in a dead one's place")
 	}
 
-	// the machine knows its disks by number, and gave each a serial that ends in it
-	var known []spare
-	if err := conn.Call(ctx, "disk.query", []any{[]any{[]any{"name", "=", dying.Disk}}}, &known); err != nil || len(known) != 1 {
-		t.Fatalf("looking up the disk %s: %d found, %v", dying.Disk, len(known), err)
-	}
-	drive := "data" + strings.TrimPrefix(known[0].Serial, layout.DiskSerial)
-	if has := machine(ctx, t, socket, "info block"); !strings.Contains(has, drive+" ") {
-		t.Fatalf("the machine has no drive %s for the disk with serial %s: %s", drive, known[0].Serial, has)
-	}
-
-	t.Logf("taking %s (%s, serial %s) away from under the NAS", dying.Disk, drive, known[0].Serial)
-	machine(ctx, t, socket, "drive_del "+drive)
+	dead := drive(ctx, t, conn, socket, dying.Disk)
+	t.Logf("taking %s (%s to the machine) away from under the NAS", dying.Disk, dead)
+	machine(ctx, t, socket, "drive_del "+dead)
 
 	// a NAS finds a dead disk when it next uses it, so it is given something to write, and a scrub if that is not enough
 	put(ctx, t, conn, "/mnt/"+layout.Datasets[0]+"/after-the-disk-died.txt", "written with one disk of the pair dead\n")

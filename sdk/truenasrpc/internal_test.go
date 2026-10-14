@@ -310,7 +310,8 @@ func planted(path, marker string) any {
 
 // The TrueNAS source marks which values are secrets, and api-defs holds the place of each one, method by method. A trace hides by a list of names
 // and a list of methods, which is only right for as long as it covers every one of those places: this plants a marker at each and looks for it in
-// what a trace would print, so that a secret under a name nobody thought of fails here and not in somebody's log.
+// what a trace would print, so that a secret under a name nobody thought of fails here and not in somebody's log. The same is done for the
+// secrets the source does not mark, which the list keeps apart: a NAS hands those to anyone who may read, so the trace is all that hides them.
 func TestEverySecretTheSourceMarksIsHiddenInATrace(t *testing.T) {
 	t.Parallel()
 
@@ -328,18 +329,38 @@ func TestEverySecretTheSourceMarksIsHiddenInATrace(t *testing.T) {
 			t.Fatal(err)
 		}
 
+		type where struct {
+			Params []string `json:"params"`
+			Result []string `json:"result"`
+		}
 		var secrets struct {
-			Methods map[string]struct {
-				Params []string `json:"params"`
-				Result []string `json:"result"`
-			} `json:"methods"`
+			Methods  map[string]where `json:"methods"`
+			Unmarked map[string]where `json:"unmarked"`
 		}
 		if err := json.Unmarshal(raw, &secrets); err != nil {
 			t.Fatalf("%s: %v", list, err)
 		}
 
-		places := 0
+		// a method is in one list or both: its own places from each are planted the same way
+		type listed struct {
+			method string
+			where
+		}
+		all := make([]listed, 0, len(secrets.Methods)+len(secrets.Unmarked))
 		for method, m := range secrets.Methods {
+			all = append(all, listed{method, m})
+		}
+		for method, m := range secrets.Unmarked {
+			all = append(all, listed{method, m})
+		}
+		if len(secrets.Unmarked) == 0 {
+			t.Errorf("%s: no secrets the source does not mark, where 25.10.7 has the SSH server's own keys and a replication's: is the list read right?", list)
+		}
+
+		places := 0
+		for _, of := range all {
+			method, m := of.method, of.where
+
 			for _, path := range m.Params {
 				places++
 				sent, _ := json.Marshal(map[string]any{"jsonrpc": "2.0", "id": 1, "method": method, "params": planted(path, marker)})

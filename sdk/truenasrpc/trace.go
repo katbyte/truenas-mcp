@@ -19,8 +19,12 @@ const scrubbed = "***"
 // secretNames are the fields a TrueNAS keeps a secret in under a name that does not read as one: names with password, secret or token in them are
 // hidden unasked. Some are wider than they need be, since a trace that hides too much is better than one that shows a key: provider and attributes
 // are where a cloud account's keys sit, and values is an app's whole configuration.
+//
+// The second line is what TrueNAS itself does not treat as secret and hands to anyone who may read: the private keys its SSH server proves itself
+// with, and the key a replication encrypts what it copies with. api-defs/README.md says how each was found.
 var secretNames = []string{
 	"key", "pass", "passwd", "sed_passwd", "bindpw", "unixhash", "smbhash", "keyhash", "v3_privkey", "v3_authkey", "dhchap_key", "dhchap_ctrl_key",
+	"host_key", "host_dsa_key", "host_ecdsa_key", "host_ed25519_key", "host_rsa_key", "private_key", "privatekey", "encryption_key",
 	"service_key", "service_account_credentials", "access_key_id", "client_id", "encryption_salt", "provider", "attributes", "values", "oauth",
 	"custom_compose_config", "custom_compose_config_string", "ui_certificate",
 }

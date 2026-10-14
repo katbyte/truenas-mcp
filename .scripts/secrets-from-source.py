@@ -28,6 +28,15 @@ DICTS = {"dict", "Dict", "Mapping"}
 NOTHING_INSIDE = {"Literal", "type", "Type", "Callable"}
 SHAPE = {"type", "properties", "items", "anyOf", "oneOf", "allOf", "additionalProperties", "enum", "const", "$ref"}
 
+# What the source does not mark and is a secret all the same, by the start of a method's name and the field's name. Nothing in the source says so:
+# each was found by reading what a NAS describes for names that sound like a secret, then the source for what the field holds. They are written
+# under "unmarked", apart from what the source marks, because a NAS does not hide them from anyone: api-defs/README.md has the account of each.
+UNMARKED = [
+    ("ssh.", ["privatekey", "host_key", "host_dsa_key", "host_ecdsa_key", "host_ed25519_key", "host_rsa_key"]),
+    ("replication.", ["encryption_key"]),
+    ("keychaincredential.generate_ssh_key_pair", ["private_key"]),
+]
+
 
 def name_of(node):
     """The plain name an expression refers to: Name, or the last part of a dotted one."""
@@ -280,6 +289,33 @@ def described(schema, path):
     return False
 
 
+def named(schema, path, names):
+    """The place of every field of one of these names in the NAS's description of a value, as paths."""
+    if not isinstance(schema, dict):
+        return set()
+
+    places = set()
+    for alternative in schema.get("anyOf", []) + schema.get("oneOf", []) + schema.get("allOf", []):
+        places |= named(alternative, path, names)
+
+    for name, inside in schema.get("properties", {}).items():
+        if name in names:
+            places.add(f"{path}.{name}")
+        else:
+            places |= named(inside, f"{path}.{name}", names)
+
+    items = schema.get("items")
+    for item in items if isinstance(items, list) else [items]:
+        places |= named(item, path + "[]", names)
+
+    return places
+
+
+def under(path, marked):
+    """Whether a path is one of the marked places or inside one."""
+    return any(path == m or path.startswith(m + ".") or path.startswith(m + "[") for m in marked)
+
+
 def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
@@ -325,10 +361,36 @@ def main():
         if places["params"] or places["result"]:
             out[method] = {k: v for k, v in places.items() if v}
 
+    # what the source leaves unmarked is looked for in the description itself, so that a field of the same name on a method added later is found
+    unmarked = {}
+    for prefix, names in UNMARKED:
+        found = 0
+        for method in sorted(document):
+            if not method.startswith(prefix):
+                continue
+
+            marked = out.get(method, {})
+            places = {"params": set(), "result": set()}
+            for index, accepts in enumerate(document[method]["accepts"]):
+                places["params"] |= named(accepts, f"$[{index}]", names)
+            for returns in document[method]["returns"][:1]:
+                places["result"] |= named(returns, "$", names)
+
+            for side in places:
+                kept = sorted(p for p in places[side] if not under(p, marked.get(side, [])))
+                if kept:
+                    unmarked.setdefault(method, {}).setdefault(side, [])
+                    unmarked[method][side] = sorted(set(unmarked[method][side]) | set(kept))
+                    found += len(kept)
+
+        if not found:
+            wrong.append(f"{prefix}* unmarked {', '.join(names)}")
+
     commit = subprocess.run(["git", "-C", str(checkout), "rev-parse", "HEAD"], capture_output=True, text=True, check=False).stdout.strip()
     result = {
         "source": {"repository": "https://github.com/truenas/middleware", "tag": "TS-" + release, "commit": commit, "api": version},
         "methods": out,
+        "unmarked": unmarked,
         "not_read": unread,
     }
     target = here / "api-defs" / f"truenas-secrets-{release}.json"
@@ -336,6 +398,7 @@ def main():
 
     places = sum(len(v) for m in out.values() for v in m.values())
     print(f"{target.name}: {places} secret places in {len(out)} of the {len(document)} methods the NAS describes (source {version})")
+    print(f"secrets the source does not mark: {sum(len(v) for m in unmarked.values() for v in m.values())} places in {len(unmarked)} methods")
     print(f"methods the description has that this could not follow to their models: {len(unread)}")
     for method in unread:
         print("  " + method)

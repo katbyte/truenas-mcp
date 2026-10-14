@@ -25,6 +25,8 @@ Each method lists the places in its arguments (`params`) and in its answer (`res
 
 A method that is not listed has no secret the source marks.
 
+A second list in the same file, `unmarked`, holds the secrets the source does not mark. Nothing in the source finds those: they are named in the script, by method and field, and the script looks each up in the description so that the same field on a method added later is found too. How each was found is below.
+
 ## What the description does not say
 
 Each of these was read in the TrueNAS source (`truenas/middleware` at the release's tag) and is held by a test, named after it.
@@ -74,6 +76,8 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 **Over its own socket a NAS logs a connection in as it opens.** It can see which user is at the other end, and takes root or any user it has an account for with nothing sent. The connection asks who is logged in, so that a user the NAS does not know is told so when it connects and not at its first call. `TestAProgramOnTheNASItselfIsLoggedInByWhoItRunsAs`, `TestAUserTheNASDoesNotKnowIsToldSoAndTheSocketsLoginIsOnlyForTheSocket`
 
 **A trace hides every secret the source marks, and three it does not.** A trace hides by name and by method, not by the list above, so the list is what holds it to account: a marker is planted at each of the 1,040 places and looked for in what a trace would print. That found a mail account's password (sent as `pass`), a Kerberos keytab (`file`) and a container registry's user name being shown, and they no longer are. The source leaves three generated secrets unmarked, the answers of `auth.generate_token`, `nvmet.host.generate_key` and `tn_connect.generate_claim_token`; those are found from the description, as bare text it calls a key, a password or a token. `TestEverySecretTheSourceMarksIsHiddenInATrace`, `TestNoMethodShowsASecretItTakesByPositionOrAnswersBare`, `TestWhatATraceShowsOfAMessage`, `TestNoSecretReachesTheLogOrAnError`
+
+**A NAS hands out two secrets it does not treat as secret.** A secret the source marks is answered as `********` to anyone who is not a full administrator. Two are not marked, so they go to anyone who may read, a read-only key included: the private keys the NAS's SSH server proves itself with (`privatekey` and the five `host_*_key` of `ssh.config`), and the key a replication encrypts what it copies with (`encryption_key` of `replication.query`). Whoever holds the first can pass for the NAS over SSH, and whoever holds the second can read the encrypted copy. They were found by reading the description for names that sound like a secret and then the source for what each holds, and a trace showed all of them until this was found. They are now in the `unmarked` list with the key `keychaincredential.generate_ssh_key_pair` answers, a marker is planted at each as for the rest, and a program that logs what it reads from either call should hide them itself. `TestEverySecretTheSourceMarksIsHiddenInATrace`, `TestWhatANASDoesNotKeepSecretIsHandedToAKeyThatMayOnlyReadAndNeverTraced`
 
 **A field can be sent under another name than the source gives it.** A mail account's password is `pass_` in the source and `pass` to a caller. The list of secrets uses the name a caller sees. `TestEverySecretTheSourceMarksIsHiddenInATrace`
 
