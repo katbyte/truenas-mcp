@@ -389,6 +389,13 @@ func TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed(t *testing.T) {
 	}
 	t.Logf("the run fails with: %v", err)
 
+	// the failure points at the job's log for the rest, which is fetched like any file, and holds what the copying program itself said
+	var log strings.Builder
+	if n, err := job.Logs(ctx, &log); err != nil || n == 0 || !strings.Contains(log.String(), "rsync") {
+		t.Errorf("the failed run's log is %d bytes that say nothing of rsync (%v): %.300s", n, err, log.String())
+	}
+	t.Logf("the failed run's log: %.300s", strings.TrimSpace(log.String()))
+
 	var tasks []struct {
 		Job *struct {
 			State string `json:"state"`
@@ -417,6 +424,16 @@ func TestATaskThatCannotReachWhereItCopiesToIsSaidToHaveFailed(t *testing.T) {
 	for _, one := range alerted(ctx, t, conn, "RsyncFailed") {
 		if one.UUID == said[0].UUID && !one.Dismissed {
 			t.Error("the alert was dismissed and is not marked so")
+		}
+	}
+
+	// and brought back, it is as it was
+	if err := conn.Call(ctx, "alert.restore", []any{said[0].UUID}, nil); err != nil {
+		t.Fatalf("bringing the alert back: %v", err)
+	}
+	for _, one := range alerted(ctx, t, conn, "RsyncFailed") {
+		if one.UUID == said[0].UUID && one.Dismissed {
+			t.Error("the alert was brought back and is still marked dismissed")
 		}
 	}
 

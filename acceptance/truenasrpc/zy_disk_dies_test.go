@@ -87,7 +87,7 @@ func drive(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, socket, dis
 	return name
 }
 
-// The last test but one of the run, by its file's name, because what it does cannot be undone: a disk of the pool is taken away from under
+// One of the last tests of the run, by its file's name, because what it does cannot be undone: a disk of the pool is taken away from under
 // the NAS, as a disk that has died is, so every read and write of it fails. The NAS has to notice by itself and say the pool is no longer
 // safe, in the pool's state and in an alert. A spare disk is then put in its place, and the pool has to be whole again on the spare.
 //

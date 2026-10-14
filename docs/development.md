@@ -19,11 +19,19 @@ make testacc    # the live tests, against a throwaway TrueNAS in a virtual machi
 
 **The NAS is given real problems**, and how it reports each is checked: a pool with a disk taken out, a dataset filled to its limit, a pool with most of its space spoken for, a copy task that cannot reach where it copies to, a replication that would overwrite files, and a snapshot task that fails.
 
-**A disk dies.** The machine the NAS runs in is told to take one of the pool's disks away, as a dead disk goes. The NAS has to notice by itself, and be whole again with a spare in its place. This runs last, since a dead disk stays dead.
+**A disk dies.** The machine the NAS runs in is told to take one of the pool's disks away, as a dead disk goes. The NAS has to notice by itself, and be whole again with a spare in its place. This runs late, since a dead disk stays dead.
+
+**A disk lies.** A pool on a pair of disks has one disk written over from under it, then both. The first scrub has to repair everything and count the damage against the right disk. The second has to say what it could not repair.
+
+**The NAS is restarted** with the tests' connections open. Each has to find the NAS gone and be logged in again by itself when it is back. What is different the morning after is then read: a dataset kept under a passphrase is locked, and a service set to start is running.
 
 **Storage is set up and taken down.** A second pool goes through its whole life: a spare, a second disk, moved away and brought back. A pool is scrubbed and its care set. A dataset is made, changed, renamed and encrypted. A snapshot is rolled back, copied and held.
 
 **Data protection is run.** A replication copies a dataset and then only what changed. Snapshot tasks and boot environments are made, changed and removed.
+
+**Copies lose their other end.** The test NAS has no second machine and no cloud, so it is given both. It is set up to reach itself over SSH the way it would reach another NAS, and a replication and a cloud sync are sent that way; stopping the SSH server is the other end going away. A stand-in for S3 storage (`acceptance/s3stand`) runs beside the tests, and a cloud sync and a cloud backup go to it; what arrives is read from the storage itself, and it can be told to stop answering. Each copy has to work, fail and say so, and work again.
+
+**Shares, apps and machines are run.** A share of each kind is made, served and removed, a volume is offered over iSCSI from end to end, and what rests on a locked dataset has to say it is locked. An app is run and stopped, and one that fails on starting has to be listed as crashed. A virtual machine is given a disk, copied, and started where the NAS can run one.
 
 **The rest of the configuration is made and changed.** One of each of twenty-one kinds of thing a NAS keeps a list of (users, groups, keys, scheduled commands, routes, alert services, cloud credentials, iSCSI and NVMe parts) is made, changed and removed. One setting on each of fifteen pages is changed and put back.
 
