@@ -119,6 +119,16 @@ type schema struct {
 // Differences says where an answer a NAS gave is not what the method's description says it answers: each one names the place in the answer and
 // what is wrong there, once however many rows are wrong the same way. No differences is an answer the description describes.
 func (m Method) Differences(answer json.RawMessage) []string {
+	return m.compare(answer, false)
+}
+
+// Selected is Differences for an answer to a query that selected only some fields: what it holds has to be as described, and a name the
+// description says a row always has is not missed when the query did not ask for it.
+func (m Method) Selected(answer json.RawMessage) []string {
+	return m.compare(answer, true)
+}
+
+func (m Method) compare(answer json.RawMessage, selected bool) []string {
 	if len(m.Returns) != 1 {
 		return []string{fmt.Sprintf("the description gives %d shapes for the answer, and one is expected", len(m.Returns))}
 	}
@@ -128,7 +138,7 @@ func (m Method) Differences(answer json.RawMessage) []string {
 		return []string{"the answer is not JSON: " + err.Error()}
 	}
 
-	found := differences(m.Returns[0], value, "$")
+	found := differences(m.Returns[0], value, "$", selected)
 	slices.Sort(found)
 
 	return slices.Compact(found)
@@ -258,7 +268,8 @@ func form(object map[string]any) (string, bool) {
 	return "", false
 }
 
-func differences(described json.RawMessage, value any, at string) []string {
+// differences is where a value is not what a shape says it is. A value that was selected need not have every name the shape says it always has.
+func differences(described json.RawMessage, value any, at string, selected bool) []string {
 	var s schema
 	if err := json.Unmarshal(described, &s); err != nil {
 		// a shape that cannot be read as one claims nothing
@@ -276,7 +287,7 @@ func differences(described json.RawMessage, value any, at string) []string {
 		var closest []string
 		var nearest bool
 		for i, option := range options {
-			found := differences(option, value, at)
+			found := differences(option, value, at, selected)
 			if len(found) == 0 {
 				return nil
 			}
@@ -321,7 +332,7 @@ func differences(described json.RawMessage, value any, at string) []string {
 	switch v := value.(type) {
 	case map[string]any:
 		for _, name := range s.Required {
-			if _, has := v[name]; !has {
+			if _, has := v[name]; !has && !selected {
 				found = append(found, fmt.Sprintf("%s has no %s, which the description says it always has", at, name))
 			}
 		}
@@ -339,9 +350,9 @@ func differences(described json.RawMessage, value any, at string) []string {
 		for _, name := range sorted(v) {
 			switch property, named := s.Properties[name]; {
 			case named:
-				found = append(found, differences(property, v[name], at+"."+name)...)
+				found = append(found, differences(property, v[name], at+"."+name, selected)...)
 			case rest != nil:
-				found = append(found, differences(rest, v[name], at+".*")...)
+				found = append(found, differences(rest, v[name], at+".*", selected)...)
 			case closed:
 				found = append(found, fmt.Sprintf("%s has a %s, which the description does not name", at, name))
 			}
@@ -352,7 +363,7 @@ func differences(described json.RawMessage, value any, at string) []string {
 			break
 		}
 		for _, item := range v {
-			found = append(found, differences(s.Items[0], item, at+"[]")...)
+			found = append(found, differences(s.Items[0], item, at+"[]", selected)...)
 		}
 	}
 

@@ -7,27 +7,98 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/katbyte/truenas-mcp/acceptance/described"
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
 	"github.com/katbyte/truenas-mcp/sdk/truenas"
 	"github.com/katbyte/truenas-mcp/sdk/truenas/client"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
-// question is one thing truenas-metrics asks a NAS: the method, the arguments it passes, and the places in the answer it reads. It is the
-// exporter this SDK was made for, it asks with a key that may only read, and it reads these places and no others (lib/nas in its repository).
+// question is one thing truenas-metrics asks a NAS: the method, what it asks it with, and the places in the answer it reads. It is the exporter
+// this SDK was made for, it asks through the typed client with a key that may only read, and it reads these places and no others (lib/nas in
+// its repository).
 type question struct {
+	// name is what the test calls the question: its method, and what it is asked for when the exporter asks the method more than one way
+	name   string
 	method string
-	params []any
+
+	// a query's filters, the fields it selects, which are all the NAS answers with, and its extra options
+	filters []any
+	fields  []any
+	extra   map[string]any
+
 	// reads are the places of each row, or of the one answer, the exporter reads: a name, a name inside it after a dot, every row of a list
-	// after "[]". Each has to be there, though what is there may be nothing
+	// after "[]". Each has to be there, though what is there may be nothing. They are the fields selected unless given
 	reads []string
 	// rows is how many rows the answer has to have at least, on the NAS as the test leaves it
 	rows int
 }
+
+// called is what the test calls a question.
+func (q question) called() string {
+	if q.name != "" {
+		return q.name
+	}
+
+	return q.method
+}
+
+// params is what a question is asked with, as the typed client sends it: a query's filters and the options it sets, and nothing for the rest.
+func (q question) params() []any {
+	if q.fields == nil {
+		return nil
+	}
+
+	options := map[string]any{"select": q.fields}
+	if q.extra != nil {
+		options["extra"] = q.extra
+	}
+	filters := q.filters
+	if filters == nil {
+		filters = []any{}
+	}
+
+	return []any{filters, options}
+}
+
+// places is the places a question reads.
+func (q question) places() []string {
+	if q.reads != nil {
+		return q.reads
+	}
+
+	places := make([]string, 0, len(q.fields))
+	for _, field := range q.fields {
+		places = append(places, fmt.Sprint(field))
+	}
+
+	return places
+}
+
+// what the exporter asks for of each thing, named as lib/nas names it
+var (
+	poolFields        = []any{"name", "status", "healthy", "warning", "size", "allocated", "free", "freeing", "fragmentation", "scan", "topology"}
+	diskFields        = []any{"name", "serial", "lunid", "model", "type", "bus", "size", "enclosure"}
+	datasetProperties = []string{"used", "available", "usedbydataset", "usedbysnapshots", "quota", "refquota", "compressratio"}
+	datasetFields     = []any{"name", "pool", "type", "used.parsed", "available.parsed", "usedbydataset.parsed", "usedbysnapshots.parsed", "quota.parsed", "refquota.parsed", "compressratio.parsed"}
+	snapshotFields    = []any{"name", "pool", "snapshot_count"}
+	shareFields       = []any{"enabled", "locked"}
+	jobFields         = []any{"job.state", "job.progress.percent", "job.time_started", "job.time_finished"}
+
+	// everyDataset is a filter every dataset passes: asked for datasets without the ones under each, a NAS goes below the pools only when it is
+	// given a filter
+	everyDataset = []any{[]any{"type", "in", []string{"FILESYSTEM", "VOLUME"}}}
+
+	// datasetsAsked and snapshotsAsked are the extra options of the exporter's two dataset questions: each dataset without the ones under it,
+	// with the properties it reads, or with none and a count of its snapshots
+	datasetsAsked  = map[string]any{"retrieve_children": false, "properties": datasetProperties}
+	snapshotsAsked = map[string]any{"retrieve_children": false, "properties": []string{}, "snapshots_count": true}
+)
 
 // vdev is what the exporter reads of a pool's disk or group of disks, and of each one under it. It reads which disk each is as well, which
 // only a disk says: a pair of disks has no disk of its own, and no such name at all.
@@ -48,15 +119,8 @@ func ofPool() []string {
 
 // questions is everything the exporter asks, as it asks it.
 func questions() []question {
-	sizes := []string{"used", "available", "usedbydataset", "usedbysnapshots", "quota", "refquota", "compressratio"}
-	ofDataset := make([]string, 0, 4+len(sizes))
-	ofDataset = append(ofDataset, "name", "pool", "type", "snapshot_count")
-	for _, size := range sizes {
-		ofDataset = append(ofDataset, size+".parsed")
-	}
-
+	// a task's last run is read only of a task that has run, so it is not looked for in every row
 	task := []string{"id", "enabled", "state.state"}
-	run := []string{"id", "enabled", "job"}
 
 	return []question{
 		{method: "system.info", reads: []string{"version", "system_product", "system_manufacturer", "model", "physmem", "cores", "physical_cores", "loadavg", "uptime_seconds", "boottime", "datetime", "ecc_memory"}},
@@ -64,30 +128,31 @@ func questions() []question {
 		{method: "update.status", reads: []string{"code", "status"}},
 		{method: "directoryservices.status", reads: []string{"type", "status"}},
 		{method: "api_key.my_keys", reads: []string{"expires_at", "revoked"}, rows: 1},
-		{method: "pool.query", reads: ofPool(), rows: 1},
+		{method: "pool.query", fields: poolFields, reads: ofPool(), rows: 1},
 		{method: "boot.get_state", reads: ofPool()},
-		{method: "disk.query", reads: []string{"name", "serial", "lunid", "model", "type", "bus", "size", "enclosure"}, rows: 5},
+		{method: "disk.query", fields: diskFields, rows: 5},
 		{method: "disk.temperatures"},
-		{method: "pool.dataset.query", params: []any{[]any{}, map[string]any{"extra": map[string]any{"flat": true, "retrieve_children": true, "properties": sizes, "snapshots_count": true}}}, reads: ofDataset, rows: 3},
-		{method: "sharing.smb.query", reads: []string{"enabled", "locked"}, rows: 1},
-		{method: "sharing.nfs.query", reads: []string{"enabled", "locked"}, rows: 1},
-		{method: "iscsi.target.query", rows: 1},
+		{method: "pool.dataset.query", filters: everyDataset, fields: datasetFields, extra: datasetsAsked, rows: 3},
+		{name: "pool.dataset.query for snapshots", method: "pool.dataset.query", filters: everyDataset, fields: snapshotFields, extra: snapshotsAsked, rows: 3},
+		{method: "sharing.smb.query", fields: shareFields, rows: 1},
+		{method: "sharing.nfs.query", fields: shareFields, rows: 1},
+		{method: "iscsi.target.query", fields: []any{"id"}, rows: 1},
 		{method: "nfs.client_count"},
 		{method: "iscsi.global.client_count"},
-		{method: "certificate.query", reads: []string{"name", "until"}, rows: 1},
-		{method: "interface.query", reads: []string{"name", "type", "state.link_state", "state.mtu"}, rows: 1},
+		{method: "certificate.query", fields: []any{"name", "until"}, rows: 1},
+		{method: "interface.query", fields: []any{"name", "type", "state.link_state", "state.mtu"}, rows: 1},
 		{method: "alert.list", reads: []string{"level", "klass", "dismissed"}},
-		{method: "service.query", reads: []string{"service", "state", "enable"}, rows: 5},
-		{method: "core.get_jobs", params: []any{[]any{[]any{"state", "in", []string{"RUNNING", "WAITING"}}}}, reads: []string{"method", "state"}},
+		{method: "service.query", fields: []any{"service", "state", "enable"}, rows: 5},
+		{method: "core.get_jobs", filters: []any{[]any{"state", "in", []string{"RUNNING", "WAITING"}}}, fields: []any{"method", "state"}},
 		{method: "docker.status", reads: []string{"status"}},
-		{method: "app.query", reads: []string{"name", "state", "upgrade_available"}},
-		{method: "vm.query", reads: []string{"name", "status.state"}, rows: 1},
-		{method: "pool.snapshottask.query", reads: append([]string{"dataset"}, task...), rows: 1},
-		{method: "replication.query", reads: append([]string{"name"}, task...), rows: 1},
-		{method: "rsynctask.query", reads: append([]string{"desc"}, run...), rows: 1},
-		{method: "cloudsync.query", reads: append([]string{"description"}, run...)},
-		{method: "cloud_backup.query", reads: append([]string{"description"}, run...)},
-		{method: "pool.scrub.query", reads: []string{"id", "pool_name", "enabled"}, rows: 1},
+		{method: "app.query", fields: []any{"name", "state", "upgrade_available"}},
+		{method: "vm.query", fields: []any{"name", "status.state"}, rows: 1},
+		{method: "pool.snapshottask.query", fields: []any{"id", "dataset", "enabled", "state.state", "state.datetime"}, reads: append([]string{"dataset"}, task...), rows: 1},
+		{method: "replication.query", fields: []any{"id", "name", "enabled", "state.state", "state.datetime"}, reads: append([]string{"name"}, task...), rows: 1},
+		{method: "rsynctask.query", fields: append([]any{"id", "desc", "enabled"}, jobFields...), rows: 1},
+		{method: "cloudsync.query", fields: append([]any{"id", "description", "enabled"}, jobFields...)},
+		{method: "cloud_backup.query", fields: append([]any{"id", "description", "enabled"}, jobFields...)},
+		{method: "pool.scrub.query", fields: []any{"id", "pool_name", "enabled"}, rows: 1},
 	}
 }
 
@@ -197,12 +262,16 @@ func TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead(t *testing.T) 
 	}
 
 	for _, q := range questions() {
-		t.Run(q.method, func(t *testing.T) {
+		t.Run(q.called(), func(t *testing.T) {
 			var answer json.RawMessage
-			if err := only.Call(within(t, readWait), q.method, q.params, &answer); err != nil {
+			if err := only.Call(within(t, readWait), q.method, q.params(), &answer); err != nil {
 				t.Fatalf("the exporter's question is refused: %v", err)
 			}
-			heldTo(t, methods[q.method], answer, false)
+			if q.fields == nil {
+				heldTo(t, methods[q.method], answer, false)
+			} else {
+				heldToSelected(t, methods[q.method], answer)
+			}
 
 			var value any
 			if err := json.Unmarshal(answer, &value); err != nil {
@@ -216,12 +285,9 @@ func TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead(t *testing.T) 
 			if listed && len(rows) < q.rows {
 				t.Errorf("%d listed, and the NAS has at least %d", len(rows), q.rows)
 			}
-			if len(q.reads) == 0 {
-				return
-			}
 
 			for _, row := range rows {
-				for _, place := range q.reads {
+				for _, place := range q.places() {
 					if lacks := lacking(row, place); lacks != "" {
 						t.Errorf("the exporter reads %s, and the answer has %s", place, lacks)
 					}
@@ -231,87 +297,126 @@ func TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead(t *testing.T) 
 	}
 }
 
-// answered is a typed call as the test makes it: what it read, whatever its type.
-func answered[R any](call func(context.Context) (R, error)) func(context.Context) (any, error) {
-	return func(ctx context.Context) (any, error) {
+// heldToSelected holds an answer to a query that selected some fields to the description, as heldTo does a whole answer: what it holds has to
+// be as described, but for what is known to differ, and what it was not asked for is not missed. A known difference in a field it did not ask for
+// cannot show, so one that does not show is not told of.
+func heldToSelected(t *testing.T, m described.Method, answer json.RawMessage) {
+	t.Helper()
+
+	for _, difference := range m.Selected(answer) {
+		if !slices.Contains(surprises[m.Name].differs, difference) {
+			t.Errorf("not as described: %s", difference)
+		}
+	}
+	for _, place := range described.Blanked(answer) {
+		if !slices.Contains(secrets(t)[m.Name], place) {
+			t.Errorf("something was kept back at %s, where api-defs lists no secret", place)
+		}
+	}
+}
+
+// alone is a typed call that takes nothing but the context, as the test makes it: what it read, whatever its type.
+func alone[R any](call func(context.Context) (R, error)) func(context.Context, question) (any, error) {
+	return func(ctx context.Context, _ question) (any, error) {
 		r, err := call(ctx)
 
 		return reflect.ValueOf(r).FieldByName("Answer").Interface(), err
 	}
 }
 
-// typedQuestions is how the exporter asks each of its questions through the typed client: the call, and what it answered.
-func typedQuestions(typed *client.Client) map[string]func(ctx context.Context) (any, error) {
-	sizes := []string{"used", "available", "usedbydataset", "usedbysnapshots", "quota", "refquota", "compressratio"}
+// typedQuestions is how the exporter asks each of its questions through the typed client, by what the test calls it: the call, made with the
+// question's filters, fields and extra options, and what it answered.
+func typedQuestions(typed *client.Client) map[string]func(context.Context, question) (any, error) {
+	datasets := func(ctx context.Context, q question) (any, error) {
+		r, err := typed.PoolDataset.Query(ctx, q.filters, truenas.PoolDatasetQueryOptions{Select: q.fields, Extra: q.extra})
+		return r.Answer, err
+	}
 
-	return map[string]func(ctx context.Context) (any, error){
-		"system.info":              answered(typed.System.Info),
-		"system.state":             answered(typed.System.State),
-		"update.status":            answered(typed.Update.Status),
-		"directoryservices.status": answered(typed.Directoryservices.Status),
-		"api_key.my_keys":          answered(typed.ApiKey.MyKeys),
-		"pool.query": answered(func(ctx context.Context) (truenas.PoolQueryResponse, error) {
-			return typed.Pool.Query(ctx, nil, truenas.PoolQueryOptions{})
-		}),
-		"boot.get_state": answered(typed.Boot.GetState),
-		"disk.query": answered(func(ctx context.Context) (truenas.DiskQueryResponse, error) {
-			return typed.Disk.Query(ctx, nil, truenas.DiskQueryOptions{})
-		}),
-		"disk.temperatures": answered(func(ctx context.Context) (truenas.DiskTemperaturesResponse, error) {
-			return typed.Disk.Temperatures(ctx, nil, false)
-		}),
-		"pool.dataset.query": answered(func(ctx context.Context) (truenas.PoolDatasetQueryResponse, error) {
-			return typed.PoolDataset.Query(ctx, nil, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": true, "properties": sizes, "snapshots_count": true}})
-		}),
-		"sharing.smb.query": answered(func(ctx context.Context) (truenas.SharingSmbQueryResponse, error) {
-			return typed.SharingSmb.Query(ctx, nil, truenas.SharingSmbQueryOptions{})
-		}),
-		"sharing.nfs.query": answered(func(ctx context.Context) (truenas.SharingNfsQueryResponse, error) {
-			return typed.SharingNfs.Query(ctx, nil, truenas.SharingNfsQueryOptions{})
-		}),
-		"iscsi.target.query": answered(func(ctx context.Context) (truenas.IscsiTargetQueryResponse, error) {
-			return typed.IscsiTarget.Query(ctx, nil, truenas.IscsiTargetQueryOptions{})
-		}),
-		"nfs.client_count":          answered(typed.Nfs.ClientCount),
-		"iscsi.global.client_count": answered(typed.IscsiGlobal.ClientCount),
-		"certificate.query": answered(func(ctx context.Context) (truenas.CertificateQueryResponse, error) {
-			return typed.Certificate.Query(ctx, nil, truenas.CertificateQueryOptions{})
-		}),
-		"interface.query": answered(func(ctx context.Context) (truenas.InterfaceQueryResponse, error) {
-			return typed.Interface.Query(ctx, nil, truenas.InterfaceQueryOptions{})
-		}),
-		"alert.list": answered(typed.Alert.List),
-		"service.query": answered(func(ctx context.Context) (truenas.ServiceQueryResponse, error) {
-			return typed.Service.Query(ctx, nil, truenas.ServiceQueryOptions{})
-		}),
-		"core.get_jobs": answered(func(ctx context.Context) (truenas.CoreGetJobsResponse, error) {
-			return typed.Core.GetJobs(ctx, []any{[]any{"state", "in", []string{"RUNNING", "WAITING"}}}, truenas.CoreGetJobsOptions{})
-		}),
-		"docker.status": answered(typed.Docker.Status),
-		"app.query": answered(func(ctx context.Context) (truenas.AppQueryResponse, error) {
-			return typed.App.Query(ctx, nil, truenas.AppQueryOptions{})
-		}),
-		"vm.query": answered(func(ctx context.Context) (truenas.VmQueryResponse, error) {
-			return typed.Vm.Query(ctx, nil, truenas.VmQueryOptions{})
-		}),
-		"pool.snapshottask.query": answered(func(ctx context.Context) (truenas.PoolSnapshottaskQueryResponse, error) {
-			return typed.PoolSnapshottask.Query(ctx, nil, truenas.PoolSnapshottaskQueryOptions{})
-		}),
-		"replication.query": answered(func(ctx context.Context) (truenas.ReplicationQueryResponse, error) {
-			return typed.Replication.Query(ctx, nil, truenas.ReplicationQueryOptions{})
-		}),
-		"rsynctask.query": answered(func(ctx context.Context) (truenas.RsynctaskQueryResponse, error) {
-			return typed.Rsynctask.Query(ctx, nil, truenas.RsynctaskQueryOptions{})
-		}),
-		"cloudsync.query": answered(func(ctx context.Context) (truenas.CloudsyncQueryResponse, error) {
-			return typed.Cloudsync.Query(ctx, nil, truenas.CloudsyncQueryOptions{})
-		}),
-		"cloud_backup.query": answered(func(ctx context.Context) (truenas.CloudBackupQueryResponse, error) {
-			return typed.CloudBackup.Query(ctx, nil, truenas.CloudBackupQueryOptions{})
-		}),
-		"pool.scrub.query": answered(func(ctx context.Context) (truenas.PoolScrubQueryResponse, error) {
-			return typed.PoolScrub.Query(ctx, nil, truenas.PoolScrubQueryOptions{})
-		}),
+	return map[string]func(context.Context, question) (any, error){
+		"system.info":              alone(typed.System.Info),
+		"system.state":             alone(typed.System.State),
+		"update.status":            alone(typed.Update.Status),
+		"directoryservices.status": alone(typed.Directoryservices.Status),
+		"api_key.my_keys":          alone(typed.ApiKey.MyKeys),
+		"pool.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Pool.Query(ctx, q.filters, truenas.PoolQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"boot.get_state": alone(typed.Boot.GetState),
+		"disk.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Disk.Query(ctx, q.filters, truenas.DiskQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"disk.temperatures": func(ctx context.Context, _ question) (any, error) {
+			r, err := typed.Disk.Temperatures(ctx, nil, false)
+			return r.Answer, err
+		},
+		"pool.dataset.query":               datasets,
+		"pool.dataset.query for snapshots": datasets,
+		"sharing.smb.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.SharingSmb.Query(ctx, q.filters, truenas.SharingSmbQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"sharing.nfs.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.SharingNfs.Query(ctx, q.filters, truenas.SharingNfsQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"iscsi.target.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.IscsiTarget.Query(ctx, q.filters, truenas.IscsiTargetQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"nfs.client_count":          alone(typed.Nfs.ClientCount),
+		"iscsi.global.client_count": alone(typed.IscsiGlobal.ClientCount),
+		"certificate.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Certificate.Query(ctx, q.filters, truenas.CertificateQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"interface.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Interface.Query(ctx, q.filters, truenas.InterfaceQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"alert.list": alone(typed.Alert.List),
+		"service.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Service.Query(ctx, q.filters, truenas.ServiceQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"core.get_jobs": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Core.GetJobs(ctx, q.filters, truenas.CoreGetJobsOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"docker.status": alone(typed.Docker.Status),
+		"app.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.App.Query(ctx, q.filters, truenas.AppQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"vm.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Vm.Query(ctx, q.filters, truenas.VmQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"pool.snapshottask.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.PoolSnapshottask.Query(ctx, q.filters, truenas.PoolSnapshottaskQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"replication.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Replication.Query(ctx, q.filters, truenas.ReplicationQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"rsynctask.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Rsynctask.Query(ctx, q.filters, truenas.RsynctaskQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"cloudsync.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.Cloudsync.Query(ctx, q.filters, truenas.CloudsyncQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"cloud_backup.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.CloudBackup.Query(ctx, q.filters, truenas.CloudBackupQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
+		"pool.scrub.query": func(ctx context.Context, q question) (any, error) {
+			r, err := typed.PoolScrub.Query(ctx, q.filters, truenas.PoolScrubQueryOptions{Select: q.fields})
+			return r.Answer, err
+		},
 	}
 }
 
@@ -330,12 +435,12 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 	asked := typedQuestions(typed)
 
 	for _, q := range questions() {
-		t.Run(q.method, func(t *testing.T) {
-			ask, ok := asked[q.method]
+		t.Run(q.called(), func(t *testing.T) {
+			ask, ok := asked[q.called()]
 			if !ok {
 				t.Fatal("the exporter asks this, and the test has no typed call for it")
 			}
-			answer, refused := ask(within(t, readWait))
+			answer, refused := ask(within(t, readWait), q)
 			if refused != nil {
 				t.Fatalf("asked through the typed client: %v", refused)
 			}
@@ -385,11 +490,17 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 	if err != nil || len(replications.Answer) == 0 || replications.Answer[0].State == nil || replications.Answer[0].State.State != "PENDING" {
 		t.Errorf("the furnished replication reads as %+v (%v)", replications.Answer, err)
 	}
-	// and so is the count of a dataset's snapshots the exporter asks for, which the description leaves out of a dataset's row: the furnished snapshot
-	// task has made some
-	counted, err := typed.PoolDataset.Query(within(t, readWait), []any{[]any{"name", "=", layout.TaskDataset}}, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": false, "snapshots_count": true}})
-	if err != nil || len(counted.Answer) != 1 || counted.Answer[0].SnapshotCount == nil || *counted.Answer[0].SnapshotCount == 0 {
-		t.Errorf("the furnished task's dataset reads as having %+v snapshots (%v)", counted.Answer, err)
+	// and so is the count of a dataset's snapshots, which the description leaves out of a dataset's row: asked for the exporter's way, the dataset
+	// the furnished snapshot task snapshots has some
+	counted, err := typed.PoolDataset.Query(within(t, readWait), everyDataset, truenas.PoolDatasetQueryOptions{Select: snapshotFields, Extra: snapshotsAsked})
+	var count *int
+	for _, dataset := range counted.Answer {
+		if dataset.Name == layout.TaskDataset {
+			count = dataset.SnapshotCount
+		}
+	}
+	if err != nil || count == nil || *count == 0 {
+		t.Errorf("the furnished task's dataset reads as having %v snapshots, of %d datasets counted (%v)", count, len(counted.Answer), err)
 	}
 	copies, err := typed.Rsynctask.Query(within(t, readWait), []any{[]any{"desc", "=", layout.CopyTask}}, truenas.RsynctaskQueryOptions{})
 	if err != nil || len(copies.Answer) == 0 || copies.Answer[0].Job == nil || copies.Answer[0].Job.State != "FAILED" || copies.Answer[0].Job.TimeFinished.IsZero() || copies.Answer[0].Job.Error == "" {

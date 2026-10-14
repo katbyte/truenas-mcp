@@ -171,6 +171,25 @@ func TestAnAnswerIsHeldToItsDescription(t *testing.T) {
 	}
 }
 
+// An answer to a query that selected some fields is held to the description in what it has, and is not missed for what it was not asked for.
+func TestASelectedAnswerIsHeldToWhatItHas(t *testing.T) {
+	t.Parallel()
+
+	m := described.Method{Returns: []json.RawMessage{json.RawMessage(`{"type":"array","items":[{"type":"object","additionalProperties":false,"required":["id","name"],"properties":{
+		"id":{"type":"integer"},
+		"name":{"type":"string"},
+		"scan":{"type":"object","required":["state"],"properties":{"state":{"type":"string"},"errors":{"type":"integer"}}}
+	}}]}`)}}
+	answer := json.RawMessage(`[{"id":1,"scan":{"errors":0}},{"id":"2"}]`)
+
+	if got, want := m.Selected(answer), []string{"$[].id is a string, and the description says integer"}; !slices.Equal(got, want) {
+		t.Errorf("the differences of a selected answer are %q, want %q", got, want)
+	}
+	if got, want := m.Differences(answer), []string{"$[] has no name, which the description says it always has", "$[].id is a string, and the description says integer", "$[].scan has no state, which the description says it always has"}; !slices.Equal(got, want) {
+		t.Errorf("the differences of a whole answer are %q, want %q", got, want)
+	}
+}
+
 // A NAS writes some values in forms of its own, which the description calls text. Whatever reads an answer has to know each, so each is found.
 func TestTheFormsANASWritesValuesInAreFound(t *testing.T) {
 	t.Parallel()
