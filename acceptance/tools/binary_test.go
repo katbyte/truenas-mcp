@@ -249,7 +249,7 @@ func TestTheBinarySpeaksOnlyTheProtocolOnStdout(t *testing.T) {
 // core is the tools every session gets, sorted, and defaults those it gets with nothing asked for: core's and the audits.
 var (
 	core     = []string{"alert_list", "dataset_get", "dataset_list", "pool_get", "pool_list", "server_info"}
-	defaults = []string{"alert_list", "audit_pools", "audit_space", "audit_tasks", "dataset_get", "dataset_list", "pool_get", "pool_list", "server_info"}
+	defaults = []string{"alert_list", "audit_disks", "audit_pools", "audit_space", "audit_tasks", "dataset_get", "dataset_list", "pool_get", "pool_list", "server_info"}
 )
 
 // The flags and the environment have to reach the running server, not just parse: what a client lists is what was asked for.
@@ -265,8 +265,8 @@ func TestTheBinaryRegistersWhatTheFlagsAsk(t *testing.T) {
 		{name: "the default sets are core and the audits", want: defaults},
 		{name: "a toolset from the environment, with core beside it", env: []string{"TRUENAS_TOOLSETS=disks"}, want: append([]string{"disk_list"}, core...)},
 		{name: "--allow-tools alone is only the tools it names", args: []string{"--allow-tools", "server_*"}, want: []string{"server_info"}},
-		{name: "--deny-tools takes away", args: []string{"--toolsets", "all", "--deny-tools", "server_*,*_get"}, want: []string{"alert_list", "audit_pools", "audit_space", "audit_tasks", "dataset_list", "disk_list", "pool_list"}},
-		{name: "--deny-tools from the environment", env: []string{"TRUENAS_DENY_TOOLS=*_info,*_get"}, want: []string{"alert_list", "audit_pools", "audit_space", "audit_tasks", "dataset_list", "pool_list"}},
+		{name: "--deny-tools takes away", args: []string{"--toolsets", "all", "--deny-tools", "server_*,*_get"}, want: []string{"alert_list", "audit_disks", "audit_pools", "audit_space", "audit_tasks", "dataset_list", "disk_list", "pool_list"}},
+		{name: "--deny-tools from the environment", env: []string{"TRUENAS_DENY_TOOLS=*_info,*_get"}, want: []string{"alert_list", "audit_disks", "audit_pools", "audit_space", "audit_tasks", "dataset_list", "pool_list"}},
 	} {
 		t.Run(c.name, func(t *testing.T) { //nolint:paralleltest // as the test
 			// an empty working directory: only the flags and the environment under test decide what is registered

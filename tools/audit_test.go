@@ -112,3 +112,31 @@ func TestAuditTasksFindsTasksThatFailedAreHeldOrCopyNothing(t *testing.T) {
 		}
 	}
 }
+
+// A disk past the most its maker rates it for is critical, one warmer than its kind should run a warning, and one that says nothing is let be; a
+// failed SMART self-test is told of by the disk it names, and a dismissed one is not.
+func TestAuditDisksFindsADiskTooHotAndOneFailingItsSMARTChecks(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	nas.Answer("disk.query", json.RawMessage(`[{"name": "sda", "serial": "A1", "type": "HDD", "pool": "tank"}, {"name": "sdb", "serial": "B2", "type": "HDD", "pool": "tank"}, {"name": "nvme0n1", "serial": "N1", "type": "SSD"}, {"name": "sdc", "serial": "C3", "type": "HDD"}, {"name": "sdd", "serial": "D4", "type": "HDD"}]`))
+	nas.Answer("disk.temperatures", json.RawMessage(`{"sda": [62.0, 60.0], "sdb": [52.0, null], "nvme0n1": [55.0, 85.0], "sdc": null, "sdd": [38.0, 60.0]}`))
+	nas.Answer("alert.list", json.RawMessage(`[
+		{"uuid": "s", "level": "WARNING", "klass": "SMARTFailedSelfTest", "args": {"name": "sdc", "serial": "C3"}, "formatted": "sdc (C3) failed a SMART selftest.", "dismissed": false},
+		{"uuid": "o", "level": "CRITICAL", "klass": "SMARTSpareBlockCount", "args": {"name": "sdd", "serial": "D4"}, "formatted": "sdd (D4) is reporting a low spare block reserve (2) .", "dismissed": true},
+		{"uuid": "v", "level": "CRITICAL", "klass": "VolumeStatus", "formatted": "Pool tank state is DEGRADED", "dismissed": false}
+	]`))
+
+	out := session(t, nas, Options{}).Call(t, "audit_disks", nil)
+	if got := strings.Join(checksOf(t, out), " "); got != "disk_too_hot:sda smart_failedselftest:sdc disk_hot:sdb" {
+		t.Errorf("audit_disks found %s", got)
+	}
+	if acctest.Num(t, out["checked"], "checked") != 5 {
+		t.Errorf("checked %v, want every disk", out["checked"])
+	}
+
+	// told the NVMe disk's kind should run under 50, it is warm
+	if got := strings.Join(checksOf(t, session(t, nas, Options{}).Call(t, "audit_disks", map[string]any{"ssd_celsius": 50})), " "); !strings.Contains(got, "disk_hot:nvme0n1") {
+		t.Errorf("at 50°C for a solid state disk, audit_disks found %s", got)
+	}
+}

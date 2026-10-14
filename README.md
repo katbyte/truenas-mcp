@@ -58,6 +58,7 @@ Each audit only reports, and changes nothing. [Audits](docs/audits.md) has every
 |---|---|
 | `audit_pools` | an unhealthy pool, a disk gone or counting errors, a scrub that found errors, a pool not scrubbed lately or with no scrub task |
 | `audit_space` | a pool past 80% full, a dataset near or at its quota or refquota |
+| `audit_disks` | a disk too hot for its kind or past its maker's limit, a disk whose SMART checks failed or report errors |
 | `audit_tasks` | a snapshot task, replication, copy task, cloud sync or cloud backup that failed, is held, copies a locked dataset or is switched off |
 
 ## Settings

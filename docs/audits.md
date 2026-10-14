@@ -54,3 +54,18 @@ Looks at every task that protects data: snapshot tasks, replications, copy (rsyn
 | `snapshot_task_off`, `replication_off`, `copy_task_off`, `cloud_sync_off`, `cloud_backup_off` | notice | the task is switched off |
 
 A task that is switched off and failed when it last ran is told of both ways. Tested on a real NAS by running a copy task to a place that is not there.
+
+## audit_disks
+
+Looks at every disk's temperature, and at what the disks' own SMART checks have told the NAS. Errors ZFS counts against a disk are in `audit_pools`.
+
+| check | severity | found when |
+|---|---|---|
+| `disk_too_hot` | critical | a disk is at or past the most its maker rates it for, or, for one that names no limit, 10°C past the warning for its kind |
+| `disk_hot` | warning | a disk is at or past `hdd_celsius` for a spinning disk, 50 unless given, or `ssd_celsius` for a solid state or NVMe disk, 70 unless given |
+| `smart_failedselftest` | warning | the disk failed a SMART self-test |
+| `smart_uncorrectederrors` | warning | the disk reports errors it could not correct |
+| `smart_spareblockcount` | critical | a solid state disk is running out of spare blocks |
+| `smart_erasecyclecount` | warning | a solid state disk has been written over many times |
+
+The SMART checks come from the alerts the NAS raises from them; a dismissed one is not told of. TrueNAS 25.10 has no other way to read a disk's SMART state. Tested on a real NAS with the test machine's NVMe disk, which reports its temperature.

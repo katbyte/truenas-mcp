@@ -198,3 +198,27 @@ func TestAuditTasksFindsACopyTaskThatFailed(t *testing.T) {
 		t.Errorf("with a copy task whose run failed, audit_tasks finds %v", checks)
 	}
 }
+
+// The test machine's NVMe disk says how warm it is, which the others do not: at the warning for its kind it is let be, and told that its kind
+// should run cooler than it is, it is found warm.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestAuditDisksFindsTheDiskThatIsWarm(t *testing.T) {
+	disks := acctest.Rows(t, suite.Call(t, "disk_list", nil)["disks"], "disks")
+	hot := slices.IndexFunc(disks, func(d map[string]any) bool { return d["serial"] == layout.HotDiskSerial })
+	if hot < 0 || disks[hot]["temperature_celsius"] == nil {
+		t.Fatalf("the NVMe disk says no temperature: %v", disks)
+	}
+	name, celsius := acctest.Str(disks[hot]["name"]), acctest.DecimalOr0(disks[hot]["temperature_celsius"])
+
+	if checks := found(t, "audit_disks"); slices.ContainsFunc(checks, func(c string) bool { return strings.HasSuffix(c, ":"+name) }) && celsius < 70 {
+		t.Errorf("at %.0f°C, under the warning for its kind, the NVMe disk is found to have %v", celsius, checks)
+	}
+
+	rows := acctest.Rows(t, suite.Call(t, "audit_disks", map[string]any{"ssd_celsius": celsius - 5})["findings"], "findings")
+	if !slices.ContainsFunc(rows, func(row map[string]any) bool {
+		return row["name"] == name && (row["check"] == "disk_hot" || row["check"] == "disk_too_hot")
+	}) {
+		t.Errorf("told its kind should run under %.0f°C, the NVMe disk at %.0f°C is not found warm: %v", celsius-5, celsius, rows)
+	}
+}
