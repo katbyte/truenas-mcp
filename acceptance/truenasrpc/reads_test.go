@@ -4,8 +4,10 @@ package truenasrpc_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -13,6 +15,8 @@ import (
 
 	"github.com/katbyte/truenas-mcp/acceptance/described"
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/sdk/truenas"
+	"github.com/katbyte/truenas-mcp/sdk/truenas/client"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -151,6 +155,78 @@ func TestEveryReadIsAnsweredTheWayItsDescriptionSays(t *testing.T) {
 			continue
 		}
 		t.Logf("kept back from the user who may only read: %s %s", name, strings.Join(kept[name], " "))
+	}
+}
+
+// typedCall is the typed client's own method for a method of the API, called with nothing but a context: every argument after it is left as nothing,
+// which the client does not send.
+func typedCall(typed *client.Client, method string) (func(ctx context.Context) error, bool) {
+	for _, op := range truenas.Operations {
+		if op.Method != method || op.Form != "" {
+			continue
+		}
+		group := reflect.ValueOf(typed).Elem().FieldByName(op.Group)
+		if !group.IsValid() {
+			return nil, false
+		}
+		call := group.MethodByName(strings.TrimPrefix(op.Name, op.Group))
+		if !call.IsValid() {
+			return nil, false
+		}
+
+		return func(ctx context.Context) error {
+			args := []reflect.Value{reflect.ValueOf(ctx)}
+			for i := 1; i < call.Type().NumIn(); i++ {
+				args = append(args, reflect.Zero(call.Type().In(i)))
+			}
+			out := call.Call(args)
+			if err, failed := reflect.TypeAssert[error](out[len(out)-1]); failed {
+				return err
+			}
+
+			return nil
+		}, true
+	}
+
+	return nil, false
+}
+
+// Every read that needs no argument is called again through the client generated from the description, by its own method, and its answer has to
+// read into the client's types: a type the description gets wrong fails here, on a real NAS, before a program on the client meets it. Each is asked
+// by the user who may only read, who is sent ******** in place of every secret, and by the administrator.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestEveryReadIsReadIntoTheTypedClient(t *testing.T) {
+	methods := description(t)
+
+	for _, by := range []struct {
+		name string
+		conn *truenasrpc.Conn
+	}{{"asked by the user who may only read", reader(t)}, {"asked by the administrator", admin(t)}} {
+		typed, err := client.New(by.conn)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		t.Run(by.name, func(t *testing.T) {
+			for _, name := range named(methods, described.Read) {
+				t.Run(name, func(t *testing.T) {
+					call, ok := typedCall(typed, name)
+					if !ok {
+						t.Fatal("the typed client has no method for it")
+					}
+
+					known := surprises[name]
+					switch err := call(within(t, readWait)); {
+					case err != nil && known.outside:
+						t.Skipf("it asks a server out on the internet, which did not answer: %v", err)
+					case err != nil && known.refused != "" && strings.Contains(err.Error(), known.refused):
+					case err != nil:
+						t.Errorf("not read into the typed client: %v", err)
+					}
+				})
+			}
+		})
 	}
 }
 
