@@ -126,7 +126,7 @@ apicheck: ## Check that the definitions match the description and every method h
 
 secrets: ## Write api-defs/truenas-secrets-<release>.json from a checkout of the TrueNAS source: make secrets SOURCE=../middleware RELEASE=25.10.7
 	@[ -n "$(SOURCE)" ] && [ -n "$(RELEASE)" ] || (echo 'name a checkout of truenas/middleware at the release, and the release: make secrets SOURCE=../middleware RELEASE=25.10.7'; exit 1)
-	@.scripts/secrets-from-source.py $(SOURCE) $(RELEASE)
+	@go run ./sdk/pandorest secrets $(SOURCE) $(RELEASE)
 
 ##@ Formatting
 fmt: $(GOFUMPT) $(GOLANGCI_LINT) ## Fix Go formatting (gofmt, gofumpt, goimports)

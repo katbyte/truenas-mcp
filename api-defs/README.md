@@ -11,7 +11,7 @@ Neither holds anything of the NAS it was taken from: no names, addresses or sett
 
 ## Where the secrets are
 
-The description does not say which values are secrets. The TrueNAS source does, so `truenas-secrets-<version>.json` is made from the source at the release's tag by `make secrets` (`.scripts/secrets-from-source.py`), which reads it without running it, follows every method to what it takes and answers, and checks every place it finds against the description. It followed all 769 methods of 25.10.7 and found nothing the description lacks.
+The description does not say which values are secrets. The TrueNAS source does, so `truenas-secrets-<version>.json` is made from the source at the release's tag by `make secrets` (`sdk/pandorest/secrets.go`), which reads it without running it, follows every method to what it takes and answers, and checks every place it finds against the description. It followed all 769 methods of 25.10.7 and found nothing the description lacks. It reads only as much Python as the secrets are written in, and fails on a file of the source it cannot read rather than leave the file out.
 
 Each method lists the places in its arguments (`params`) and in its answer (`result`):
 

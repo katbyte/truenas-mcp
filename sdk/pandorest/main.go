@@ -6,15 +6,30 @@
 //	go run ./sdk/pandorest import     # the description -> api-defs/truenas-<version>/
 //	go run ./sdk/pandorest generate   # the definitions -> sdk/truenas
 //	go run ./sdk/pandorest check      # the definitions match the description, and every method has one in sdk/truenas
+//	go run ./sdk/pandorest secrets ../middleware 25.10.7   # the TrueNAS source at the release -> api-defs/truenas-secrets-<version>.json
 package main
 
 import (
+	"context"
+	"fmt"
+	"os"
+
 	"github.com/katbyte/pandorest"
 	"github.com/katbyte/pandorest/config"
 	"github.com/katbyte/pandorest/importer/workarounds"
 )
 
 func main() {
+	// the secrets are read from the TrueNAS source, which pandorest has no part in (secrets.go)
+	if len(os.Args) > 1 && os.Args[1] == "secrets" {
+		if err := secrets(context.Background(), "api-defs", os.Args[2:], os.Stdout); err != nil {
+			_, _ = fmt.Fprintln(os.Stderr, "secrets:", err)
+			os.Exit(1)
+		}
+
+		return
+	}
+
 	pandorest.Main(pandorest.Config{Services: services, Workarounds: fixes})
 }
 
