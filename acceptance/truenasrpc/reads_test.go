@@ -39,6 +39,7 @@ var surprises = map[string]surprise{
 	"tn_connect.get_registration_uri": {refused: "TrueNAS Connect is not enabled", why: "the test NAS is not joined to TrueNAS Connect"},
 	"sharing.smb.share_precheck":      {refused: "at least one local SMB user", why: "the test NAS has no user who may use SMB, and saying so is what the check is for"},
 	"sharing.smb.query":               {differs: []string{"$[].options has no purpose, which the description says it always has"}, why: "a share made with nothing said of its options has options with no purpose in them"},
+	"sharing.smb.get_instance":        {differs: []string{"$.options has no purpose, which the description says it always has"}, why: "the same share, fetched by itself"},
 	// the description says it needs no argument. TestReadsThatAreToldWhatToReadAnswerTheWayTheirDescriptionSays asks it with a limit
 	"audit.query": {refused: "query-options must be set to either gather row count or contain a limit", why: "a NAS will not list its whole audit log: it wants a limit on the rows, or to be asked only how many there are"},
 }

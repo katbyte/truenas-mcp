@@ -39,6 +39,10 @@ It needs QEMU and an x86-64 Linux machine with `/dev/kvm`, which a GitHub runner
 
 `eval "$(make testenv-up)"` starts the same NAS, set up by the same steps (`acceptance/setup`), and leaves it up with what is needed to log into it in the environment. `make test-live` runs the tests against it and `make testenv-down` removes it. What the NAS holds is written down in `acceptance/layout`.
 
+## A NAS with more on it
+
+`TRUENAS_TEST_FURNISHED=1 make testenv-up` also gives the NAS one of each thing a NAS is watched for: a share of each kind, an iSCSI target, a virtual machine, a snapshot task that has run, a replication that has not, and a copy task that failed. `acceptance/layout` names them. It is for anything that reads a NAS and wants something to read, as [truenas-metrics](https://github.com/katbyte/truenas-metrics) does.
+
 ## What the tests find
 
 What a real NAS does differently from its source and its description is what the live tests are there to find. Each thing found is written into [api-defs/README.md](../api-defs/README.md) with the test that now holds it.

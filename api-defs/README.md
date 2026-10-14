@@ -161,6 +161,8 @@ TrueNAS documents only an install by someone at a keyboard. Its installer also a
 
 Another repository runs its own live tests against this NAS: truenas-metrics calls `.scripts/testenv.sh` (`image`, `up`, `down`, `logs`), reads the lines `up` prints, and keeps the installed disk by the same two files this repository does. A change to any of those is a change for it too.
 
+Asked to (`TRUENAS_TEST_FURNISHED=1`), setting the NAS up also furnishes it: a user who may use SMB, a share of each kind, an iSCSI target, a virtual machine that is described and not running, a snapshot task that has run, a replication that has not, and a copy task whose one run failed. `acceptance/layout` names each. `TestANASIsFurnishedWithOneOfEachThingAndFurnishingItAgainChangesNothing`
+
 The machine has six disks: the one TrueNAS is installed on, four plain ones for pools, and one NVMe disk. The NVMe disk is there because it says how hot it is, and the plain ones say nothing, so without it there would be no temperature to read.
 
 The installer lists no disk under 8 GB, and names disks as the machine happens to find them, so the disk to install onto is told from the others by its size.

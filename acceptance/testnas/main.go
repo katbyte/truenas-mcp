@@ -7,7 +7,9 @@
 //
 // wait leaves the NAS as its installer left it, for the live tests to set up themselves, which is the first and hardest thing they test.
 // provision sets it up (acceptance/setup), for anything else that wants a NAS that is ready. Both print, as export lines, what is needed to
-// log in. The administrator's password is read from TRUENAS_TEST_PASSWORD.
+// log in. The administrator's password is read from TRUENAS_TEST_PASSWORD. With TRUENAS_TEST_FURNISHED=1, provision also gives the NAS one of
+// each thing a NAS is watched for (shares, a target, a machine, tasks in each state a task can be left in), for whatever wants more to look
+// at than a pool: acceptance/layout says what.
 package main
 
 import (
@@ -83,6 +85,9 @@ func run(args []string) error {
 	}
 }
 
+// furnished is the variable that asks provision for a furnished NAS.
+const furnished = "TRUENAS_TEST_FURNISHED"
+
 // ready waits for a newly installed NAS to come up and takes its certificate, sets it up if asked to, and prints what is needed to log into it.
 func ready(ctx context.Context, server, password, certificate string, setUp bool) error {
 	conn, err := waitFor(ctx, server, password, certificate)
@@ -100,6 +105,13 @@ func ready(ctx context.Context, server, password, certificate string, setUp bool
 	if setUp {
 		if made, err = n.All(ctx); err != nil {
 			return err
+		}
+
+		// asked for, the NAS is also given one of each thing a NAS is watched for
+		if os.Getenv(furnished) == "1" {
+			if err := n.Furnish(ctx); err != nil {
+				return err
+			}
 		}
 	}
 

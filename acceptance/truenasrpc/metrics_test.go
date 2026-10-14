@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/acceptance/setup"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -151,6 +152,18 @@ func madeOne(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, kind stri
 	return made.ID
 }
 
+// furnishedTask is one of the tasks a furnished NAS has, found by what it is known by.
+func furnishedTask(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, list, field, value string) tasked {
+	t.Helper()
+
+	var found []tasked
+	if err := conn.Call(ctx, list, []any{[]any{[]any{field, "=", value}}}, &found); err != nil || len(found) == 0 {
+		t.Fatalf("%s: the furnished task is not found: %d found, %v", list, len(found), err)
+	}
+
+	return found[0]
+}
+
 // The exporter this SDK was made for asks a NAS about thirty things, with a key that may only read. A NAS is given one of everything it
 // asks after, and every question is then asked exactly as the exporter asks it: it has to be answered, the answer has to be what the
 // description says, and every place the exporter reads has to be there. A change to a NAS that would break the exporter fails here first.
@@ -161,49 +174,26 @@ func TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead(t *testing.T) 
 	ctx := within(t, 12*time.Minute)
 	methods := description(t)
 
-	// one of each thing the exporter counts: a share of each kind, a target, a machine, and a task of each kind that can be made with
-	// nothing outside the NAS
-	for _, name := range []string{"shared-smb", "shared-nfs"} {
-		dataset := layout.Pool + "/" + name
-		if err := conn.Call(ctx, "pool.dataset.create", []any{map[string]any{"name": dataset}}, nil); err != nil {
-			t.Fatalf("making %s: %v", dataset, err)
-		}
-		t.Cleanup(func() {
-			if err := conn.Call(context.WithoutCancel(ctx), "pool.dataset.delete", []any{dataset, map[string]any{"recursive": true, "force": true}}, nil); err != nil {
-				t.Errorf("removing %s: %v", dataset, err)
-			}
-		})
+	// one of each thing the exporter counts, made the way anything else that wants a furnished NAS has it made, and left there: the tests
+	// after this one read a NAS with something of every kind on it
+	if err := (&setup.NAS{Conn: conn, Logf: t.Logf}).Furnish(ctx); err != nil {
+		t.Fatalf("furnishing the NAS: %v", err)
 	}
 
-	// a NAS shares nothing over SMB until it has a user who may use it
-	madeOne(ctx, t, conn, "user", map[string]any{"username": "sharer", "full_name": "A user who may use SMB", "password": "only-for-the-test-NAS-1", "group_create": true, "smb": true}, map[string]any{"delete_group": true}) //nolint:gosec // G101: the password of a user made on a NAS that lives for one run
-	madeOne(ctx, t, conn, "sharing.smb", map[string]any{"name": "shared", "path": "/mnt/" + layout.Pool + "/shared-smb"})
-	madeOne(ctx, t, conn, "sharing.nfs", map[string]any{"path": "/mnt/" + layout.Pool + "/shared-nfs"})
-	madeOne(ctx, t, conn, "iscsi.target", map[string]any{"name": "exported"})
-	madeOne(ctx, t, conn, "vm", map[string]any{"name": "small", "memory": 256, "autostart": false})
-
-	snapshots := madeOne(ctx, t, conn, "pool.snapshottask", map[string]any{"dataset": layout.Datasets[1], "naming_schema": "counted-%Y-%m-%d_%H-%M", "lifetime_value": 1, "lifetime_unit": "HOUR"})
-	madeOne(ctx, t, conn, "replication", map[string]any{"name": "counted by the exporter", "direction": "PUSH", "transport": "LOCAL", "source_datasets": []string{layout.Datasets[1]}, "target_dataset": layout.Pool + "/copied", "recursive": false, "auto": false, "retention_policy": "NONE", "name_regex": "counted-.*"})
-	madeOne(ctx, t, conn, "rsynctask", map[string]any{"path": "/mnt/" + layout.Datasets[1], "user": "root", "mode": "MODULE", "remotehost": "127.0.0.1", "remotemodule": "nowhere", "direction": "PUSH", "desc": "counted by the exporter", "enabled": false})
-
-	if err := conn.Call(ctx, "pool.snapshottask.run", []any{snapshots}, nil); err != nil {
-		t.Fatalf("running the snapshot task: %v", err)
+	// each task was left in the state it is meant to be seen in
+	if state, _ := furnishedTask(ctx, t, conn, "pool.snapshottask.query", "dataset", layout.TaskDataset).state(); state != "FINISHED" {
+		t.Errorf("the furnished snapshot task says %s, want it finished", state)
 	}
-	t.Cleanup(func() {
-		var taken []struct {
-			Name string `json:"name"`
-		}
-		_ = conn.Call(context.WithoutCancel(ctx), "pool.snapshot.query", []any{[]any{[]any{"dataset", "=", layout.Datasets[1]}}}, &taken)
-		for _, one := range taken {
-			_ = conn.Call(context.WithoutCancel(ctx), "pool.snapshot.delete", []any{one.Name}, nil)
-		}
-	})
-	if !eventually(ctx, 2*time.Minute, func() bool {
-		state, _ := task(ctx, t, conn, "pool.snapshottask.query", snapshots).state()
-
-		return state == "FINISHED"
-	}) {
-		t.Fatal("the snapshot task never finished its run")
+	if state, _ := furnishedTask(ctx, t, conn, "replication.query", "name", layout.Replication).state(); state != "PENDING" {
+		t.Errorf("the furnished replication says %s, want it never run", state)
+	}
+	var copying []struct {
+		Job *struct {
+			State string `json:"state"`
+		} `json:"job"`
+	}
+	if err := conn.Call(ctx, "rsynctask.query", []any{[]any{[]any{"desc", "=", layout.CopyTask}}}, &copying); err != nil || len(copying) != 1 || copying[0].Job == nil || copying[0].Job.State != "FAILED" {
+		t.Errorf("the furnished copy task reads as %+v (%v), want its one run failed", copying, err)
 	}
 
 	for _, q := range questions() {

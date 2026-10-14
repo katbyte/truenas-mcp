@@ -24,3 +24,25 @@ const (
 
 // Datasets are the datasets in the pool, by their full names.
 var Datasets = []string{Pool + "/alpha", Pool + "/beta"}
+
+// A furnished test NAS has, beside all that, one of each thing a NAS is watched for, so that whatever watches one has something to see: a user
+// who may use SMB, a share of each kind on a dataset of its own, an iSCSI target, a virtual machine that is described and not running, and a
+// task of each kind that needs nothing outside the NAS, in each state a task can be left in. The snapshot task has run and finished, the
+// replication has never run, and the copy task was run and failed, since where it copies to is not there.
+const (
+	SMBUser        = "sharer"
+	SMBShare       = "shared"
+	SMBDataset     = Pool + "/shared-smb"
+	NFSDataset     = Pool + "/shared-nfs"
+	Target         = "exported"
+	Machine        = "small"
+	SnapshotSchema = "counted-%Y-%m-%d_%H-%M"
+	Replication    = "a copy that has not been made"
+	CopyTask       = "a copy to nowhere"
+)
+
+// TaskDataset is the dataset the furnished NAS's tasks are about, and ReplicationTarget where its replication would copy it to.
+var (
+	TaskDataset       = Datasets[1]
+	ReplicationTarget = Pool + "/copied"
+)

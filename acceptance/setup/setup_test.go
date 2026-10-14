@@ -23,6 +23,8 @@ type holding struct {
 	datasets []string
 	users    []string
 	keys     int
+	// kept is what the NAS holds of each kind of thing a furnished NAS has, by the start of the methods that list and make it
+	kept map[string][]map[string]any
 }
 
 // standIn is a stand-in NAS that keeps what it is asked to make and answers what it has, as far as the setup asks.
@@ -99,9 +101,22 @@ func standIn(t *testing.T, has *holding) *truenastest.NAS {
 
 		return map[string]any{}, nil
 	})
-	nas.Handle("user.query", func([]json.RawMessage) (any, error) {
+	nas.Handle("user.query", func(params []json.RawMessage) (any, error) {
 		has.mu.Lock()
 		defer has.mu.Unlock()
+
+		// asked for by name, as the setup asks
+		var filters [][]json.RawMessage
+		if len(params) > 0 && json.Unmarshal(params[0], &filters) == nil && len(filters) == 1 {
+			var wanted string
+			_ = json.Unmarshal(filters[0][2], &wanted)
+
+			if !slices.Contains(has.users, wanted) {
+				return []any{}, nil
+			}
+
+			return rows([]string{wanted}, "username"), nil
+		}
 
 		return rows(has.users, "username"), nil
 	})
@@ -121,6 +136,71 @@ func standIn(t *testing.T, has *holding) *truenastest.NAS {
 		has.keys++
 
 		return map[string]any{"key": "5-aKeyMadeFor" + named(params, "username")}, nil
+	})
+
+	// each kind of thing a furnished NAS has is listed, by whatever it was asked for by, and made, with a number of its own. A task says it has
+	// never run until it is
+	for _, kind := range []string{"sharing.smb", "sharing.nfs", "iscsi.target", "vm", "pool.snapshottask", "replication", "rsynctask"} {
+		nas.Handle(kind+".query", func(params []json.RawMessage) (any, error) {
+			has.mu.Lock()
+			defer has.mu.Unlock()
+
+			var filters [][]json.RawMessage
+			if len(params) > 0 {
+				_ = json.Unmarshal(params[0], &filters)
+			}
+
+			out := []any{}
+			for _, row := range has.kept[kind] {
+				fits := true
+				for _, filter := range filters {
+					var field string
+					_ = json.Unmarshal(filter[0], &field)
+					had, _ := json.Marshal(row[field])
+					fits = fits && string(had) == string(filter[2])
+				}
+				if fits {
+					out = append(out, row)
+				}
+			}
+
+			return out, nil
+		})
+		nas.Handle(kind+".create", func(params []json.RawMessage) (any, error) {
+			has.mu.Lock()
+			defer has.mu.Unlock()
+
+			var row map[string]any
+			_ = json.Unmarshal(params[0], &row)
+			row["id"], row["state"], row["job"] = len(has.kept[kind])+1, map[string]any{"state": "PENDING"}, nil
+
+			if has.kept == nil {
+				has.kept = map[string][]map[string]any{}
+			}
+			has.kept[kind] = append(has.kept[kind], row)
+
+			return row, nil
+		})
+	}
+	nas.Handle("pool.snapshottask.run", func([]json.RawMessage) (any, error) {
+		has.mu.Lock()
+		defer has.mu.Unlock()
+
+		for _, task := range has.kept["pool.snapshottask"] {
+			task["state"] = map[string]any{"state": "FINISHED"}
+		}
+
+		return nil, nil
+	})
+	nas.Job("rsynctask.run", func([]json.RawMessage) (any, error) {
+		has.mu.Lock()
+		defer has.mu.Unlock()
+
+		for _, task := range has.kept["rsynctask"] {
+			task["job"] = map[string]any{"state": "FAILED"}
+		}
+
+		return nil, &truenastest.Error{Errno: 14, ErrName: "EFAULT", Reason: "rsync command returned 10 - SOCKETIO. Check logs for further information."}
 	})
 
 	return nas
@@ -228,6 +308,53 @@ func TestANASThatIsSomebodysIsLeftAlone(t *testing.T) {
 	}
 }
 
+// A furnished NAS has one of each thing a NAS is watched for, with a task in each state a task can be left in. Furnished from a NAS that
+// was only set up, each is made once: a share of each kind on a dataset of its own, a target, a machine, a snapshot task that is then run, a
+// replication that is not, and a copy task whose one run fails. Furnished again, nothing is made or run a second time.
+func TestANASIsFurnishedWithOneOfEachThingAndFurnishingItAgainChangesNothing(t *testing.T) {
+	t.Parallel()
+
+	has := &holding{hostname: "truenas"}
+	nas := standIn(t, has)
+	n := administrator(t, nas)
+
+	if _, err := n.All(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+
+	making := []string{"sharing.smb.create", "sharing.nfs.create", "iscsi.target.create", "vm.create", "pool.snapshottask.create", "replication.create", "rsynctask.create", "pool.snapshottask.run", "rsynctask.run"}
+	for range 2 {
+		if err := n.Furnish(t.Context()); err != nil {
+			t.Fatal(err)
+		}
+
+		for _, method := range making {
+			if calls := nas.Calls(method); len(calls) != 1 {
+				t.Errorf("%s was called %d times, want once however often the NAS is furnished", method, len(calls))
+			}
+		}
+		if users := nas.Calls("user.create"); len(users) != 2 {
+			t.Errorf("%d users were made, want the one who may only read and the one who may use SMB", len(users))
+		}
+	}
+
+	if !slices.Contains(has.datasets, layout.SMBDataset) || !slices.Contains(has.datasets, layout.NFSDataset) || !slices.Contains(has.users, layout.SMBUser) {
+		t.Errorf("the NAS holds the datasets %v and the users %v, want a dataset for each share and the user who may use SMB", has.datasets, has.users)
+	}
+	if smb := has.kept["sharing.smb"]; len(smb) != 1 || smb[0]["name"] != layout.SMBShare || smb[0]["path"] != "/mnt/"+layout.SMBDataset {
+		t.Errorf("the SMB share is %+v", smb)
+	}
+	if tasks := has.kept["pool.snapshottask"]; len(tasks) != 1 || tasks[0]["dataset"] != layout.TaskDataset {
+		t.Errorf("the snapshot task is %+v", tasks)
+	}
+
+	// a secret is never the same twice, and never one a person chose
+	created := nas.Calls("user.create")
+	if string(created[0].Params[0]) == string(created[1].Params[0]) || strings.Contains(string(created[1].Params[0]), `"password":""`) {
+		t.Error("the user who may use SMB was made with no password, or the same one as another user")
+	}
+}
+
 // The setup is first run for real on a machine nobody is watching, against an API whose argument names are easy to get one letter wrong. Every
 // call it makes is held to the NAS's own description: that the method is there, that it is a job where the setup waits for one, and that no
 // argument is given a name the method does not take or left without one it needs.
@@ -243,6 +370,9 @@ func TestEveryCallTheSetupMakesIsOneTheNASDescribes(t *testing.T) {
 		setup.SystemInfo(), setup.NetworkConfig(), setup.Pools(), setup.Pools([]any{"name", "=", layout.Pool}), setup.SetHostname(), setup.UnusedDisks(), setup.CreatePool([]string{"vdb", "vdc"}),
 		setup.FindDatasets(layout.Datasets), setup.CreateDataset(layout.Datasets[0]), setup.FindUser(layout.ReadOnlyUser), setup.FindGroup("a-group"),
 		setup.CreateUser(layout.ReadOnlyUser, 44, "a-password"), setup.CreateKey("a-key", layout.AdminUser),
+		setup.CreateSMBUser("a-password"), setup.FindSMBShare(), setup.CreateSMBShare(), setup.FindNFSShare(), setup.CreateNFSShare(), setup.FindTarget(), setup.CreateTarget(),
+		setup.FindMachine(), setup.CreateMachine(), setup.FindSnapshotTask(), setup.CreateSnapshotTask(), setup.RunSnapshotTask(1), setup.FindReplication(), setup.CreateReplication(),
+		setup.FindCopyTask(), setup.CreateCopyTask(), setup.RunCopyTask(1),
 	}
 
 	for _, document := range documents {
