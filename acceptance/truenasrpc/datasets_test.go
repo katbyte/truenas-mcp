@@ -48,26 +48,26 @@ func one(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, name string) 
 	return found[0]
 }
 
-// noted checks the note kept on a dataset reads back, and says where a NAS keeps it: the description puts it under "comments", and a real
-// NAS did not answer it there.
+// noted checks the note kept on a dataset reads back. The description lists it as the dataset's "comments"; a real NAS answers it one level
+// down, among the dataset's user properties, and has no "comments" of the dataset's own.
 func noted(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, name, note string) {
 	t.Helper()
 
-	var found []map[string]json.RawMessage
+	var found []struct {
+		Comments   json.RawMessage `json:"comments"`
+		Properties struct {
+			Comments setting `json:"comments"`
+		} `json:"user_properties"`
+	}
 	if err := conn.Call(ctx, "pool.dataset.query", []any{[]any{[]any{"id", "=", name}}}, &found); err != nil || len(found) != 1 {
 		t.Fatalf("the dataset %s is not found: %d found, %v", name, len(found), err)
 	}
-
-	var under []string
-	for key, value := range found[0] {
-		if strings.Contains(string(value), note) {
-			under = append(under, key+": "+string(value))
-		}
+	if found[0].Properties.Comments.Value != note {
+		t.Errorf("the note on %s reads back as %q among its user properties, want %q", name, found[0].Properties.Comments.Value, note)
 	}
-	if len(under) == 0 {
-		t.Errorf("the note %q kept on %s is nowhere in what the NAS lists of it", note, name)
+	if found[0].Comments != nil {
+		t.Errorf("the note on %s is answered as the dataset's own comments too, which a real NAS was seen not to do: %s", name, found[0].Comments)
 	}
-	t.Logf("the note on %s is kept under %.300s", name, strings.Join(under, "; "))
 }
 
 // gone removes a dataset and everything under it when the test ends, whether or not it is still there.
@@ -135,13 +135,19 @@ func TestADatasetIsMadeChangedRenamedAndRemoved(t *testing.T) {
 	one(ctx, t, conn, name+"/deeper")
 
 	// a NAS checks nothing that a rename might break, and will not rename until it is told that is understood
-	err = conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "recursive": true}}, nil)
+	err = conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed}}, nil)
 	if !truenasrpc.IsInvalid(err) || !strings.Contains(err.Error(), "force") {
 		t.Errorf("a rename that does not say it is understood was answered: %v", err)
 	}
 
-	// renamed, everything under it goes with it
-	if err := conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "recursive": true, "force": true}}, nil); err != nil {
+	// asked to take what is under it along, it refuses: that is for renaming a snapshot of every dataset at once
+	err = conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "recursive": true, "force": true}}, nil)
+	if err == nil || !strings.Contains(err.Error(), "recursive rename must be a snapshot") {
+		t.Errorf("a rename of a dataset said to be recursive was answered: %v", err)
+	}
+
+	// renamed, everything under it goes with it without being asked
+	if err := conn.Call(ctx, "pool.dataset.rename", []any{name, map[string]any{"new_name": renamed, "force": true}}, nil); err != nil {
 		t.Fatalf("renaming the dataset: %v", err)
 	}
 	one(ctx, t, conn, renamed+"/deeper/child")

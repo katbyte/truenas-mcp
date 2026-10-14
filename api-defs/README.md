@@ -95,7 +95,9 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **A snapshot that something rests on is refused removal, two different ways.** One that a copy was made from is refused as a bad argument: `options.defer: Please set this attribute as 'tank/kept@before' snapshot has dependent clones: tank/kept-copy`. One that is held fails as a call: `[EFAULT] cannot destroy 'tank/kept@before': dataset is busy`. `TestASnapshotBringsBackWhatWasThereIsCopiedHeldAndRemoved`
 
-**A dataset is not renamed until the caller says the risk is understood.** `pool.dataset.rename` is refused as a bad argument unless `force` is true: `No safety checks are performed when renaming ZFS resources; this may break existing usages. If you understand the risks, please set force and proceed.` The description gives `force` a default of false and says nothing of it being needed. `TestADatasetIsMadeChangedRenamedAndRemoved`
+**A dataset is not renamed until the caller says the risk is understood.** `pool.dataset.rename` is refused as a bad argument unless `force` is true: `No safety checks are performed when renaming ZFS resources; this may break existing usages. If you understand the risks, please set force and proceed.` The description gives `force` a default of false and says nothing of it being needed. Its `recursive` is not for taking along what is under a dataset, which goes with it anyway: set on a dataset it fails with `recursive rename must be a snapshot`. `TestADatasetIsMadeChangedRenamedAndRemoved`
+
+**A dataset's note is among its user properties.** The description lists `comments` as a name of the dataset's own. A real NAS answers the note under `user_properties.comments`, with a `value` like any other setting, and has no `comments` beside it. `TestADatasetIsMadeChangedRenamedAndRemoved`
 
 **A share's options lack a name the description says is always there.** An SMB share made with nothing said of its options is listed with `options` that have no `purpose` in them, though the description requires one. `TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead`
 
