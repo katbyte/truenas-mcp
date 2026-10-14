@@ -12,6 +12,8 @@ import (
 // GetServices calls core.get_services. Returns a list of all registered services.
 //
 // target: Target interface to get services for.
+//
+// It changes nothing on the server.
 func (c Client) GetServices(ctx context.Context, target truenas.CoreGetTarget) (result truenas.CoreGetServicesResponse, err error) {
 	params := client.CallParams(0, target)
 	err = c.Caller.Call(ctx, "core.get_services", params, &result.Answer)

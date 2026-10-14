@@ -81,8 +81,9 @@ var services = []config.Service{{
 	// a moment is written {"$date": milliseconds}. A date written as text with no time zone, as a certificate's dates are, is in the NAS's own
 	// zone, so it is left as text and not read as UTC
 	Dates: config.Dates{Send: "$date", Read: []string{"2006-01-02T15:04:05Z07:00"}},
-	// a method the read-only administrator may call is a read, but for these
+	// a method the read-only administrator may call is a read, but for the not reads. Reads are the methods that change nothing and name no role, as
+	// anyone logged in may call them, or anyone at all
 	ReadRole: "READONLY_ADMIN",
-	Reads:    []string{"directoryservices.status"},
+	Reads:    []string{"directoryservices.status", "auth.me", "core.get_jobs", "core.get_methods", "core.get_services", "privilege.roles", "system.version", "system.version_short", "core.ping", "system.boot_id", "system.advanced.login_banner", "truenas.managed_by_truecommand", "user.has_local_administrator_set_up"},
 	NotReads: []string{"api_key.create", "api_key.update", "api_key.delete", "support.new_ticket", "support.attach_ticket"},
 }}

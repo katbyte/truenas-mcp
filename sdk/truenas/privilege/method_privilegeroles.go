@@ -14,6 +14,8 @@ import (
 // filters: List of filters for query results.
 //
 // options: Query options including pagination, ordering, and additional parameters.
+//
+// It changes nothing on the server.
 func (c Client) Roles(ctx context.Context, filters []any, options truenas.PrivilegeRolesOptions) (result truenas.PrivilegeRolesResponse, err error) {
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "privilege.roles", params, &result.Answer)

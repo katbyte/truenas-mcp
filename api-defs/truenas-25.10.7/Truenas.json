@@ -141,7 +141,8 @@
       "ExpectedStatusCodes": null,
       "Call": {
         "Method": "truenas.managed_by_truecommand",
-        "NoAuth": true
+        "NoAuth": true,
+        "Read": true
       }
     },
     {

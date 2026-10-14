@@ -9,6 +9,8 @@ import (
 )
 
 // ManagedByTruecommand calls truenas.managed_by_truecommand. Returns whether TrueNAS is being managed by TrueCommand.
+//
+// It changes nothing on the server.
 func (c Client) ManagedByTruecommand(ctx context.Context) (result truenas.TruenasManagedByTruecommandResponse, err error) {
 	var params []any
 	var answer bool

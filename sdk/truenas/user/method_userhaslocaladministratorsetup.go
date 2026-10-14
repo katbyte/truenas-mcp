@@ -9,6 +9,8 @@ import (
 )
 
 // HasLocalAdministratorSetUp calls user.has_local_administrator_set_up. Return whether a local administrator with a valid password exists.
+//
+// It changes nothing on the server.
 func (c Client) HasLocalAdministratorSetUp(ctx context.Context) (result truenas.UserHasLocalAdministratorSetUpResponse, err error) {
 	var params []any
 	var answer bool

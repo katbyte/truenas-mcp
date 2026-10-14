@@ -14,6 +14,8 @@ import (
 // filters: List of filters for query results.
 //
 // options: Query options including pagination, ordering, and additional parameters.
+//
+// It changes nothing on the server.
 func (c Client) GetJobsCount(ctx context.Context, filters []any, options truenas.CoreGetJobsOptions) (result truenas.CoreGetJobsCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int

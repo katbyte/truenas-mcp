@@ -273,7 +273,8 @@
       "ExpectedStatusCodes": null,
       "Call": {
         "Method": "privilege.roles",
-        "Filterable": true
+        "Filterable": true,
+        "Read": true
       },
       "Arguments": [
         {
@@ -314,7 +315,8 @@
       "Call": {
         "Method": "privilege.roles",
         "Filterable": true,
-        "Form": "count"
+        "Form": "count",
+        "Read": true
       },
       "Arguments": [
         {
@@ -357,7 +359,8 @@
       "Call": {
         "Method": "privilege.roles",
         "Filterable": true,
-        "Form": "get"
+        "Form": "get",
+        "Read": true
       },
       "Arguments": [
         {

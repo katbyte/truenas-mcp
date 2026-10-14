@@ -9,6 +9,8 @@ import (
 )
 
 // VersionShort calls system.version_short. Returns the short name of the software version of the system.
+//
+// It changes nothing on the server.
 func (c Client) VersionShort(ctx context.Context) (result truenas.SystemVersionShortResponse, err error) {
 	var params []any
 	var answer string

@@ -9,6 +9,8 @@ import (
 )
 
 // LoginBanner calls system.advanced.login_banner. Returns user set login banner.
+//
+// It changes nothing on the server.
 func (c Client) LoginBanner(ctx context.Context) (result truenas.SystemAdvancedLoginBannerResponse, err error) {
 	var params []any
 	var answer string

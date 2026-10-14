@@ -196,7 +196,8 @@
       "ExpectedStatusCodes": null,
       "Call": {
         "Method": "user.has_local_administrator_set_up",
-        "NoAuth": true
+        "NoAuth": true,
+        "Read": true
       }
     },
     {

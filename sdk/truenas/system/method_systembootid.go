@@ -9,6 +9,8 @@ import (
 )
 
 // BootId calls system.boot_id. Returns a unique boot identifier.
+//
+// It changes nothing on the server.
 func (c Client) BootId(ctx context.Context) (result truenas.SystemBootIdResponse, err error) {
 	var params []any
 	var answer string

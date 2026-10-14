@@ -9,6 +9,8 @@ import (
 )
 
 // Ping calls core.ping. Respond to WebSocket ping frames with "pong".
+//
+// It changes nothing on the server.
 func (c Client) Ping(ctx context.Context) (result truenas.CorePingResponse, err error) {
 	var params []any
 	var answer string

@@ -65,7 +65,8 @@
       "ExpectedStatusCodes": null,
       "Call": {
         "Method": "system.advanced.login_banner",
-        "NoAuth": true
+        "NoAuth": true,
+        "Read": true
       }
     },
     {

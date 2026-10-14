@@ -17,7 +17,8 @@
       "ExpectedStatusCodes": null,
       "Call": {
         "Method": "system.boot_id",
-        "NoAuth": true
+        "NoAuth": true,
+        "Read": true
       }
     },
     {
@@ -331,7 +332,8 @@
       },
       "ExpectedStatusCodes": null,
       "Call": {
-        "Method": "system.version"
+        "Method": "system.version",
+        "Read": true
       }
     },
     {
@@ -348,7 +350,8 @@
       },
       "ExpectedStatusCodes": null,
       "Call": {
-        "Method": "system.version_short"
+        "Method": "system.version_short",
+        "Read": true
       }
     }
   ],

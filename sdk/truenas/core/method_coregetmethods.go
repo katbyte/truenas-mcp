@@ -14,6 +14,8 @@ import (
 // service: Filters the result for a single service.
 //
 // target: Target interface to get methods for.
+//
+// It changes nothing on the server.
 func (c Client) GetMethods(ctx context.Context, service string, target truenas.CoreGetTarget) (result truenas.CoreGetMethodsResponse, err error) {
 	params := client.CallParams(0, service, target)
 	err = c.Caller.Call(ctx, "core.get_methods", params, &result.Answer)

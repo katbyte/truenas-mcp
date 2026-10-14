@@ -9,6 +9,8 @@ import (
 )
 
 // Version calls system.version. Returns the full name of the software version of the system.
+//
+// It changes nothing on the server.
 func (c Client) Version(ctx context.Context) (result truenas.SystemVersionResponse, err error) {
 	var params []any
 	var answer string

@@ -9,6 +9,8 @@ import (
 )
 
 // Me calls auth.me. Returns currently logged-in user.
+//
+// It changes nothing on the server.
 func (c Client) Me(ctx context.Context) (result truenas.AuthMeResponse, err error) {
 	result.AuthUserInfo = &truenas.AuthUserInfo{}
 	var params []any
