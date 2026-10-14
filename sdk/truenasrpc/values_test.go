@@ -70,6 +70,31 @@ func TestTheValuesTrueNASWritesItsOwnWayAreReadAndWrittenBack(t *testing.T) {
 	}
 }
 
+// The description marks two lists as holding no repeats, and a real TrueNAS 25.10.7 wrote one of them as a set of its own kind
+// (system.security.config, password_complexity_ruleset) and the other as a plain list (system.general.config, ui_httpsprotocols). A set reads
+// from either, and nothing where a list may be missing reads as no set.
+func TestASetReadsWhicheverWayTheNASWroteIt(t *testing.T) {
+	t.Parallel()
+
+	var got struct {
+		Ruleset   truenasrpc.Set[string]  `json:"password_complexity_ruleset"`
+		Protocols truenasrpc.Set[string]  `json:"ui_httpsprotocols"`
+		None      *truenasrpc.Set[string] `json:"none"`
+		Empty     truenasrpc.Set[int]     `json:"empty"`
+	}
+	if err := json.Unmarshal([]byte(`{"password_complexity_ruleset":{"$set":["UPPER","NUMBER"]},"ui_httpsprotocols":["TLSv1.2","TLSv1.3"],"none":null,"empty":[]}`), &got); err != nil {
+		t.Fatalf("a set written each way does not read: %v", err)
+	}
+	if len(got.Ruleset) != 2 || got.Ruleset[0] != "UPPER" || len(got.Protocols) != 2 || got.Protocols[1] != "TLSv1.3" || got.None != nil || len(got.Empty) != 0 {
+		t.Errorf("read as %v, %v, %v and %v", got.Ruleset, got.Protocols, got.None, got.Empty)
+	}
+
+	var not truenasrpc.Set[string]
+	if err := json.Unmarshal([]byte(`{"$other":["a"]}`), &not); err == nil {
+		t.Errorf("something that is no set read as one: %v", not)
+	}
+}
+
 // A user who may only read is answered "********" where a secret is, whatever the secret is: a list of password hashes and a certificate with its
 // key come back as that one piece of text. Seen on a real TrueNAS 25.10.7, in mail.config, system.general.config and user.query. A secret reads
 // either way, says which it was, writes back as it was read, and says nothing of itself when printed.

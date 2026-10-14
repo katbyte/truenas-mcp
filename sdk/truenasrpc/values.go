@@ -141,7 +141,8 @@ func (t *TimeOfDay) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// Set is a list a TrueNAS keeps as a set, without repeats and in no order worth relying on: {"$set": [1, 2, 3]}.
+// Set is a list a TrueNAS keeps as a set, without repeats and in no order worth relying on: {"$set": [1, 2, 3]}. A NAS writes some of them
+// that way and others as a plain list, though its description calls both the same, so either reads.
 type Set[T any] []T
 
 func (s Set[T]) MarshalJSON() ([]byte, error) {
@@ -154,6 +155,13 @@ func (s Set[T]) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Set[T]) UnmarshalJSON(data []byte) error {
+	var plain []T
+	if json.Unmarshal(data, &plain) == nil {
+		*s = plain
+
+		return nil
+	}
+
 	var wire struct {
 		Items *[]T `json:"$set"`
 	}

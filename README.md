@@ -2,6 +2,8 @@
 
 An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking after a [TrueNAS](https://www.truenas.com) from Claude Code, Claude Desktop, or any other MCP client.
 
+**It was made mainly to get a Go SDK for [truenas-metrics](https://github.com/katbyte/truenas-metrics).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
+
 **This is being built, and the MCP server is not here yet.** What works today is the Go connection to a TrueNAS, a stand-in NAS to test against, and a command that checks a connection.
 
 **Detection is code, correction is judgment.** The checks that are coming only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
@@ -29,10 +31,6 @@ truenas-mcp info
 A TrueNAS comes with a certificate nothing trusts. Download it (Credentials, then Certificates) and pass it with `--certificate-file`. [Connecting](docs/connecting.md) has the other ways, and how the key is kept safe.
 
 There is no server to register with Claude Code yet.
-
-## Why this exists
-
-I needed a Go SDK for TrueNAS, for [truenas-metrics](https://github.com/katbyte/truenas-metrics), and an MCP server is the best way I know to test an SDK. An exporter reads a handful of things. A server with a tool for everything uses the whole API, and every tool is tried against a real TrueNAS. So the SDK lives here and the exporter imports it.
 
 ## What is here
 
@@ -83,7 +81,8 @@ One connection is shared by any number of calls. It reconnects by itself, and it
 - I set the design, the scope and the rules, and decide what stays.
 - The SDK is tested against a real TrueNAS in a virtual machine, started clean for every run.
 - Every read the API has that needs no argument is called and checked against the API's own description.
-- The test NAS is given real problems, such as a missing disk and a task that fails, to see how it reports them.
+- The test NAS is given real problems, such as a dead disk and a task that fails, to see how it reports them.
+- Everything truenas-metrics asks a NAS is asked the same way, with a key that may only read.
 - Each run counts how much of the API it called: nearly half of its 769 methods so far. Not every method has a live test yet.
 - CI runs on every push to main: build, unit tests with the race detector, the live tests, golangci-lint, CodeQL, govulncheck, a Trivy scan of the binary, zizmor, actionlint, yamllint, shellcheck, typos, markdownlint, and a check of the vendored dependencies.
 
