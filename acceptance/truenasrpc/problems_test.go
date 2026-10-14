@@ -63,9 +63,10 @@ func eventually(ctx context.Context, limit time.Duration, so func() bool) bool {
 	return true
 }
 
-// pooled is the test pool as the NAS has it: its state and the disks it is made of.
+// pooled is a pool as the NAS has it: its state and the disks it is made of. A pool of one disk has that disk where a pair has its mirror.
 type pooled struct {
 	ID        int64  `json:"id"`
+	Name      string `json:"name"`
 	Status    string `json:"status"`
 	Healthy   bool   `json:"healthy"`
 	Warning   bool   `json:"warning"`
@@ -74,6 +75,8 @@ type pooled struct {
 	Topology  struct {
 		Data []struct {
 			Type     string `json:"type"`
+			GUID     string `json:"guid"`
+			Disk     string `json:"disk"`
 			Status   string `json:"status"`
 			Children []struct {
 				GUID   string `json:"guid"`
@@ -84,15 +87,74 @@ type pooled struct {
 	} `json:"topology"`
 }
 
+// pool is the pool the journey made, and poolNamed any pool by its name: found says whether there is one.
 func pool(ctx context.Context, t *testing.T, conn *truenasrpc.Conn) pooled {
 	t.Helper()
 
-	var pools []pooled
-	if err := conn.Call(ctx, "pool.query", []any{[]any{[]any{"name", "=", layout.Pool}}}, &pools); err != nil || len(pools) != 1 {
-		t.Fatalf("the pool the journey made is not found: %d found, %v", len(pools), err)
+	made, found := poolNamed(ctx, t, conn, layout.Pool)
+	if !found {
+		t.Fatal("the pool the journey made is not found")
 	}
 
-	return pools[0]
+	return made
+}
+
+func poolNamed(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, name string) (pooled, bool) {
+	t.Helper()
+
+	var pools []pooled
+	if err := conn.Call(ctx, "pool.query", []any{[]any{[]any{"name", "=", name}}}, &pools); err != nil || len(pools) > 1 {
+		t.Fatalf("looking for the pool %s: %d found, %v", name, len(pools), err)
+	}
+	if len(pools) == 0 {
+		return pooled{}, false
+	}
+
+	return pools[0], true
+}
+
+// spare is a disk nothing uses, as the NAS lists one: it is named one way to make or grow a pool and another to replace a disk.
+type spare struct {
+	Name       string `json:"name"`
+	Identifier string `json:"identifier"`
+	Serial     string `json:"serial"`
+}
+
+func spares(ctx context.Context, t *testing.T, conn *truenasrpc.Conn) []spare {
+	t.Helper()
+
+	var unused []spare
+	if err := conn.Call(ctx, "disk.details", []any{map[string]any{"type": "UNUSED"}}, &unused); err != nil {
+		t.Fatalf("listing the disks nothing uses: %v", err)
+	}
+
+	return unused
+}
+
+// put writes a small file on the NAS, over whatever is there, and got reads one back.
+func put(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, path, text string) {
+	t.Helper()
+	ledger.count("filesystem.put")
+
+	job, err := conn.Upload(ctx, "filesystem.put", []any{path, map[string]any{}}, strings.NewReader(text))
+	if err == nil {
+		err = job.Wait(ctx, nil)
+	}
+	if err != nil {
+		t.Fatalf("writing %s: %v", path, err)
+	}
+}
+
+func got(ctx context.Context, t *testing.T, conn *truenasrpc.Conn, path string) string {
+	t.Helper()
+	ledger.count("filesystem.get")
+
+	var text strings.Builder
+	if _, err := conn.Download(ctx, "filesystem.get", []any{path}, &text); err != nil {
+		t.Fatalf("reading %s: %v", path, err)
+	}
+
+	return text.String()
 }
 
 // A pool that loses one disk of a pair keeps working and is no longer safe. The NAS says so in the pool's own state at once and as an alert

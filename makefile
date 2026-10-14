@@ -199,7 +199,8 @@ test-live: ## Run the live tests against a test NAS that is already up (see test
 	go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
 
 # start the machine, run the suite, remove the machine: what the machine said and showed is printed and kept when anything fails. the NAS is
-# handed to the suite as its installer left it, since making everything on it is the first thing the suite tests
+# handed to the suite as its installer left it, since making everything on it is the first thing the suite tests. the suite is told where the
+# machine's console is, since one test breaks a disk from it
 testacc: ## Run the live tests against a throwaway TrueNAS in a virtual machine
 	@echo "==> live tests..."
 	@set -e; \
@@ -207,7 +208,7 @@ testacc: ## Run the live tests against a throwaway TrueNAS in a virtual machine
 		trap 'st=$$?; [ $$st -eq 0 ] || .scripts/testenv.sh logs || true; .scripts/testenv.sh down; rm -f '"$$env"'; exit $$st' EXIT; \
 		.scripts/testenv.sh boot > "$$env"; \
 		. ./"$$env"; \
-		go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
+		TRUENAS_TEST_MONITOR="$$(.scripts/testenv.sh dir)/run/monitor.sock" go test -tags acceptance -count=1 -p 1 ./acceptance/... -timeout ${LIVE_TIMEOUT} -v
 
 testenv-up: ## Start the throwaway TrueNAS and print the environment the live tests need: eval "$(make testenv-up)"
 	@.scripts/testenv.sh up
