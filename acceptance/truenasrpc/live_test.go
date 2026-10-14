@@ -48,7 +48,7 @@ func TestAKeyLogsInAndTheNASSaysWhatItRuns(t *testing.T) {
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
 func TestAPasswordAndAKeyAloneLogInToo(t *testing.T) {
-	if err := root(t).Connect(within(t, time.Minute)); err != nil {
+	if err := as(t, truenasrpc.Password(nas.username, nas.password)).Connect(within(t, time.Minute)); err != nil {
 		t.Errorf("a password: %v", err)
 	}
 	if err := as(t, truenasrpc.APIKeyOnly(made(t).Key)).Connect(within(t, time.Minute)); err != nil {
@@ -138,7 +138,7 @@ func TestAJobIsStartedFollowedFoundAgainAndWaitedFor(t *testing.T) {
 		time.Sleep(50 * time.Millisecond)
 	}
 
-	again, err := admin(t).Job(ctx, job.ID())
+	again, err := as(t, truenasrpc.APIKey(nas.username, made(t).Key)).Job(ctx, job.ID())
 	if err != nil {
 		t.Fatalf("finding the scrub again by its number: %v", err)
 	}

@@ -63,7 +63,21 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 
-	os.Exit(m.Run())
+	os.Exit(run(m))
+}
+
+// run runs the tests, and closes the connections they shared when the last is done.
+func run(m *testing.M) int {
+	defer func() {
+		shared.mu.Lock()
+		defer shared.mu.Unlock()
+
+		for _, conn := range shared.conns {
+			_ = conn.Close()
+		}
+	}()
+
+	return m.Run()
 }
 
 // written is a log that keeps what it is sent, for a test to read.
@@ -159,7 +173,8 @@ func (w *written) text() string {
 	return strings.Join(w.lines, "\n")
 }
 
-// as is a connection to the test NAS with the credential given, which closes when the test ends.
+// as is a connection of the test's own to the test NAS, with the credential given, which closes when the test ends. It is for a test of
+// logging in itself: a NAS takes only twenty logins a minute from one address, so everything else calls on a connection the run shares.
 func as(t *testing.T, cred truenasrpc.Credential, opts ...truenasrpc.Option) *truenasrpc.Conn {
 	t.Helper()
 
@@ -172,11 +187,41 @@ func as(t *testing.T, cred truenasrpc.Credential, opts ...truenasrpc.Option) *tr
 	return conn
 }
 
-// root is a connection as the administrator by password, which is the only way into a NAS nothing has been made on yet.
-func root(t *testing.T, opts ...truenasrpc.Option) *truenasrpc.Conn {
+// shared are the connections the tests call on, one as each user for the whole run: logged in once and shared by everything, which is how a
+// program is meant to use the SDK, and what keeps the run under the logins a NAS takes in a minute.
+var shared struct {
+	mu    sync.Mutex
+	conns map[string]*truenasrpc.Conn
+}
+
+// sharedAs is the run's one connection as a user, made the first time it is asked for.
+func sharedAs(t *testing.T, who string, cred truenasrpc.Credential) *truenasrpc.Conn {
 	t.Helper()
 
-	return as(t, truenasrpc.Password(nas.username, nas.password), opts...)
+	shared.mu.Lock()
+	defer shared.mu.Unlock()
+
+	if conn, ok := shared.conns[who]; ok {
+		return conn
+	}
+
+	conn, err := truenasrpc.New(nas.server, cred, truenasrpc.WithCertificateFile(nas.certificate), truenasrpc.WithLog(ledger))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if shared.conns == nil {
+		shared.conns = map[string]*truenasrpc.Conn{}
+	}
+	shared.conns[who] = conn
+
+	return conn
+}
+
+// root is a connection as the administrator by password, which is the only way into a NAS nothing has been made on yet.
+func root(t *testing.T) *truenasrpc.Conn {
+	t.Helper()
+
+	return sharedAs(t, "the administrator, by password", truenasrpc.Password(nas.username, nas.password))
 }
 
 // made is what the journey made of the NAS. A test run by itself, with no journey before it, has the NAS set up the plain way first: the steps
@@ -232,17 +277,22 @@ func description(t *testing.T) map[string]described.Method {
 	return methods
 }
 
-// admin is a connection as the administrator, by key, and reader one as the user who may only read.
+// admin is a connection as the administrator, by key, and reader one as the user who may only read. A test that wants the connection
+// made its own way is given one of its own.
 func admin(t *testing.T, opts ...truenasrpc.Option) *truenasrpc.Conn {
 	t.Helper()
 
-	return as(t, truenasrpc.APIKey(nas.username, made(t).Key), opts...)
+	if len(opts) > 0 {
+		return as(t, truenasrpc.APIKey(nas.username, made(t).Key), opts...)
+	}
+
+	return sharedAs(t, "the administrator, by key", truenasrpc.APIKey(nas.username, made(t).Key))
 }
 
 func reader(t *testing.T) *truenasrpc.Conn {
 	t.Helper()
 
-	return as(t, truenasrpc.APIKey(layout.ReadOnlyUser, made(t).ReadOnlyKey))
+	return sharedAs(t, "the user who may only read", truenasrpc.APIKey(layout.ReadOnlyUser, made(t).ReadOnlyKey))
 }
 
 // within is the test's context with a limit on it, so that a NAS that stops answering fails the one test and not the whole run's time.

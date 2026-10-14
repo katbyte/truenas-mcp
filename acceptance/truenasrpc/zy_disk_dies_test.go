@@ -5,7 +5,6 @@ package truenasrpc_test
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"net"
 	"os"
 	"path/filepath"
@@ -92,7 +91,8 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 		t.Fatalf("the machine has no drive %s for the disk with serial %s: %s", drive, known[0].Serial, has)
 	}
 
-	t.Logf("taking %s (%s, serial %s) away from under the NAS: %q", dying.Disk, drive, known[0].Serial, machine(ctx, t, socket, "drive_del "+drive))
+	t.Logf("taking %s (%s, serial %s) away from under the NAS", dying.Disk, drive, known[0].Serial)
+	machine(ctx, t, socket, "drive_del "+drive)
 
 	// a NAS finds a dead disk when it next uses it, so it is given something to write, and a scrub if that is not enough
 	put(ctx, t, conn, "/mnt/"+layout.Datasets[0]+"/after-the-disk-died.txt", "written with one disk of the pair dead\n")
@@ -107,9 +107,11 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 			t.Fatalf("the NAS never noticed a disk of the pool had died: the pool reads as %s", without.Status)
 		}
 	}
+	// the pool's own word for its state is not to be gone by: seen on a real NAS, a pool with a dead disk still calls itself ONLINE. That it
+	// is not healthy, and which disk is at fault, is what says so
 	t.Logf("the pool reads as %s, the dead disk as %s and the other as %s", without.Status, without.Topology.Data[0].Children[0].Status, without.Topology.Data[0].Children[1].Status)
-	if without.Status != "DEGRADED" || without.Topology.Data[0].Children[0].Status == "ONLINE" || without.Topology.Data[0].Children[1].Status != "ONLINE" {
-		t.Errorf("with a disk dead the pool reads as %s, its disks %s and %s; want DEGRADED, the dead one anything but ONLINE and the other ONLINE", without.Status, without.Topology.Data[0].Children[0].Status, without.Topology.Data[0].Children[1].Status)
+	if without.Topology.Data[0].Children[0].Status != "FAULTED" || without.Topology.Data[0].Children[1].Status != "ONLINE" {
+		t.Errorf("with a disk dead the pool's disks read as %s and %s; want the dead one FAULTED and the other ONLINE", without.Topology.Data[0].Children[0].Status, without.Topology.Data[0].Children[1].Status)
 	}
 
 	// what it wrote with a disk dead is all there
@@ -123,14 +125,27 @@ func TestADiskThatDiesIsNoticedAndASpareTakesItsPlace(t *testing.T) {
 	}
 	for _, one := range said {
 		t.Logf("the NAS says (%s): %s", one.Level, one.Formatted)
+
+		if one.Level != "CRITICAL" || !strings.Contains(one.Formatted, "FAULTED") {
+			t.Errorf("the alert is %s and does not say a disk is faulted: %s", one.Level, one.Formatted)
+		}
 	}
 
-	// how a NAS lists a disk that no longer answers is read, not judged: it is what a check of disks will have to make sense of
-	var listed json.RawMessage
+	// the list of disks says nothing of it: a dead disk is listed as the pool's, with its size, like the one beside it. Only the pool knows
+	var listed struct {
+		Used []struct {
+			Name string `json:"name"`
+			Size int64  `json:"size"`
+			Pool string `json:"imported_zpool"`
+		} `json:"used"`
+	}
 	if err := conn.Call(ctx, "disk.details", nil, &listed); err != nil {
-		t.Logf("listing the disks with one dead fails with: %v", err)
-	} else {
-		t.Logf("with one dead, the NAS lists its disks as: %.1500s", listed)
+		t.Fatalf("listing the disks with one dead: %v", err)
+	}
+	for _, disk := range listed.Used {
+		if disk.Name == dying.Disk && (disk.Pool != layout.Pool || disk.Size == 0) {
+			t.Errorf("the dead disk is listed as %+v, and was seen listed as the pool's with its size", disk)
+		}
 	}
 
 	// a spare is named by its identifier here, where making a pool names a disk by its name

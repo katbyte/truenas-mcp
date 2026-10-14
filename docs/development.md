@@ -19,6 +19,10 @@ make testacc    # the live tests, against a throwaway TrueNAS in a virtual machi
 
 **The NAS is given real problems**, and how it reports each is checked: a pool with a disk taken out, a dataset filled to its limit, a pool with most of its space spoken for, a copy task that cannot reach where it copies to, a replication that would overwrite files, and a snapshot task that fails.
 
+**A disk dies.** The machine the NAS runs in is told to take one of the pool's disks away, as a dead disk goes. The NAS has to notice by itself, and be whole again with a spare in its place. This runs last, since a dead disk stays dead.
+
+**More is made and removed**: a second pool on one disk, grown to a pair; a snapshot rolled back, copied, held and removed.
+
 **Each run ends by counting** how many of the NAS's API methods the tests called, by kind, and which they did not. A key the tests made turning up in any line of trace fails the run.
 
 Nothing of yours is ever a target: the tests and the setup both refuse a NAS that has a pool and is not named `throwaway-nas`.
