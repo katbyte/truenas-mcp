@@ -90,6 +90,9 @@ func (e *InvalidError) Error() string { return e.Reason }
 var (
 	ErrNotAuthorized = &Error{Errno: 13, ErrName: "EACCES", Reason: "Not authorized"}
 	ErrNotFound      = &Error{Errno: 2, ErrName: "ENOENT", Reason: "the thing asked for does not exist"}
+	// ErrNoMatch is how a query told to answer the one row it matches is refused when none does: a real NAS names nothing but the
+	// exception, and not ENOENT.
+	ErrNoMatch = &Error{Errno: 22, ErrName: "EINVAL", Reason: "MatchNotFound()"}
 )
 
 // NoSuchInstance is the refusal a TrueNAS gives a call that asks, by id or name, for something it has not got: what is "Pool 7", "Job with id

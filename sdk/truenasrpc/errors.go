@@ -222,12 +222,16 @@ func IsInvalid(err error) bool {
 	return ok && e.Code == CodeInvalidParams && !e.missing()
 }
 
-// IsNotFound reports whether the NAS has nothing of the id or name a call asked for.
+// IsNotFound reports whether the NAS has nothing of the id or name a call asked for. That includes a query told to answer the one row it
+// matches when no row does, which a NAS refuses with nothing but the name of what went wrong inside it.
 func IsNotFound(err error) bool {
 	e, ok := errors.AsType[*Error](err)
 
-	return ok && (e.ErrName == "ENOENT" || e.missing())
+	return ok && (e.ErrName == "ENOENT" || e.missing() || e.ErrName == "EINVAL" && e.Reason == noMatch)
 }
+
+// noMatch is all a NAS says when a query told to answer its one row matches none: seen on a real 25.10.7.
+const noMatch = "MatchNotFound()"
 
 // IsTooManyCalls reports whether the NAS refused a call because the connection, or the address it comes from, is asking too much at once.
 func IsTooManyCalls(err error) bool {

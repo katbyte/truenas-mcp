@@ -412,6 +412,7 @@ func TestARefusalSaysWhatKindItIs(t *testing.T) {
 	nas.Refuse("pool.create", truenastest.ErrNotAuthorized)
 	nas.Refuse("pool.get_instance", truenastest.NoSuchInstance("Pool 7"))
 	nas.Refuse("filesystem.stat", &truenastest.Error{Errno: 2, ErrName: "ENOENT", Reason: "Path /mnt/nowhere not found"})
+	nas.Refuse("pool.query", truenastest.ErrNoMatch)
 	nas.Refuse("pool.dataset.create", &truenastest.InvalidError{Reason: "[EINVAL] pool_dataset_create.name: Dataset name is required", Invalid: []truenastest.Invalid{{Attribute: "pool_dataset_create.name", Message: "Dataset name is required", Errno: 22}}})
 	conn := connect(t, nas)
 
@@ -425,6 +426,8 @@ func TestARefusalSaysWhatKindItIs(t *testing.T) {
 		// failed: both are "not found", and the first is not a bad argument
 		{"pool.get_instance", truenasrpc.IsNotFound, "pool.get_instance: Pool 7 does not exist (ENOENT)"},
 		{"filesystem.stat", truenasrpc.IsNotFound, "filesystem.stat: Path /mnt/nowhere not found (ENOENT)"},
+		// and a query told to answer its one row, when none matches, says only the name of what went wrong inside it
+		{"pool.query", truenasrpc.IsNotFound, "pool.query: MatchNotFound() (EINVAL)"},
 		{"pool.dataset.create", truenasrpc.IsInvalid, "pool.dataset.create: the TrueNAS refused what it was sent: pool_dataset_create.name: Dataset name is required"},
 		{"pool.no_such_thing", truenasrpc.IsNoSuchMethod, "the TrueNAS has no method pool.no_such_thing"},
 	} {

@@ -354,8 +354,8 @@ func TestReadsThatAreToldWhatToReadAnswerTheWayTheirDescriptionSays(t *testing.T
 }
 
 // A query can be told to answer only the one row it matches, in place of a list, or only how many rows it matches. Told to answer the one
-// row when nothing matches, a NAS refuses: by the source the refusal is a bare failure of the call, with no "not there" in it, and what a
-// real NAS says is written down here for whoever has to tell "none" from something gone wrong.
+// row when nothing matches, a NAS refuses with a bare failure of the call, EINVAL and the name of the exception, with no "not there" in it:
+// the connection reads that as nothing there. Filters sent as nothing at all, where a list is described, are refused.
 //
 //nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
 func TestAQueryAnswersOneRowOrHowManyAndSaysWhenThereIsNoRow(t *testing.T) {
@@ -373,10 +373,11 @@ func TestAQueryAnswersOneRowOrHowManyAndSaysWhenThereIsNoRow(t *testing.T) {
 		t.Errorf("asked how many pools have a name no pool has: %d, %v", none, err)
 	}
 
-	// filters left out are sent by some clients as nothing at all, where the NAS describes a list
-	var nulled int
-	err := conn.Call(ctx, "pool.query", []any{nil, map[string]any{"count": true}}, &nulled)
-	t.Logf("asked how many pools there are with the filters sent as nothing: %d, %v", nulled, err)
+	// filters left out are sent by some clients as nothing at all, where the NAS describes a list, and it will not take that
+	err := conn.Call(ctx, "pool.query", []any{nil, map[string]any{"count": true}}, nil)
+	if !truenasrpc.IsInvalid(err) || !strings.Contains(err.Error(), "valid list") {
+		t.Errorf("asked how many pools there are with the filters sent as nothing, which a real NAS was seen to refuse: %v", err)
+	}
 
 	var one struct {
 		Name string `json:"name"`
@@ -389,7 +390,9 @@ func TestAQueryAnswersOneRowOrHowManyAndSaysWhenThereIsNoRow(t *testing.T) {
 	if err == nil {
 		t.Fatal("asked for the one pool of a name no pool has, the NAS answered something")
 	}
-	t.Logf("asked for the one row when there is none: %v (not found: %t, refused as bad arguments: %t)", err, truenasrpc.IsNotFound(err), truenasrpc.IsInvalid(err))
+	if !truenasrpc.IsNotFound(err) {
+		t.Errorf("asked for the one row when there is none, the NAS answered %v, which does not read as nothing there", err)
+	}
 	if e, ok := errors.AsType[*truenasrpc.Error](err); ok {
 		t.Logf("as sent: code %d, name %q, number %d, reason %q", e.Code, e.ErrName, e.Errno, e.Reason)
 	}
