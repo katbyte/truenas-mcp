@@ -335,9 +335,9 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 			if !ok {
 				t.Fatal("the exporter asks this, and the test has no typed call for it")
 			}
-			answer, err := ask(within(t, readWait))
-			if err != nil {
-				t.Fatalf("asked through the typed client: %v", err)
+			answer, refused := ask(within(t, readWait))
+			if refused != nil {
+				t.Fatalf("asked through the typed client: %v", refused)
 			}
 			if v := reflect.ValueOf(answer); v.Kind() == reflect.Slice && v.Len() < q.rows {
 				t.Errorf("%d listed, and the NAS has at least %d", v.Len(), q.rows)
@@ -346,5 +346,33 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 	}
 	if len(asked) != len(questions()) {
 		t.Errorf("%d typed calls for the exporter's %d questions", len(asked), len(questions()))
+	}
+
+	// a pool's layout and scrub, which the description leaves shapeless, are given shapes in sdk/pandorest: what the exporter reads of them has to be
+	// there on a real pool
+	pools, err := typed.Pool.Query(within(t, readWait), nil, truenas.PoolQueryOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, pool := range pools.Answer {
+		if pool.Topology == nil || len(pool.Topology.Data) == 0 || pool.Autotrim == nil || pool.Autotrim.Value == "" {
+			t.Errorf("the pool %s reads with no layout or trim: %+v", pool.Name, pool)
+
+			continue
+		}
+		for _, vdev := range pool.Topology.Data {
+			disks := vdev.Children
+			if vdev.Type == "DISK" {
+				disks = []truenas.PoolVdev{vdev}
+			}
+			for _, disk := range disks {
+				if vdev.Type == "" || vdev.Stats == nil || disk.Type != "DISK" || disk.Disk == "" || disk.Status == "" || disk.Stats == nil || len(disk.Stats.Ops) == 0 {
+					t.Errorf("in the pool %s, %s reads as %+v with the disk %+v", pool.Name, vdev.Name, vdev, disk)
+				}
+			}
+		}
+		if pool.Scan != nil && pool.Scan.Function != "" && (pool.Scan.State == "" || pool.Scan.StartTime.IsZero()) {
+			t.Errorf("the pool %s's last scrub reads as %+v", pool.Name, pool.Scan)
+		}
 	}
 }

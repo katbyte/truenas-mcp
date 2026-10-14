@@ -238,10 +238,8 @@
           "JsonName": "autotrim",
           "Description": "Auto-trim configuration for the pool indicating whether automatic TRIM operations are enabled.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
+            "Type": "Reference",
+            "ReferenceName": "PoolAutotrim"
           }
         },
         {
@@ -267,12 +265,9 @@
           "JsonName": "expand",
           "Description": "Information about any active pool expansion operation. `null` if no expansion is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "PoolExpand"
+          }
         },
         {
           "Name": "Fragmentation",
@@ -356,12 +351,9 @@
           "JsonName": "scan",
           "Description": "Information about any active scrub or resilver operation. `null` if no operation is running.",
           "Type": {
-            "Type": "Dictionary",
-            "NestedItem": {
-              "Type": "Any"
-            }
-          },
-          "Nullable": true
+            "Type": "Reference",
+            "ReferenceName": "PoolScan"
+          }
         },
         {
           "Name": "Size",

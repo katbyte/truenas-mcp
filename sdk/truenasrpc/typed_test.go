@@ -57,3 +57,33 @@ func TestTheGeneratedClientCallsThroughTheConnection(t *testing.T) {
 		t.Errorf("a one-row query that matches nothing = %v", err)
 	}
 }
+
+// A pool's scrub and disk layout, which the description leaves shapeless, read into the records sdk/pandorest gives them: a vdev with its disks
+// under it and their counts, and a scrub with its times.
+func TestAPoolsScrubAndLayoutReadIntoTypes(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	nas.Answer("pool.query", json.RawMessage(`[{"id": 1, "name": "tank", "status": "ONLINE", "healthy": true, "scan": {"function": "SCRUB", "state": "FINISHED", "start_time": {"$date": 1790845202000}, "end_time": {"$date": 1790848802000}, "percentage": 100.0, "errors": 2, "pause": null, "total_secs_left": null}, "autotrim": {"parsed": "off", "rawvalue": "off", "source": "DEFAULT", "value": "off"}, "expand": null, "topology": {"data": [{"name": "mirror-0", "type": "MIRROR", "path": null, "guid": "1", "status": "DEGRADED", "stats": {"read_errors": 0, "checksum_errors": 3, "ops": [0, 1, 2, 0, 0, 0, 0]}, "children": [{"name": "sda1", "type": "DISK", "path": "/dev/sda1", "guid": "2", "status": "ONLINE", "stats": {"checksum_errors": 3}, "children": [], "device": "sda1", "disk": "sda", "unavail_disk": null}, {"name": "3", "type": "DISK", "path": null, "guid": "3", "status": "UNAVAIL", "children": [], "device": null, "disk": null, "unavail_disk": {"identifier": "{serial}x", "name": "sdb", "serial": "x"}}], "unavail_disk": null}], "log": [], "cache": [], "spare": [], "special": [], "dedup": []}}]`))
+
+	typed, err := nasclient.New(connect(t, nas))
+	if err != nil {
+		t.Fatal(err)
+	}
+	pools, err := typed.Pool.Query(t.Context(), nil, truenas.PoolQueryOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	pool := pools.Answer[0]
+	if s := pool.Scan; s == nil || s.Function != "SCRUB" || s.Errors != 2 || !s.EndTime.Equal(time.UnixMilli(1790848802000)) || pool.Autotrim == nil || pool.Autotrim.Value != "off" {
+		t.Errorf("the scrub and trim read as %+v, %+v", pool.Scan, pool.Autotrim)
+	}
+	mirror := pool.Topology.Data[0]
+	if mirror.Type != "MIRROR" || mirror.Status != "DEGRADED" || mirror.Stats.ChecksumErrors != 3 || len(mirror.Stats.Ops) != 7 || len(mirror.Children) != 2 {
+		t.Errorf("the mirror reads as %+v", mirror)
+	}
+	if good, gone := mirror.Children[0], mirror.Children[1]; good.Disk != "sda" || good.Stats.ChecksumErrors != 3 || gone.Status != "UNAVAIL" || gone.UnavailDisk == nil || gone.UnavailDisk.Name != "sdb" {
+		t.Errorf("the disks read as %+v and %+v", good, gone)
+	}
+}

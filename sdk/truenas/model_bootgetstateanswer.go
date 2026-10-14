@@ -13,7 +13,7 @@ type BootGetStateAnswer struct {
 	AllocatedStr string `json:"allocated_str,omitempty"`
 
 	// Auto-trim configuration for the pool indicating whether automatic TRIM operations are enabled.
-	Autotrim map[string]any `json:"autotrim,omitzero"`
+	Autotrim *PoolAutotrim `json:"autotrim,omitempty"`
 
 	// Quota limit for the deduplication table. `null` if no quota is set.
 	DedupTableQuota string `json:"dedup_table_quota,omitempty"`
@@ -22,7 +22,7 @@ type BootGetStateAnswer struct {
 	DedupTableSize int `json:"dedup_table_size,omitempty"`
 
 	// Information about any active pool expansion operation. `null` if no expansion is running.
-	Expand map[string]any `json:"expand,omitzero"`
+	Expand *PoolExpand `json:"expand,omitempty"`
 
 	// Percentage of pool fragmentation as a string. `null` if not available.
 	Fragmentation string `json:"fragmentation,omitempty"`
@@ -52,7 +52,7 @@ type BootGetStateAnswer struct {
 	Path string `json:"path,omitempty"`
 
 	// Information about any active scrub or resilver operation. `null` if no operation is running.
-	Scan map[string]any `json:"scan,omitzero"`
+	Scan *PoolScan `json:"scan,omitempty"`
 
 	// Total size of the pool in bytes. `null` if not available.
 	Size int `json:"size,omitempty"`

@@ -5,20 +5,20 @@ package truenas
 // PoolTopology is the "PoolTopology" schema.
 type PoolTopology struct {
 	// Array of L2ARC cache vdev configurations.
-	Cache []any `json:"cache,omitzero"`
+	Cache []PoolVdev `json:"cache,omitzero"`
 
 	// Array of data vdev configurations in the pool.
-	Data []any `json:"data,omitzero"`
+	Data []PoolVdev `json:"data,omitzero"`
 
 	// Array of deduplication table vdev configurations.
-	Dedup []any `json:"dedup,omitzero"`
+	Dedup []PoolVdev `json:"dedup,omitzero"`
 
 	// Array of ZFS Intent Log (ZIL) vdev configurations.
-	Log []any `json:"log,omitzero"`
+	Log []PoolVdev `json:"log,omitzero"`
 
 	// Array of spare disk configurations.
-	Spare []any `json:"spare,omitzero"`
+	Spare []PoolVdev `json:"spare,omitzero"`
 
 	// Array of special vdev configurations for metadata.
-	Special []any `json:"special,omitzero"`
+	Special []PoolVdev `json:"special,omitzero"`
 }

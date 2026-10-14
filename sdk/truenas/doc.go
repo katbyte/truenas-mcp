@@ -36,6 +36,9 @@
 //
 // The importer fixed these bugs in the document before generating from it:
 //
+//   - truenas-pool-records
+//   - truenas-pool-shapes
+//   - truenas-vdev-lists
 //   - truenas-secrets
 //   - truenas-sets
 package truenas

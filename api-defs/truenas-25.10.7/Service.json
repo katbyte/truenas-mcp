@@ -6,6 +6,9 @@
   "Source": "api-defs/truenas-methods-25.10.7.json",
   "Auth": "",
   "Workarounds": [
+    "truenas-pool-records",
+    "truenas-pool-shapes",
+    "truenas-vdev-lists",
     "truenas-secrets",
     "truenas-sets"
   ],

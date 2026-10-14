@@ -20,6 +20,10 @@ func main() {
 
 // fixes are what a real TrueNAS does that its description cannot say.
 var fixes = []workarounds.Workaround{
+	// a pool's scrub, expansion, auto-trim setting and disk layout, which the description leaves shapeless (pools.go)
+	workarounds.DeclaredSchemas(workarounds.About{Name: "truenas-pool-records", Service: "truenas", Bug: "a pool's scrub, expansion, auto-trim setting and vdevs are described as values of no shape, and a NAS writes each the same way"}, poolShapes),
+	workarounds.DeclaredShapes(workarounds.About{Name: "truenas-pool-shapes", Service: "truenas", Bug: "a pool's scan, expand and autotrim are described as records of no fields"}, poolFields),
+	vdevLists{},
 	// made from api-defs/truenas-secrets-<version>.json: every secret in an answer that would be read as something other than text, the members
 	// of a value that is one of several records included
 	workarounds.NamedTypes(workarounds.About{Name: "truenas-secrets", Service: "truenas", Bug: "a caller who is not a full administrator is sent ******** in place of a secret, whatever its type"}, config.DefaultClient, map[string]string{

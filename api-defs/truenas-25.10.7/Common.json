@@ -1606,6 +1606,223 @@
       ]
     },
     {
+      "Name": "DiskEntryEnclosure",
+      "SchemaName": "DiskEntryEnclosure",
+      "Fields": [
+        {
+          "Name": "Number",
+          "JsonName": "number",
+          "Description": "Enclosure number where the disk is located.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Slot",
+          "JsonName": "slot",
+          "Description": "Physical slot position within the enclosure.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DiskQueryResultItem",
+      "SchemaName": "DiskQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Advpowermgmt",
+          "JsonName": "advpowermgmt",
+          "Description": "Advanced power management level or `DISABLED` to turn off power management.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskAdvpowermgmt"
+          }
+        },
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "System bus type the disk is connected to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Devname",
+          "JsonName": "devname",
+          "Description": "Device name in the operating system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enclosure",
+          "JsonName": "enclosure",
+          "Description": "Physical enclosure information or `null` if not in an enclosure.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskEntryEnclosure"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Expiretime",
+          "JsonName": "expiretime",
+          "Description": "Expiration timestamp for disk data or `null` if not applicable.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hddstandby",
+          "JsonName": "hddstandby",
+          "Description": "Hard disk standby timer in minutes or `ALWAYS ON` to disable standby.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskHddstandby"
+          }
+        },
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Unique identifier for the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "KmipUid",
+          "JsonName": "kmip_uid",
+          "Description": "KMIP (Key Management Interoperability Protocol) unique identifier or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Lunid",
+          "JsonName": "lunid",
+          "Description": "Logical unit number identifier or `null` if not applicable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Model",
+          "JsonName": "model",
+          "Description": "Manufacturer model name/number of the disk. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "System name of the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Number",
+          "JsonName": "number",
+          "Description": "Numeric identifier assigned to the disk.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Passwd",
+          "JsonName": "passwd",
+          "Description": "Disk encryption password (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the storage pool this disk belongs to. `null` if not part of any pool.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Rotationrate",
+          "JsonName": "rotationrate",
+          "Description": "Disk rotation speed in RPM or `null` for SSDs and unknown devices.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Manufacturer serial number of the disk.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Total size of the disk in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Subsystem",
+          "JsonName": "subsystem",
+          "Description": "Storage subsystem type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Transfermode",
+          "JsonName": "transfermode",
+          "Description": "Data transfer mode and capabilities of the disk.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Disk type classification or `null` if not determined.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ZfsGuid",
+          "JsonName": "zfs_guid",
+          "Description": "ZFS globally unique identifier for this disk or `null` if not used in ZFS.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
       "Name": "DropboxCredentialsModel",
       "SchemaName": "DropboxCredentialsModel",
       "Fields": [
@@ -5230,6 +5447,43 @@
       ]
     },
     {
+      "Name": "PoolAutotrim",
+      "SchemaName": "PoolAutotrim",
+      "Description": "Whether the pool trims its disks as space is freed, as a ZFS property.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "where the value comes from: DEFAULT, LOCAL",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "on or off",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
       "Name": "PoolCreateTopologyDataVdevDRAID",
       "SchemaName": "PoolCreateTopologyDataVdevDRAID",
       "Fields": [
@@ -6024,6 +6278,87 @@
       ]
     },
     {
+      "Name": "PoolExpand",
+      "SchemaName": "PoolExpand",
+      "Description": "A RAIDZ expansion: the last one, or the one running.",
+      "Fields": [
+        {
+          "Name": "BytesReflowed",
+          "JsonName": "bytes_reflowed",
+          "Description": "how much has been moved, in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "BytesToReflow",
+          "JsonName": "bytes_to_reflow",
+          "Description": "how much has to be moved, in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "EndTime",
+          "JsonName": "end_time",
+          "Description": "when it ended",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ExpandingVdev",
+          "JsonName": "expanding_vdev",
+          "Description": "which vdev is being widened",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Percentage",
+          "JsonName": "percentage",
+          "Description": "how far it has got",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "StartTime",
+          "JsonName": "start_time",
+          "Description": "when it started",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "EXPANDING while it runs, then FINISHED",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TotalSecsLeft",
+          "JsonName": "total_secs_left",
+          "Description": "how long it expects to go on, in seconds",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "WaitingForResilver",
+          "JsonName": "waiting_for_resilver",
+          "Description": "1 while it waits for a resilver to finish",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
       "Name": "PoolProcess",
       "SchemaName": "PoolProcess",
       "Fields": [
@@ -6060,6 +6395,103 @@
             "Type": "String"
           },
           "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolScan",
+      "SchemaName": "PoolScan",
+      "Description": "A scrub or resilver: the last one, or the one running.",
+      "Fields": [
+        {
+          "Name": "BytesIssued",
+          "JsonName": "bytes_issued",
+          "Description": "how much it has asked the disks for, in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "BytesProcessed",
+          "JsonName": "bytes_processed",
+          "Description": "how much it has read, in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "BytesToProcess",
+          "JsonName": "bytes_to_process",
+          "Description": "how much it has to read, in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "EndTime",
+          "JsonName": "end_time",
+          "Description": "when it ended; none while it runs",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Errors",
+          "JsonName": "errors",
+          "Description": "how many errors it found",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Function",
+          "JsonName": "function",
+          "Description": "SCRUB or RESILVER",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pause",
+          "JsonName": "pause",
+          "Description": "when it was paused, while it is",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Percentage",
+          "JsonName": "percentage",
+          "Description": "how far it has got",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "StartTime",
+          "JsonName": "start_time",
+          "Description": "when it started",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "SCANNING while it runs, then FINISHED or CANCELED",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TotalSecsLeft",
+          "JsonName": "total_secs_left",
+          "Description": "how long it expects to go on, in seconds; none when it cannot tell",
+          "Type": {
+            "Type": "Integer"
+          }
         }
       ]
     },
@@ -6248,7 +6680,8 @@
           "Type": {
             "Type": "List",
             "NestedItem": {
-              "Type": "Any"
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
             }
           }
         },
@@ -6259,7 +6692,8 @@
           "Type": {
             "Type": "List",
             "NestedItem": {
-              "Type": "Any"
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
             }
           }
         },
@@ -6270,7 +6704,8 @@
           "Type": {
             "Type": "List",
             "NestedItem": {
-              "Type": "Any"
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
             }
           }
         },
@@ -6281,7 +6716,8 @@
           "Type": {
             "Type": "List",
             "NestedItem": {
-              "Type": "Any"
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
             }
           }
         },
@@ -6292,7 +6728,8 @@
           "Type": {
             "Type": "List",
             "NestedItem": {
-              "Type": "Any"
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
             }
           }
         },
@@ -6303,8 +6740,237 @@
           "Type": {
             "Type": "List",
             "NestedItem": {
-              "Type": "Any"
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
             }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolVdev",
+      "SchemaName": "PoolVdev",
+      "Description": "A vdev of a pool, or a disk in one: a group of disks with the disks under it, or one disk alone.",
+      "Fields": [
+        {
+          "Name": "Children",
+          "JsonName": "children",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolVdev"
+            }
+          }
+        },
+        {
+          "Name": "Device",
+          "JsonName": "device",
+          "Description": "the partition the disk is used by, as the system names it",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Disk",
+          "JsonName": "disk",
+          "Description": "the disk, as the system names it",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Guid",
+          "JsonName": "guid",
+          "Description": "ZFS's own number for it",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "the vdev's name (mirror-0, raidz2-0) or the disk's partition",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "the partition's path, for a disk; none for a group",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Stats",
+          "JsonName": "stats",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolVdevStats"
+          }
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "ONLINE, DEGRADED, FAULTED, OFFLINE, UNAVAIL, REMOVED",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "MIRROR, RAIDZ1, RAIDZ2, RAIDZ3, DRAID1, DRAID2, DRAID3, STRIPE, DISK, FILE",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UnavailDisk",
+          "JsonName": "unavail_disk",
+          "Description": "for a disk that is not ONLINE, the disk the NAS last knew by its number, if any",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskQueryResultItem"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolVdevStats",
+      "SchemaName": "PoolVdevStats",
+      "Description": "What ZFS counts of a vdev or a disk since the pool was imported.",
+      "Fields": [
+        {
+          "Name": "Allocated",
+          "JsonName": "allocated",
+          "Description": "how much of it is used, in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Bytes",
+          "JsonName": "bytes",
+          "Description": "bytes moved, by kind",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "ChecksumErrors",
+          "JsonName": "checksum_errors",
+          "Description": "reads that came back other than what was written",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ConfiguredAshift",
+          "JsonName": "configured_ashift",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "DraidDataDisks",
+          "JsonName": "draid_data_disks",
+          "Description": "for a dRAID vdev, its data disks in a group",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "DraidParity",
+          "JsonName": "draid_parity",
+          "Description": "for a dRAID vdev, its parity",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "DraidSpareDisks",
+          "JsonName": "draid_spare_disks",
+          "Description": "for a dRAID vdev, its spare disks",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Fragmentation",
+          "JsonName": "fragmentation",
+          "Description": "how broken up its free space is, in per cent",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "LogicalAshift",
+          "JsonName": "logical_ashift",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Ops",
+          "JsonName": "ops",
+          "Description": "operations, by kind",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "PhysicalAshift",
+          "JsonName": "physical_ashift",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ReadErrors",
+          "JsonName": "read_errors",
+          "Description": "reads that failed",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SelfHealed",
+          "JsonName": "self_healed",
+          "Description": "bytes ZFS repaired from a good copy",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "how big it is, in bytes; 0 for a disk in a group",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Timestamp",
+          "JsonName": "timestamp",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "WriteErrors",
+          "JsonName": "write_errors",
+          "Description": "writes that failed",
+          "Type": {
+            "Type": "Integer"
           }
         }
       ]
@@ -9328,6 +9994,41 @@
       ]
     },
     {
+      "Name": "DiskAdvpowermgmt",
+      "SchemaName": "DiskAdvpowermgmt",
+      "Description": "Advanced power management level or `DISABLED` to turn off power management.",
+      "Values": [
+        {
+          "Name": "DiskAdvpowermgmtDISABLED",
+          "Value": "DISABLED"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN1",
+          "Value": "1"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN64",
+          "Value": "64"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN127",
+          "Value": "127"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN128",
+          "Value": "128"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN192",
+          "Value": "192"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN254",
+          "Value": "254"
+        }
+      ]
+    },
+    {
       "Name": "DiskDevType",
       "SchemaName": "DiskDevType",
       "Description": "Device type identifier for virtual disk devices.",
@@ -9335,6 +10036,57 @@
         {
           "Name": "DiskDevTypeDISK",
           "Value": "DISK"
+        }
+      ]
+    },
+    {
+      "Name": "DiskHddstandby",
+      "SchemaName": "DiskHddstandby",
+      "Description": "Hard disk standby timer in minutes or `ALWAYS ON` to disable standby.",
+      "Values": [
+        {
+          "Name": "DiskHddstandbyALWAYSON",
+          "Value": "ALWAYS ON"
+        },
+        {
+          "Name": "DiskHddstandbyN5",
+          "Value": "5"
+        },
+        {
+          "Name": "DiskHddstandbyN10",
+          "Value": "10"
+        },
+        {
+          "Name": "DiskHddstandbyN20",
+          "Value": "20"
+        },
+        {
+          "Name": "DiskHddstandbyN30",
+          "Value": "30"
+        },
+        {
+          "Name": "DiskHddstandbyN60",
+          "Value": "60"
+        },
+        {
+          "Name": "DiskHddstandbyN120",
+          "Value": "120"
+        },
+        {
+          "Name": "DiskHddstandbyN180",
+          "Value": "180"
+        },
+        {
+          "Name": "DiskHddstandbyN240",
+          "Value": "240"
+        },
+        {
+          "Name": "DiskHddstandbyN300",
+          "Value": "300"
+        },
+        {
+          "Name": "DiskHddstandbyN330",
+          "Value": "330"
         }
       ]
     },

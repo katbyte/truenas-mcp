@@ -37,6 +37,8 @@ Each of these was read in the TrueNAS source (`truenas/middleware` at the releas
 
 **Ten calls run at once for a connection, ten more wait, and the twenty-first is refused.** The connection sends ten and holds the rest back. `TestNoMoreCallsAreSentAtOnceThanTheNASWillRun`
 
+**A pool's scrub and disk layout are described as having no shape.** `pool.query` and `boot.get_state` describe `scan`, `expand` and `autotrim` as records with no fields, and each list of vdevs in `topology` as a list of values of no type. A NAS writes all of them the same way every time, and they are what anything watching a pool reads: its scrub's state, times and errors, and each vdev with its disks and their error counts. The client gives them records of their own (`PoolScan`, `PoolExpand`, `PoolAutotrim`, `PoolVdev`, `PoolVdevStats`), in `sdk/pandorest/pools.go`, written from `plugins/pool_/topology.py` and the pool model. A disk that is not ONLINE carries the whole disk record the NAS last had for it, as `unavail_disk`. `TestAPoolsScrubAndLayoutReadIntoTypes`, `TestEverythingTheExporterAsksReadsIntoTheTypedClient`
+
 **An API key sent without TLS is revoked on the spot.** The login answers `EXPIRED` and the key is gone for good. An address without TLS is refused before anything is sent. `TestSettingsThatCannotWorkAreRefusedWhenTheConnectionIsMade`, `TestARevokedKeySaysANewOneIsNeeded`
 
 **Logging in with a key and no user name is going away.** `auth.login_with_api_key` is removed in TrueNAS 27; `auth.login_ex` wants the name of the user the key was made for. Both are supported. `TestAKeyAloneLogsInTheOlderWay`
