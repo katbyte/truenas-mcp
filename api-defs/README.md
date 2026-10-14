@@ -209,7 +209,6 @@ Seen on the first run, on a GitHub runner, 13 October 2026: the installer disc s
 
 ## Not yet held by a test
 
-
 - a query can answer a list of rows, one row or a count, and the description of the one row leaves out the shape of any model inside it: `cloudsync.query` describes a row's `credentials` in full in the list, and as a title with no shape in the single row
 - a time of day, a day, and an address with its network, as TrueNAS writes them its own way: none has been seen in a real answer. The description has 5 places that could hold the last (in `smb.config`, `smb.update` and `docker.update`). The other two forms have been seen, and the live run lists every place it meets one: a moment (`{"$date": ...}`) in `system.info`, a pool's scan times, a dataset's and a snapshot's creation, a boot environment, an API key, a session and a user's last password change; and a set (`{"$set": [...]}`) in `system.security.config`, as its `password_complexity_ruleset`, which the description calls a list
 - of the sixteen methods that take or hand back a file, a real NAS has been sent and asked for files through `filesystem.put`, `filesystem.get`, `pool.dataset.export_key`, `pool.dataset.export_keys` and a job's log; the rest have only been run against the stand-in, written from the 25.10.7 source (`apps/file_app.py`). Whether a NAS serves files through its own socket was not checked, so both ways are refused there
