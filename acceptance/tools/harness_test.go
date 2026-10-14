@@ -93,7 +93,8 @@ func runSuite(m *testing.M) int {
 // start refuses a NAS that was not made to be thrown away, sets it up, and connects the suite to an MCP server registering every tool on it as its
 // administrator.
 func start(ctx context.Context) error {
-	ctx, cancel := context.WithTimeout(ctx, 25*time.Minute)
+	// only setting the NAS up is held to a time: the session made after it lives as long as the run
+	setupCtx, cancel := context.WithTimeout(ctx, 25*time.Minute)
 	defer cancel()
 
 	root, err := connection(truenasrpc.Password(nas.username, nas.password))
@@ -101,10 +102,10 @@ func start(ctx context.Context) error {
 		return err
 	}
 	n := &setup.NAS{Conn: root, Logf: func(format string, args ...any) { fmt.Fprintf(os.Stderr, format+"\n", args...) }}
-	if err := n.Disposable(ctx); err != nil {
+	if err := n.Disposable(setupCtx); err != nil {
 		return fmt.Errorf("refusing to run the live tests against the TrueNAS at %s: %w", nas.server, err)
 	}
-	if nas.made, err = n.All(ctx); err != nil {
+	if nas.made, err = n.All(setupCtx); err != nil {
 		return fmt.Errorf("setting the NAS up: %w", err)
 	}
 
