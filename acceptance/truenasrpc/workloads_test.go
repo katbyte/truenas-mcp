@@ -5,6 +5,7 @@ package truenasrpc_test
 import (
 	"context"
 	"encoding/json"
+	"strings"
 	"testing"
 	"time"
 
@@ -207,6 +208,12 @@ func TestAMachineIsGivenADiskChangedCopiedAndStartedWhereItCanBe(t *testing.T) {
 	asked(ctx, t, only, "vm.supports_virtualization", nil, &able)
 
 	err := conn.Call(ctx, "vm.start", []any{machineID}, nil)
+	// a machine copied a moment before is now and then not yet known to the NAS's hypervisor, which says its domain is not found; a little later it is
+	for tries := 0; err != nil && strings.Contains(err.Error(), "Domain not found") && tries < 6; tries++ {
+		t.Logf("starting the machine is refused with %v, and is asked again", err)
+		time.Sleep(5 * time.Second)
+		err = conn.Call(ctx, "vm.start", []any{machineID}, nil)
+	}
 	switch {
 	case able && err != nil:
 		t.Errorf("a NAS that says it can run machines would not start one: %v", err)

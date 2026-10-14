@@ -147,6 +147,8 @@ What a real NAS does some other way is written down beside those tests (`surpris
 
 The run ends by saying how many of the NAS's methods the tests called, by kind, and which were not: how much of the API is tested is counted, not claimed. Every connection the tests make is traced to do it, so every answer a real NAS gives also passes through the code that hides secrets, and a key the tests made turning up in any line fails the run. `TestTheRunSaysHowMuchOfTheAPIItTriedAndShowedNoKey`
 
+**A machine copied a moment before can fail to start.** Now and then `vm.start` on a machine just copied with `vm.clone` is refused with `[EFAULT] Domain not found: no domain with matching uuid`, and a few seconds later it starts. It has happened once on the test NAS. The test asks again for up to half a minute when it is refused that way. `TestAMachineIsGivenADiskChangedCopiedAndStartedWhereItCanBe`
+
 ## How a NAS says something is wrong
 
 None of this is in the description: an alert's text is whatever the NAS writes, and the state a task keeps has no shape there at all. Each was read from a real NAS that was given the problem, and the tests that give it the problem hold what was read.
