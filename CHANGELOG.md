@@ -25,5 +25,6 @@
 - the live tests give the NAS real problems and check how it reports each: a disk taken out, a disk that dies and is replaced by a spare, a full dataset, a nearly full pool, and a copy, a replication and a snapshot task that fail
 - a list the NAS keeps as a set reads whether the NAS wrote it wrapped as one or as a plain list, which a real NAS does both of
 - the live tests set up and take down storage and data protection (a second pool's whole life, scrubs, datasets, encryption, replication, snapshot tasks, boot environments), and ask everything truenas-metrics asks, its way, with a key that may only read
+- the live tests make, change and remove one of each of twenty-one kinds of thing a NAS keeps, and change one setting on each of fifteen pages; a test NAS can be furnished with shares, a target, a machine and tasks on request (`TRUENAS_TEST_FURNISHED=1`), and has a disk that reports a temperature
 - something asked for by an id the NAS has nothing for is `IsNotFound`, as it is on a real NAS, which reports it as a refused argument
 - `truenas-mcp info` checks an address, a certificate and a key, and prints the version the NAS runs

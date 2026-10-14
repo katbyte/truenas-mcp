@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
-	"github.com/katbyte/truenas-mcp/acceptance/setup"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -176,9 +175,7 @@ func TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead(t *testing.T) 
 
 	// one of each thing the exporter counts, made the way anything else that wants a furnished NAS has it made, and left there: the tests
 	// after this one read a NAS with something of every kind on it
-	if err := (&setup.NAS{Conn: conn, Logf: t.Logf}).Furnish(ctx); err != nil {
-		t.Fatalf("furnishing the NAS: %v", err)
-	}
+	furnished(t)
 
 	// each task was left in the state it is meant to be seen in
 	if state, _ := furnishedTask(ctx, t, conn, "pool.snapshottask.query", "dataset", layout.TaskDataset).state(); state != "FINISHED" {

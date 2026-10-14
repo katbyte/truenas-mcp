@@ -6,6 +6,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"maps"
+	"strings"
 	"testing"
 	"time"
 
@@ -59,6 +61,8 @@ func TestOneOfEachKindOfThingANASKeepsIsMadeChangedAndRemoved(t *testing.T) {
 		with    map[string]any
 		change  map[string]any
 		removal []any
+		// again names what it was made with that a NAS wants sent again with any change
+		again []string
 	}{
 		{name: "group", with: map[string]any{"name": "testers"}, change: map[string]any{"sudo_commands_nopasswd": []string{"/usr/bin/true"}}},
 		{name: "user", with: map[string]any{"username": "made-by-tests", "full_name": "Made by the tests", "password": marked("password"), "group_create": true}, change: map[string]any{"full_name": "Changed by the tests"}, removal: []any{map[string]any{"delete_group": true}}},
@@ -70,7 +74,8 @@ func TestOneOfEachKindOfThingANASKeepsIsMadeChangedAndRemoved(t *testing.T) {
 		{name: "staticroute", with: map[string]any{"destination": "192.0.2.0/24", "gateway": "10.0.2.2", "description": "made by the tests"}, change: map[string]any{"description": "changed by the tests"}},
 		{name: "kerberos.realm", with: map[string]any{"realm": "TESTS.EXAMPLE"}, change: map[string]any{"kdc": []string{"kdc.tests.example"}}},
 		{name: "tunable", with: map[string]any{"type": "SYSCTL", "var": "vm.swappiness", "value": "11", "comment": "made by the tests"}, change: map[string]any{"comment": "changed by the tests"}},
-		{name: "alertservice", with: map[string]any{"name": "made by the tests", "attributes": map[string]any{"type": "Slack", "url": "https://hooks.example.test/" + marked("webhook")}, "level": "WARNING", "enabled": false}, change: map[string]any{"level": "CRITICAL"}},
+		// this one is changed whole or not at all: its name and where it sends to have to be given again with whatever changes
+		{name: "alertservice", with: map[string]any{"name": "made by the tests", "attributes": map[string]any{"type": "Slack", "url": "https://hooks.example.test/" + marked("webhook")}, "level": "WARNING", "enabled": false}, change: map[string]any{"level": "CRITICAL"}, again: []string{"name", "attributes"}},
 		{name: "reporting.exporters", with: map[string]any{"name": "made-by-tests", "enabled": false, "attributes": map[string]any{"exporter_type": "GRAPHITE", "destination_ip": "127.0.0.1", "destination_port": 2003, "namespace": "tests"}}, change: map[string]any{"name": "changed-by-tests"}},
 		{name: "cloudsync.credentials", with: map[string]any{"name": "made by the tests", "provider": map[string]any{"type": "S3", "access_key_id": marked("access-key"), "secret_access_key": marked("secret-key")}}, change: map[string]any{"name": "changed by the tests"}},
 		{name: "acme.dns.authenticator", with: map[string]any{"name": "made-by-tests", "attributes": map[string]any{"authenticator": "cloudflare", "api_token": marked("token")}}, change: map[string]any{"name": "changed-by-tests"}},
@@ -122,7 +127,12 @@ func TestOneOfEachKindOfThingANASKeepsIsMadeChangedAndRemoved(t *testing.T) {
 				t.Errorf("asked for by its id, %d are listed (%v)", len(listed), err)
 			}
 
-			if err := conn.Call(ctx, kind.name+".update", []any{made.ID, kind.change}, nil); err != nil {
+			change := map[string]any{}
+			for _, name := range kind.again {
+				change[name] = kind.with[name]
+			}
+			maps.Copy(change, kind.change)
+			if err := conn.Call(ctx, kind.name+".update", []any{made.ID, change}, nil); err != nil {
 				t.Fatalf("changing it: %v", err)
 			}
 			asked(ctx, t, conn, kind.name+".get_instance", []any{made.ID}, &fetched)
@@ -144,6 +154,32 @@ func TestOneOfEachKindOfThingANASKeepsIsMadeChangedAndRemoved(t *testing.T) {
 	}
 }
 
+// Three pages will not take the change this test makes of the others, each for a reason of its own, and the test holds each refusal: a UPS
+// cannot be described until it has a driver and a port, how updates are looked for cannot be changed without naming a kind of update the
+// NAS offers, and rules for passwords are for a NAS with a licence.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestThePagesThatWillNotTakeAChangeSayWhy(t *testing.T) {
+	conn := admin(t)
+
+	for _, page := range []struct {
+		name    string
+		change  map[string]any
+		refused string
+	}{
+		{"ups", map[string]any{"description": "changed by the tests"}, "driver: This field is required"},
+		{"update", map[string]any{"autocheck": false}, "Invalid profile"},
+		{"system.security", map[string]any{"min_password_length": 12}, "licensed iX enterprise systems"},
+	} {
+		t.Run(page.name, func(t *testing.T) {
+			err := conn.Call(within(t, 2*time.Minute), page.name+".update", []any{page.change}, nil)
+			if !truenasrpc.IsInvalid(err) || !strings.Contains(err.Error(), page.refused) {
+				t.Errorf("the change was answered %v; want it refused as a bad argument, saying %q", err, page.refused)
+			}
+		})
+	}
+}
+
 // A NAS has one page of settings for each of its services and for itself. One setting on each is changed, read back changed, and put back
 // as it was. They are the settings that do nothing a test could be hurt by: a description, a count, a time zone.
 //
@@ -155,25 +191,24 @@ func TestOneSettingOnEachPageIsChangedReadBackAndPutBack(t *testing.T) {
 		name    string
 		setting string
 		to      any
+		// with is what a NAS wants sent along with any change to the page, though the description does not say it is needed
+		with map[string]any
 	}{
-		{"ftp", "clients", 7},
-		{"ssh", "compression", true},
-		{"smb", "description", "changed by the tests"},
-		{"nfs", "allow_nonroot", true},
-		{"snmp", "location", "a test bench"},
-		{"ups", "description", "changed by the tests"},
-		{"mail", "fromname", "The test NAS"},
-		{"system.general", "timezone", "Europe/London"},
-		{"system.advanced", "motd", "changed by the tests"},
-		{"network.configuration", "domain", "tests.example"},
-		{"iscsi.global", "pool_avail_threshold", 75},
-		{"nvmet.global", "xport_referral", false},
-		{"replication.config", "max_parallel_replication_tasks", 3},
-		{"reporting", "tier1_days", 400},
-		{"auth.twofactor", "window", 2},
-		{"audit", "retention", 14},
-		{"update", "autocheck", false},
-		{"system.security", "min_password_length", 12},
+		{name: "ftp", setting: "clients", to: 7},
+		{name: "ssh", setting: "compression", to: true},
+		{name: "smb", setting: "description", to: "changed by the tests"},
+		{name: "nfs", setting: "allow_nonroot", to: true},
+		{name: "snmp", setting: "location", to: "a test bench"},
+		{name: "mail", setting: "fromname", to: "The test NAS", with: map[string]any{"fromemail": "nas@tests.example"}},
+		{name: "system.general", setting: "timezone", to: "Europe/London"},
+		{name: "system.advanced", setting: "motd", to: "changed by the tests"},
+		{name: "network.configuration", setting: "domain", to: "tests.example"},
+		{name: "iscsi.global", setting: "pool_avail_threshold", to: 75},
+		{name: "nvmet.global", setting: "xport_referral", to: false},
+		{name: "replication.config", setting: "max_parallel_replication_tasks", to: 3},
+		{name: "reporting", setting: "tier1_days", to: 400},
+		{name: "auth.twofactor", setting: "window", to: 2},
+		{name: "audit", setting: "retention", to: 14},
 	} {
 		t.Run(page.name, func(t *testing.T) {
 			ctx := within(t, 4*time.Minute)
@@ -188,11 +223,18 @@ func TestOneSettingOnEachPageIsChangedReadBackAndPutBack(t *testing.T) {
 				t.Fatalf("its %s is %s already, so changing it to that would show nothing", page.setting, was)
 			}
 
-			if err := conn.Call(ctx, page.name+".update", []any{map[string]any{page.setting: page.to}}, nil); err != nil {
+			set := func(ctx context.Context, to any) error {
+				change := map[string]any{page.setting: to}
+				maps.Copy(change, page.with)
+
+				return conn.Call(ctx, page.name+".update", []any{change}, nil)
+			}
+
+			if err := set(ctx, page.to); err != nil {
 				t.Fatalf("changing its %s: %v", page.setting, err)
 			}
 			t.Cleanup(func() {
-				if err := conn.Call(context.WithoutCancel(ctx), page.name+".update", []any{map[string]any{page.setting: was}}, nil); err != nil {
+				if err := set(context.WithoutCancel(ctx), was); err != nil {
 					t.Errorf("putting its %s back: %v", page.setting, err)
 				}
 			})

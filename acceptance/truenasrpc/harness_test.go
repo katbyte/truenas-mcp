@@ -252,6 +252,29 @@ func made(t *testing.T) *setup.Made {
 	return held.made
 }
 
+// furnishing is done once for the run, however many tests ask for it.
+var furnishing struct {
+	once sync.Once
+	err  error
+}
+
+// furnished gives the NAS one of each thing a NAS is watched for (acceptance/layout says what), the first time a test asks, and leaves it
+// there: a test that reads what a furnished NAS has asks for it here, so that it reads the same whether it runs alone or after the others.
+func furnished(t *testing.T) {
+	t.Helper()
+
+	conn := admin(t)
+	furnishing.once.Do(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 12*time.Minute)
+		defer cancel()
+
+		furnishing.err = (&setup.NAS{Conn: conn, Logf: t.Logf}).Furnish(ctx)
+	})
+	if furnishing.err != nil {
+		t.Fatalf("furnishing the NAS: %v", furnishing.err)
+	}
+}
+
 // release is the version the NAS runs, as api-defs names what it keeps for it. A NAS of a version nothing is kept for cannot be held to
 // anything, so the test asking stops.
 func release(t *testing.T) string {

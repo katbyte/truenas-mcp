@@ -25,6 +25,8 @@ make testacc    # the live tests, against a throwaway TrueNAS in a virtual machi
 
 **Data protection is run.** A replication copies a dataset and then only what changed. Snapshot tasks and boot environments are made, changed and removed.
 
+**The rest of the configuration is made and changed.** One of each of twenty-one kinds of thing a NAS keeps a list of (users, groups, keys, scheduled commands, routes, alert services, cloud credentials, iSCSI and NVMe parts) is made, changed and removed. One setting on each of fifteen pages is changed and put back.
+
 **Everything truenas-metrics asks is asked its way**, with a key that may only read, on a NAS that has shares, tasks and a machine on it.
 
 **Each run ends by counting** how many of the NAS's API methods the tests called, by kind, and which they did not. A key the tests made turning up in any line of trace fails the run.
