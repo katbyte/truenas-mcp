@@ -81,15 +81,16 @@ func TestToolsListsWhatWouldBeRegisteredWithNothingConfigured(t *testing.T) {
 		t.Fatalf("tools: %v", err)
 	}
 
-	// the default is core, so its tools are listed, every one a read, and counted
-	core := tools.Toolsets["core"]
-	for _, want := range slices.Concat([]string{fmt.Sprintf("core (%d)", len(core)), fmt.Sprintf("%d tools: %d read, 0 write, 0 delete", len(core), len(core))}, core) {
+	// the default is core and the audits, so their tools are listed, every one a read, and counted
+	core, audits := tools.Toolsets["core"], tools.Toolsets["audit"]
+	listed := len(core) + len(audits)
+	for _, want := range slices.Concat([]string{fmt.Sprintf("core (%d)", len(core)), fmt.Sprintf("audit (%d)", len(audits)), fmt.Sprintf("%d tools: %d read, 0 write, 0 delete", listed, listed)}, core, audits) {
 		if !strings.Contains(out, want) {
 			t.Errorf("%q missing from `tools`:\n%s", want, out)
 		}
 	}
 	// and it says how to get more
-	for _, want := range []string{"toolsets: all, ", "families: alert, dataset, disk, pool, server", "--toolsets all", "only tools that read are listed; --enable-write registers the ones that change something", "--enable-delete", "TRUENAS_TOOLSETS"} {
+	for _, want := range []string{"toolsets: all, ", "families: alert, audit, dataset, disk, pool, server", "--toolsets all", "only tools that read are listed; --enable-write registers the ones that change something", "--enable-delete", "TRUENAS_TOOLSETS"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("%q missing from the footer:\n%s", want, out)
 		}
@@ -109,8 +110,8 @@ func TestToolsFollowsTheFlags(t *testing.T) {
 	if out, err := run(t, "tools", "--allow-tools", "server_*", "-q"); err != nil || strings.TrimSpace(out) != coreTool {
 		t.Errorf("tools --allow-tools server_* -q = %q, %v", out, err)
 	}
-	if out, err := run(t, "tools", "--toolsets", "all", "--deny-tools", "*_info,*_list", "-q"); err != nil || strings.Fields(out)[0] != "dataset_get" || len(strings.Fields(out)) != 2 {
-		t.Errorf("tools --toolsets all --deny-tools *_info,*_list -q = %q, %v", out, err)
+	if out, err := run(t, "tools", "--toolsets", "all", "--deny-tools", "*_info,*_list,audit_*", "-q"); err != nil || strings.Fields(out)[0] != "dataset_get" || len(strings.Fields(out)) != 2 {
+		t.Errorf("tools --toolsets all --deny-tools *_info,*_list,audit_* -q = %q, %v", out, err)
 	}
 
 	out, err := run(t, "tools", "--toolsets", "all", "--enable-write")

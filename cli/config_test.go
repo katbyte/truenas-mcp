@@ -3,6 +3,7 @@ package cli
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -158,7 +159,7 @@ func TestToolOptionsReadUntilToldOtherwiseAndRefuseAContradiction(t *testing.T) 
 	t.Parallel()
 
 	opts, err := (&FlagData{}).ToolOptions()
-	if err != nil || opts.EnableWrite || opts.EnableDelete || len(opts.Toolsets) != 1 || opts.Toolsets[0] != DefaultToolsets[0] {
+	if err != nil || opts.EnableWrite || opts.EnableDelete || !slices.Equal(opts.Toolsets, DefaultToolsets) {
 		t.Errorf("with nothing said the options are %+v (%v)", opts, err)
 	}
 	if opts, _ = (&FlagData{AllowTools: []string{"server_info"}}).ToolOptions(); len(opts.Toolsets) != 0 {

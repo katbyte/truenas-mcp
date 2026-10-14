@@ -50,6 +50,15 @@ claude mcp add truenas -e TRUENAS_SERVER=nas.example.net -e TRUENAS_USERNAME=mcp
 
 What is coming: the rest of the tools, built on the typed client.
 
+## Audits
+
+Each audit only reports, and changes nothing. [Audits](docs/audits.md) has every rule.
+
+| audit | what it catches |
+|---|---|
+| `audit_pools` | an unhealthy pool, a disk gone or counting errors, a scrub that found errors, a pool not scrubbed lately or with no scrub task |
+| `audit_space` | a pool past 80% full, a dataset near or at its quota or refquota |
+
 ## Settings
 
 | flag | environment | what it is |
@@ -65,7 +74,7 @@ What is coming: the rest of the tools, built on the typed client.
 | `--no-channel-binding` | `TRUENAS_NO_CHANNEL_BINDING` | for a NAS behind a reverse proxy |
 | `--enable-write` | `TRUENAS_ENABLE_WRITE` | load the tools that change something |
 | `--enable-delete` | `TRUENAS_ENABLE_DELETE` | load the tools that delete too; needs `--enable-write` |
-| `--toolsets` | `TRUENAS_TOOLSETS` | which groups of tools to load; `core` by default, `all` for every one |
+| `--toolsets` | `TRUENAS_TOOLSETS` | which groups of tools to load; `core` and `audit` by default, `all` for every one |
 | `--allow-tools`, `--deny-tools` | `TRUENAS_ALLOW_TOOLS`, `TRUENAS_DENY_TOOLS` | add or take away tools by name |
 | `--listen` | `TRUENAS_LISTEN` | serve over HTTP on this address, in place of stdio |
 | `--auth-token` | `TRUENAS_AUTH_TOKEN` | the token an HTTP client must send |
@@ -102,6 +111,7 @@ One connection is shared by any number of calls. It reconnects by itself, and it
 
 ## More
 
+- [Audits](docs/audits.md): every rule each audit holds a NAS to
 - [Connecting to a TrueNAS](docs/connecting.md): certificates, and how the key is used
 - [Using the connection from Go](docs/sdk.md): jobs, events, files, and TrueNAS's own client compared
 - [Development](docs/development.md): the checks, and the live tests against a real TrueNAS

@@ -45,6 +45,10 @@ var Toolsets = map[string][]string{
 	mcpregistry.Core: {
 		"server_info", "pool_list", "pool_get", "dataset_list", "dataset_get", "alert_list",
 	},
+	// find what is wrong: each audit only reports, and changes nothing
+	"audit": {
+		"audit_pools", "audit_space",
+	},
 	// the machine's disks, whatever pool they are in
 	"disks": {
 		"disk_list",
@@ -52,7 +56,7 @@ var Toolsets = map[string][]string{
 }
 
 // ToolsetOrder is the order a listing shows the sets in: the base first.
-var ToolsetOrder = []string{mcpregistry.Core, "disks"}
+var ToolsetOrder = []string{mcpregistry.Core, "audit", "disks"}
 
 // EssentialTools is the preset --allow-tools essential asks for: enough to know which NAS this is, what it holds and what it says is wrong.
 var EssentialTools = []string{
@@ -113,6 +117,8 @@ func queueTools(r *registry) {
 	registerDatasetTools(r)
 	registerDiskTools(r)
 	registerAlertTools(r)
+	registerPoolAudits(r)
+	registerSpaceAudits(r)
 }
 
 // check refuses options that contradict each other.

@@ -81,7 +81,7 @@ func configureFlags(root *cobra.Command) error {
 	pflags.Bool("enable-write", false, "register the tools that change something; without it every tool only reads")
 	pflags.Bool("enable-delete", false, "register the tools that delete as well; needs --enable-write")
 	pflags.Bool("read-only", false, "register only tools that never change anything: the default, said out loud, and refused beside --enable-write")
-	pflags.StringSlice("toolsets", nil, "groups of tools to register: all, "+strings.Join(tools.ToolsetOrder, ", ")+" (core is the default and always included), or a resource family like pool")
+	pflags.StringSlice("toolsets", nil, "groups of tools to register: all, "+strings.Join(tools.ToolsetOrder, ", ")+" (core and audit by default; core is always included), or a resource family like pool")
 	pflags.StringSlice("allow-tools", nil, "tools to register by name, prefix globs like pool_*, or the essential preset: added to the --toolsets given, or with no --toolsets the only tools registered")
 	pflags.StringSlice("deny-tools", nil, "never register these tools: names or prefix globs like *_delete; it is how a toolset is narrowed")
 	pflags.String("listen", "", "serve MCP over HTTP on this address (e.g. :8080) instead of stdio")
@@ -228,10 +228,10 @@ func hinted(err error) error {
 	}
 }
 
-// DefaultToolsets is what the binary registers when neither --toolsets nor --allow-tools is given: enough to know which NAS this is and nothing that
-// writes. Every tool's definition is spent from a client's context before a question is asked, so the rest is asked for with --toolsets, or
-// --toolsets all for everything.
-var DefaultToolsets = []string{"core"}
+// DefaultToolsets is what the binary registers when neither --toolsets nor --allow-tools is given: enough to know which NAS this is and what it holds,
+// and the audits that find what is wrong with it, which is what the server is for; nothing that writes. Every tool's definition is spent from a
+// client's context before a question is asked, so the rest is asked for with --toolsets, or --toolsets all for everything.
+var DefaultToolsets = []string{"core", "audit"}
 
 // ToolOptions maps the flags onto the tool registration options. An allow list with no --toolsets is the whole choice: it already says which tools to
 // load, so the default set is not added to it. Beside --toolsets it adds its tools to the sets.
