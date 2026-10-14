@@ -11,6 +11,7 @@ import (
 	"errors"
 
 	mcpregistry "github.com/katbyte/go-kt/mcp/registry"
+	"github.com/katbyte/truenas-mcp/sdk/truenas/client"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -63,9 +64,10 @@ const (
 // registry is this application's tools and what they share. Which of them a session gets, and what each tells a client about itself, is go-kt's
 // registry's work, so the allow and deny patterns are checked against every tool before any is registered.
 type registry struct {
-	// nas is the connection to the one TrueNAS this process works on
-	nas  *truenasrpc.Conn
-	opts Options
+	// nas is the connection to the one TrueNAS this process works on, and typed the client generated from its description, which calls through it
+	nas   *truenasrpc.Conn
+	typed *client.Client
+	opts  Options
 	// tools holds every tool queued, made when the first is (see queued)
 	tools *mcpregistry.Registry
 	// errorLog is where a handler's panic is logged; nil is the process's log
@@ -128,7 +130,11 @@ func RegisterAll(server *mcp.Server, nas *truenasrpc.Conn, opts Options) ([]stri
 	if err := opts.check(); err != nil {
 		return nil, err
 	}
-	r := &registry{nas: nas, opts: opts}
+	typed, err := client.New(nas)
+	if err != nil {
+		return nil, err
+	}
+	r := &registry{nas: nas, typed: typed, opts: opts}
 	queueTools(r)
 
 	return r.queued().Register(server, opts.selection())

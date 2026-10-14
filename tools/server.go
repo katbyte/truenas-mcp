@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/katbyte/go-kt/version"
-	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -47,43 +46,28 @@ func registerServerTools(r *registry) {
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, serverInfoOut, error) {
 		out := serverInfoOut{TrueNASMCPVersion: version.Version, Address: r.nas.Address()}
 
-		var me struct {
-			Name      string `json:"pw_name"`
-			Privilege struct {
-				Roles truenasrpc.Set[string] `json:"roles"`
-			} `json:"privilege"`
-		}
-		if err := r.nas.Call(ctx, "auth.me", nil, &me); err != nil {
+		me, err := r.typed.Auth.Me(ctx)
+		if err != nil {
 			return nil, out, fmt.Errorf("the NAS at %s could not be asked who the API key belongs to: %w", out.Address, err)
 		}
-		out.User, out.Roles = me.Name, slices.Sorted(slices.Values(me.Privilege.Roles))
+		out.User, out.Roles = me.PwName, rolesOf(me.Privilege)
 
-		if err := r.nas.Call(ctx, "system.state", nil, &out.State); err != nil {
+		state, err := r.typed.System.State(ctx)
+		if err != nil {
 			return nil, out, fmt.Errorf("the NAS at %s answers, and would not say whether it is ready: %w", out.Address, err)
 		}
-
-		var info struct {
-			Version       string          `json:"version"`
-			Hostname      string          `json:"hostname"`
-			Memory        int64           `json:"physmem"`
-			CPU           string          `json:"model"`
-			Cores         int             `json:"cores"`
-			PhysicalCores int             `json:"physical_cores"`
-			Uptime        float64         `json:"uptime_seconds"`
-			Serial        *string         `json:"system_serial"`
-			Product       *string         `json:"system_product"`
-			Manufacturer  *string         `json:"system_manufacturer"`
-			Booted        truenasrpc.Time `json:"boottime"`
-			Timezone      string          `json:"timezone"`
-			ECC           bool            `json:"ecc_memory"`
+		if state.Answer != nil {
+			out.State = *state.Answer
 		}
-		if err := r.nas.Call(ctx, "system.info", nil, &info); err != nil {
+
+		info, err := r.typed.System.Info(ctx)
+		if err != nil {
 			return nil, out, fmt.Errorf("the NAS at %s answers, and would not describe itself: %w", out.Address, err)
 		}
 		out.Version, out.Hostname, out.Timezone = info.Version, info.Hostname, info.Timezone
-		out.CPU, out.Cores, out.PhysicalCores, out.MemoryBytes, out.ECCMemory = info.CPU, info.Cores, info.PhysicalCores, info.Memory, info.ECC
-		out.Serial, out.Product, out.Manufacturer = deref(info.Serial), deref(info.Product), deref(info.Manufacturer)
-		out.Booted, out.UptimeSeconds = info.Booted.Time.UTC().Format(time.RFC3339), int64(info.Uptime)
+		out.CPU, out.Cores, out.PhysicalCores, out.MemoryBytes, out.ECCMemory = info.Model, info.Cores, info.PhysicalCores, int64(info.Physmem), info.EccMemory
+		out.Serial, out.Product, out.Manufacturer = info.SystemSerial, info.SystemProduct, info.SystemManufacturer
+		out.Booted, out.UptimeSeconds = info.Boottime.UTC().Format(time.RFC3339), int64(info.UptimeSeconds)
 
 		switch {
 		case out.State != "READY":
@@ -96,11 +80,25 @@ func registerServerTools(r *registry) {
 	})
 }
 
-// deref is the text behind p, or "" when there is none.
-func deref(p *string) string {
-	if p == nil {
-		return ""
+// rolesOf is the roles a user's privilege names, sorted. Its description leaves the privilege shapeless, and a NAS writes the roles as a plain list or
+// wrapped as a set ({"$set": [...]}), so both are read.
+func rolesOf(privilege map[string]any) []string {
+	held := privilege["roles"]
+	if set, wrapped := held.(map[string]any); wrapped {
+		held = set["$set"]
+	}
+	listed, ok := held.([]any)
+	if !ok {
+		return []string{}
 	}
 
-	return *p
+	roles := make([]string, 0, len(listed))
+	for _, role := range listed {
+		if name, ok := role.(string); ok {
+			roles = append(roles, name)
+		}
+	}
+	slices.Sort(roles)
+
+	return roles
 }

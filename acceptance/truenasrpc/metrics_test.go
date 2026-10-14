@@ -6,11 +6,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/sdk/truenas"
+	"github.com/katbyte/truenas-mcp/sdk/truenas/client"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -225,5 +228,123 @@ func TestEverythingTheExporterAsksIsAnsweredToAKeyThatMayOnlyRead(t *testing.T) 
 				}
 			}
 		})
+	}
+}
+
+// answered is a typed call as the test makes it: what it read, whatever its type.
+func answered[R any](call func(context.Context) (R, error)) func(context.Context) (any, error) {
+	return func(ctx context.Context) (any, error) {
+		r, err := call(ctx)
+
+		return reflect.ValueOf(r).FieldByName("Answer").Interface(), err
+	}
+}
+
+// typedQuestions is how the exporter asks each of its questions through the typed client: the call, and what it answered.
+func typedQuestions(typed *client.Client) map[string]func(ctx context.Context) (any, error) {
+	sizes := []string{"used", "available", "usedbydataset", "usedbysnapshots", "quota", "refquota", "compressratio"}
+
+	return map[string]func(ctx context.Context) (any, error){
+		"system.info":              answered(typed.System.Info),
+		"system.state":             answered(typed.System.State),
+		"update.status":            answered(typed.Update.Status),
+		"directoryservices.status": answered(typed.Directoryservices.Status),
+		"api_key.my_keys":          answered(typed.ApiKey.MyKeys),
+		"pool.query": answered(func(ctx context.Context) (truenas.PoolQueryResponse, error) {
+			return typed.Pool.Query(ctx, nil, truenas.PoolQueryOptions{})
+		}),
+		"boot.get_state": answered(typed.Boot.GetState),
+		"disk.query": answered(func(ctx context.Context) (truenas.DiskQueryResponse, error) {
+			return typed.Disk.Query(ctx, nil, truenas.DiskQueryOptions{})
+		}),
+		"disk.temperatures": answered(func(ctx context.Context) (truenas.DiskTemperaturesResponse, error) {
+			return typed.Disk.Temperatures(ctx, nil, false)
+		}),
+		"pool.dataset.query": answered(func(ctx context.Context) (truenas.PoolDatasetQueryResponse, error) {
+			return typed.PoolDataset.Query(ctx, nil, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": true, "properties": sizes, "snapshots_count": true}})
+		}),
+		"sharing.smb.query": answered(func(ctx context.Context) (truenas.SharingSmbQueryResponse, error) {
+			return typed.SharingSmb.Query(ctx, nil, truenas.SharingSmbQueryOptions{})
+		}),
+		"sharing.nfs.query": answered(func(ctx context.Context) (truenas.SharingNfsQueryResponse, error) {
+			return typed.SharingNfs.Query(ctx, nil, truenas.SharingNfsQueryOptions{})
+		}),
+		"iscsi.target.query": answered(func(ctx context.Context) (truenas.IscsiTargetQueryResponse, error) {
+			return typed.IscsiTarget.Query(ctx, nil, truenas.IscsiTargetQueryOptions{})
+		}),
+		"nfs.client_count":          answered(typed.Nfs.ClientCount),
+		"iscsi.global.client_count": answered(typed.IscsiGlobal.ClientCount),
+		"certificate.query": answered(func(ctx context.Context) (truenas.CertificateQueryResponse, error) {
+			return typed.Certificate.Query(ctx, nil, truenas.CertificateQueryOptions{})
+		}),
+		"interface.query": answered(func(ctx context.Context) (truenas.InterfaceQueryResponse, error) {
+			return typed.Interface.Query(ctx, nil, truenas.InterfaceQueryOptions{})
+		}),
+		"alert.list": answered(typed.Alert.List),
+		"service.query": answered(func(ctx context.Context) (truenas.ServiceQueryResponse, error) {
+			return typed.Service.Query(ctx, nil, truenas.ServiceQueryOptions{})
+		}),
+		"core.get_jobs": answered(func(ctx context.Context) (truenas.CoreGetJobsResponse, error) {
+			return typed.Core.GetJobs(ctx, []any{[]any{"state", "in", []string{"RUNNING", "WAITING"}}}, truenas.CoreGetJobsOptions{})
+		}),
+		"docker.status": answered(typed.Docker.Status),
+		"app.query": answered(func(ctx context.Context) (truenas.AppQueryResponse, error) {
+			return typed.App.Query(ctx, nil, truenas.AppQueryOptions{})
+		}),
+		"vm.query": answered(func(ctx context.Context) (truenas.VmQueryResponse, error) {
+			return typed.Vm.Query(ctx, nil, truenas.VmQueryOptions{})
+		}),
+		"pool.snapshottask.query": answered(func(ctx context.Context) (truenas.PoolSnapshottaskQueryResponse, error) {
+			return typed.PoolSnapshottask.Query(ctx, nil, truenas.PoolSnapshottaskQueryOptions{})
+		}),
+		"replication.query": answered(func(ctx context.Context) (truenas.ReplicationQueryResponse, error) {
+			return typed.Replication.Query(ctx, nil, truenas.ReplicationQueryOptions{})
+		}),
+		"rsynctask.query": answered(func(ctx context.Context) (truenas.RsynctaskQueryResponse, error) {
+			return typed.Rsynctask.Query(ctx, nil, truenas.RsynctaskQueryOptions{})
+		}),
+		"cloudsync.query": answered(func(ctx context.Context) (truenas.CloudsyncQueryResponse, error) {
+			return typed.Cloudsync.Query(ctx, nil, truenas.CloudsyncQueryOptions{})
+		}),
+		"cloud_backup.query": answered(func(ctx context.Context) (truenas.CloudBackupQueryResponse, error) {
+			return typed.CloudBackup.Query(ctx, nil, truenas.CloudBackupQueryOptions{})
+		}),
+		"pool.scrub.query": answered(func(ctx context.Context) (truenas.PoolScrubQueryResponse, error) {
+			return typed.PoolScrub.Query(ctx, nil, truenas.PoolScrubQueryOptions{})
+		}),
+	}
+}
+
+// The exporter is to move onto the typed client generated from the NAS's description, so every question it asks is asked that way too, with the key
+// that may only read, on the furnished NAS: each answer has to read into the client's types, secrets sent as ******** and dates as a NAS writes them
+// included, and a list has the rows the NAS has.
+//
+//nolint:paralleltest // the tests share one NAS, which scrubs a pool one job at a time
+func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
+	furnished(t)
+
+	typed, err := client.New(reader(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	asked := typedQuestions(typed)
+
+	for _, q := range questions() {
+		t.Run(q.method, func(t *testing.T) {
+			ask, ok := asked[q.method]
+			if !ok {
+				t.Fatal("the exporter asks this, and the test has no typed call for it")
+			}
+			answer, err := ask(within(t, readWait))
+			if err != nil {
+				t.Fatalf("asked through the typed client: %v", err)
+			}
+			if v := reflect.ValueOf(answer); v.Kind() == reflect.Slice && v.Len() < q.rows {
+				t.Errorf("%d listed, and the NAS has at least %d", v.Len(), q.rows)
+			}
+		})
+	}
+	if len(asked) != len(questions()) {
+		t.Errorf("%d typed calls for the exporter's %d questions", len(asked), len(questions()))
 	}
 }
