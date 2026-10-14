@@ -1,0 +1,580 @@
+{
+  "Name": "System",
+  "Tag": "system",
+  "Operations": [
+    {
+      "Name": "SystemBootId",
+      "OperationId": "system.boot_id",
+      "Method": "CALL",
+      "Path": "system.boot_id",
+      "Description": "Returns a unique boot identifier.\n\nIt is supposed to be unique every system boot.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.boot_id",
+        "NoAuth": true
+      }
+    },
+    {
+      "Name": "SystemDebug",
+      "OperationId": "system.debug",
+      "Method": "CALL",
+      "Path": "system.debug",
+      "Description": "Download a debug file.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.debug",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ],
+        "Downloadable": true
+      }
+    },
+    {
+      "Name": "SystemFeatureEnabled",
+      "OperationId": "system.feature_enabled",
+      "Method": "CALL",
+      "Path": "system.feature_enabled",
+      "Description": "Returns whether the `feature` is enabled or not",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.feature_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_PRODUCT_READ"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "feature",
+          "Argument": "feature",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemFeatureEnabledFeature"
+          },
+          "Required": true,
+          "Description": "Feature to check for availability on this system."
+        }
+      ]
+    },
+    {
+      "Name": "SystemHostId",
+      "OperationId": "system.host_id",
+      "Method": "CALL",
+      "Path": "system.host_id",
+      "Description": "Retrieve a hex string that is generated based\non the contents of the `/etc/hostid` file. This\nis a permanent value that persists across\nreboots/upgrades and can be used as a unique\nidentifier for the machine.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.host_id",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "SystemInfo",
+      "OperationId": "system.info",
+      "Method": "CALL",
+      "Path": "system.info",
+      "Description": "Returns basic system information.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemInfoAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.info",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "SystemLicenseUpdate",
+      "OperationId": "system.license_update",
+      "Method": "CALL",
+      "Path": "system.license_update",
+      "Description": "Update license file",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.license_update",
+        "Roles": [
+          "SYSTEM_PRODUCT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "license",
+          "Argument": "license",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "License key to apply to the system."
+        }
+      ]
+    },
+    {
+      "Name": "SystemProductType",
+      "OperationId": "system.product_type",
+      "Method": "CALL",
+      "Path": "system.product_type",
+      "Description": "Returns the type of the product",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.product_type",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_PRODUCT_READ"
+        ]
+      }
+    },
+    {
+      "Name": "SystemReady",
+      "OperationId": "system.ready",
+      "Method": "CALL",
+      "Path": "system.ready",
+      "Description": "Returns whether the system completed boot and is ready to use",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ready",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemReboot",
+      "OperationId": "system.reboot",
+      "Method": "CALL",
+      "Path": "system.reboot",
+      "Description": "Reboots the operating system.\n\nEmits an \"added\" event of name \"system\" and id \"reboot\".",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.reboot",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "reason",
+          "Argument": "reason",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Reason for the system reboot."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemRebootOptions"
+          },
+          "Description": "Options for controlling the reboot process."
+        }
+      ]
+    },
+    {
+      "Name": "SystemReleaseNotesUrl",
+      "OperationId": "system.release_notes_url",
+      "Method": "CALL",
+      "Path": "system.release_notes_url",
+      "Description": "Returns the release notes URL for a version of SCALE.\n\n`version_str` str: represents a version to check against\n\nIf `version` is not provided, then the release notes URL will return\n    a link for the currently installed version of SCALE.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.release_notes_url",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_PRODUCT_READ"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "version_str",
+          "Argument": "versionStr",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Version string to get release notes for. `null` for current version."
+        }
+      ]
+    },
+    {
+      "Name": "SystemShutdown",
+      "OperationId": "system.shutdown",
+      "Method": "CALL",
+      "Path": "system.shutdown",
+      "Description": "Shuts down the operating system.\n\nAn \"added\" event of name \"system\" and id \"shutdown\" is emitted when shutdown is initiated.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.shutdown",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "reason",
+          "Argument": "reason",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Reason for the system shutdown."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemShutdownOptions"
+          },
+          "Description": "Options for controlling the shutdown process."
+        }
+      ]
+    },
+    {
+      "Name": "SystemState",
+      "OperationId": "system.state",
+      "Method": "CALL",
+      "Path": "system.state",
+      "Description": "Returns system state:\n\"BOOTING\" - System is booting\n\"READY\" - System completed boot and is ready to use\n\"SHUTTING_DOWN\" - System is shutting down",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.state",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemVersion",
+      "OperationId": "system.version",
+      "Method": "CALL",
+      "Path": "system.version",
+      "Description": "Returns the full name of the software version of the system.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.version"
+      }
+    },
+    {
+      "Name": "SystemVersionShort",
+      "OperationId": "system.version_short",
+      "Method": "CALL",
+      "Path": "system.version_short",
+      "Description": "Returns the short name of the software version of the system.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.version_short"
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SystemInfoAnswer",
+      "SchemaName": "SystemInfoAnswer",
+      "Description": "SystemInfoResult return fields.",
+      "Fields": [
+        {
+          "Name": "Boottime",
+          "JsonName": "boottime",
+          "Description": "System boot time.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "Buildtime",
+          "JsonName": "buildtime",
+          "Description": "TrueNAS build time.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "Cores",
+          "JsonName": "cores",
+          "Description": "Number of CPU cores.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Datetime",
+          "JsonName": "datetime",
+          "Description": "Current system date and time.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "EccMemory",
+          "JsonName": "ecc_memory",
+          "Description": "Whether the system has ECC (Error Correcting Code) memory.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "System host name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "License",
+          "JsonName": "license",
+          "Description": "System license information. `null` if no license is installed.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Loadavg",
+          "JsonName": "loadavg",
+          "Description": "System load averages over 1, 5, and 15 minute periods.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Model",
+          "JsonName": "model",
+          "Description": "CPU model.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PhysicalCores",
+          "JsonName": "physical_cores",
+          "Description": "Number of physical CPU cores.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Physmem",
+          "JsonName": "physmem",
+          "Description": "System physical memory in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SystemManufacturer",
+          "JsonName": "system_manufacturer",
+          "Description": "System manufacturer name from hardware. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SystemProduct",
+          "JsonName": "system_product",
+          "Description": "System product name from hardware manufacturer. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SystemProductVersion",
+          "JsonName": "system_product_version",
+          "Description": "System product version from hardware manufacturer. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SystemSerial",
+          "JsonName": "system_serial",
+          "Description": "System hardware serial number. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timezone",
+          "JsonName": "timezone",
+          "Description": "System timezone identifier.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uptime",
+          "JsonName": "uptime",
+          "Description": "Human-readable system uptime string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UptimeSeconds",
+          "JsonName": "uptime_seconds",
+          "Description": "System uptime in seconds since boot.",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "TrueNAS version.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemRebootOptions",
+      "SchemaName": "SystemRebootOptions",
+      "Description": "Options for controlling the reboot process.",
+      "Fields": [
+        {
+          "Name": "Delay",
+          "JsonName": "delay",
+          "Description": "Delay in seconds before rebooting. `null` for immediate reboot.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SystemShutdownOptions",
+      "SchemaName": "SystemShutdownOptions",
+      "Description": "Options for controlling the shutdown process.",
+      "Fields": [
+        {
+          "Name": "Delay",
+          "JsonName": "delay",
+          "Description": "Delay in seconds before shutting down. `null` for immediate shutdown.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SystemFeatureEnabledFeature",
+      "SchemaName": "SystemFeatureEnabledFeature",
+      "Description": "Feature to check for availability on this system.",
+      "Values": [
+        {
+          "Name": "SystemFeatureEnabledFeatureDEDUP",
+          "Value": "DEDUP"
+        },
+        {
+          "Name": "SystemFeatureEnabledFeatureFIBRECHANNEL",
+          "Value": "FIBRECHANNEL"
+        },
+        {
+          "Name": "SystemFeatureEnabledFeatureVM",
+          "Value": "VM"
+        }
+      ]
+    }
+  ]
+}

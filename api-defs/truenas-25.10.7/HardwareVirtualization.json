@@ -1,0 +1,30 @@
+{
+  "Name": "HardwareVirtualization",
+  "Tag": "hardware.virtualization",
+  "Operations": [
+    {
+      "Name": "HardwareVirtualizationVariant",
+      "OperationId": "hardware.virtualization.variant",
+      "Method": "CALL",
+      "Path": "hardware.virtualization.variant",
+      "Description": "Report the virtualization variation of TrueNAS system",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "hardware.virtualization.variant",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    }
+  ]
+}

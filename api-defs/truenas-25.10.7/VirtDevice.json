@@ -1,0 +1,375 @@
+{
+  "Name": "VirtDevice",
+  "Tag": "virt.device",
+  "Operations": [
+    {
+      "Name": "VirtDeviceDiskChoices",
+      "OperationId": "virt.device.disk_choices",
+      "Method": "CALL",
+      "Path": "virt.device.disk_choices",
+      "Description": "Returns disk choices available for device type \"DISK\" for virtual machines. This includes\nboth available virt volumes and zvol choices. Disk choices for containers depend on the\nmounted file tree (paths).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.disk_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VirtDeviceExportDiskImage",
+      "OperationId": "virt.device.export_disk_image",
+      "Method": "CALL",
+      "Path": "virt.device.export_disk_image",
+      "Description": "Exports a zvol to a formatted VM disk image.\n\nUtilized qemu-img with the conversion functionality to export a zvol to\nany supported disk image format, from RAW -> ${OTHER}. The resulting file\nwill be set to inherit the permissions of the target directory.\n\nAs of this implementation it supports the following {format} options :\n\n- QCOW2\n- QED\n- RAW\n- VDI\n- VPC\n- VMDK\n\n`format` is a required parameter for the exported disk image\n`directory` is a required parameter for the export disk image\n`zvol` is the source for the disk image",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.export_disk_image",
+        "Job": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_device_export_disk_image",
+          "Argument": "virtDeviceExportDiskImage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ExportDiskImage"
+          },
+          "Required": true,
+          "Description": "VirtDeviceExportDiskImageArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtDeviceGpuChoices",
+      "OperationId": "virt.device.gpu_choices",
+      "Method": "CALL",
+      "Path": "virt.device.gpu_choices",
+      "Description": "Provide choices for GPU devices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "GPUChoice"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.gpu_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "gpu_type",
+          "Argument": "gpuType",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtDeviceGpuChoicesGpuType"
+          },
+          "Required": true,
+          "Description": "Type of GPU virtualization to filter available choices."
+        }
+      ]
+    },
+    {
+      "Name": "VirtDeviceImportDiskImage",
+      "OperationId": "virt.device.import_disk_image",
+      "Method": "CALL",
+      "Path": "virt.device.import_disk_image",
+      "Description": "Imports a specified disk image.\n\nUtilized qemu-img with the auto-detect functionality to auto-convert\nany supported disk image format to RAW -> ZVOL\n\nAs of this implementation it supports:\n\n- QCOW2\n- QED\n- RAW\n- VDI\n- VPC\n- VMDK\n\n`diskimg` is a required parameter for the incoming disk image\n`zvol` is the required target for the imported disk image",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.import_disk_image",
+        "Job": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_device_import_disk_image",
+          "Argument": "virtDeviceImportDiskImage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ImportDiskImage"
+          },
+          "Required": true,
+          "Description": "VirtDeviceImportDiskImageArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtDeviceNicChoices",
+      "OperationId": "virt.device.nic_choices",
+      "Method": "CALL",
+      "Path": "virt.device.nic_choices",
+      "Description": "Returns choices for NIC device.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.nic_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nic_type",
+          "Argument": "nicType",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtDeviceNicChoicesNicType"
+          },
+          "Required": true,
+          "Description": "Type of network interface to filter available choices."
+        }
+      ]
+    },
+    {
+      "Name": "VirtDevicePciChoices",
+      "OperationId": "virt.device.pci_choices",
+      "Method": "CALL",
+      "Path": "virt.device.pci_choices",
+      "Description": "Returns choices for PCI devices valid for VM virt instances.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.pci_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VirtDeviceUsbChoices",
+      "OperationId": "virt.device.usb_choices",
+      "Method": "CALL",
+      "Path": "virt.device.usb_choices",
+      "Description": "Provide choices for USB devices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "USBChoice"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.device.usb_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "GPUChoice",
+      "SchemaName": "GPUChoice",
+      "Fields": [
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "PCI bus identifier for the GPU device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the GPU device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pci",
+          "JsonName": "pci",
+          "Description": "Complete PCI address of the GPU device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Slot",
+          "JsonName": "slot",
+          "Description": "PCI slot identifier for the GPU device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Vendor",
+          "JsonName": "vendor",
+          "Description": "GPU vendor name. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "USBChoice",
+      "SchemaName": "USBChoice",
+      "Fields": [
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "USB bus number where this device is connected.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Dev",
+          "JsonName": "dev",
+          "Description": "USB device number on the bus.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Manufacturer",
+          "JsonName": "manufacturer",
+          "Description": "Manufacturer name of the USB device. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Product",
+          "JsonName": "product",
+          "Description": "Product name of the USB device. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ProductId",
+          "JsonName": "product_id",
+          "Description": "USB product identifier for this device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VendorId",
+          "JsonName": "vendor_id",
+          "Description": "USB vendor identifier for this device.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "VirtDeviceGpuChoicesGpuType",
+      "SchemaName": "VirtDeviceGpuChoicesGpuType",
+      "Description": "Type of GPU virtualization to filter available choices.",
+      "Values": [
+        {
+          "Name": "VirtDeviceGpuChoicesGpuTypePHYSICAL",
+          "Value": "PHYSICAL"
+        },
+        {
+          "Name": "VirtDeviceGpuChoicesGpuTypeMDEV",
+          "Value": "MDEV"
+        },
+        {
+          "Name": "VirtDeviceGpuChoicesGpuTypeMIG",
+          "Value": "MIG"
+        },
+        {
+          "Name": "VirtDeviceGpuChoicesGpuTypeSRIOV",
+          "Value": "SRIOV"
+        }
+      ]
+    },
+    {
+      "Name": "VirtDeviceNicChoicesNicType",
+      "SchemaName": "VirtDeviceNicChoicesNicType",
+      "Description": "Type of network interface to filter available choices.",
+      "Values": [
+        {
+          "Name": "VirtDeviceNicChoicesNicTypeBRIDGED",
+          "Value": "BRIDGED"
+        },
+        {
+          "Name": "VirtDeviceNicChoicesNicTypeMACVLAN",
+          "Value": "MACVLAN"
+        }
+      ]
+    }
+  ]
+}

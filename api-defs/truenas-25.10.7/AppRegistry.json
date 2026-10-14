@@ -1,0 +1,581 @@
+{
+  "Name": "AppRegistry",
+  "Tag": "app.registry",
+  "Operations": [
+    {
+      "Name": "AppRegistryCreate",
+      "OperationId": "app.registry.create",
+      "Method": "CALL",
+      "Path": "app.registry.create",
+      "Description": "Create an app registry entry.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppRegistryQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.create",
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_registry_create",
+          "Argument": "appRegistryCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryCreate"
+          },
+          "Required": true,
+          "Description": "Container registry configuration data for the new registry."
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryDelete",
+      "OperationId": "app.registry.delete",
+      "Method": "CALL",
+      "Path": "app.registry.delete",
+      "Description": "Delete an app registry entry.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.delete",
+        "Item": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the container registry to delete."
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryGetInstance",
+      "OperationId": "app.registry.get_instance",
+      "Method": "CALL",
+      "Path": "app.registry.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppRegistryQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.get_instance",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryQuery",
+      "OperationId": "app.registry.query",
+      "Method": "CALL",
+      "Path": "app.registry.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryQueryCount",
+      "OperationId": "app.registry.query#count",
+      "Method": "CALL",
+      "Path": "app.registry.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryQueryOne",
+      "OperationId": "app.registry.query#get",
+      "Method": "CALL",
+      "Path": "app.registry.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppRegistryQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryUpdate",
+      "OperationId": "app.registry.update",
+      "Method": "CALL",
+      "Path": "app.registry.update",
+      "Description": "Update an app registry entry.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppRegistryQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.registry.update",
+        "Item": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the container registry to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRegistryUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated container registry configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AppRegistryCreate",
+      "SchemaName": "AppRegistryCreate",
+      "Description": "Container registry configuration data for the new registry.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description of the container registry or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the container registry.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password or access token for registry authentication (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uri",
+          "JsonName": "uri",
+          "Description": "Container registry URI endpoint (defaults to Docker Hub).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username for registry authentication (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryGetInstanceOptions",
+      "SchemaName": "AppRegistryGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryQueryOptions",
+      "SchemaName": "AppRegistryQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryQueryResultItem",
+      "SchemaName": "AppRegistryQueryResultItem",
+      "Description": "The created container registry configuration.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description of the container registry or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the container registry configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the container registry.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password or access token for registry authentication (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uri",
+          "JsonName": "uri",
+          "Description": "Container registry URI endpoint.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username for registry authentication (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppRegistryUpdateData",
+      "SchemaName": "AppRegistryUpdateData",
+      "Description": "Updated container registry configuration data.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description of the container registry or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the container registry.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password or access token for registry authentication (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uri",
+          "JsonName": "uri",
+          "Description": "Container registry URI endpoint (defaults to Docker Hub).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username for registry authentication (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

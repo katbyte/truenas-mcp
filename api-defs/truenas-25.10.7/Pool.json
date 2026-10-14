@@ -1,0 +1,2177 @@
+{
+  "Name": "Pool",
+  "Tag": "pool",
+  "Operations": [
+    {
+      "Name": "PoolAttach",
+      "OperationId": "pool.attach",
+      "Method": "CALL",
+      "Path": "pool.attach",
+      "Description": "Attach a disk to an existing vdev in a pool, converting a striped vdev to a mirror or extending\nan existing mirror to an n-way mirror.\n\nThis operation will format the new disk, attach it to the target vdev, and wait for resilvering\nto complete if the target is a RAIDZ vdev undergoing expansion.\n\nLocking behavior:\n- If another attach operation is already using the same disk, this call will fail immediately\n  with EBUSY rather than queueing.\n- If another attach operation is running on the same pool (but with a different disk), this\n  call will queue and wait for the previous operation to complete.\n- Operations on different pools with different disks can run concurrently.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.attach",
+        "Job": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "oid",
+          "Argument": "oid",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to attach a disk to."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolAttachOptions"
+          },
+          "Required": true,
+          "Description": "Configuration for the disk attachment operation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolAttachments",
+      "OperationId": "pool.attachments",
+      "Method": "CALL",
+      "Path": "pool.attachments",
+      "Description": "Return a list of services dependent of this pool.\n\nResponsible for telling the user whether there is a related\nshare, asking for confirmation.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolAttachment"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.attachments",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to retrieve attachments for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreate",
+      "OperationId": "pool.create",
+      "Method": "CALL",
+      "Path": "pool.create",
+      "Description": "Create a new ZFS Pool.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.create",
+        "Job": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new storage pool."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDdtPrefetch",
+      "OperationId": "pool.ddt_prefetch",
+      "Method": "CALL",
+      "Path": "pool.ddt_prefetch",
+      "Description": "Prefetch DDT entries in pool `pool_name`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.ddt_prefetch",
+        "Job": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "pool_name",
+          "Argument": "poolName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the pool to prefetch deduplication table entries for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDdtPrune",
+      "OperationId": "pool.ddt_prune",
+      "Method": "CALL",
+      "Path": "pool.ddt_prune",
+      "Description": "Prune DDT entries in pool `pool_name` based on the specified options.\n\n`percentage` is the percentage of DDT entries to prune.\n\n`days` is the number of days to prune DDT entries.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.ddt_prune",
+        "Job": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDdtPruneOptions"
+          },
+          "Required": true,
+          "Description": "PoolDdtPruneArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDetach",
+      "OperationId": "pool.detach",
+      "Method": "CALL",
+      "Path": "pool.detach",
+      "Description": "Detach a disk from pool of id `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.detach",
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to detach a disk from."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDetachOptions"
+          },
+          "Required": true,
+          "Description": "Configuration for the disk detachment operation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolExpand",
+      "OperationId": "pool.expand",
+      "Method": "CALL",
+      "Path": "pool.expand",
+      "Description": "Expand pool to fit all available disk space.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.expand",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to expand."
+        }
+      ]
+    },
+    {
+      "Name": "PoolExport",
+      "OperationId": "pool.export",
+      "Method": "CALL",
+      "Path": "pool.export",
+      "Description": "Export pool of `id`.\n\n`cascade` will delete all attachments of the given pool (`pool.attachments`).\n`restart_services` will restart services that have open files on given pool.\n`destroy` will also PERMANENTLY destroy the pool/data.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.export",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to export."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolExportOptions"
+          },
+          "Description": "Options for controlling the pool export process."
+        }
+      ]
+    },
+    {
+      "Name": "PoolFilesystemChoices",
+      "OperationId": "pool.filesystem_choices",
+      "Method": "CALL",
+      "Path": "pool.filesystem_choices",
+      "Description": "Returns all available datasets, except the following:\n    1. system datasets\n    2. application(s) internal datasets",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.filesystem_choices",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "types",
+          "Argument": "types",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Description": "Dataset types to include in the results."
+        }
+      ]
+    },
+    {
+      "Name": "PoolGetDisks",
+      "OperationId": "pool.get_disks",
+      "Method": "CALL",
+      "Path": "pool.get_disks",
+      "Description": "Get all disks in use by pools.\nIf `id` is provided only the disks from the given pool `id` will be returned.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.get_disks",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Description": "ID of the pool to get disks for. If `null`, returns disks from all pools."
+        }
+      ]
+    },
+    {
+      "Name": "PoolGetInstance",
+      "OperationId": "pool.get_instance",
+      "Method": "CALL",
+      "Path": "pool.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.get_instance",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolImportFind",
+      "OperationId": "pool.import_find",
+      "Method": "CALL",
+      "Path": "pool.import_find",
+      "Description": "Returns a job id which can be used to retrieve a list of pools available for\nimport with the following details as a result of the job:\nname, guid, status, hostname.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolImportFind"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.import_find",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "PoolImportPool",
+      "OperationId": "pool.import_pool",
+      "Method": "CALL",
+      "Path": "pool.import_pool",
+      "Description": "Import a pool found with `pool.import_find`.\n\nErrors:\n    ENOENT - Pool not found",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.import_pool",
+        "Job": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "pool_import",
+          "Argument": "poolImport",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolImport"
+          },
+          "Required": true,
+          "Description": "PoolImportPoolArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolIsUpgraded",
+      "OperationId": "pool.is_upgraded",
+      "Method": "CALL",
+      "Path": "pool.is_upgraded",
+      "Description": "Returns whether or not the pool of `id` is on the latest version and with all feature\nflags enabled.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.is_upgraded",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to check upgrade status for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolOffline",
+      "OperationId": "pool.offline",
+      "Method": "CALL",
+      "Path": "pool.offline",
+      "Description": "Offline a disk from pool of id `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.offline",
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to modify."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolOfflineOptions"
+          },
+          "Required": true,
+          "Description": "Disk identifier to take offline."
+        }
+      ]
+    },
+    {
+      "Name": "PoolOnline",
+      "OperationId": "pool.online",
+      "Method": "CALL",
+      "Path": "pool.online",
+      "Description": "Online a disk from pool of id `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.online",
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to bring a disk online in."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolOnlineOptions"
+          },
+          "Required": true,
+          "Description": "Disk identifier to bring online."
+        }
+      ]
+    },
+    {
+      "Name": "PoolProcesses",
+      "OperationId": "pool.processes",
+      "Method": "CALL",
+      "Path": "pool.processes",
+      "Description": "Returns a list of running processes using this pool.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolProcess"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.processes",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to get processes for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolQuery",
+      "OperationId": "pool.query",
+      "Method": "CALL",
+      "Path": "pool.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolQueryCount",
+      "OperationId": "pool.query#count",
+      "Method": "CALL",
+      "Path": "pool.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolQueryOne",
+      "OperationId": "pool.query#get",
+      "Method": "CALL",
+      "Path": "pool.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolRemove",
+      "OperationId": "pool.remove",
+      "Method": "CALL",
+      "Path": "pool.remove",
+      "Description": "Remove a disk from pool of id `id`.\n\n`label` is the vdev guid or device name.\n\nError codes:\n\n    EZFS_NOSPC(2032): out of space to remove a device\n    EZFS_NODEVICE(2017): no such device in pool\n    EZFS_NOREPLICAS(2019): no valid replicas",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.remove",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to remove a disk from."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolRemoveOptions"
+          },
+          "Required": true,
+          "Description": "Disk identifier to remove from the pool."
+        }
+      ]
+    },
+    {
+      "Name": "PoolReplace",
+      "OperationId": "pool.replace",
+      "Method": "CALL",
+      "Path": "pool.replace",
+      "Description": "Replace a disk on a pool.\n\n`label` is the ZFS guid or a device name\n`disk` is the identifier of a disk\nIf `preserve_settings` is true, then settings (power management, S.M.A.R.T., etc.) of a disk being replaced\nwill be applied to a new disk.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.replace",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to replace a disk in."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolReplaceOptions"
+          },
+          "Required": true,
+          "Description": "Configuration for the disk replacement operation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrub",
+      "OperationId": "pool.scrub",
+      "Method": "CALL",
+      "Path": "pool.scrub",
+      "Description": "Performs a scrub action to pool of `id`.\n\n`action` can be either of \"START\", \"STOP\" or \"PAUSE\".",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to perform scrub action on."
+        },
+        {
+          "Name": "action",
+          "Argument": "action",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubAction"
+          },
+          "Required": true,
+          "Description": "The scrub action to perform."
+        }
+      ]
+    },
+    {
+      "Name": "PoolUpdate",
+      "OperationId": "pool.update",
+      "Method": "CALL",
+      "Path": "pool.update",
+      "Description": "Update pool of `id`, adding the new topology.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.update",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the pool."
+        }
+      ]
+    },
+    {
+      "Name": "PoolUpgrade",
+      "OperationId": "pool.upgrade",
+      "Method": "CALL",
+      "Path": "pool.upgrade",
+      "Description": "Upgrade pool of `id` to latest version with all feature flags.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.upgrade",
+        "Item": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the pool to upgrade to the latest feature flags."
+        }
+      ]
+    },
+    {
+      "Name": "PoolValidateName",
+      "OperationId": "pool.validate_name",
+      "Method": "CALL",
+      "Path": "pool.validate_name",
+      "Description": "Validates `pool_name` is a valid name for a pool.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.validate_name",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "pool_name",
+          "Argument": "poolName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Pool name to validate for compliance with naming rules."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "DataTopology",
+      "SchemaName": "DataTopology",
+      "Description": "Physical layout and configuration of vdevs in the pool.",
+      "Fields": [
+        {
+          "Name": "Cache",
+          "JsonName": "cache",
+          "Description": "Array of L2ARC cache vdev configurations.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolCreateTopologyCacheVdev"
+            }
+          }
+        },
+        {
+          "Name": "Data",
+          "JsonName": "data",
+          "Description": "All vdevs must be of the same `type`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "DataTopologyData"
+            }
+          }
+        },
+        {
+          "Name": "Dedup",
+          "JsonName": "dedup",
+          "Description": "Array of deduplication table vdev configurations.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolCreateTopologyDedupVdev"
+            }
+          }
+        },
+        {
+          "Name": "Log",
+          "JsonName": "log",
+          "Description": "Array of ZFS Intent Log (ZIL) vdev configurations.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolCreateTopologyLogVdev"
+            }
+          }
+        },
+        {
+          "Name": "Spares",
+          "JsonName": "spares",
+          "Description": "Array of spare disk names for the pool.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Special",
+          "JsonName": "special",
+          "Description": "Array of special vdev configurations for metadata storage.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolCreateTopologySpecialVdev"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DataTopologyData",
+      "Union": [
+        "PoolCreateTopologyDataVdevDRAID",
+        "PoolCreateTopologyDataVdevNonDRAID"
+      ],
+      "Discriminator": "type",
+      "Members": [
+        {
+          "Model": "PoolCreateTopologyDataVdevDRAID",
+          "Kinds": [
+            "DRAID1",
+            "DRAID2",
+            "DRAID3"
+          ]
+        },
+        {
+          "Model": "PoolCreateTopologyDataVdevNonDRAID",
+          "Kinds": [
+            "MIRROR",
+            "RAIDZ1",
+            "RAIDZ2",
+            "RAIDZ3",
+            "STRIPE"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "EncryptionOptions",
+      "SchemaName": "EncryptionOptions",
+      "Description": "Specify configuration for encryption of root dataset.",
+      "Fields": [
+        {
+          "Name": "Algorithm",
+          "JsonName": "algorithm",
+          "Description": "Encryption algorithm to use for dataset encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "EncryptionOptionsAlgorithm"
+          }
+        },
+        {
+          "Name": "GenerateKey",
+          "JsonName": "generate_key",
+          "Description": "Automatically generate the key to be used for dataset encryption.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "A hex-encoded key specified as an alternative to using `passphrase`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Passphrase",
+          "JsonName": "passphrase",
+          "Description": "Must be specified if encryption for root dataset is desired with a passphrase as a key.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pbkdf2iters",
+          "JsonName": "pbkdf2iters",
+          "Description": "Number of PBKDF2 iterations for key derivation from passphrase. Higher iterations improve security     against brute force attacks but increase unlock time. Default 350,000 balances security and performance.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolAttachOptions",
+      "SchemaName": "PoolAttachOptions",
+      "Description": "Configuration for the disk attachment operation.",
+      "Fields": [
+        {
+          "Name": "AllowDuplicateSerials",
+          "JsonName": "allow_duplicate_serials",
+          "Description": "Whether to allow attaching disks with duplicate serial numbers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "NewDisk",
+          "JsonName": "new_disk",
+          "Description": "Name of the new disk to attach.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TargetVdev",
+          "JsonName": "target_vdev",
+          "Description": "The GUID of the vdev where the disk needs to be attached. In the case of a STRIPED vdev, this is the STRIPED     disk GUID which will be converted into a mirror. If `target_vdev` is already a mirror, it will be converted into     an n-way mirror.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateData",
+      "SchemaName": "PoolCreateData",
+      "Description": "Configuration for creating a new storage pool.",
+      "Fields": [
+        {
+          "Name": "AllowDuplicateSerials",
+          "JsonName": "allow_duplicate_serials",
+          "Description": "Whether to allow disks with duplicate serial numbers in the pool.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Checksum",
+          "JsonName": "checksum",
+          "Description": "Checksum algorithm to use for data integrity verification.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateDataChecksum"
+          }
+        },
+        {
+          "Name": "DedupTableQuota",
+          "JsonName": "dedup_table_quota",
+          "Description": "How to manage the deduplication table quota allocation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDataDedupTableQuota"
+          }
+        },
+        {
+          "Name": "DedupTableQuotaValue",
+          "JsonName": "dedup_table_quota_value",
+          "Description": "Custom quota value in bytes when `dedup_table_quota` is set to CUSTOM.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Deduplication",
+          "JsonName": "deduplication",
+          "Description": "Make sure no block of data is duplicated in the pool. If set to `VERIFY` and two blocks have similar     signatures, byte-to-byte comparison is performed to ensure that the blcoks are identical. This should be used in     special circumstances as it carries a significant overhead.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateDataDeduplication"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "If set, create a ZFS encrypted root dataset for this pool.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionOptions",
+          "JsonName": "encryption_options",
+          "Description": "Specify configuration for encryption of root dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "EncryptionOptions"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name for the new storage pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Topology",
+          "JsonName": "topology",
+          "Description": "Physical layout and configuration of vdevs in the pool.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DataTopology"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateTopologyCacheVdev",
+      "SchemaName": "PoolCreateTopologyCacheVdev",
+      "Fields": [
+        {
+          "Name": "Disks",
+          "JsonName": "disks",
+          "Description": "Array of disk names to use in this cache vdev.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of L2ARC cache vdev configuration (always stripe).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateTopologyCacheVdevType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateTopologyDedupVdev",
+      "SchemaName": "PoolCreateTopologyDedupVdev",
+      "Fields": [
+        {
+          "Name": "Disks",
+          "JsonName": "disks",
+          "Description": "Array of disk names to use in this dedup vdev.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of deduplication table vdev configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateTopologyVdevType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateTopologyLogVdev",
+      "SchemaName": "PoolCreateTopologyLogVdev",
+      "Fields": [
+        {
+          "Name": "Disks",
+          "JsonName": "disks",
+          "Description": "Array of disk names to use in this log vdev.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of ZFS Intent Log (ZIL) vdev configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateTopologyVdevType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateTopologySpecialVdev",
+      "SchemaName": "PoolCreateTopologySpecialVdev",
+      "Fields": [
+        {
+          "Name": "Disks",
+          "JsonName": "disks",
+          "Description": "Array of disk names to use in this special vdev.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of special vdev configuration for metadata storage.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolCreateTopologyVdevType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDdtPruneOptions",
+      "SchemaName": "PoolDdtPruneOptions",
+      "Description": "PoolDdtPruneArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Days",
+          "JsonName": "days",
+          "Description": "Remove entries older than this many days.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Percentage",
+          "JsonName": "percentage",
+          "Description": "Percentage of deduplication table entries to prune.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PoolName",
+          "JsonName": "pool_name",
+          "Description": "Name of the pool to prune deduplication table entries from.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDetachOptions",
+      "SchemaName": "PoolDetachOptions",
+      "Description": "Configuration for the disk detachment operation.",
+      "Fields": [
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "GUID or device name of the vdev to detach.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Wipe",
+          "JsonName": "wipe",
+          "Description": "Whether to wipe the detached disk after removal.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolExportOptions",
+      "SchemaName": "PoolExportOptions",
+      "Description": "Options for controlling the pool export process.",
+      "Fields": [
+        {
+          "Name": "Cascade",
+          "JsonName": "cascade",
+          "Description": "Delete all attachments of the given pool (`pool.attachments`).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Destroy",
+          "JsonName": "destroy",
+          "Description": "PERMANENTLY destroy the pool/data.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RestartServices",
+          "JsonName": "restart_services",
+          "Description": "Restart services that have open files on given pool.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolGetInstanceOptions",
+      "SchemaName": "PoolGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolImport",
+      "SchemaName": "PoolImport",
+      "Description": "PoolImportPoolArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Guid",
+          "JsonName": "guid",
+          "Description": "GUID of the pool to import.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "If specified, import the pool using this name.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolImportFind",
+      "SchemaName": "PoolImportFind",
+      "Fields": [
+        {
+          "Name": "Guid",
+          "JsonName": "guid",
+          "Description": "GUID of the pool available for import.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "Hostname where the pool was last mounted.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the pool available for import.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current status of the importable pool.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolOfflineOptions",
+      "SchemaName": "PoolOfflineOptions",
+      "Description": "Disk identifier to take offline.",
+      "Fields": [
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "The vdev guid or device name.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolOnlineOptions",
+      "SchemaName": "PoolOnlineOptions",
+      "Description": "Disk identifier to bring online.",
+      "Fields": [
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "The vdev guid or device name.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolQueryOptions",
+      "SchemaName": "PoolQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolQueryResultItem",
+      "SchemaName": "PoolQueryResultItem",
+      "Description": "Information about the newly created pool.",
+      "Fields": [
+        {
+          "Name": "Allocated",
+          "JsonName": "allocated",
+          "Description": "Amount of space currently allocated in the pool in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AllocatedStr",
+          "JsonName": "allocated_str",
+          "Description": "Human-readable string representation of allocated space. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Autotrim",
+          "JsonName": "autotrim",
+          "Description": "Auto-trim configuration for the pool indicating whether automatic TRIM operations are enabled.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "DedupTableQuota",
+          "JsonName": "dedup_table_quota",
+          "Description": "Quota limit for the deduplication table. `null` if no quota is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DedupTableSize",
+          "JsonName": "dedup_table_size",
+          "Description": "Size of the deduplication table in bytes. `null` if deduplication is not enabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Expand",
+          "JsonName": "expand",
+          "Description": "Information about any active pool expansion operation. `null` if no expansion is running.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Fragmentation",
+          "JsonName": "fragmentation",
+          "Description": "Percentage of pool fragmentation as a string. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Free",
+          "JsonName": "free",
+          "Description": "Amount of free space available in the pool in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FreeStr",
+          "JsonName": "free_str",
+          "Description": "Human-readable string representation of free space. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Freeing",
+          "JsonName": "freeing",
+          "Description": "Amount of space being freed (in bytes) by ongoing operations. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FreeingStr",
+          "JsonName": "freeing_str",
+          "Description": "Human-readable string representation of space being freed. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Guid",
+          "JsonName": "guid",
+          "Description": "Globally unique identifier (GUID) for this pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Healthy",
+          "JsonName": "healthy",
+          "Description": "Whether the pool is in a healthy state with no errors or warnings.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this storage pool.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "IsUpgraded",
+          "JsonName": "is_upgraded",
+          "Description": "Whether this pool has been upgraded to the latest feature flags.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the storage pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path where the pool is mounted.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Scan",
+          "JsonName": "scan",
+          "Description": "Information about any active scrub or resilver operation. `null` if no operation is running.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Total size of the pool in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SizeStr",
+          "JsonName": "size_str",
+          "Description": "Human-readable string representation of the pool size. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current status of the pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "StatusCode",
+          "JsonName": "status_code",
+          "Description": "Detailed status code for the pool condition. `null` if not applicable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StatusDetail",
+          "JsonName": "status_detail",
+          "Description": "Human-readable description of the pool status. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Topology",
+          "JsonName": "topology",
+          "Description": "Physical topology and structure of the pool including vdevs. `null` if not available.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolTopology"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Warning",
+          "JsonName": "warning",
+          "Description": "Whether the pool has warning conditions that require attention.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolRemoveOptions",
+      "SchemaName": "PoolRemoveOptions",
+      "Description": "Disk identifier to remove from the pool.",
+      "Fields": [
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "The vdev guid or device name.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolReplaceOptions",
+      "SchemaName": "PoolReplaceOptions",
+      "Description": "Configuration for the disk replacement operation.",
+      "Fields": [
+        {
+          "Name": "Disk",
+          "JsonName": "disk",
+          "Description": "Name of the new disk to use as replacement.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force the replacement even if the new disk appears to be in use.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "GUID or device name of the disk to replace.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreserveDescription",
+          "JsonName": "preserve_description",
+          "Description": "Whether to preserve the description from the replaced disk.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PreserveSettings",
+          "JsonName": "preserve_settings",
+          "Description": "Whether to preserve disk settings from the replaced disk.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolUpdateData",
+      "SchemaName": "PoolUpdateData",
+      "Description": "Updated configuration for the pool.",
+      "Fields": [
+        {
+          "Name": "AllowDuplicateSerials",
+          "JsonName": "allow_duplicate_serials",
+          "Description": "Whether to allow disks with duplicate serial numbers in the pool.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Autotrim",
+          "JsonName": "autotrim",
+          "Description": "Whether to enable automatic TRIM operations on the pool.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolUpdateDataAutotrim"
+          }
+        },
+        {
+          "Name": "DedupTableQuota",
+          "JsonName": "dedup_table_quota",
+          "Description": "How to manage the deduplication table quota allocation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDataDedupTableQuota"
+          }
+        },
+        {
+          "Name": "DedupTableQuotaValue",
+          "JsonName": "dedup_table_quota_value",
+          "Description": "Custom quota value in bytes when `dedup_table_quota` is set to CUSTOM.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Topology",
+          "JsonName": "topology",
+          "Description": "Updated topology configuration for adding new vdevs to the pool.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DataTopology"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "EncryptionOptionsAlgorithm",
+      "SchemaName": "EncryptionOptionsAlgorithm",
+      "Description": "Encryption algorithm to use for dataset encryption.",
+      "Values": [
+        {
+          "Name": "EncryptionOptionsAlgorithmAES128CCM",
+          "Value": "AES-128-CCM"
+        },
+        {
+          "Name": "EncryptionOptionsAlgorithmAES192CCM",
+          "Value": "AES-192-CCM"
+        },
+        {
+          "Name": "EncryptionOptionsAlgorithmAES256CCM",
+          "Value": "AES-256-CCM"
+        },
+        {
+          "Name": "EncryptionOptionsAlgorithmAES128GCM",
+          "Value": "AES-128-GCM"
+        },
+        {
+          "Name": "EncryptionOptionsAlgorithmAES192GCM",
+          "Value": "AES-192-GCM"
+        },
+        {
+          "Name": "EncryptionOptionsAlgorithmAES256GCM",
+          "Value": "AES-256-GCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateDataChecksum",
+      "SchemaName": "PoolCreateDataChecksum",
+      "Description": "Checksum algorithm to use for data integrity verification.",
+      "Values": [
+        {
+          "Name": "PoolCreateDataChecksumON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolCreateDataChecksumOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolCreateDataChecksumFLETCHER2",
+          "Value": "FLETCHER2"
+        },
+        {
+          "Name": "PoolCreateDataChecksumFLETCHER4",
+          "Value": "FLETCHER4"
+        },
+        {
+          "Name": "PoolCreateDataChecksumSHA256",
+          "Value": "SHA256"
+        },
+        {
+          "Name": "PoolCreateDataChecksumSHA512",
+          "Value": "SHA512"
+        },
+        {
+          "Name": "PoolCreateDataChecksumSKEIN",
+          "Value": "SKEIN"
+        },
+        {
+          "Name": "PoolCreateDataChecksumEDONR",
+          "Value": "EDONR"
+        },
+        {
+          "Name": "PoolCreateDataChecksumBLAKE3",
+          "Value": "BLAKE3"
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateDataDeduplication",
+      "SchemaName": "PoolCreateDataDeduplication",
+      "Description": "Make sure no block of data is duplicated in the pool. If set to `VERIFY` and two blocks have similar     signatures, byte-to-byte comparison is performed to ensure that the blcoks are identical. This should be used in     special circumstances as it carries a significant overhead.",
+      "Values": [
+        {
+          "Name": "PoolCreateDataDeduplicationON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolCreateDataDeduplicationVERIFY",
+          "Value": "VERIFY"
+        },
+        {
+          "Name": "PoolCreateDataDeduplicationOFF",
+          "Value": "OFF"
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateTopologyCacheVdevType",
+      "SchemaName": "PoolCreateTopologyCacheVdevType",
+      "Description": "Type of L2ARC cache vdev configuration (always stripe).",
+      "Values": [
+        {
+          "Name": "PoolCreateTopologyCacheVdevTypeSTRIPE",
+          "Value": "STRIPE"
+        }
+      ]
+    },
+    {
+      "Name": "PoolCreateTopologyVdevType",
+      "SchemaName": "PoolCreateTopologyVdevType",
+      "Description": "Type of deduplication table vdev configuration.",
+      "Values": [
+        {
+          "Name": "PoolCreateTopologyVdevTypeMIRROR",
+          "Value": "MIRROR"
+        },
+        {
+          "Name": "PoolCreateTopologyVdevTypeSTRIPE",
+          "Value": "STRIPE"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDataDedupTableQuota",
+      "SchemaName": "PoolDataDedupTableQuota",
+      "Description": "How to manage the deduplication table quota allocation.",
+      "Values": [
+        {
+          "Name": "PoolDataDedupTableQuotaAUTO",
+          "Value": "AUTO"
+        },
+        {
+          "Name": "PoolDataDedupTableQuotaCUSTOM",
+          "Value": "CUSTOM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolUpdateDataAutotrim",
+      "SchemaName": "PoolUpdateDataAutotrim",
+      "Description": "Whether to enable automatic TRIM operations on the pool.",
+      "Values": [
+        {
+          "Name": "PoolUpdateDataAutotrimON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolUpdateDataAutotrimOFF",
+          "Value": "OFF"
+        }
+      ]
+    }
+  ]
+}

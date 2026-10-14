@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
+	"strings"
 )
 
 // Union is a value that is one of several records, held as it came. A generated union type embeds it and says which records
@@ -52,20 +54,30 @@ func (u Union) Kind(field string) string {
 }
 
 // UnionAs hands the record over as the member T. Where the records name themselves by a field, the record is that member only
-// when the field holds kind, and another kind is an error naming both; without such a field (field "") the record is decoded
-// strictly, so one of another member's shape fails on the key T has no field for.
-func UnionAs[T any](u Union, field, kind string) (T, error) {
+// when the field holds one of kinds, and another kind is an error naming both; without such a field (field "") the record is
+// decoded strictly, so one of another member's shape fails on the key T has no field for.
+func UnionAs[T any](u Union, field string, kinds ...string) (T, error) {
 	var zero T
 	if len(u.Raw) == 0 {
 		return zero, errors.New("the union holds nothing")
 	}
 	if field != "" {
-		if got := u.Kind(field); got != kind {
-			return zero, fmt.Errorf("the record is a %q, not a %q", got, kind)
+		if got := u.Kind(field); !slices.Contains(kinds, got) {
+			return zero, fmt.Errorf("the record is a %q, not a %s", got, strings.Join(quoted(kinds), " or "))
 		}
 
 		return Decode[T](u.Raw)
 	}
 
 	return DecodeStrict[T](u.Raw)
+}
+
+// quoted is each word in quotes.
+func quoted(words []string) []string {
+	out := make([]string, len(words))
+	for i, w := range words {
+		out[i] = fmt.Sprintf("%q", w)
+	}
+
+	return out
 }

@@ -1,0 +1,159 @@
+{
+  "Name": "FailoverReboot",
+  "Tag": "failover.reboot",
+  "Operations": [
+    {
+      "Name": "FailoverRebootInfo",
+      "OperationId": "failover.reboot.info",
+      "Method": "CALL",
+      "Path": "failover.reboot.info",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FailoverRebootInfoAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "failover.reboot.info",
+        "Read": true,
+        "Roles": [
+          "FAILOVER_READ",
+          "FAILOVER_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "FailoverRebootOtherNode",
+      "OperationId": "failover.reboot.other_node",
+      "Method": "CALL",
+      "Path": "failover.reboot.other_node",
+      "Description": "Reboot the other node and wait for it to come back online.\n\nNOTE: This makes very few checks on HA systems. You need to\n    know what you're doing before calling this.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "failover.reboot.other_node",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FailoverRebootOtherNodeOptions"
+          },
+          "Description": "Options for rebooting the other node."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "FailoverRebootInfoAnswer",
+      "SchemaName": "FailoverRebootInfoAnswer",
+      "Description": "FailoverRebootInfoResult return fields.",
+      "Fields": [
+        {
+          "Name": "OtherNode",
+          "JsonName": "other_node",
+          "Description": "Reboot information for the other node in the failover pair or `null` if not available.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RebootInfo"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ThisNode",
+          "JsonName": "this_node",
+          "Description": "Reboot information for the current node.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FailoverRebootInfoAnswerThisNode"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FailoverRebootInfoAnswerThisNode",
+      "SchemaName": "FailoverRebootInfoAnswerThisNode",
+      "Description": "Reboot information for the current node.",
+      "Fields": [
+        {
+          "Name": "BootId",
+          "JsonName": "boot_id",
+          "Description": "Unique identifier for the current boot session.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RebootRequiredReasons",
+          "JsonName": "reboot_required_reasons",
+          "Description": "Array of reasons why a system reboot is required.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "RebootRequiredReason"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FailoverRebootOtherNodeOptions",
+      "SchemaName": "FailoverRebootOtherNodeOptions",
+      "Description": "Options for rebooting the other node.",
+      "Fields": [
+        {
+          "Name": "Graceful",
+          "JsonName": "graceful",
+          "Description": "If set, call `system.reboot` to gracefully reboot the other node. By default, `failover.become_passive` will be     called on the other node to forcefully reboot and simulate a failover event unless there were changes in the other     node's boot environment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Reason",
+          "JsonName": "reason",
+          "Description": "Reason for the system reboot.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "RebootInfo",
+      "SchemaName": "RebootInfo",
+      "Fields": [
+        {
+          "Name": "BootId",
+          "JsonName": "boot_id",
+          "Description": "Unique identifier for the current boot session.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RebootRequiredReasons",
+          "JsonName": "reboot_required_reasons",
+          "Description": "Array of reasons why a system reboot is required.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

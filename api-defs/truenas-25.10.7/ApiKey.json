@@ -1,0 +1,896 @@
+{
+  "Name": "ApiKey",
+  "Tag": "api_key",
+  "Operations": [
+    {
+      "Name": "ApiKeyCreate",
+      "OperationId": "api_key.create",
+      "Method": "CALL",
+      "Path": "api_key.create",
+      "Description": "Creates API Key.\n\n`name` is a user-readable name for key.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ApiKeyEntryWithKey"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.create",
+        "Roles": [
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "api_key_create",
+          "Argument": "apiKeyCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyCreate"
+          },
+          "Required": true,
+          "Description": "API key configuration data for the new key."
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyDelete",
+      "OperationId": "api_key.delete",
+      "Method": "CALL",
+      "Path": "api_key.delete",
+      "Description": "Delete API Key `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.delete",
+        "Item": true,
+        "Roles": [
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the API key to delete."
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyGetInstance",
+      "OperationId": "api_key.get_instance",
+      "Method": "CALL",
+      "Path": "api_key.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ApiKeyGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.get_instance",
+        "Read": true,
+        "Roles": [
+          "API_KEY_READ",
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyMyKeys",
+      "OperationId": "api_key.my_keys",
+      "Method": "CALL",
+      "Path": "api_key.my_keys",
+      "Description": "Get the existing API keys for the currently-authenticated user",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyEntry"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.my_keys",
+        "Read": true,
+        "Roles": [
+          "API_KEY_READ",
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "ApiKeyQuery",
+      "OperationId": "api_key.query",
+      "Method": "CALL",
+      "Path": "api_key.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "API_KEY_READ",
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyQueryCount",
+      "OperationId": "api_key.query#count",
+      "Method": "CALL",
+      "Path": "api_key.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "API_KEY_READ",
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyQueryOne",
+      "OperationId": "api_key.query#get",
+      "Method": "CALL",
+      "Path": "api_key.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ApiKeyQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "API_KEY_READ",
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyUpdate",
+      "OperationId": "api_key.update",
+      "Method": "CALL",
+      "Path": "api_key.update",
+      "Description": "Update API Key `id`.\n\nSpecify `reset: true` to reset this API Key.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "api_key.update",
+        "Item": true,
+        "Roles": [
+          "API_KEY_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the API key to update."
+        },
+        {
+          "Name": "api_key_update",
+          "Argument": "apiKeyUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ApiKeyUpdate"
+          },
+          "Required": true,
+          "Description": "Updated API key configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "ApiKeyCreate",
+      "SchemaName": "ApiKeyCreate",
+      "Description": "API key configuration data for the new key.",
+      "Fields": [
+        {
+          "Name": "ExpiresAt",
+          "JsonName": "expires_at",
+          "Description": "Expiration timestamp for the API key or `null` for no expiration.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the API key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyEntry",
+      "SchemaName": "ApiKeyEntry",
+      "Fields": [
+        {
+          "Name": "CreatedAt",
+          "JsonName": "created_at",
+          "Description": "Timestamp when the API key was created.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "ExpiresAt",
+          "JsonName": "expires_at",
+          "Description": "Expiration timestamp for the API key or `null` for no expiration.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the API key.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Keyhash",
+          "JsonName": "keyhash",
+          "Description": "Hashed representation of the API key (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "Whether this API key is for local system use only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the API key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Revoked",
+          "JsonName": "revoked",
+          "Description": "Whether the API key has been revoked and is no longer valid.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RevokedReason",
+          "JsonName": "revoked_reason",
+          "Description": "Reason for API key revocation or `null` if not revoked.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UserIdentifier",
+          "JsonName": "user_identifier",
+          "Description": "User ID (numeric) or SID (string) that owns this API key.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username associated with the API key or `null` for system keys.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyEntryWithKey",
+      "SchemaName": "ApiKeyEntryWithKey",
+      "Description": "The created API key with the actual key value.",
+      "Fields": [
+        {
+          "Name": "CreatedAt",
+          "JsonName": "created_at",
+          "Description": "Timestamp when the API key was created.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "ExpiresAt",
+          "JsonName": "expires_at",
+          "Description": "Expiration timestamp for the API key or `null` for no expiration.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the API key.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "The actual API key value (only returned on creation).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Keyhash",
+          "JsonName": "keyhash",
+          "Description": "Hashed representation of the API key (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "Whether this API key is for local system use only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the API key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Revoked",
+          "JsonName": "revoked",
+          "Description": "Whether the API key has been revoked and is no longer valid.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RevokedReason",
+          "JsonName": "revoked_reason",
+          "Description": "Reason for API key revocation or `null` if not revoked.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UserIdentifier",
+          "JsonName": "user_identifier",
+          "Description": "User ID (numeric) or SID (string) that owns this API key.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username associated with the API key or `null` for system keys.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyGetInstanceAnswer",
+      "SchemaName": "ApiKeyGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "CreatedAt",
+          "JsonName": "created_at",
+          "Description": "Timestamp when the API key was created.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "ExpiresAt",
+          "JsonName": "expires_at",
+          "Description": "Expiration timestamp for the API key or `null` for no expiration.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the API key.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Keyhash",
+          "JsonName": "keyhash",
+          "Description": "Hashed representation of the API key (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "Whether this API key is for local system use only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the API key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Revoked",
+          "JsonName": "revoked",
+          "Description": "Whether the API key has been revoked and is no longer valid.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RevokedReason",
+          "JsonName": "revoked_reason",
+          "Description": "Reason for API key revocation or `null` if not revoked.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UserIdentifier",
+          "JsonName": "user_identifier",
+          "Description": "User ID (numeric) or SID (string) that owns this API key.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username associated with the API key or `null` for system keys.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyGetInstanceOptions",
+      "SchemaName": "ApiKeyGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyQueryOptions",
+      "SchemaName": "ApiKeyQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyQueryResultItem",
+      "SchemaName": "ApiKeyQueryResultItem",
+      "Fields": [
+        {
+          "Name": "CreatedAt",
+          "JsonName": "created_at",
+          "Description": "Timestamp when the API key was created.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "ExpiresAt",
+          "JsonName": "expires_at",
+          "Description": "Expiration timestamp for the API key or `null` for no expiration.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the API key.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Keyhash",
+          "JsonName": "keyhash",
+          "Description": "Hashed representation of the API key (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "Whether this API key is for local system use only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the API key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Revoked",
+          "JsonName": "revoked",
+          "Description": "Whether the API key has been revoked and is no longer valid.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RevokedReason",
+          "JsonName": "revoked_reason",
+          "Description": "Reason for API key revocation or `null` if not revoked.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UserIdentifier",
+          "JsonName": "user_identifier",
+          "Description": "User ID (numeric) or SID (string) that owns this API key.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username associated with the API key or `null` for system keys.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ApiKeyUpdate",
+      "SchemaName": "ApiKeyUpdate",
+      "Description": "Updated API key configuration data.",
+      "Fields": [
+        {
+          "Name": "ExpiresAt",
+          "JsonName": "expires_at",
+          "Description": "Expiration timestamp for the API key or `null` for no expiration.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the API key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Reset",
+          "JsonName": "reset",
+          "Description": "Whether to regenerate a new API key value for this entry.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

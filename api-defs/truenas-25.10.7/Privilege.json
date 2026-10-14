@@ -1,0 +1,891 @@
+{
+  "Name": "Privilege",
+  "Tag": "privilege",
+  "Operations": [
+    {
+      "Name": "PrivilegeCreate",
+      "OperationId": "privilege.create",
+      "Method": "CALL",
+      "Path": "privilege.create",
+      "Description": "Creates a privilege.\n\n`name` is a name for privilege (must be unique).\n\n`local_groups` is a list of local user account group GIDs that gain this privilege.\n\n`ds_groups` is list of Directory Service group GIDs that will gain this privilege.\n\n`roles` is a list of roles to be assigned to the privilege\n\n`web_shell` controls whether users with this privilege are allowed to log in to the Web UI.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PrivilegeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.create",
+        "Roles": [
+          "PRIVILEGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "privilege_create",
+          "Argument": "privilegeCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeCreate"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new privilege."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeDelete",
+      "OperationId": "privilege.delete",
+      "Method": "CALL",
+      "Path": "privilege.delete",
+      "Description": "Delete the privilege `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.delete",
+        "Item": true,
+        "Roles": [
+          "PRIVILEGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the privilege to delete."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeGetInstance",
+      "OperationId": "privilege.get_instance",
+      "Method": "CALL",
+      "Path": "privilege.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PrivilegeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.get_instance",
+        "Read": true,
+        "Roles": [
+          "PRIVILEGE_READ",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQuery",
+      "OperationId": "privilege.query",
+      "Method": "CALL",
+      "Path": "privilege.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "PRIVILEGE_READ",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQueryCount",
+      "OperationId": "privilege.query#count",
+      "Method": "CALL",
+      "Path": "privilege.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "PRIVILEGE_READ",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQueryOne",
+      "OperationId": "privilege.query#get",
+      "Method": "CALL",
+      "Path": "privilege.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PrivilegeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "PRIVILEGE_READ",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeRoles",
+      "OperationId": "privilege.roles",
+      "Method": "CALL",
+      "Path": "privilege.roles",
+      "Description": "Get all available roles.\n\nEach entry contains the following keys:\n\n`name` - the internal name of the role\n\n`includes` - list of other roles that this role includes. When user is\ngranted this role, they will also receive permissions granted by all\nthe included roles.\n\n`builtin` - role exists for internal backend purposes for access\ncontrol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeRolesQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.roles",
+        "Filterable": true
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeRolesOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeRolesCount",
+      "OperationId": "privilege.roles#count",
+      "Method": "CALL",
+      "Path": "privilege.roles#count",
+      "Description": "Get all available roles.\n\nEach entry contains the following keys:\n\n`name` - the internal name of the role\n\n`includes` - list of other roles that this role includes. When user is\ngranted this role, they will also receive permissions granted by all\nthe included roles.\n\n`builtin` - role exists for internal backend purposes for access\ncontrol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.roles",
+        "Filterable": true,
+        "Form": "count"
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeRolesOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeRolesOne",
+      "OperationId": "privilege.roles#get",
+      "Method": "CALL",
+      "Path": "privilege.roles#get",
+      "Description": "Get all available roles.\n\nEach entry contains the following keys:\n\n`name` - the internal name of the role\n\n`includes` - list of other roles that this role includes. When user is\ngranted this role, they will also receive permissions granted by all\nthe included roles.\n\n`builtin` - role exists for internal backend purposes for access\ncontrol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PrivilegeRolesQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.roles",
+        "Filterable": true,
+        "Form": "get"
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeRolesOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeUpdate",
+      "OperationId": "privilege.update",
+      "Method": "CALL",
+      "Path": "privilege.update",
+      "Description": "Update the privilege `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PrivilegeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "privilege.update",
+        "Item": true,
+        "Roles": [
+          "PRIVILEGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the privilege to update."
+        },
+        {
+          "Name": "privilege_update",
+          "Argument": "privilegeUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PrivilegeUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the privilege."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "PrivilegeCreate",
+      "SchemaName": "PrivilegeCreate",
+      "Description": "Configuration for creating a new privilege.",
+      "Fields": [
+        {
+          "Name": "DsGroups",
+          "JsonName": "ds_groups",
+          "Description": "Array of directory service group IDs or SIDs to assign to this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "LocalGroups",
+          "JsonName": "local_groups",
+          "Description": "Array of local group IDs to assign to this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the privilege.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of role names included in this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "WebShell",
+          "JsonName": "web_shell",
+          "Description": "Whether this privilege grants access to the web shell.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeGetInstanceOptions",
+      "SchemaName": "PrivilegeGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQueryOptions",
+      "SchemaName": "PrivilegeQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQueryResultItem",
+      "SchemaName": "PrivilegeQueryResultItem",
+      "Description": "The newly created privilege configuration.",
+      "Fields": [
+        {
+          "Name": "BuiltinName",
+          "JsonName": "builtin_name",
+          "Description": "Name of the built-in privilege if this is a system privilege. `null` for custom privileges.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DsGroups",
+          "JsonName": "ds_groups",
+          "Description": "Array of directory service groups assigned to this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PrivilegeQueryResultItemDsGroups"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the privilege.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "LocalGroups",
+          "JsonName": "local_groups",
+          "Description": "Array of local groups assigned to this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PrivilegeQueryResultItemLocalGroups"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the privilege.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of role names included in this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "WebShell",
+          "JsonName": "web_shell",
+          "Description": "Whether this privilege grants access to the web shell.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQueryResultItemDsGroups",
+      "Union": [
+        "GroupEntry",
+        "UnmappedGroupEntry"
+      ],
+      "Members": [
+        {
+          "Model": "GroupEntry"
+        },
+        {
+          "Model": "UnmappedGroupEntry"
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeQueryResultItemLocalGroups",
+      "Union": [
+        "GroupEntry",
+        "UnmappedGroupEntry"
+      ],
+      "Members": [
+        {
+          "Model": "GroupEntry"
+        },
+        {
+          "Model": "UnmappedGroupEntry"
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeRolesOptions",
+      "SchemaName": "PrivilegeRolesOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeRolesQueryResultItem",
+      "SchemaName": "PrivilegeRolesQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "Whether this is a built-in system role.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Includes",
+          "JsonName": "includes",
+          "Description": "Array of other role names that this role includes.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Internal name of the role.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Stig",
+          "JsonName": "stig",
+          "Description": "Currently we are only attempting to meet a single STIG (General Purpose\nOperating System). This enum is defined so that we have capability\nto expand if we decide to apply more specific STIGs to different areas\nof our product",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Human-readable title of the role.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PrivilegeUpdate",
+      "SchemaName": "PrivilegeUpdate",
+      "Description": "Updated configuration for the privilege.",
+      "Fields": [
+        {
+          "Name": "DsGroups",
+          "JsonName": "ds_groups",
+          "Description": "Array of directory service group IDs or SIDs to assign to this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "LocalGroups",
+          "JsonName": "local_groups",
+          "Description": "Array of local group IDs to assign to this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the privilege.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of role names included in this privilege.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "WebShell",
+          "JsonName": "web_shell",
+          "Description": "Whether this privilege grants access to the web shell.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

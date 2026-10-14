@@ -1,0 +1,28 @@
+{
+  "Name": "Ipmi",
+  "Tag": "ipmi",
+  "Operations": [
+    {
+      "Name": "IpmiIsLoaded",
+      "OperationId": "ipmi.is_loaded",
+      "Method": "CALL",
+      "Path": "ipmi.is_loaded",
+      "Description": "Returns a boolean value indicating if /dev/ipmi0 is loaded.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.is_loaded",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ]
+}

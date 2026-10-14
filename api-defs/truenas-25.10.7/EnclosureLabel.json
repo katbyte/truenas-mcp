@@ -1,0 +1,39 @@
+{
+  "Name": "EnclosureLabel",
+  "Tag": "enclosure.label",
+  "Operations": [
+    {
+      "Name": "EnclosureLabelSet",
+      "OperationId": "enclosure.label.set",
+      "Method": "CALL",
+      "Path": "enclosure.label.set",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "enclosure.label.set",
+        "Roles": [
+          "ENCLOSURE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Enclosure identifier to set the label for."
+        },
+        {
+          "Name": "label",
+          "Argument": "label",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "New label to assign to the enclosure."
+        }
+      ]
+    }
+  ]
+}

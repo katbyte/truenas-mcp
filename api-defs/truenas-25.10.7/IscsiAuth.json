@@ -1,0 +1,695 @@
+{
+  "Name": "IscsiAuth",
+  "Tag": "iscsi.auth",
+  "Operations": [
+    {
+      "Name": "IscsiAuthCreate",
+      "OperationId": "iscsi.auth.create",
+      "Method": "CALL",
+      "Path": "iscsi.auth.create",
+      "Description": "Create an iSCSI Authorized Access.\n\n`tag` should be unique among all configured iSCSI Authorized Accesses.\n\n`secret` and `peersecret` should have length between 12-16 letters inclusive.\n\n`peeruser` and `peersecret` are provided only when configuring mutual CHAP. `peersecret` should not be\nsimilar to `secret`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiAuthQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthCreateData"
+          },
+          "Required": true,
+          "Description": "iSCSI authentication credential configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthDelete",
+      "OperationId": "iscsi.auth.delete",
+      "Method": "CALL",
+      "Path": "iscsi.auth.delete",
+      "Description": "Delete iSCSI Authorized Access of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the iSCSI authentication credential to delete."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthGetInstance",
+      "OperationId": "iscsi.auth.get_instance",
+      "Method": "CALL",
+      "Path": "iscsi.auth.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiAuthQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_READ",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthQuery",
+      "OperationId": "iscsi.auth.query",
+      "Method": "CALL",
+      "Path": "iscsi.auth.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_READ",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthQueryCount",
+      "OperationId": "iscsi.auth.query#count",
+      "Method": "CALL",
+      "Path": "iscsi.auth.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_READ",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthQueryOne",
+      "OperationId": "iscsi.auth.query#get",
+      "Method": "CALL",
+      "Path": "iscsi.auth.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiAuthQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_READ",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthUpdate",
+      "OperationId": "iscsi.auth.update",
+      "Method": "CALL",
+      "Path": "iscsi.auth.update",
+      "Description": "Update iSCSI Authorized Access of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiAuthQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.auth.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_AUTH_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the iSCSI authentication credential to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated iSCSI authentication credential configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IscsiAuthCreateData",
+      "SchemaName": "IscsiAuthCreateData",
+      "Description": "iSCSI authentication credential configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "DiscoveryAuth",
+          "JsonName": "discovery_auth",
+          "Description": "Authentication method for target discovery. If \"CHAP_MUTUAL\" is selected for target discovery, it is only     permitted for a single entry systemwide.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthCreateDataDiscoveryAuth"
+          }
+        },
+        {
+          "Name": "Peersecret",
+          "JsonName": "peersecret",
+          "Description": "Password/secret for mutual CHAP authentication or empty string if not configured.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Peeruser",
+          "JsonName": "peeruser",
+          "Description": "Username for mutual CHAP authentication or empty string if not configured.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Secret",
+          "JsonName": "secret",
+          "Description": "Password/secret for iSCSI CHAP authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Tag",
+          "JsonName": "tag",
+          "Description": "Numeric tag used to associate this credential with iSCSI targets.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username for iSCSI CHAP authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthGetInstanceOptions",
+      "SchemaName": "IscsiAuthGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthQueryOptions",
+      "SchemaName": "IscsiAuthQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthQueryResultItem",
+      "SchemaName": "IscsiAuthQueryResultItem",
+      "Description": "The created iSCSI authentication credential.",
+      "Fields": [
+        {
+          "Name": "DiscoveryAuth",
+          "JsonName": "discovery_auth",
+          "Description": "Authentication method for target discovery. If \"CHAP_MUTUAL\" is selected for target discovery, it is only     permitted for a single entry systemwide.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthQueryResultItemDiscoveryAuth"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the iSCSI authentication credential.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Peersecret",
+          "JsonName": "peersecret",
+          "Description": "Password/secret for mutual CHAP authentication or empty string if not configured.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Peeruser",
+          "JsonName": "peeruser",
+          "Description": "Username for mutual CHAP authentication or empty string if not configured.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Secret",
+          "JsonName": "secret",
+          "Description": "Password/secret for iSCSI CHAP authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Tag",
+          "JsonName": "tag",
+          "Description": "Numeric tag used to associate this credential with iSCSI targets.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username for iSCSI CHAP authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthUpdateData",
+      "SchemaName": "IscsiAuthUpdateData",
+      "Description": "Updated iSCSI authentication credential configuration data.",
+      "Fields": [
+        {
+          "Name": "DiscoveryAuth",
+          "JsonName": "discovery_auth",
+          "Description": "Authentication method for target discovery. If \"CHAP_MUTUAL\" is selected for target discovery, it is only     permitted for a single entry systemwide.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiAuthUpdateDataDiscoveryAuth"
+          }
+        },
+        {
+          "Name": "Peersecret",
+          "JsonName": "peersecret",
+          "Description": "Password/secret for mutual CHAP authentication or empty string if not configured.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Peeruser",
+          "JsonName": "peeruser",
+          "Description": "Username for mutual CHAP authentication or empty string if not configured.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Secret",
+          "JsonName": "secret",
+          "Description": "Password/secret for iSCSI CHAP authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Tag",
+          "JsonName": "tag",
+          "Description": "Numeric tag used to associate this credential with iSCSI targets.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username for iSCSI CHAP authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "IscsiAuthCreateDataDiscoveryAuth",
+      "SchemaName": "IscsiAuthCreateDataDiscoveryAuth",
+      "Description": "Authentication method for target discovery. If \"CHAP_MUTUAL\" is selected for target discovery, it is only     permitted for a single entry systemwide.",
+      "Values": [
+        {
+          "Name": "IscsiAuthCreateDataDiscoveryAuthNONE",
+          "Value": "NONE"
+        },
+        {
+          "Name": "IscsiAuthCreateDataDiscoveryAuthCHAP",
+          "Value": "CHAP"
+        },
+        {
+          "Name": "IscsiAuthCreateDataDiscoveryAuthCHAPMUTUAL",
+          "Value": "CHAP_MUTUAL"
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthQueryResultItemDiscoveryAuth",
+      "SchemaName": "IscsiAuthQueryResultItemDiscoveryAuth",
+      "Description": "Authentication method for target discovery. If \"CHAP_MUTUAL\" is selected for target discovery, it is only     permitted for a single entry systemwide.",
+      "Values": [
+        {
+          "Name": "IscsiAuthQueryResultItemDiscoveryAuthNONE",
+          "Value": "NONE"
+        },
+        {
+          "Name": "IscsiAuthQueryResultItemDiscoveryAuthCHAP",
+          "Value": "CHAP"
+        },
+        {
+          "Name": "IscsiAuthQueryResultItemDiscoveryAuthCHAPMUTUAL",
+          "Value": "CHAP_MUTUAL"
+        }
+      ]
+    },
+    {
+      "Name": "IscsiAuthUpdateDataDiscoveryAuth",
+      "SchemaName": "IscsiAuthUpdateDataDiscoveryAuth",
+      "Description": "Authentication method for target discovery. If \"CHAP_MUTUAL\" is selected for target discovery, it is only     permitted for a single entry systemwide.",
+      "Values": [
+        {
+          "Name": "IscsiAuthUpdateDataDiscoveryAuthNONE",
+          "Value": "NONE"
+        },
+        {
+          "Name": "IscsiAuthUpdateDataDiscoveryAuthCHAP",
+          "Value": "CHAP"
+        },
+        {
+          "Name": "IscsiAuthUpdateDataDiscoveryAuthCHAPMUTUAL",
+          "Value": "CHAP_MUTUAL"
+        }
+      ]
+    }
+  ]
+}

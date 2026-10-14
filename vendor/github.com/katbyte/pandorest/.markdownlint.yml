@@ -1,0 +1,29 @@
+# Configuration for markdownlint-cli2 (run by .github/workflows/markdownlint.yaml via `make markdownlint`).
+# Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# start from every rule enabled, then adjust or disable below
+default: true
+
+# --------------------------------- adjusted rules ----------------------------------
+# MD010: no hard tabs - permitted inside code blocks (Go snippets are tab-indented)
+no-hard-tabs:
+  code_blocks: false
+
+# MD024: no duplicate heading text - the changelog repeats its section names under every release
+no-duplicate-heading:
+  siblings_only: true
+
+# --------------------------------- disabled rules ----------------------------------
+# MD013: maximum line length - paragraphs and bullets are one line each, never hard-wrapped
+line-length: false
+
+# MD033: no inline HTML - the README's badges sit in a centred block
+no-inline-html: false
+
+# MD041: first line must be a top-level heading - the README opens with its badges
+first-line-heading: false
+
+# MD055/MD056/MD060: table pipe style, column count and column spacing - the config tables are hand-aligned prose
+table-pipe-style: false
+table-column-count: false
+table-column-style: false

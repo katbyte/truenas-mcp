@@ -1,0 +1,970 @@
+{
+  "Name": "FilesystemAcltemplate",
+  "Tag": "filesystem.acltemplate",
+  "Operations": [
+    {
+      "Name": "FilesystemAcltemplateByPath",
+      "OperationId": "filesystem.acltemplate.by_path",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.by_path",
+      "Description": "Retrieve list of available ACL templates for a given `path`.\n\nSupports `query-filters` and `query-options`.\n`format-options` gives additional options to alter the results of\nthe template query:\n\n`canonicalize` - place ACL entries for NFSv4 ACLs in Microsoft canonical order.\n`ensure_builtins` - ensure all results contain entries for `builtin_users` and `builtin_administrators`\ngroups.\n`resolve_names` - convert ids in ACL entries into names.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AclTemplateEntry"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.by_path",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filesystem_acl",
+          "Argument": "filesystemAcl",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcl"
+          },
+          "Required": true,
+          "Description": "ACLTemplateByPathArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateCreate",
+      "OperationId": "filesystem.acltemplate.create",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.create",
+      "Description": "Create a new filesystem ACL template.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemAcltemplateCreateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.create",
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "acltemplate_create",
+          "Argument": "acltemplateCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AcltemplateCreate"
+          },
+          "Required": true,
+          "Description": "ACL template configuration data for the new template."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateDelete",
+      "OperationId": "filesystem.acltemplate.delete",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.delete",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.delete",
+        "Item": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the ACL template to delete."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateGetInstance",
+      "OperationId": "filesystem.acltemplate.get_instance",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemAcltemplateGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.get_instance",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltemplateGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateQuery",
+      "OperationId": "filesystem.acltemplate.query",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AclTemplateQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltemplateQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateQueryCount",
+      "OperationId": "filesystem.acltemplate.query#count",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltemplateQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateQueryOne",
+      "OperationId": "filesystem.acltemplate.query#get",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AclTemplateQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltemplateQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateUpdate",
+      "OperationId": "filesystem.acltemplate.update",
+      "Method": "CALL",
+      "Path": "filesystem.acltemplate.update",
+      "Description": "update filesystem ACL template with `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemAcltemplateUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.acltemplate.update",
+        "Item": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the ACL template to update."
+        },
+        {
+          "Name": "acltemplate_update",
+          "Argument": "acltemplateUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AcltemplateUpdate"
+          },
+          "Required": true,
+          "Description": "Updated ACL template configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AclTemplateEntry",
+      "SchemaName": "AclTemplateEntry",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AclTemplateAcltype"
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "Whether this is a built-in system template or user-created.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the ACL template.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AclTemplateQueryResultItem",
+      "SchemaName": "AclTemplateQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AclTemplateAcltype"
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "Whether this is a built-in system template or user-created.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the ACL template.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AcltemplateCreate",
+      "SchemaName": "AcltemplateCreate",
+      "Description": "ACL template configuration data for the new template.",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AcltemplateAcltype"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AcltemplateUpdate",
+      "SchemaName": "AcltemplateUpdate",
+      "Description": "Updated ACL template configuration data.",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AcltemplateAcltype"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcl",
+      "SchemaName": "FilesystemAcl",
+      "Description": "ACLTemplateByPathArgs parameters.",
+      "Fields": [
+        {
+          "Name": "FormatOptions",
+          "JsonName": "format-options",
+          "Description": "Formatting options for how template data is returned.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAclFormatOptions"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path to filter templates by compatibility or empty string for all.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "QueryFilters",
+          "JsonName": "query-filters",
+          "Description": "Query filters to apply when selecting templates.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "QueryOptions",
+          "JsonName": "query-options",
+          "Description": "Query options for pagination and ordering of results.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryOptions"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAclFormatOptions",
+      "SchemaName": "FilesystemAclFormatOptions",
+      "Description": "Formatting options for how template data is returned.",
+      "Fields": [
+        {
+          "Name": "Canonicalize",
+          "JsonName": "canonicalize",
+          "Description": "Whether to normalize and canonicalize ACL entries in the response.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnsureBuiltins",
+          "JsonName": "ensure_builtins",
+          "Description": "Whether to ensure built-in templates are included in the response.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ResolveNames",
+          "JsonName": "resolve_names",
+          "Description": "Whether to resolve numeric user/group IDs to names in ACL entries.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateCreateAnswer",
+      "SchemaName": "FilesystemAcltemplateCreateAnswer",
+      "Description": "The created ACL template configuration.",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltype"
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "Whether this is a built-in system template or user-created.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the ACL template.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateGetInstanceAnswer",
+      "SchemaName": "FilesystemAcltemplateGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltype"
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "Whether this is a built-in system template or user-created.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the ACL template.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateGetInstanceOptions",
+      "SchemaName": "FilesystemAcltemplateGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateQueryOptions",
+      "SchemaName": "FilesystemAcltemplateQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcltemplateUpdateAnswer",
+      "SchemaName": "FilesystemAcltemplateUpdateAnswer",
+      "Description": "The updated ACL template configuration.",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Array of Access Control Entries defined by this template.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type this template provides.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltype"
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "Whether this is a built-in system template or user-created.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment about the template's purpose.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the ACL template.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the ACL template.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "AclTemplateAcltype",
+      "SchemaName": "AclTemplateAcltype",
+      "Description": "ACL type this template provides.",
+      "Values": [
+        {
+          "Name": "AclTemplateAcltypeNFS4",
+          "Value": "NFS4"
+        },
+        {
+          "Name": "AclTemplateAcltypePOSIX1E",
+          "Value": "POSIX1E"
+        }
+      ]
+    },
+    {
+      "Name": "AcltemplateAcltype",
+      "SchemaName": "AcltemplateAcltype",
+      "Description": "ACL type this template provides.",
+      "Values": [
+        {
+          "Name": "AcltemplateAcltypeNFS4",
+          "Value": "NFS4"
+        },
+        {
+          "Name": "AcltemplateAcltypePOSIX1E",
+          "Value": "POSIX1E"
+        }
+      ]
+    }
+  ]
+}

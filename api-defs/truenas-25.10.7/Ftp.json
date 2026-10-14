@@ -1,0 +1,1102 @@
+{
+  "Name": "Ftp",
+  "Tag": "ftp",
+  "Operations": [
+    {
+      "Name": "FtpConfig",
+      "OperationId": "ftp.config",
+      "Method": "CALL",
+      "Path": "ftp.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FtpConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ftp.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_FTP_READ",
+          "SHARING_FTP_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "FtpUpdate",
+      "OperationId": "ftp.update",
+      "Method": "CALL",
+      "Path": "ftp.update",
+      "Description": "Update ftp service configuration.\n\n`clients` is an integer value which sets the maximum number of simultaneous clients allowed. It defaults to 32.\n\n`ipconnections` is an integer value which shows the maximum number of connections per IP address. It defaults\nto 0 which equals to unlimited.\n\n`timeout` is the maximum number of seconds that proftpd will allow clients to stay connected without receiving\nany data on either the control or data connection.\n\n`timeout_notransfer` is the maximum number of seconds a client is allowed to spend connected, after\nauthentication, without issuing a command which results in creating an active or passive data connection\n(i.e. sending/receiving a file, or receiving a directory listing).\n\n`onlyanonymous` allows anonymous FTP logins with access to the directory specified by `anonpath`.\n\n`banner` is a message displayed to local login users after they successfully authenticate. It is not displayed\nto anonymous login users.\n\n`filemask` sets the default permissions for newly created files which by default are 077.\n\n`dirmask` sets the default permissions for newly created directories which by default are 077.\n\n`resume` if set allows FTP clients to resume interrupted transfers.\n\n`fxp` if set to true indicates that File eXchange Protocol is enabled. Generally it is discouraged as it\nmakes the server vulnerable to FTP bounce attacks.\n\n`defaultroot` when set ensures that for local users, home directory access is only granted if the user\nis a member of group wheel.\n\n`ident` is a boolean value which when set to true indicates that IDENT authentication is required. If identd\nis not running on the client, this can result in timeouts.\n\n`masqaddress` is the public IP address or hostname which is set if FTP clients cannot connect through a\nNAT device.\n\n`localuserbw` is a positive integer value which indicates maximum upload bandwidth in KB/s for local user.\nDefault of zero indicates unlimited upload bandwidth ( from the FTP server configuration ).\n\n`localuserdlbw` is a positive integer value which indicates maximum download bandwidth in KB/s for local user.\nDefault of zero indicates unlimited download bandwidth ( from the FTP server configuration ).\n\n`anonuserbw` is a positive integer value which indicates maximum upload bandwidth in KB/s for anonymous user.\nDefault of zero indicates unlimited upload bandwidth ( from the FTP server configuration ).\n\n`anonuserdlbw` is a positive integer value which indicates maximum download bandwidth in KB/s for anonymous\nuser. Default of zero indicates unlimited download bandwidth ( from the FTP server configuration ).\n\n`tls` is a boolean value which when set indicates that encrypted connections are enabled. This requires a\ncertificate to be configured first with the certificate service and the id of certificate is passed on in\n`ssltls_certificate`.\n\n`tls_policy` defines whether the control channel, data channel, both channels, or neither channel of an FTP\nsession must occur over SSL/TLS.\n\n`tls_opt_enable_diags` is a boolean value when set, logs verbosely. This is helpful when troubleshooting a\nconnection.\n\n`options` is a string used to add proftpd(8) parameters not covered by ftp service.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FtpUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ftp.update",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "ftp_update",
+          "Argument": "ftpUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FtpUpdate"
+          },
+          "Required": true,
+          "Description": "FTPUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "FtpConfigAnswer",
+      "SchemaName": "FtpConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Anonpath",
+          "JsonName": "anonpath",
+          "Description": "Filesystem path for anonymous FTP users. `null` to use the default anonymous FTP directory.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Anonuserbw",
+          "JsonName": "anonuserbw",
+          "Description": "Maximum upload bandwidth in KiB/s for anonymous users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Anonuserdlbw",
+          "JsonName": "anonuserdlbw",
+          "Description": "Maximum download bandwidth in KiB/s for anonymous users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Banner",
+          "JsonName": "banner",
+          "Description": "Welcome message displayed to FTP clients upon connection.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Clients",
+          "JsonName": "clients",
+          "Description": "Maximum number of simultaneous client connections allowed.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Defaultroot",
+          "JsonName": "defaultroot",
+          "Description": "Whether to restrict users to their home directories (chroot jail).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Dirmask",
+          "JsonName": "dirmask",
+          "Description": "Default Unix permissions (umask) for directories created by FTP users.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filemask",
+          "JsonName": "filemask",
+          "Description": "Default Unix permissions (umask) for files created by FTP users.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fxp",
+          "JsonName": "fxp",
+          "Description": "Whether to enable File eXchange Protocol (FXP) for server-to-server transfers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Ident",
+          "JsonName": "ident",
+          "Description": "Whether to perform RFC 1413 ident lookups on connecting clients.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipconnections",
+          "JsonName": "ipconnections",
+          "Description": "Maximum number of connections allowed from a single IP address. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localuserbw",
+          "JsonName": "localuserbw",
+          "Description": "Maximum upload bandwidth in KiB/s for local users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localuserdlbw",
+          "JsonName": "localuserdlbw",
+          "Description": "Maximum download bandwidth in KiB/s for local users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Loginattempt",
+          "JsonName": "loginattempt",
+          "Description": "Maximum number of failed login attempts before blocking an IP address. 0 disables this limit.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Masqaddress",
+          "JsonName": "masqaddress",
+          "Description": "Public IP address to advertise to clients for passive mode connections when behind NAT.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Onlyanonymous",
+          "JsonName": "onlyanonymous",
+          "Description": "Whether to allow only anonymous FTP access, disabling authenticated user login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Onlylocal",
+          "JsonName": "onlylocal",
+          "Description": "Whether to allow only local system users to login, disabling anonymous access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional ProFTPD configuration directives to include in the server configuration.     Manual directives may render the FTP service non-functional and should be used with caution.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Passiveportsmax",
+          "JsonName": "passiveportsmax",
+          "Description": "Maximum port number for passive mode data connections. Must be 0 or between 1024-65535.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Passiveportsmin",
+          "JsonName": "passiveportsmin",
+          "Description": "Minimum port number for passive mode data connections. Must be 0 or between 1024-65535.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number on which the FTP service listens for incoming connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Resume",
+          "JsonName": "resume",
+          "Description": "Whether to allow clients to resume interrupted file transfers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Reversedns",
+          "JsonName": "reversedns",
+          "Description": "Whether to perform reverse DNS lookups on client IP addresses for logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SsltlsCertificate",
+          "JsonName": "ssltls_certificate",
+          "Description": "ID of the certificate to use for TLS/SSL connections. `null` to use the default system certificate.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Idle timeout in seconds before disconnecting inactive clients. 0 disables timeout.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "TimeoutNotransfer",
+          "JsonName": "timeout_notransfer",
+          "Description": "Timeout in seconds for clients that connect but do not transfer data. 0 disables timeout.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tls",
+          "JsonName": "tls",
+          "Description": "Whether to enable TLS/SSL encryption for FTP connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowClientRenegotiations",
+          "JsonName": "tls_opt_allow_client_renegotiations",
+          "Description": "Whether to allow TLS clients to initiate renegotiation of the TLS connection.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowDotLogin",
+          "JsonName": "tls_opt_allow_dot_login",
+          "Description": "Whether to allow .ftpaccess files to override TLS requirements for specific users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowPerUser",
+          "JsonName": "tls_opt_allow_per_user",
+          "Description": "Whether to allow per-user TLS configuration overrides.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptCommonNameRequired",
+          "JsonName": "tls_opt_common_name_required",
+          "Description": "Whether to require client certificates to have a Common Name field.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptDnsNameRequired",
+          "JsonName": "tls_opt_dns_name_required",
+          "Description": "Whether to require client certificates to contain a DNS name in the Subject Alternative Name extension.     The `reversedns` setting must also be enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptEnableDiags",
+          "JsonName": "tls_opt_enable_diags",
+          "Description": "Whether to enable detailed TLS diagnostic logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptExportCertData",
+          "JsonName": "tls_opt_export_cert_data",
+          "Description": "Whether to export client certificate data to environment variables.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptIpAddressRequired",
+          "JsonName": "tls_opt_ip_address_required",
+          "Description": "Whether to require client certificates to contain an IP address in the Subject Alternative Name extension.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptNoEmptyFragments",
+          "JsonName": "tls_opt_no_empty_fragments",
+          "Description": "Whether to disable empty TLS record fragments to improve compatibility with some clients.      Disabling increases vulnerability to some attack vectors.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptNoSessionReuseRequired",
+          "JsonName": "tls_opt_no_session_reuse_required",
+          "Description": "Whether to disable the requirement for TLS session reuse.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptStdenvvars",
+          "JsonName": "tls_opt_stdenvvars",
+          "Description": "Whether to export standard TLS environment variables for use by external programs.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsPolicy",
+          "JsonName": "tls_policy",
+          "Description": "TLS policy for connections. Values include: `\"on\"` (required), `\"off\"` (disabled), `\"data\"` (data only),     `\"auth\"` (authentication only), `\"ctrl\"` (control only), or combinations with `+` and `!` modifiers.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FtpTlsPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FtpUpdate",
+      "SchemaName": "FtpUpdate",
+      "Description": "FTPUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Anonpath",
+          "JsonName": "anonpath",
+          "Description": "Filesystem path for anonymous FTP users. `null` to use the default anonymous FTP directory.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Anonuserbw",
+          "JsonName": "anonuserbw",
+          "Description": "Maximum upload bandwidth in KiB/s for anonymous users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Anonuserdlbw",
+          "JsonName": "anonuserdlbw",
+          "Description": "Maximum download bandwidth in KiB/s for anonymous users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Banner",
+          "JsonName": "banner",
+          "Description": "Welcome message displayed to FTP clients upon connection.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Clients",
+          "JsonName": "clients",
+          "Description": "Maximum number of simultaneous client connections allowed.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Defaultroot",
+          "JsonName": "defaultroot",
+          "Description": "Whether to restrict users to their home directories (chroot jail).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Dirmask",
+          "JsonName": "dirmask",
+          "Description": "Default Unix permissions (umask) for directories created by FTP users.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filemask",
+          "JsonName": "filemask",
+          "Description": "Default Unix permissions (umask) for files created by FTP users.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fxp",
+          "JsonName": "fxp",
+          "Description": "Whether to enable File eXchange Protocol (FXP) for server-to-server transfers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ident",
+          "JsonName": "ident",
+          "Description": "Whether to perform RFC 1413 ident lookups on connecting clients.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipconnections",
+          "JsonName": "ipconnections",
+          "Description": "Maximum number of connections allowed from a single IP address. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localuserbw",
+          "JsonName": "localuserbw",
+          "Description": "Maximum upload bandwidth in KiB/s for local users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localuserdlbw",
+          "JsonName": "localuserdlbw",
+          "Description": "Maximum download bandwidth in KiB/s for local users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Loginattempt",
+          "JsonName": "loginattempt",
+          "Description": "Maximum number of failed login attempts before blocking an IP address. 0 disables this limit.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Masqaddress",
+          "JsonName": "masqaddress",
+          "Description": "Public IP address to advertise to clients for passive mode connections when behind NAT.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Onlyanonymous",
+          "JsonName": "onlyanonymous",
+          "Description": "Whether to allow only anonymous FTP access, disabling authenticated user login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Onlylocal",
+          "JsonName": "onlylocal",
+          "Description": "Whether to allow only local system users to login, disabling anonymous access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional ProFTPD configuration directives to include in the server configuration.     Manual directives may render the FTP service non-functional and should be used with caution.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Passiveportsmax",
+          "JsonName": "passiveportsmax",
+          "Description": "Maximum port number for passive mode data connections. Must be 0 or between 1024-65535.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Passiveportsmin",
+          "JsonName": "passiveportsmin",
+          "Description": "Minimum port number for passive mode data connections. Must be 0 or between 1024-65535.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number on which the FTP service listens for incoming connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Resume",
+          "JsonName": "resume",
+          "Description": "Whether to allow clients to resume interrupted file transfers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Reversedns",
+          "JsonName": "reversedns",
+          "Description": "Whether to perform reverse DNS lookups on client IP addresses for logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SsltlsCertificate",
+          "JsonName": "ssltls_certificate",
+          "Description": "ID of the certificate to use for TLS/SSL connections. `null` to use the default system certificate.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Idle timeout in seconds before disconnecting inactive clients. 0 disables timeout.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "TimeoutNotransfer",
+          "JsonName": "timeout_notransfer",
+          "Description": "Timeout in seconds for clients that connect but do not transfer data. 0 disables timeout.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tls",
+          "JsonName": "tls",
+          "Description": "Whether to enable TLS/SSL encryption for FTP connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowClientRenegotiations",
+          "JsonName": "tls_opt_allow_client_renegotiations",
+          "Description": "Whether to allow TLS clients to initiate renegotiation of the TLS connection.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowDotLogin",
+          "JsonName": "tls_opt_allow_dot_login",
+          "Description": "Whether to allow .ftpaccess files to override TLS requirements for specific users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowPerUser",
+          "JsonName": "tls_opt_allow_per_user",
+          "Description": "Whether to allow per-user TLS configuration overrides.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptCommonNameRequired",
+          "JsonName": "tls_opt_common_name_required",
+          "Description": "Whether to require client certificates to have a Common Name field.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptDnsNameRequired",
+          "JsonName": "tls_opt_dns_name_required",
+          "Description": "Whether to require client certificates to contain a DNS name in the Subject Alternative Name extension.     The `reversedns` setting must also be enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptEnableDiags",
+          "JsonName": "tls_opt_enable_diags",
+          "Description": "Whether to enable detailed TLS diagnostic logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptExportCertData",
+          "JsonName": "tls_opt_export_cert_data",
+          "Description": "Whether to export client certificate data to environment variables.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptIpAddressRequired",
+          "JsonName": "tls_opt_ip_address_required",
+          "Description": "Whether to require client certificates to contain an IP address in the Subject Alternative Name extension.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptNoEmptyFragments",
+          "JsonName": "tls_opt_no_empty_fragments",
+          "Description": "Whether to disable empty TLS record fragments to improve compatibility with some clients.      Disabling increases vulnerability to some attack vectors.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptNoSessionReuseRequired",
+          "JsonName": "tls_opt_no_session_reuse_required",
+          "Description": "Whether to disable the requirement for TLS session reuse.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptStdenvvars",
+          "JsonName": "tls_opt_stdenvvars",
+          "Description": "Whether to export standard TLS environment variables for use by external programs.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsPolicy",
+          "JsonName": "tls_policy",
+          "Description": "TLS policy for connections. Values include: `\"on\"` (required), `\"off\"` (disabled), `\"data\"` (data only),     `\"auth\"` (authentication only), `\"ctrl\"` (control only), or combinations with `+` and `!` modifiers.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FtpTlsPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FtpUpdateAnswer",
+      "SchemaName": "FtpUpdateAnswer",
+      "Fields": [
+        {
+          "Name": "Anonpath",
+          "JsonName": "anonpath",
+          "Description": "Filesystem path for anonymous FTP users. `null` to use the default anonymous FTP directory.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Anonuserbw",
+          "JsonName": "anonuserbw",
+          "Description": "Maximum upload bandwidth in KiB/s for anonymous users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Anonuserdlbw",
+          "JsonName": "anonuserdlbw",
+          "Description": "Maximum download bandwidth in KiB/s for anonymous users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Banner",
+          "JsonName": "banner",
+          "Description": "Welcome message displayed to FTP clients upon connection.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Clients",
+          "JsonName": "clients",
+          "Description": "Maximum number of simultaneous client connections allowed.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Defaultroot",
+          "JsonName": "defaultroot",
+          "Description": "Whether to restrict users to their home directories (chroot jail).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Dirmask",
+          "JsonName": "dirmask",
+          "Description": "Default Unix permissions (umask) for directories created by FTP users.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filemask",
+          "JsonName": "filemask",
+          "Description": "Default Unix permissions (umask) for files created by FTP users.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fxp",
+          "JsonName": "fxp",
+          "Description": "Whether to enable File eXchange Protocol (FXP) for server-to-server transfers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Ident",
+          "JsonName": "ident",
+          "Description": "Whether to perform RFC 1413 ident lookups on connecting clients.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipconnections",
+          "JsonName": "ipconnections",
+          "Description": "Maximum number of connections allowed from a single IP address. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localuserbw",
+          "JsonName": "localuserbw",
+          "Description": "Maximum upload bandwidth in KiB/s for local users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localuserdlbw",
+          "JsonName": "localuserdlbw",
+          "Description": "Maximum download bandwidth in KiB/s for local users. 0 means unlimited.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Loginattempt",
+          "JsonName": "loginattempt",
+          "Description": "Maximum number of failed login attempts before blocking an IP address. 0 disables this limit.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Masqaddress",
+          "JsonName": "masqaddress",
+          "Description": "Public IP address to advertise to clients for passive mode connections when behind NAT.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Onlyanonymous",
+          "JsonName": "onlyanonymous",
+          "Description": "Whether to allow only anonymous FTP access, disabling authenticated user login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Onlylocal",
+          "JsonName": "onlylocal",
+          "Description": "Whether to allow only local system users to login, disabling anonymous access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional ProFTPD configuration directives to include in the server configuration.     Manual directives may render the FTP service non-functional and should be used with caution.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Passiveportsmax",
+          "JsonName": "passiveportsmax",
+          "Description": "Maximum port number for passive mode data connections. Must be 0 or between 1024-65535.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Passiveportsmin",
+          "JsonName": "passiveportsmin",
+          "Description": "Minimum port number for passive mode data connections. Must be 0 or between 1024-65535.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number on which the FTP service listens for incoming connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Resume",
+          "JsonName": "resume",
+          "Description": "Whether to allow clients to resume interrupted file transfers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Reversedns",
+          "JsonName": "reversedns",
+          "Description": "Whether to perform reverse DNS lookups on client IP addresses for logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SsltlsCertificate",
+          "JsonName": "ssltls_certificate",
+          "Description": "ID of the certificate to use for TLS/SSL connections. `null` to use the default system certificate.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Idle timeout in seconds before disconnecting inactive clients. 0 disables timeout.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "TimeoutNotransfer",
+          "JsonName": "timeout_notransfer",
+          "Description": "Timeout in seconds for clients that connect but do not transfer data. 0 disables timeout.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tls",
+          "JsonName": "tls",
+          "Description": "Whether to enable TLS/SSL encryption for FTP connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowClientRenegotiations",
+          "JsonName": "tls_opt_allow_client_renegotiations",
+          "Description": "Whether to allow TLS clients to initiate renegotiation of the TLS connection.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowDotLogin",
+          "JsonName": "tls_opt_allow_dot_login",
+          "Description": "Whether to allow .ftpaccess files to override TLS requirements for specific users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptAllowPerUser",
+          "JsonName": "tls_opt_allow_per_user",
+          "Description": "Whether to allow per-user TLS configuration overrides.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptCommonNameRequired",
+          "JsonName": "tls_opt_common_name_required",
+          "Description": "Whether to require client certificates to have a Common Name field.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptDnsNameRequired",
+          "JsonName": "tls_opt_dns_name_required",
+          "Description": "Whether to require client certificates to contain a DNS name in the Subject Alternative Name extension.     The `reversedns` setting must also be enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptEnableDiags",
+          "JsonName": "tls_opt_enable_diags",
+          "Description": "Whether to enable detailed TLS diagnostic logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptExportCertData",
+          "JsonName": "tls_opt_export_cert_data",
+          "Description": "Whether to export client certificate data to environment variables.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptIpAddressRequired",
+          "JsonName": "tls_opt_ip_address_required",
+          "Description": "Whether to require client certificates to contain an IP address in the Subject Alternative Name extension.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptNoEmptyFragments",
+          "JsonName": "tls_opt_no_empty_fragments",
+          "Description": "Whether to disable empty TLS record fragments to improve compatibility with some clients.      Disabling increases vulnerability to some attack vectors.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptNoSessionReuseRequired",
+          "JsonName": "tls_opt_no_session_reuse_required",
+          "Description": "Whether to disable the requirement for TLS session reuse.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsOptStdenvvars",
+          "JsonName": "tls_opt_stdenvvars",
+          "Description": "Whether to export standard TLS environment variables for use by external programs.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TlsPolicy",
+          "JsonName": "tls_policy",
+          "Description": "TLS policy for connections. Values include: `\"on\"` (required), `\"off\"` (disabled), `\"data\"` (data only),     `\"auth\"` (authentication only), `\"ctrl\"` (control only), or combinations with `+` and `!` modifiers.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FtpTlsPolicy"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "FtpTlsPolicy",
+      "SchemaName": "FtpTlsPolicy",
+      "Description": "TLS policy for connections. Values include: `\"on\"` (required), `\"off\"` (disabled), `\"data\"` (data only),     `\"auth\"` (authentication only), `\"ctrl\"` (control only), or combinations with `+` and `!` modifiers.",
+      "Values": [
+        {
+          "Name": "FtpTlsPolicyEmpty",
+          "Value": ""
+        },
+        {
+          "Name": "FtpTlsPolicyOn",
+          "Value": "on"
+        },
+        {
+          "Name": "FtpTlsPolicyOff",
+          "Value": "off"
+        },
+        {
+          "Name": "FtpTlsPolicyData",
+          "Value": "data"
+        },
+        {
+          "Name": "FtpTlsPolicyNotData",
+          "Value": "!data"
+        },
+        {
+          "Name": "FtpTlsPolicyAuth",
+          "Value": "auth"
+        },
+        {
+          "Name": "FtpTlsPolicyCtrl",
+          "Value": "ctrl"
+        },
+        {
+          "Name": "FtpTlsPolicyCtrlData",
+          "Value": "ctrl+data"
+        },
+        {
+          "Name": "FtpTlsPolicyCtrlPlusNotData",
+          "Value": "ctrl+!data"
+        },
+        {
+          "Name": "FtpTlsPolicyAuthData",
+          "Value": "auth+data"
+        },
+        {
+          "Name": "FtpTlsPolicyAuthPlusNotData",
+          "Value": "auth+!data"
+        }
+      ]
+    }
+  ]
+}

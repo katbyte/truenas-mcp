@@ -1,0 +1,606 @@
+{
+  "Name": "Mail",
+  "Tag": "mail",
+  "Operations": [
+    {
+      "Name": "MailConfig",
+      "OperationId": "mail.config",
+      "Method": "CALL",
+      "Path": "mail.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "MailConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "mail.config",
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "MailLocalAdministratorEmail",
+      "OperationId": "mail.local_administrator_email",
+      "Method": "CALL",
+      "Path": "mail.local_administrator_email",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "mail.local_administrator_email",
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "MailSend",
+      "OperationId": "mail.send",
+      "Method": "CALL",
+      "Path": "mail.send",
+      "Description": "Sends mail using configured mail settings.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "mail.send",
+        "Job": true,
+        "Roles": [
+          "MAIL_WRITE"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "message",
+          "Argument": "message",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailSendMessage"
+          },
+          "Required": true,
+          "Description": "Email message content and configuration."
+        },
+        {
+          "Name": "config",
+          "Argument": "config",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailSendConfig"
+          },
+          "Description": "Optional mail configuration overrides for this message."
+        }
+      ]
+    },
+    {
+      "Name": "MailUpdate",
+      "OperationId": "mail.update",
+      "Method": "CALL",
+      "Path": "mail.update",
+      "Description": "Update Mail Service Configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "MailUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "mail.update",
+        "Roles": [
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailUpdateData"
+          },
+          "Required": true,
+          "Description": "Mail configuration fields to update."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "MailConfigAnswer",
+      "SchemaName": "MailConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Fromemail",
+          "JsonName": "fromemail",
+          "Description": "The sending address that the mail server will use for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fromname",
+          "JsonName": "fromname",
+          "Description": "Display name that will appear as the sender name in outgoing emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this mail configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Oauth",
+          "JsonName": "oauth",
+          "Description": "OAuth configuration for email providers that support it or `null` for basic authentication.",
+          "Type": {
+            "Type": "RawObject"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Outgoingserver",
+          "JsonName": "outgoingserver",
+          "Description": "Hostname or IP address of the SMTP server used for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pass",
+          "JsonName": "pass",
+          "Description": "SMTP password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the SMTP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Security",
+          "JsonName": "security",
+          "Description": "Type of encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailSecurity"
+          }
+        },
+        {
+          "Name": "Smtp",
+          "JsonName": "smtp",
+          "Description": "Whether SMTP authentication is enabled and `user`, `pass` are required.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "SMTP username.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "MailSendConfig",
+      "SchemaName": "MailSendConfig",
+      "Description": "Optional mail configuration overrides for this message.",
+      "Fields": [
+        {
+          "Name": "Fromemail",
+          "JsonName": "fromemail",
+          "Description": "The sending address that the mail server will use for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fromname",
+          "JsonName": "fromname",
+          "Description": "Display name that will appear as the sender name in outgoing emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Oauth",
+          "JsonName": "oauth",
+          "Description": "OAuth configuration for email providers that support it or `null` for basic authentication.",
+          "Type": {
+            "Type": "RawObject"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Outgoingserver",
+          "JsonName": "outgoingserver",
+          "Description": "Hostname or IP address of the SMTP server used for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pass",
+          "JsonName": "pass",
+          "Description": "SMTP password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the SMTP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Security",
+          "JsonName": "security",
+          "Description": "Type of encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailSecurity"
+          }
+        },
+        {
+          "Name": "Smtp",
+          "JsonName": "smtp",
+          "Description": "Whether SMTP authentication is enabled and `user`, `pass` are required.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "SMTP username.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "MailSendMessage",
+      "SchemaName": "MailSendMessage",
+      "Description": "Email message content and configuration.",
+      "Fields": [
+        {
+          "Name": "Attachments",
+          "JsonName": "attachments",
+          "Description": "If set to true, an array compromised of the following object is required via HTTP upload:\n\n* headers *(array)*\n    * name *(string)*\n    * value *(string)*\n    * params *(object)*\n\n* content *(string)*\n\nExample:\n[\n  {\n    \"headers\": [\n      {\n        \"name\": \"Content-Transfer-Encoding\",\n        \"value\": \"base64\"\n      },\n      {\n        \"name\": \"Content-Type\",\n        \"value\": \"application/octet-stream\",\n        \"params\": {\n          \"name\": \"test.txt\"\n        }\n      }\n    ],\n    \"content\": \"dGVzdAo=\"\n  }\n]",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Cc",
+          "JsonName": "cc",
+          "Description": "Email CC recipients, if any.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Channel",
+          "JsonName": "channel",
+          "Description": "Defaults to \"truenas\".",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ExtraHeaders",
+          "JsonName": "extra_headers",
+          "Description": "Any additional headers to include in the email message.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Html",
+          "JsonName": "html",
+          "Description": "Custom HTML (overrides `text`). If null, no HTML MIME part will be added to the email.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Interval",
+          "JsonName": "interval",
+          "Description": "In seconds.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Queue",
+          "JsonName": "queue",
+          "Description": "Queue the message to be sent later if it fails to send.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Subject",
+          "JsonName": "subject",
+          "Description": "Subject line for the email message.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Text",
+          "JsonName": "text",
+          "Description": "Formatted to HTML using Markdown and rendered using default email template.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Time limit for connecting to the SMTP server in seconds.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "To",
+          "JsonName": "to",
+          "Description": "Email recipients. Defaults to all local administrators.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "MailUpdateAnswer",
+      "SchemaName": "MailUpdateAnswer",
+      "Description": "The resulting mail configuration.",
+      "Fields": [
+        {
+          "Name": "Fromemail",
+          "JsonName": "fromemail",
+          "Description": "The sending address that the mail server will use for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fromname",
+          "JsonName": "fromname",
+          "Description": "Display name that will appear as the sender name in outgoing emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this mail configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Oauth",
+          "JsonName": "oauth",
+          "Description": "OAuth configuration for email providers that support it or `null` for basic authentication.",
+          "Type": {
+            "Type": "RawObject"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Outgoingserver",
+          "JsonName": "outgoingserver",
+          "Description": "Hostname or IP address of the SMTP server used for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pass",
+          "JsonName": "pass",
+          "Description": "SMTP password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the SMTP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Security",
+          "JsonName": "security",
+          "Description": "Type of encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailSecurity"
+          }
+        },
+        {
+          "Name": "Smtp",
+          "JsonName": "smtp",
+          "Description": "Whether SMTP authentication is enabled and `user`, `pass` are required.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "SMTP username.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "MailUpdateData",
+      "SchemaName": "MailUpdateData",
+      "Description": "Mail configuration fields to update.",
+      "Fields": [
+        {
+          "Name": "Fromemail",
+          "JsonName": "fromemail",
+          "Description": "The sending address that the mail server will use for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fromname",
+          "JsonName": "fromname",
+          "Description": "Display name that will appear as the sender name in outgoing emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Oauth",
+          "JsonName": "oauth",
+          "Description": "OAuth configuration for email providers that support it or `null` for basic authentication.",
+          "Type": {
+            "Type": "RawObject"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Outgoingserver",
+          "JsonName": "outgoingserver",
+          "Description": "Hostname or IP address of the SMTP server used for sending emails.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pass",
+          "JsonName": "pass",
+          "Description": "SMTP password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the SMTP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Security",
+          "JsonName": "security",
+          "Description": "Type of encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "MailSecurity"
+          }
+        },
+        {
+          "Name": "Smtp",
+          "JsonName": "smtp",
+          "Description": "Whether SMTP authentication is enabled and `user`, `pass` are required.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "SMTP username.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "MailSecurity",
+      "SchemaName": "MailSecurity",
+      "Description": "Type of encryption.",
+      "Values": [
+        {
+          "Name": "MailSecurityPLAIN",
+          "Value": "PLAIN"
+        },
+        {
+          "Name": "MailSecuritySSL",
+          "Value": "SSL"
+        },
+        {
+          "Name": "MailSecurityTLS",
+          "Value": "TLS"
+        }
+      ]
+    }
+  ]
+}

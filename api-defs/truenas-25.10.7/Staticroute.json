@@ -1,0 +1,536 @@
+{
+  "Name": "Staticroute",
+  "Tag": "staticroute",
+  "Operations": [
+    {
+      "Name": "StaticrouteCreate",
+      "OperationId": "staticroute.create",
+      "Method": "CALL",
+      "Path": "staticroute.create",
+      "Description": "Create a Static Route.\n\nAddress families of `gateway` and `destination` should match when creating a static route.\n\n`description` is an optional attribute for any notes regarding the static route.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "StaticRouteQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.create",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StaticrouteCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration for the new static route."
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteDelete",
+      "OperationId": "staticroute.delete",
+      "Method": "CALL",
+      "Path": "staticroute.delete",
+      "Description": "Delete Static Route of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.delete",
+        "Item": true,
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the static route to delete."
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteGetInstance",
+      "OperationId": "staticroute.get_instance",
+      "Method": "CALL",
+      "Path": "staticroute.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "StaticRouteQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.get_instance",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StaticrouteGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteQuery",
+      "OperationId": "staticroute.query",
+      "Method": "CALL",
+      "Path": "staticroute.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "StaticRouteQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StaticrouteQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteQueryCount",
+      "OperationId": "staticroute.query#count",
+      "Method": "CALL",
+      "Path": "staticroute.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StaticrouteQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteQueryOne",
+      "OperationId": "staticroute.query#get",
+      "Method": "CALL",
+      "Path": "staticroute.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "StaticRouteQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StaticrouteQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteUpdate",
+      "OperationId": "staticroute.update",
+      "Method": "CALL",
+      "Path": "staticroute.update",
+      "Description": "Update Static Route of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "StaticRouteQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "staticroute.update",
+        "Item": true,
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the static route to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StaticrouteUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the static route."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "StaticRouteQueryResultItem",
+      "SchemaName": "StaticRouteQueryResultItem",
+      "Description": "The newly created static route configuration.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Destination",
+          "JsonName": "destination",
+          "Description": "Destination network or host for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Gateway",
+          "JsonName": "gateway",
+          "Description": "Gateway IP address for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this static route.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteCreateData",
+      "SchemaName": "StaticrouteCreateData",
+      "Description": "Configuration for the new static route.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Destination",
+          "JsonName": "destination",
+          "Description": "Destination network or host for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Gateway",
+          "JsonName": "gateway",
+          "Description": "Gateway IP address for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteGetInstanceOptions",
+      "SchemaName": "StaticrouteGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteQueryOptions",
+      "SchemaName": "StaticrouteQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "StaticrouteUpdateData",
+      "SchemaName": "StaticrouteUpdateData",
+      "Description": "Updated configuration for the static route.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Destination",
+          "JsonName": "destination",
+          "Description": "Destination network or host for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Gateway",
+          "JsonName": "gateway",
+          "Description": "Gateway IP address for this static route.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

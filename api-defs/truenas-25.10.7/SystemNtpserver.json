@@ -1,0 +1,624 @@
+{
+  "Name": "SystemNtpserver",
+  "Tag": "system.ntpserver",
+  "Operations": [
+    {
+      "Name": "SystemNtpserverCreate",
+      "OperationId": "system.ntpserver.create",
+      "Method": "CALL",
+      "Path": "system.ntpserver.create",
+      "Description": "Add an NTP Server.\n\n`address` specifies the hostname/IP address of the NTP server.\n\n`burst` when enabled makes sure that if server is reachable, sends a burst of eight packets instead of one.\nThis is designed to improve timekeeping quality with the server command.\n\n`iburst` when enabled speeds up the initial synchronization, taking seconds rather than minutes.\n\n`prefer` marks the specified server as preferred. When all other things are equal, this host is chosen\nfor synchronization acquisition with the server command. It is recommended that they be used for servers with\ntime monitoring hardware.\n\n`minpoll` is minimum polling time in seconds. It must be a power of 2 and less than `maxpoll`.\n\n`maxpoll` is maximum polling time in seconds. It must be a power of 2 and greater than `minpoll`.\n\n`force` when enabled forces the addition of NTP server even if it is currently unreachable.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NTPServerQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.create",
+        "Roles": [
+          "NETWORK_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "ntp_server_create",
+          "Argument": "ntpServerCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NtpServerCreate"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new NTP server."
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverDelete",
+      "OperationId": "system.ntpserver.delete",
+      "Method": "CALL",
+      "Path": "system.ntpserver.delete",
+      "Description": "Delete NTP server of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.delete",
+        "Item": true,
+        "Roles": [
+          "NETWORK_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NTP server to delete."
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverGetInstance",
+      "OperationId": "system.ntpserver.get_instance",
+      "Method": "CALL",
+      "Path": "system.ntpserver.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NTPServerQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.get_instance",
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemNtpserverGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverQuery",
+      "OperationId": "system.ntpserver.query",
+      "Method": "CALL",
+      "Path": "system.ntpserver.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NTPServerQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemNtpserverQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverQueryCount",
+      "OperationId": "system.ntpserver.query#count",
+      "Method": "CALL",
+      "Path": "system.ntpserver.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemNtpserverQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverQueryOne",
+      "OperationId": "system.ntpserver.query#get",
+      "Method": "CALL",
+      "Path": "system.ntpserver.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NTPServerQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemNtpserverQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverUpdate",
+      "OperationId": "system.ntpserver.update",
+      "Method": "CALL",
+      "Path": "system.ntpserver.update",
+      "Description": "Update NTP server of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NTPServerQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.ntpserver.update",
+        "Item": true,
+        "Roles": [
+          "NETWORK_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NTP server to update."
+        },
+        {
+          "Name": "ntp_server_update",
+          "Argument": "ntpServerUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NtpServerUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the NTP server."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NTPServerQueryResultItem",
+      "SchemaName": "NTPServerQueryResultItem",
+      "Description": "The newly created NTP server configuration.",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "Hostname or IP address of the NTP server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Burst",
+          "JsonName": "burst",
+          "Description": "Send a burst of packets when the server is reachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Iburst",
+          "JsonName": "iburst",
+          "Description": "Send a burst of packets when the server is unreachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the NTP server configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Maxpoll",
+          "JsonName": "maxpoll",
+          "Description": "Maximum polling interval (log2 seconds).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Minpoll",
+          "JsonName": "minpoll",
+          "Description": "Minimum polling interval (log2 seconds).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Prefer",
+          "JsonName": "prefer",
+          "Description": "Mark this server as preferred for time synchronization.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NtpServerCreate",
+      "SchemaName": "NtpServerCreate",
+      "Description": "Configuration for creating a new NTP server.",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "Hostname or IP address of the NTP server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Burst",
+          "JsonName": "burst",
+          "Description": "Send a burst of packets when the server is reachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force creation even if the server is unreachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Iburst",
+          "JsonName": "iburst",
+          "Description": "Send a burst of packets when the server is unreachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Maxpoll",
+          "JsonName": "maxpoll",
+          "Description": "Maximum polling interval (log2 seconds).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Minpoll",
+          "JsonName": "minpoll",
+          "Description": "Minimum polling interval (log2 seconds).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Prefer",
+          "JsonName": "prefer",
+          "Description": "Mark this server as preferred for time synchronization.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NtpServerUpdate",
+      "SchemaName": "NtpServerUpdate",
+      "Description": "Updated configuration for the NTP server.",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "Hostname or IP address of the NTP server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Burst",
+          "JsonName": "burst",
+          "Description": "Send a burst of packets when the server is reachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force creation even if the server is unreachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Iburst",
+          "JsonName": "iburst",
+          "Description": "Send a burst of packets when the server is unreachable.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Maxpoll",
+          "JsonName": "maxpoll",
+          "Description": "Maximum polling interval (log2 seconds).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Minpoll",
+          "JsonName": "minpoll",
+          "Description": "Minimum polling interval (log2 seconds).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Prefer",
+          "JsonName": "prefer",
+          "Description": "Mark this server as preferred for time synchronization.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverGetInstanceOptions",
+      "SchemaName": "SystemNtpserverGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemNtpserverQueryOptions",
+      "SchemaName": "SystemNtpserverQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

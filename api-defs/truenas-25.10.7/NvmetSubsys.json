@@ -1,0 +1,594 @@
+{
+  "Name": "NvmetSubsys",
+  "Tag": "nvmet.subsys",
+  "Operations": [
+    {
+      "Name": "NvmetSubsysCreate",
+      "OperationId": "nvmet.subsys.create",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.create",
+      "Description": "Create a NVMe target subsystem (`subsys`).\n\nWhen a `subsys` contains one of more `namespaces`, and is associated with one or\nmore `ports` then clients may access the storage using NVMe-oF.\n\nAll clients may access the subsystem if the `allow_any_host` attribute is set.  Otherwise,\naccess is only permitted to `hosts` who have been associated with the subsystem.\n\nSee `nvmet.host.create` and `nvmet.host_subsys.create`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nvmet_subsys_create",
+          "Argument": "nvmetSubsysCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetSubsysCreate"
+          },
+          "Required": true,
+          "Description": "Configuration data for creating a new NVMe-oF subsystem."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysDelete",
+      "OperationId": "nvmet.subsys.delete",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.delete",
+      "Description": "Delete NVMe target subsystem (`subsys`) of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the subsystem to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DeleteOptions"
+          },
+          "Description": "Options for subsystem deletion behavior."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysGetInstance",
+      "OperationId": "nvmet.subsys.get_instance",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetSubsysGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysQuery",
+      "OperationId": "nvmet.subsys.query",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetSubsysQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetSubsysQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysQueryCount",
+      "OperationId": "nvmet.subsys.query#count",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetSubsysQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysQueryOne",
+      "OperationId": "nvmet.subsys.query#get",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetSubsysQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysUpdate",
+      "OperationId": "nvmet.subsys.update",
+      "Method": "CALL",
+      "Path": "nvmet.subsys.update",
+      "Description": "Update NVMe target subsystem (`subsys`) of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.subsys.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the subsystem to update."
+        },
+        {
+          "Name": "nvmet_subsys_update",
+          "Argument": "nvmetSubsysUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetSubsysUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration data for the NVMe-oF subsystem."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NvmetSubsysCreate",
+      "SchemaName": "NvmetSubsysCreate",
+      "Description": "Configuration data for creating a new NVMe-oF subsystem.",
+      "Fields": [
+        {
+          "Name": "AllowAnyHost",
+          "JsonName": "allow_any_host",
+          "Description": "Any host can access the storage associated with this subsystem (i.e. no access control).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ana",
+          "JsonName": "ana",
+          "Description": "If set to either `True` or `False`, then *override* the global `ana` setting from `nvmet.global.config` for this     subsystem only.\n\nIf `null`, then the global `ana` setting will take effect.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "IeeeOui",
+          "JsonName": "ieee_oui",
+          "Description": "IEEE Organizationally Unique Identifier for the subsystem.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human readable name for the subsystem.\n\nIf `subnqn` is not provided on creation, then this name will be appended to the `basenqn` from     `nvmet.global.config` to generate a subnqn.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PiEnable",
+          "JsonName": "pi_enable",
+          "Description": "Enable Protection Information (PI) for data integrity checking.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "QidMax",
+          "JsonName": "qid_max",
+          "Description": "Maximum number of queue IDs allowed for this subsystem.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Subnqn",
+          "JsonName": "subnqn",
+          "Description": "NVMe Qualified Name (NQN) for the subsystem.\n\nMust be a valid NQN format if provided.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysGetInstanceOptions",
+      "SchemaName": "NvmetSubsysGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysQueryOptions",
+      "SchemaName": "NvmetSubsysQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetSubsysUpdate",
+      "SchemaName": "NvmetSubsysUpdate",
+      "Description": "Updated configuration data for the NVMe-oF subsystem.",
+      "Fields": [
+        {
+          "Name": "AllowAnyHost",
+          "JsonName": "allow_any_host",
+          "Description": "Any host can access the storage associated with this subsystem (i.e. no access control).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ana",
+          "JsonName": "ana",
+          "Description": "If set to either `True` or `False`, then *override* the global `ana` setting from `nvmet.global.config` for this     subsystem only.\n\nIf `null`, then the global `ana` setting will take effect.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "IeeeOui",
+          "JsonName": "ieee_oui",
+          "Description": "IEEE Organizationally Unique Identifier for the subsystem.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human readable name for the subsystem.\n\nIf `subnqn` is not provided on creation, then this name will be appended to the `basenqn` from     `nvmet.global.config` to generate a subnqn.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PiEnable",
+          "JsonName": "pi_enable",
+          "Description": "Enable Protection Information (PI) for data integrity checking.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "QidMax",
+          "JsonName": "qid_max",
+          "Description": "Maximum number of queue IDs allowed for this subsystem.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Subnqn",
+          "JsonName": "subnqn",
+          "Description": "NVMe Qualified Name (NQN) for the subsystem.\n\nMust be a valid NQN format if provided.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ]
+}

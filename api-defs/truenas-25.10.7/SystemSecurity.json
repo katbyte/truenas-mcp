@@ -1,0 +1,317 @@
+{
+  "Name": "SystemSecurity",
+  "Tag": "system.security",
+  "Operations": [
+    {
+      "Name": "SystemSecurityConfig",
+      "OperationId": "system.security.config",
+      "Method": "CALL",
+      "Path": "system.security.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemSecurityConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.security.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_SECURITY_READ",
+          "SYSTEM_SECURITY_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemSecurityUpdate",
+      "OperationId": "system.security.update",
+      "Method": "CALL",
+      "Path": "system.security.update",
+      "Description": "Update System Security Service Configuration.\n\nThis method is used to change the FIPS, STIG, and local account\npolicies for TrueNAS Enterprise. These features are not\navailable in community editions of TrueNAS.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemSecurityUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.security.update",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_SECURITY_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "system_security_update",
+          "Argument": "systemSecurityUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemSecurityUpdate"
+          },
+          "Required": true,
+          "Description": "SystemSecurityUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SystemSecurityConfigAnswer",
+      "SchemaName": "SystemSecurityConfigAnswer",
+      "Fields": [
+        {
+          "Name": "EnableFips",
+          "JsonName": "enable_fips",
+          "Description": "When set, enables FIPS mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableGposStig",
+          "JsonName": "enable_gpos_stig",
+          "Description": "When set, enables compatibility with the General Purpose Operating System STIG.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the system security configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MaxPasswordAge",
+          "JsonName": "max_password_age",
+          "Description": "The number of days after which a password is considered to be expired. After expiration no login will be possible     for the user. The user should contact the administrator for a password reset. The value of None means that there     is no maximum password age, and password aging is disabled.\n\nNOTE: User passwords will never expire if password aging is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MinPasswordAge",
+          "JsonName": "min_password_age",
+          "Description": "The number of days local users will have to wait before they will be allowed to change password again. One reason     for setting this parameter is to prevent users from bypassing password history restrictions by rapidly changing     their passwords. The value of None means that there is no minimum password age.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MinPasswordLength",
+          "JsonName": "min_password_length",
+          "Description": "The minimum length of passwords used for local accounts. The value of None means that there is no minimum     password length.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordComplexityRuleset",
+          "JsonName": "password_complexity_ruleset",
+          "Description": "The password complexity ruleset defines what character types are required for passwords used by local accounts.     The value of None means that there are no password complexity requirements. List items indicate a requirement for     at least one character in the password to be of the specified character set type.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "truenasrpc.Set[SystemSecurityPasswordComplexityRuleset]",
+            "Import": "github.com/katbyte/truenas-mcp/sdk/truenasrpc"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordHistoryLength",
+          "JsonName": "password_history_length",
+          "Description": "The number of password generations to keep in history for checks against password reuse for local user accounts.     The value of None means that history checks for password reuse are not performed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SystemSecurityUpdate",
+      "SchemaName": "SystemSecurityUpdate",
+      "Description": "SystemSecurityUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "EnableFips",
+          "JsonName": "enable_fips",
+          "Description": "When set, enables FIPS mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableGposStig",
+          "JsonName": "enable_gpos_stig",
+          "Description": "When set, enables compatibility with the General Purpose Operating System STIG.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MaxPasswordAge",
+          "JsonName": "max_password_age",
+          "Description": "The number of days after which a password is considered to be expired. After expiration no login will be possible     for the user. The user should contact the administrator for a password reset. The value of None means that there     is no maximum password age, and password aging is disabled.\n\nNOTE: User passwords will never expire if password aging is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MinPasswordAge",
+          "JsonName": "min_password_age",
+          "Description": "The number of days local users will have to wait before they will be allowed to change password again. One reason     for setting this parameter is to prevent users from bypassing password history restrictions by rapidly changing     their passwords. The value of None means that there is no minimum password age.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MinPasswordLength",
+          "JsonName": "min_password_length",
+          "Description": "The minimum length of passwords used for local accounts. The value of None means that there is no minimum     password length.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordComplexityRuleset",
+          "JsonName": "password_complexity_ruleset",
+          "Description": "The password complexity ruleset defines what character types are required for passwords used by local accounts.     The value of None means that there are no password complexity requirements. List items indicate a requirement for     at least one character in the password to be of the specified character set type.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SystemSecurityPasswordComplexityRuleset"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordHistoryLength",
+          "JsonName": "password_history_length",
+          "Description": "The number of password generations to keep in history for checks against password reuse for local user accounts.     The value of None means that history checks for password reuse are not performed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SystemSecurityUpdateAnswer",
+      "SchemaName": "SystemSecurityUpdateAnswer",
+      "Description": "The updated system security configuration.",
+      "Fields": [
+        {
+          "Name": "EnableFips",
+          "JsonName": "enable_fips",
+          "Description": "When set, enables FIPS mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableGposStig",
+          "JsonName": "enable_gpos_stig",
+          "Description": "When set, enables compatibility with the General Purpose Operating System STIG.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the system security configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MaxPasswordAge",
+          "JsonName": "max_password_age",
+          "Description": "The number of days after which a password is considered to be expired. After expiration no login will be possible     for the user. The user should contact the administrator for a password reset. The value of None means that there     is no maximum password age, and password aging is disabled.\n\nNOTE: User passwords will never expire if password aging is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MinPasswordAge",
+          "JsonName": "min_password_age",
+          "Description": "The number of days local users will have to wait before they will be allowed to change password again. One reason     for setting this parameter is to prevent users from bypassing password history restrictions by rapidly changing     their passwords. The value of None means that there is no minimum password age.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MinPasswordLength",
+          "JsonName": "min_password_length",
+          "Description": "The minimum length of passwords used for local accounts. The value of None means that there is no minimum     password length.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordComplexityRuleset",
+          "JsonName": "password_complexity_ruleset",
+          "Description": "The password complexity ruleset defines what character types are required for passwords used by local accounts.     The value of None means that there are no password complexity requirements. List items indicate a requirement for     at least one character in the password to be of the specified character set type.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "truenasrpc.Set[SystemSecurityPasswordComplexityRuleset]",
+            "Import": "github.com/katbyte/truenas-mcp/sdk/truenasrpc"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordHistoryLength",
+          "JsonName": "password_history_length",
+          "Description": "The number of password generations to keep in history for checks against password reuse for local user accounts.     The value of None means that history checks for password reuse are not performed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SystemSecurityPasswordComplexityRuleset",
+      "SchemaName": "SystemSecurityPasswordComplexityRuleset",
+      "Values": [
+        {
+          "Name": "SystemSecurityPasswordComplexityRulesetUPPER",
+          "Value": "UPPER"
+        },
+        {
+          "Name": "SystemSecurityPasswordComplexityRulesetLOWER",
+          "Value": "LOWER"
+        },
+        {
+          "Name": "SystemSecurityPasswordComplexityRulesetNUMBER",
+          "Value": "NUMBER"
+        },
+        {
+          "Name": "SystemSecurityPasswordComplexityRulesetSPECIAL",
+          "Value": "SPECIAL"
+        }
+      ]
+    }
+  ]
+}

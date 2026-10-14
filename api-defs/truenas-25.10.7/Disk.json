@@ -1,0 +1,1111 @@
+{
+  "Name": "Disk",
+  "Tag": "disk",
+  "Operations": [
+    {
+      "Name": "DiskDetails",
+      "OperationId": "disk.details",
+      "Method": "CALL",
+      "Path": "disk.details",
+      "Description": "Return detailed information for all disks on the system.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.details",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskDetailsData"
+          },
+          "Description": "Disk query parameters specifying which disks to return and options."
+        }
+      ]
+    },
+    {
+      "Name": "DiskGetInstance",
+      "OperationId": "disk.get_instance",
+      "Method": "CALL",
+      "Path": "disk.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DiskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.get_instance",
+        "Read": true,
+        "Roles": [
+          "DISK_READ",
+          "DISK_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "DiskGetUsed",
+      "OperationId": "disk.get_used",
+      "Method": "CALL",
+      "Path": "disk.get_used",
+      "Description": "Return disks that are in use by any zpool that is currently imported. It will\nalso return disks that are in use by any zpool that is exported.\n\n`join_partitions`: Bool, when True will return all partitions currently written to disk\n    NOTE: this is an expensive operation",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.get_used",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "join_partitions",
+          "Argument": "joinPartitions",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Return all partitions currently written to disk.\n\n**NOTE: this is an expensive operation.**"
+        }
+      ]
+    },
+    {
+      "Name": "DiskQuery",
+      "OperationId": "disk.query",
+      "Method": "CALL",
+      "Path": "disk.query",
+      "Description": "Query disks.\n\nThe following extra options are supported:\n\n`include_expired` (bool): Also include expired disks (default: false).\n`passwords` (bool): Don't hide KMIP password for the disks (default: false).\n`pools` (bool): Join pool name for each disk (default: false).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "DiskQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "DISK_READ",
+          "DISK_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "DiskQueryCount",
+      "OperationId": "disk.query#count",
+      "Method": "CALL",
+      "Path": "disk.query#count",
+      "Description": "Query disks.\n\nThe following extra options are supported:\n\n`include_expired` (bool): Also include expired disks (default: false).\n`passwords` (bool): Don't hide KMIP password for the disks (default: false).\n`pools` (bool): Join pool name for each disk (default: false).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "DISK_READ",
+          "DISK_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "DiskQueryOne",
+      "OperationId": "disk.query#get",
+      "Method": "CALL",
+      "Path": "disk.query#get",
+      "Description": "Query disks.\n\nThe following extra options are supported:\n\n`include_expired` (bool): Also include expired disks (default: false).\n`passwords` (bool): Don't hide KMIP password for the disks (default: false).\n`pools` (bool): Join pool name for each disk (default: false).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DiskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "DISK_READ",
+          "DISK_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "DiskTemperatureAgg",
+      "OperationId": "disk.temperature_agg",
+      "Method": "CALL",
+      "Path": "disk.temperature_agg",
+      "Description": "Returns min/max/avg temperature for `names` disks for the last `days` days",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "DiskTemperatureAggEntry"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.temperature_agg",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "names",
+          "Argument": "names",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Required": true,
+          "Description": "Array of disk names to retrieve temperature aggregates for."
+        },
+        {
+          "Name": "days",
+          "Argument": "days",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Description": "Number of days to aggregate temperature data over."
+        }
+      ]
+    },
+    {
+      "Name": "DiskTemperatureAlerts",
+      "OperationId": "disk.temperature_alerts",
+      "Method": "CALL",
+      "Path": "disk.temperature_alerts",
+      "Description": "Returns existing temperature alerts for specified disks.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "Alert"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.temperature_alerts",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "names",
+          "Argument": "names",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Required": true,
+          "Description": "Array of disk names to check for temperature-related alerts."
+        }
+      ]
+    },
+    {
+      "Name": "DiskTemperatures",
+      "OperationId": "disk.temperatures",
+      "Method": "CALL",
+      "Path": "disk.temperatures",
+      "Description": "Returns disk temperatures for disks in degrees celsius.\n\nNOTE:\n    Disk temperatures are not retrieved more than\n    once every 5 minutes.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.temperatures",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Description": "List of names of disks to retrieve temperature information. Name should be in the form of \"sda\", \"nvme0n1\", etc."
+        },
+        {
+          "Name": "include_thresholds",
+          "Argument": "includeThresholds",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Include the temperature thresholds as reported by the disk (i.e. the critical temp)."
+        }
+      ]
+    },
+    {
+      "Name": "DiskUpdate",
+      "OperationId": "disk.update",
+      "Method": "CALL",
+      "Path": "disk.update",
+      "Description": "Update disk of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DiskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.update",
+        "Item": true,
+        "Roles": [
+          "DISK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Disk identifier to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated disk configuration data."
+        }
+      ]
+    },
+    {
+      "Name": "DiskWipe",
+      "OperationId": "disk.wipe",
+      "Method": "CALL",
+      "Path": "disk.wipe",
+      "Description": "Performs a wipe of a disk `dev`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "disk.wipe",
+        "Job": true,
+        "Roles": [
+          "DISK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dev",
+          "Argument": "dev",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The device to perform the disk wipe operation on. May be passed as /dev/sda or just sda."
+        },
+        {
+          "Name": "mode",
+          "Argument": "mode",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskWipeMode"
+          },
+          "Required": true,
+          "Description": "* QUICK: Write zeros to the first and last 32MB of device.\n* FULL: Write whole disk with zeros.\n* FULL_RANDOM: Write whole disk with random bytes."
+        },
+        {
+          "Name": "synccache",
+          "Argument": "synccache",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Synchronize the device with the database."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "DiskDetailsData",
+      "SchemaName": "DiskDetailsData",
+      "Description": "Disk query parameters specifying which disks to return and options.",
+      "Fields": [
+        {
+          "Name": "JoinPartitions",
+          "JsonName": "join_partitions",
+          "Description": "Return all partitions currently written to disk.\n\n**NOTE: This is an expensive operation.**",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "* `USED`: Only disks that are IN USE will be returned.\n* `UNUSED`: Only disks that are NOT IN USE are returned.\n* `BOTH`: Used and unused disks will be returned.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskDetailsDataType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DiskEntryEnclosure",
+      "SchemaName": "DiskEntryEnclosure",
+      "Fields": [
+        {
+          "Name": "Number",
+          "JsonName": "number",
+          "Description": "Enclosure number where the disk is located.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Slot",
+          "JsonName": "slot",
+          "Description": "Physical slot position within the enclosure.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DiskGetInstanceOptions",
+      "SchemaName": "DiskGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DiskQueryOptions",
+      "SchemaName": "DiskQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DiskQueryResultItem",
+      "SchemaName": "DiskQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Advpowermgmt",
+          "JsonName": "advpowermgmt",
+          "Description": "Advanced power management level or `DISABLED` to turn off power management.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskAdvpowermgmt"
+          }
+        },
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "System bus type the disk is connected to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Devname",
+          "JsonName": "devname",
+          "Description": "Device name in the operating system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enclosure",
+          "JsonName": "enclosure",
+          "Description": "Physical enclosure information or `null` if not in an enclosure.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskEntryEnclosure"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Expiretime",
+          "JsonName": "expiretime",
+          "Description": "Expiration timestamp for disk data or `null` if not applicable.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hddstandby",
+          "JsonName": "hddstandby",
+          "Description": "Hard disk standby timer in minutes or `ALWAYS ON` to disable standby.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskHddstandby"
+          }
+        },
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Unique identifier for the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "KmipUid",
+          "JsonName": "kmip_uid",
+          "Description": "KMIP (Key Management Interoperability Protocol) unique identifier or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Lunid",
+          "JsonName": "lunid",
+          "Description": "Logical unit number identifier or `null` if not applicable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Model",
+          "JsonName": "model",
+          "Description": "Manufacturer model name/number of the disk. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "System name of the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Number",
+          "JsonName": "number",
+          "Description": "Numeric identifier assigned to the disk.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Passwd",
+          "JsonName": "passwd",
+          "Description": "Disk encryption password (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the storage pool this disk belongs to. `null` if not part of any pool.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Rotationrate",
+          "JsonName": "rotationrate",
+          "Description": "Disk rotation speed in RPM or `null` for SSDs and unknown devices.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Manufacturer serial number of the disk.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Total size of the disk in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Subsystem",
+          "JsonName": "subsystem",
+          "Description": "Storage subsystem type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Transfermode",
+          "JsonName": "transfermode",
+          "Description": "Data transfer mode and capabilities of the disk.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Disk type classification or `null` if not determined.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ZfsGuid",
+          "JsonName": "zfs_guid",
+          "Description": "ZFS globally unique identifier for this disk or `null` if not used in ZFS.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "DiskTemperatureAggEntry",
+      "SchemaName": "DiskTemperatureAggEntry",
+      "Fields": [
+        {
+          "Name": "Avg",
+          "JsonName": "avg",
+          "Description": "Average temperature during the time period or `null`.",
+          "Type": {
+            "Type": "Double"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Max",
+          "JsonName": "max",
+          "Description": "Maximum temperature recorded during the time period or `null`.",
+          "Type": {
+            "Type": "Double"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Min",
+          "JsonName": "min",
+          "Description": "Minimum temperature recorded during the time period or `null`.",
+          "Type": {
+            "Type": "Double"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "DiskUpdateData",
+      "SchemaName": "DiskUpdateData",
+      "Description": "Updated disk configuration data.",
+      "Fields": [
+        {
+          "Name": "Advpowermgmt",
+          "JsonName": "advpowermgmt",
+          "Description": "Advanced power management level or `DISABLED` to turn off power management.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskAdvpowermgmt"
+          }
+        },
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "System bus type the disk is connected to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the disk device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enclosure",
+          "JsonName": "enclosure",
+          "Description": "Physical enclosure information or `null` if not in an enclosure.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskEntryEnclosure"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hddstandby",
+          "JsonName": "hddstandby",
+          "Description": "Hard disk standby timer in minutes or `ALWAYS ON` to disable standby.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DiskHddstandby"
+          }
+        },
+        {
+          "Name": "Lunid",
+          "JsonName": "lunid",
+          "Description": "Logical unit number identifier or `null` if not applicable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Number",
+          "JsonName": "number",
+          "Description": "Numeric identifier assigned to the disk.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Passwd",
+          "JsonName": "passwd",
+          "Description": "Disk encryption password (masked for security).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the storage pool this disk belongs to. `null` if not part of any pool.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "DiskAdvpowermgmt",
+      "SchemaName": "DiskAdvpowermgmt",
+      "Description": "Advanced power management level or `DISABLED` to turn off power management.",
+      "Values": [
+        {
+          "Name": "DiskAdvpowermgmtDISABLED",
+          "Value": "DISABLED"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN1",
+          "Value": "1"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN64",
+          "Value": "64"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN127",
+          "Value": "127"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN128",
+          "Value": "128"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN192",
+          "Value": "192"
+        },
+        {
+          "Name": "DiskAdvpowermgmtN254",
+          "Value": "254"
+        }
+      ]
+    },
+    {
+      "Name": "DiskDetailsDataType",
+      "SchemaName": "DiskDetailsDataType",
+      "Description": "* `USED`: Only disks that are IN USE will be returned.\n* `UNUSED`: Only disks that are NOT IN USE are returned.\n* `BOTH`: Used and unused disks will be returned.",
+      "Values": [
+        {
+          "Name": "DiskDetailsDataTypeUSED",
+          "Value": "USED"
+        },
+        {
+          "Name": "DiskDetailsDataTypeUNUSED",
+          "Value": "UNUSED"
+        },
+        {
+          "Name": "DiskDetailsDataTypeBOTH",
+          "Value": "BOTH"
+        }
+      ]
+    },
+    {
+      "Name": "DiskHddstandby",
+      "SchemaName": "DiskHddstandby",
+      "Description": "Hard disk standby timer in minutes or `ALWAYS ON` to disable standby.",
+      "Values": [
+        {
+          "Name": "DiskHddstandbyALWAYSON",
+          "Value": "ALWAYS ON"
+        },
+        {
+          "Name": "DiskHddstandbyN5",
+          "Value": "5"
+        },
+        {
+          "Name": "DiskHddstandbyN10",
+          "Value": "10"
+        },
+        {
+          "Name": "DiskHddstandbyN20",
+          "Value": "20"
+        },
+        {
+          "Name": "DiskHddstandbyN30",
+          "Value": "30"
+        },
+        {
+          "Name": "DiskHddstandbyN60",
+          "Value": "60"
+        },
+        {
+          "Name": "DiskHddstandbyN120",
+          "Value": "120"
+        },
+        {
+          "Name": "DiskHddstandbyN180",
+          "Value": "180"
+        },
+        {
+          "Name": "DiskHddstandbyN240",
+          "Value": "240"
+        },
+        {
+          "Name": "DiskHddstandbyN300",
+          "Value": "300"
+        },
+        {
+          "Name": "DiskHddstandbyN330",
+          "Value": "330"
+        }
+      ]
+    },
+    {
+      "Name": "DiskWipeMode",
+      "SchemaName": "DiskWipeMode",
+      "Description": "* QUICK: Write zeros to the first and last 32MB of device.\n* FULL: Write whole disk with zeros.\n* FULL_RANDOM: Write whole disk with random bytes.",
+      "Values": [
+        {
+          "Name": "DiskWipeModeQUICK",
+          "Value": "QUICK"
+        },
+        {
+          "Name": "DiskWipeModeFULL",
+          "Value": "FULL"
+        },
+        {
+          "Name": "DiskWipeModeFULLRANDOM",
+          "Value": "FULL_RANDOM"
+        }
+      ]
+    }
+  ]
+}

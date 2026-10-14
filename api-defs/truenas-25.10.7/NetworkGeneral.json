@@ -1,0 +1,102 @@
+{
+  "Name": "NetworkGeneral",
+  "Tag": "network.general",
+  "Operations": [
+    {
+      "Name": "NetworkGeneralSummary",
+      "OperationId": "network.general.summary",
+      "Method": "CALL",
+      "Path": "network.general.summary",
+      "Description": "Retrieve general information for current Network.\n\nReturns a dictionary. For example:",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NetworkGeneralSummaryAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "network.general.summary",
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NetworkGeneralSummaryAnswer",
+      "SchemaName": "NetworkGeneralSummaryAnswer",
+      "Description": "NetworkGeneralSummaryResult return fields.",
+      "Fields": [
+        {
+          "Name": "DefaultRoutes",
+          "JsonName": "default_routes",
+          "Description": "Array of default gateway addresses.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Ips",
+          "JsonName": "ips",
+          "Description": "Object mapping interface names to their IP address information.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "NetworkGeneralSummaryIP"
+            }
+          }
+        },
+        {
+          "Name": "Nameservers",
+          "JsonName": "nameservers",
+          "Description": "Array of configured DNS server addresses.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NetworkGeneralSummaryIP",
+      "SchemaName": "NetworkGeneralSummaryIP",
+      "Fields": [
+        {
+          "Name": "IPV4",
+          "JsonName": "IPV4",
+          "Description": "Array of IPv4 addresses assigned to this interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "IPV6",
+          "JsonName": "IPV6",
+          "Description": "Array of IPv6 addresses assigned to this interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1328 @@
+{
+  "Name": "PoolSnapshot",
+  "Tag": "pool.snapshot",
+  "Operations": [
+    {
+      "Name": "PoolSnapshotClone",
+      "OperationId": "pool.snapshot.clone",
+      "Method": "CALL",
+      "Path": "pool.snapshot.clone",
+      "Description": "Clone a given snapshot to a new dataset.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.clone",
+        "Roles": [
+          "DATASET_WRITE",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotCloneData"
+          },
+          "Required": true,
+          "Description": "PoolSnapshotCloneArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotCreate",
+      "OperationId": "pool.snapshot.create",
+      "Method": "CALL",
+      "Path": "pool.snapshot.create",
+      "Description": "Take a snapshot from a given dataset.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolSnapshotCreateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.create",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a snapshot with either an explicit name or naming schema."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotDelete",
+      "OperationId": "pool.snapshot.delete",
+      "Method": "CALL",
+      "Path": "pool.snapshot.delete",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.delete",
+        "Item": true,
+        "Roles": [
+          "SNAPSHOT_DELETE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotDeleteOptions"
+          },
+          "Description": "Options for controlling snapshot deletion behavior."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotGetInstance",
+      "OperationId": "pool.snapshot.get_instance",
+      "Method": "CALL",
+      "Path": "pool.snapshot.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolSnapshotGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_READ",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotHold",
+      "OperationId": "pool.snapshot.hold",
+      "Method": "CALL",
+      "Path": "pool.snapshot.hold",
+      "Description": "Hold snapshot `id`.\n\nAdd `truenas` tag to the snapshot's tag namespace.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.hold",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot to hold."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotHoldOptions"
+          },
+          "Description": "Options for controlling snapshot hold behavior."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotQuery",
+      "OperationId": "pool.snapshot.query",
+      "Method": "CALL",
+      "Path": "pool.snapshot.query",
+      "Description": "Query all ZFS Snapshots with `query-filters` and `query-options`.\n\n`query-options.extra.holds` *(bool)*\n    Include hold tags for snapshots in the query result (false by default).\n`query-options.extra.min_txg` *(int)*\n    Limit snapshot retrieval based on minimum transaction group.\n`query-options.extra.max_txg` *(int)*\n    Limit snapshot retrieval based on maximum transaction group.\n`query-options.extra.retention` *(bool)*\n    Include retention information in the query result (false by default).\n`query-options.extra.properties` *(dict)*\n    Passed to `zfs.snapshots_serialized.props`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_READ",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotQueryCount",
+      "OperationId": "pool.snapshot.query#count",
+      "Method": "CALL",
+      "Path": "pool.snapshot.query#count",
+      "Description": "Query all ZFS Snapshots with `query-filters` and `query-options`.\n\n`query-options.extra.holds` *(bool)*\n    Include hold tags for snapshots in the query result (false by default).\n`query-options.extra.min_txg` *(int)*\n    Limit snapshot retrieval based on minimum transaction group.\n`query-options.extra.max_txg` *(int)*\n    Limit snapshot retrieval based on maximum transaction group.\n`query-options.extra.retention` *(bool)*\n    Include retention information in the query result (false by default).\n`query-options.extra.properties` *(dict)*\n    Passed to `zfs.snapshots_serialized.props`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_READ",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotQueryOne",
+      "OperationId": "pool.snapshot.query#get",
+      "Method": "CALL",
+      "Path": "pool.snapshot.query#get",
+      "Description": "Query all ZFS Snapshots with `query-filters` and `query-options`.\n\n`query-options.extra.holds` *(bool)*\n    Include hold tags for snapshots in the query result (false by default).\n`query-options.extra.min_txg` *(int)*\n    Limit snapshot retrieval based on minimum transaction group.\n`query-options.extra.max_txg` *(int)*\n    Limit snapshot retrieval based on maximum transaction group.\n`query-options.extra.retention` *(bool)*\n    Include retention information in the query result (false by default).\n`query-options.extra.properties` *(dict)*\n    Passed to `zfs.snapshots_serialized.props`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolSnapshotQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_READ",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotRelease",
+      "OperationId": "pool.snapshot.release",
+      "Method": "CALL",
+      "Path": "pool.snapshot.release",
+      "Description": "Release hold on snapshot `id`.\n\nRemove all hold tags from the specified snapshot.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.release",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the held snapshot to release."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotReleaseOptions"
+          },
+          "Description": "Options for controlling snapshot release behavior."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotRename",
+      "OperationId": "pool.snapshot.rename",
+      "Method": "CALL",
+      "Path": "pool.snapshot.rename",
+      "Description": "Rename a snapshot `id` to `new_name`.\n\nNo safety checks are performed when renaming ZFS resources. If the dataset is in use by services such\nas SMB, iSCSI, snapshot tasks, replication, or cloud sync, renaming may cause disruptions or service failures.\n\nProceed only if you are certain the ZFS resource is not in use and fully understand the risks.\nSet Force to continue.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.rename",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Current ID of the snapshot to rename."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotRenameOptions"
+          },
+          "Required": true,
+          "Description": "The rename operation options including the new name and force flag."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotRollback",
+      "OperationId": "pool.snapshot.rollback",
+      "Method": "CALL",
+      "Path": "pool.snapshot.rollback",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.rollback",
+        "Roles": [
+          "POOL_WRITE",
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot to rollback to."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotRollbackOptions"
+          },
+          "Description": "Options for controlling snapshot rollback behavior."
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotUpdate",
+      "OperationId": "pool.snapshot.update",
+      "Method": "CALL",
+      "Path": "pool.snapshot.update",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolSnapshotUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.snapshot.update",
+        "Item": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotUpdateData"
+          },
+          "Required": true,
+          "Description": "The property updates to apply to the snapshot."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "Holds",
+      "SchemaName": "Holds",
+      "Description": "Returned when options.extra.holds is set.",
+      "Fields": [
+        {
+          "Name": "Truenas",
+          "JsonName": "truenas",
+          "Description": "Present if a hold has been placed on the snapshot.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotCloneData",
+      "SchemaName": "PoolSnapshotCloneData",
+      "Description": "PoolSnapshotCloneArgs parameters.",
+      "Fields": [
+        {
+          "Name": "DatasetDst",
+          "JsonName": "dataset_dst",
+          "Description": "Name for the new dataset created from the snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DatasetProperties",
+          "JsonName": "dataset_properties",
+          "Description": "Object mapping ZFS property names to values to set on the cloned dataset.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Full name of the snapshot to clone from.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotCreateAnswer",
+      "SchemaName": "PoolSnapshotCreateAnswer",
+      "Description": "Information about the newly created snapshot.",
+      "Fields": [
+        {
+          "Name": "Createtxg",
+          "JsonName": "createtxg",
+          "Description": "Transaction group ID when the snapshot was created.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "Name of the dataset this snapshot was taken from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Full snapshot identifier including dataset and snapshot name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Full name of the snapshot including dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the ZFS pool containing this snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Properties",
+          "JsonName": "properties",
+          "Description": "Object mapping ZFS property names to their values and metadata.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolSnapshotEntryPropertyFields"
+            }
+          }
+        },
+        {
+          "Name": "SnapshotName",
+          "JsonName": "snapshot_name",
+          "Description": "Just the snapshot name portion without the dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type identifier indicating this is a ZFS snapshot.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotCreateData",
+      "Description": "Configuration for creating a snapshot with either an explicit name or naming schema.",
+      "Union": [
+        "PoolSnapshotCreateWithName",
+        "PoolSnapshotCreateWithSchema"
+      ],
+      "Members": [
+        {
+          "Model": "PoolSnapshotCreateWithName"
+        },
+        {
+          "Model": "PoolSnapshotCreateWithSchema"
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotDeleteOptions",
+      "SchemaName": "PoolSnapshotDeleteOptions",
+      "Description": "Options for controlling snapshot deletion behavior.",
+      "Fields": [
+        {
+          "Name": "Defer",
+          "JsonName": "defer",
+          "Description": "Defer deletion of the snapshot.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to recursively delete child snapshots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotEntryPropertyFields",
+      "SchemaName": "PoolSnapshotEntryPropertyFields",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "Property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "Raw string value of the ZFS property as stored.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Source of the property value.\n\n* `NONE`: Property is not set\n* `DEFAULT`: Using ZFS default value\n* `LOCAL`: Set locally on this snapshot\n* `TEMPORARY`: Temporary override value\n* `INHERITED`: Inherited from parent dataset\n* `RECEIVED`: Set by ZFS receive operation",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotEntryPropertyFieldsSource"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "Current effective value of the ZFS property as a string.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotGetInstanceAnswer",
+      "SchemaName": "PoolSnapshotGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "Createtxg",
+          "JsonName": "createtxg",
+          "Description": "Transaction group ID when the snapshot was created.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "Name of the dataset this snapshot was taken from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Holds",
+          "JsonName": "holds",
+          "Description": "Returned when options.extra.holds is set.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Holds"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Full snapshot identifier including dataset and snapshot name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Full name of the snapshot including dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the ZFS pool containing this snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Properties",
+          "JsonName": "properties",
+          "Description": "Object mapping ZFS property names to their values and metadata.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolSnapshotEntryPropertyFields"
+            }
+          }
+        },
+        {
+          "Name": "Retention",
+          "JsonName": "retention",
+          "Description": "Returned when options.extra.retention is set.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotGetInstanceAnswerRetention"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SnapshotName",
+          "JsonName": "snapshot_name",
+          "Description": "Just the snapshot name portion without the dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type identifier indicating this is a ZFS snapshot.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotGetInstanceAnswerRetention",
+      "Description": "Returned when options.extra.retention is set.",
+      "Union": [
+        "PoolSnapshotRetentionPST",
+        "PoolSnapshotRetentionProperty"
+      ],
+      "Discriminator": "source",
+      "Members": [
+        {
+          "Model": "PoolSnapshotRetentionPST",
+          "Kinds": [
+            "periodic_snapshot_task"
+          ]
+        },
+        {
+          "Model": "PoolSnapshotRetentionProperty",
+          "Kinds": [
+            "property"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotGetInstanceOptions",
+      "SchemaName": "PoolSnapshotGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotHoldOptions",
+      "SchemaName": "PoolSnapshotHoldOptions",
+      "Description": "Options for controlling snapshot hold behavior.",
+      "Fields": [
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Hold snapshots recursively.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotQueryOptions",
+      "SchemaName": "PoolSnapshotQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotQueryResultItem",
+      "SchemaName": "PoolSnapshotQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Createtxg",
+          "JsonName": "createtxg",
+          "Description": "Transaction group ID when the snapshot was created.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "Name of the dataset this snapshot was taken from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Holds",
+          "JsonName": "holds",
+          "Description": "Returned when options.extra.holds is set.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Holds"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Full snapshot identifier including dataset and snapshot name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Full name of the snapshot including dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the ZFS pool containing this snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Properties",
+          "JsonName": "properties",
+          "Description": "Object mapping ZFS property names to their values and metadata.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolSnapshotEntryPropertyFields"
+            }
+          }
+        },
+        {
+          "Name": "Retention",
+          "JsonName": "retention",
+          "Description": "Returned when options.extra.retention is set.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotQueryResultItemRetention"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SnapshotName",
+          "JsonName": "snapshot_name",
+          "Description": "Just the snapshot name portion without the dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type identifier indicating this is a ZFS snapshot.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotQueryResultItemRetention",
+      "Description": "Returned when options.extra.retention is set.",
+      "Union": [
+        "PoolSnapshotRetentionPST",
+        "PoolSnapshotRetentionProperty"
+      ],
+      "Discriminator": "source",
+      "Members": [
+        {
+          "Model": "PoolSnapshotRetentionPST",
+          "Kinds": [
+            "periodic_snapshot_task"
+          ]
+        },
+        {
+          "Model": "PoolSnapshotRetentionProperty",
+          "Kinds": [
+            "property"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotReleaseOptions",
+      "SchemaName": "PoolSnapshotReleaseOptions",
+      "Description": "Options for controlling snapshot release behavior.",
+      "Fields": [
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to recursively release holds on child snapshots. Only the tags that are present on the parent snapshot     will be removed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotRenameOptions",
+      "SchemaName": "PoolSnapshotRenameOptions",
+      "Description": "The rename operation options including the new name and force flag.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "This operation does not check whether the dataset is currently in use. Renaming an active dataset may disrupt     SMB shares, iSCSI targets, snapshots, replication, and other services.\n\nSet Force only if you understand and accept the risks.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "NewName",
+          "JsonName": "new_name",
+          "Description": "The new name for the snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotRollbackOptions",
+      "SchemaName": "PoolSnapshotRollbackOptions",
+      "Description": "Options for controlling snapshot rollback behavior.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force unmount of any clones.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Destroy any snapshots and bookmarks more recent than the one specified.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RecursiveClones",
+          "JsonName": "recursive_clones",
+          "Description": "Just like `recursive`, but also destroy any clones.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RecursiveRollback",
+          "JsonName": "recursive_rollback",
+          "Description": "Do a complete recursive rollback of each child snapshot for `id`. If any child does not have specified     snapshot, this operation will fail.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotUpdateAnswer",
+      "SchemaName": "PoolSnapshotUpdateAnswer",
+      "Description": "Information about the updated snapshot.",
+      "Fields": [
+        {
+          "Name": "Createtxg",
+          "JsonName": "createtxg",
+          "Description": "Transaction group ID when the snapshot was created.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "Name of the dataset this snapshot was taken from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Full snapshot identifier including dataset and snapshot name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Full name of the snapshot including dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the ZFS pool containing this snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Properties",
+          "JsonName": "properties",
+          "Description": "Object mapping ZFS property names to their values and metadata.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolSnapshotEntryPropertyFields"
+            }
+          }
+        },
+        {
+          "Name": "SnapshotName",
+          "JsonName": "snapshot_name",
+          "Description": "Just the snapshot name portion without the dataset path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type identifier indicating this is a ZFS snapshot.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolSnapshotType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotUpdateData",
+      "SchemaName": "PoolSnapshotUpdateData",
+      "Description": "The property updates to apply to the snapshot.",
+      "Fields": [
+        {
+          "Name": "UserPropertiesRemove",
+          "JsonName": "user_properties_remove",
+          "Description": "Properties to remove.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UserPropertiesUpdate",
+          "JsonName": "user_properties_update",
+          "Description": "Properties to update.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolSnapshotUserPropertyUpdate"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotUserPropertyUpdate",
+      "SchemaName": "PoolSnapshotUserPropertyUpdate",
+      "Fields": [
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "The property name in namespace:property format.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The new value to assign to the user property.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "PoolSnapshotEntryPropertyFieldsSource",
+      "SchemaName": "PoolSnapshotEntryPropertyFieldsSource",
+      "Description": "Source of the property value.\n\n* `NONE`: Property is not set\n* `DEFAULT`: Using ZFS default value\n* `LOCAL`: Set locally on this snapshot\n* `TEMPORARY`: Temporary override value\n* `INHERITED`: Inherited from parent dataset\n* `RECEIVED`: Set by ZFS receive operation",
+      "Values": [
+        {
+          "Name": "PoolSnapshotEntryPropertyFieldsSourceNONE",
+          "Value": "NONE"
+        },
+        {
+          "Name": "PoolSnapshotEntryPropertyFieldsSourceDEFAULT",
+          "Value": "DEFAULT"
+        },
+        {
+          "Name": "PoolSnapshotEntryPropertyFieldsSourceLOCAL",
+          "Value": "LOCAL"
+        },
+        {
+          "Name": "PoolSnapshotEntryPropertyFieldsSourceTEMPORARY",
+          "Value": "TEMPORARY"
+        },
+        {
+          "Name": "PoolSnapshotEntryPropertyFieldsSourceINHERITED",
+          "Value": "INHERITED"
+        },
+        {
+          "Name": "PoolSnapshotEntryPropertyFieldsSourceRECEIVED",
+          "Value": "RECEIVED"
+        }
+      ]
+    },
+    {
+      "Name": "PoolSnapshotType",
+      "SchemaName": "PoolSnapshotType",
+      "Description": "Type identifier indicating this is a ZFS snapshot.",
+      "Values": [
+        {
+          "Name": "PoolSnapshotTypeSNAPSHOT",
+          "Value": "SNAPSHOT"
+        }
+      ]
+    }
+  ]
+}

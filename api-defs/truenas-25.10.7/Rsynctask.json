@@ -1,0 +1,1142 @@
+{
+  "Name": "Rsynctask",
+  "Tag": "rsynctask",
+  "Operations": [
+    {
+      "Name": "RsynctaskCreate",
+      "OperationId": "rsynctask.create",
+      "Method": "CALL",
+      "Path": "rsynctask.create",
+      "Description": "Create a Rsync Task.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "RsyncTaskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.create",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "rsync_task_create",
+          "Argument": "rsyncTaskCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskCreate"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new rsync task."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskDelete",
+      "OperationId": "rsynctask.delete",
+      "Method": "CALL",
+      "Path": "rsynctask.delete",
+      "Description": "Delete Rsync Task of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.delete",
+        "Item": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the rsync task to delete."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskGetInstance",
+      "OperationId": "rsynctask.get_instance",
+      "Method": "CALL",
+      "Path": "rsynctask.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "RsyncTaskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsynctaskGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskQuery",
+      "OperationId": "rsynctask.query",
+      "Method": "CALL",
+      "Path": "rsynctask.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsynctaskQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskQueryCount",
+      "OperationId": "rsynctask.query#count",
+      "Method": "CALL",
+      "Path": "rsynctask.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsynctaskQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskQueryOne",
+      "OperationId": "rsynctask.query#get",
+      "Method": "CALL",
+      "Path": "rsynctask.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "RsyncTaskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsynctaskQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskRun",
+      "OperationId": "rsynctask.run",
+      "Method": "CALL",
+      "Path": "rsynctask.run",
+      "Description": "Job to run rsync task of `id`.\n\nOutput is saved to job log excerpt (not syslog).",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.run",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the rsync task to run immediately."
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskUpdate",
+      "OperationId": "rsynctask.update",
+      "Method": "CALL",
+      "Path": "rsynctask.update",
+      "Description": "Update Rsync Task of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "RsyncTaskQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "rsynctask.update",
+        "Item": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the rsync task to update."
+        },
+        {
+          "Name": "rsync_task_update",
+          "Argument": "rsyncTaskUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the rsync task."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "RsyncTaskCreate",
+      "SchemaName": "RsyncTaskCreate",
+      "Description": "Configuration for creating a new rsync task.",
+      "Fields": [
+        {
+          "Name": "Archive",
+          "JsonName": "archive",
+          "Description": "Make rsync run recursively, preserving symlinks, permissions, modification times, group, and special files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Compress",
+          "JsonName": "compress",
+          "Description": "Reduce the size of the data to be transmitted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Delayupdates",
+          "JsonName": "delayupdates",
+          "Description": "Delay updating destination files until all transfers are complete.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Delete",
+          "JsonName": "delete",
+          "Description": "Delete files in the destination directory that do not exist in the source directory.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Desc",
+          "JsonName": "desc",
+          "Description": "Description of the rsync task.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Specify if data should be PULLED or PUSHED from the remote system.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this rsync task is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Array of additional rsync command-line options.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Operating mechanism for Rsync, i.e. Rsync Module mode or Rsync SSH mode.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskMode"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Local filesystem path to synchronize.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Preserveattr",
+          "JsonName": "preserveattr",
+          "Description": "Preserve extended attributes of files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Preserveperm",
+          "JsonName": "preserveperm",
+          "Description": "Preserve original file permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Quiet",
+          "JsonName": "quiet",
+          "Description": "Suppress informational messages from rsync.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Recursively transfer subdirectories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remotehost",
+          "JsonName": "remotehost",
+          "Description": "IP address or hostname of the remote system. If username differs on the remote host, \"username@remote_host\"     format should be used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Remotemodule",
+          "JsonName": "remotemodule",
+          "Description": "Name of remote module, this attribute should be specified when `mode` is set to MODULE.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Remotepath",
+          "JsonName": "remotepath",
+          "Description": "Path on the remote system to synchronize with.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remoteport",
+          "JsonName": "remoteport",
+          "Description": "Port number for SSH connection. Only applies when `mode` is SSH.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule for when the rsync task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "SshCredentials",
+          "JsonName": "ssh_credentials",
+          "Description": "Keychain credential ID for SSH authentication. `null` to use user's SSH keys.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SshKeyscan",
+          "JsonName": "ssh_keyscan",
+          "Description": "Automatically add remote host key to user's known_hosts file.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Times",
+          "JsonName": "times",
+          "Description": "Preserve modification times of files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username to run the rsync task as.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ValidateRpath",
+          "JsonName": "validate_rpath",
+          "Description": "Validate the existence of the remote path.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "RsyncTaskQueryResultItem",
+      "SchemaName": "RsyncTaskQueryResultItem",
+      "Description": "The newly created rsync task configuration.",
+      "Fields": [
+        {
+          "Name": "Archive",
+          "JsonName": "archive",
+          "Description": "Make rsync run recursively, preserving symlinks, permissions, modification times, group, and special files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Compress",
+          "JsonName": "compress",
+          "Description": "Reduce the size of the data to be transmitted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Delayupdates",
+          "JsonName": "delayupdates",
+          "Description": "Delay updating destination files until all transfers are complete.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Delete",
+          "JsonName": "delete",
+          "Description": "Delete files in the destination directory that do not exist in the source directory.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Desc",
+          "JsonName": "desc",
+          "Description": "Description of the rsync task.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Specify if data should be PULLED or PUSHED from the remote system.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this rsync task is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Array of additional rsync command-line options.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the rsync task.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Job",
+          "JsonName": "job",
+          "Description": "Information about the currently running job. `null` if no job is running.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "Whether this rsync task is currently locked (running).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Operating mechanism for Rsync, i.e. Rsync Module mode or Rsync SSH mode.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskMode"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Local filesystem path to synchronize.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Preserveattr",
+          "JsonName": "preserveattr",
+          "Description": "Preserve extended attributes of files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Preserveperm",
+          "JsonName": "preserveperm",
+          "Description": "Preserve original file permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Quiet",
+          "JsonName": "quiet",
+          "Description": "Suppress informational messages from rsync.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Recursively transfer subdirectories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remotehost",
+          "JsonName": "remotehost",
+          "Description": "IP address or hostname of the remote system. If username differs on the remote host, \"username@remote_host\"     format should be used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Remotemodule",
+          "JsonName": "remotemodule",
+          "Description": "Name of remote module, this attribute should be specified when `mode` is set to MODULE.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Remotepath",
+          "JsonName": "remotepath",
+          "Description": "Path on the remote system to synchronize with.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remoteport",
+          "JsonName": "remoteport",
+          "Description": "Port number for SSH connection. Only applies when `mode` is SSH.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule for when the rsync task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "SshCredentials",
+          "JsonName": "ssh_credentials",
+          "Description": "In SSH mode, if `ssh_credentials` (a keychain credential of `SSH_CREDENTIALS` type) is specified then it is     used to connect to the remote host. If it is not specified, then keys in `user`'s .ssh directory are used.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KeychainCredentialEntry"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Times",
+          "JsonName": "times",
+          "Description": "Preserve modification times of files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username to run the rsync task as.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "RsyncTaskUpdate",
+      "SchemaName": "RsyncTaskUpdate",
+      "Description": "Updated configuration for the rsync task.",
+      "Fields": [
+        {
+          "Name": "Archive",
+          "JsonName": "archive",
+          "Description": "Make rsync run recursively, preserving symlinks, permissions, modification times, group, and special files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Compress",
+          "JsonName": "compress",
+          "Description": "Reduce the size of the data to be transmitted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Delayupdates",
+          "JsonName": "delayupdates",
+          "Description": "Delay updating destination files until all transfers are complete.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Delete",
+          "JsonName": "delete",
+          "Description": "Delete files in the destination directory that do not exist in the source directory.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Desc",
+          "JsonName": "desc",
+          "Description": "Description of the rsync task.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Specify if data should be PULLED or PUSHED from the remote system.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this rsync task is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Array of additional rsync command-line options.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Operating mechanism for Rsync, i.e. Rsync Module mode or Rsync SSH mode.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RsyncTaskMode"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Local filesystem path to synchronize.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Preserveattr",
+          "JsonName": "preserveattr",
+          "Description": "Preserve extended attributes of files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Preserveperm",
+          "JsonName": "preserveperm",
+          "Description": "Preserve original file permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Quiet",
+          "JsonName": "quiet",
+          "Description": "Suppress informational messages from rsync.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Recursively transfer subdirectories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remotehost",
+          "JsonName": "remotehost",
+          "Description": "IP address or hostname of the remote system. If username differs on the remote host, \"username@remote_host\"     format should be used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Remotemodule",
+          "JsonName": "remotemodule",
+          "Description": "Name of remote module, this attribute should be specified when `mode` is set to MODULE.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Remotepath",
+          "JsonName": "remotepath",
+          "Description": "Path on the remote system to synchronize with.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remoteport",
+          "JsonName": "remoteport",
+          "Description": "Port number for SSH connection. Only applies when `mode` is SSH.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule for when the rsync task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "SshCredentials",
+          "JsonName": "ssh_credentials",
+          "Description": "Keychain credential ID for SSH authentication. `null` to use user's SSH keys.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SshKeyscan",
+          "JsonName": "ssh_keyscan",
+          "Description": "Automatically add remote host key to user's known_hosts file.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Times",
+          "JsonName": "times",
+          "Description": "Preserve modification times of files.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username to run the rsync task as.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ValidateRpath",
+          "JsonName": "validate_rpath",
+          "Description": "Validate the existence of the remote path.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskGetInstanceOptions",
+      "SchemaName": "RsynctaskGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "RsynctaskQueryOptions",
+      "SchemaName": "RsynctaskQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "RsyncTaskDirection",
+      "SchemaName": "RsyncTaskDirection",
+      "Description": "Specify if data should be PULLED or PUSHED from the remote system.",
+      "Values": [
+        {
+          "Name": "RsyncTaskDirectionPULL",
+          "Value": "PULL"
+        },
+        {
+          "Name": "RsyncTaskDirectionPUSH",
+          "Value": "PUSH"
+        }
+      ]
+    },
+    {
+      "Name": "RsyncTaskMode",
+      "SchemaName": "RsyncTaskMode",
+      "Description": "Operating mechanism for Rsync, i.e. Rsync Module mode or Rsync SSH mode.",
+      "Values": [
+        {
+          "Name": "RsyncTaskModeMODULE",
+          "Value": "MODULE"
+        },
+        {
+          "Name": "RsyncTaskModeSSH",
+          "Value": "SSH"
+        }
+      ]
+    }
+  ]
+}

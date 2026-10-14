@@ -1,0 +1,686 @@
+{
+  "Name": "ReportingExporters",
+  "Tag": "reporting.exporters",
+  "Operations": [
+    {
+      "Name": "ReportingExportersCreate",
+      "OperationId": "reporting.exporters.create",
+      "Method": "CALL",
+      "Path": "reporting.exporters.create",
+      "Description": "Create a specific reporting exporter configuration containing required details for exporting reporting metrics.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingExporterQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.create",
+        "Roles": [
+          "REPORTING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "reporting_exporter_create",
+          "Argument": "reportingExporterCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExporterCreate"
+          },
+          "Required": true,
+          "Description": "ReportingExportsCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersDelete",
+      "OperationId": "reporting.exporters.delete",
+      "Method": "CALL",
+      "Path": "reporting.exporters.delete",
+      "Description": "Delete Reporting Exporter of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.delete",
+        "Item": true,
+        "Roles": [
+          "REPORTING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the reporting exporter to delete."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersExporterSchemas",
+      "OperationId": "reporting.exporters.exporter_schemas",
+      "Method": "CALL",
+      "Path": "reporting.exporters.exporter_schemas",
+      "Description": "Get the schemas for all the reporting export types we support with their respective attributes\nrequired for successfully exporting reporting metrics to them.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExporterSchema"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.exporter_schemas",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "ReportingExportersGetInstance",
+      "OperationId": "reporting.exporters.get_instance",
+      "Method": "CALL",
+      "Path": "reporting.exporters.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingExporterQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExportersGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersQuery",
+      "OperationId": "reporting.exporters.query",
+      "Method": "CALL",
+      "Path": "reporting.exporters.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExporterQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExportersQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersQueryCount",
+      "OperationId": "reporting.exporters.query#count",
+      "Method": "CALL",
+      "Path": "reporting.exporters.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExportersQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersQueryOne",
+      "OperationId": "reporting.exporters.query#get",
+      "Method": "CALL",
+      "Path": "reporting.exporters.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingExporterQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExportersQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersUpdate",
+      "OperationId": "reporting.exporters.update",
+      "Method": "CALL",
+      "Path": "reporting.exporters.update",
+      "Description": "Update Reporting Exporter of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingExporterQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.exporters.update",
+        "Item": true,
+        "Roles": [
+          "REPORTING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the reporting exporter to update."
+        },
+        {
+          "Name": "reporting_exporter_update",
+          "Argument": "reportingExporterUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingExporterUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the reporting exporter."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "Attributes2",
+      "SchemaName": "Attributes2",
+      "Description": "Specific attributes for the exporter.",
+      "Fields": [
+        {
+          "Name": "BufferOnFailures",
+          "JsonName": "buffer_on_failures",
+          "Description": "Number of updates to buffer when Graphite server is unavailable.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "DestinationIp",
+          "JsonName": "destination_ip",
+          "Description": "IP address of the Graphite server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DestinationPort",
+          "JsonName": "destination_port",
+          "Description": "Port number of the Graphite server.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ExporterType",
+          "JsonName": "exporter_type",
+          "Description": "Type of exporter - Graphite.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes2ExporterType"
+          }
+        },
+        {
+          "Name": "MatchingCharts",
+          "JsonName": "matching_charts",
+          "Description": "Pattern to match charts for export (supports wildcards).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Namespace",
+          "JsonName": "namespace",
+          "Description": "Namespace to organize metrics under.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Prefix",
+          "JsonName": "prefix",
+          "Description": "Prefix to prepend to all metric names.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SendNamesInsteadOfIds",
+          "JsonName": "send_names_instead_of_ids",
+          "Description": "Whether to send human-readable names instead of internal IDs.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UpdateEvery",
+          "JsonName": "update_every",
+          "Description": "Interval in seconds between metric updates.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExporterCreate",
+      "SchemaName": "ReportingExporterCreate",
+      "Description": "ReportingExportsCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Specific attributes for the exporter.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes2"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this exporter is enabled and active.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "User defined name of exporter configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExporterQueryResultItem",
+      "SchemaName": "ReportingExporterQueryResultItem",
+      "Description": "The newly created reporting exporter configuration.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Specific attributes for the exporter.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes2"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this exporter is enabled and active.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the reporting exporter.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "User defined name of exporter configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExporterSchema",
+      "SchemaName": "ReportingExporterSchema",
+      "Fields": [
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "Unique key identifying the exporter type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Schema",
+          "JsonName": "schema",
+          "Description": "Array of attribute definitions for this exporter type.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "ReportingExporterAttributeSchema"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExporterUpdate",
+      "SchemaName": "ReportingExporterUpdate",
+      "Description": "Updated configuration for the reporting exporter.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Specific attributes for the exporter.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes2"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this exporter is enabled and active.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "User defined name of exporter configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersGetInstanceOptions",
+      "SchemaName": "ReportingExportersGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingExportersQueryOptions",
+      "SchemaName": "ReportingExportersQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "Attributes2ExporterType",
+      "SchemaName": "Attributes2ExporterType",
+      "Description": "Type of exporter - Graphite.",
+      "Values": [
+        {
+          "Name": "Attributes2ExporterTypeGRAPHITE",
+          "Value": "GRAPHITE"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1456 @@
+{
+  "Name": "CloudBackup",
+  "Tag": "cloud_backup",
+  "Operations": [
+    {
+      "Name": "CloudBackupAbort",
+      "OperationId": "cloud_backup.abort",
+      "Method": "CALL",
+      "Path": "cloud_backup.abort",
+      "Description": "Abort a running cloud backup task.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.abort",
+        "Item": true,
+        "Roles": [
+          "CLOUD_BACKUP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud backup task whose backup job to abort."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupCreate",
+      "OperationId": "cloud_backup.create",
+      "Method": "CALL",
+      "Path": "cloud_backup.create",
+      "Description": "Create a new cloud backup task",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudBackupQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.create",
+        "Roles": [
+          "CLOUD_BACKUP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "cloud_backup",
+          "Argument": "cloudBackup",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackup"
+          },
+          "Required": true,
+          "Description": "Configuration for the new cloud backup task."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupDelete",
+      "OperationId": "cloud_backup.delete",
+      "Method": "CALL",
+      "Path": "cloud_backup.delete",
+      "Description": "Delete cloud backup entry `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.delete",
+        "Item": true,
+        "Roles": [
+          "CLOUD_BACKUP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud backup task to delete."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupDeleteSnapshot",
+      "OperationId": "cloud_backup.delete_snapshot",
+      "Method": "CALL",
+      "Path": "cloud_backup.delete_snapshot",
+      "Description": "Delete snapshot `snapshot_id` created by the cloud backup job `id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.delete_snapshot",
+        "Job": true,
+        "Roles": [
+          "CLOUD_BACKUP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "The cloud backup task ID."
+        },
+        {
+          "Name": "snapshot_id",
+          "Argument": "snapshotId",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot to delete."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupGetInstance",
+      "OperationId": "cloud_backup.get_instance",
+      "Method": "CALL",
+      "Path": "cloud_backup.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudBackupQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.get_instance",
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupListSnapshotDirectory",
+      "OperationId": "cloud_backup.list_snapshot_directory",
+      "Method": "CALL",
+      "Path": "cloud_backup.list_snapshot_directory",
+      "Description": "List files in the directory `path` of the `snapshot_id` created by the cloud backup job `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupSnapshotItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.list_snapshot_directory",
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "The cloud backup task ID."
+        },
+        {
+          "Name": "snapshot_id",
+          "Argument": "snapshotId",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot whose contents to list."
+        },
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Path within the snapshot to list the contents of."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupListSnapshots",
+      "OperationId": "cloud_backup.list_snapshots",
+      "Method": "CALL",
+      "Path": "cloud_backup.list_snapshots",
+      "Description": "List existing snapshots for the cloud backup job `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupSnapshot"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.list_snapshots",
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "The cloud backup task ID."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupQuery",
+      "OperationId": "cloud_backup.query",
+      "Method": "CALL",
+      "Path": "cloud_backup.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupQueryCount",
+      "OperationId": "cloud_backup.query#count",
+      "Method": "CALL",
+      "Path": "cloud_backup.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupQueryOne",
+      "OperationId": "cloud_backup.query#get",
+      "Method": "CALL",
+      "Path": "cloud_backup.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudBackupQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupRestore",
+      "OperationId": "cloud_backup.restore",
+      "Method": "CALL",
+      "Path": "cloud_backup.restore",
+      "Description": "Restore files to the directory `destination_path` from the `snapshot_id` subfolder `subfolder`\ncreated by the cloud backup job `id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.restore",
+        "Job": true,
+        "Roles": [
+          "FILESYSTEM_DATA_WRITE",
+          "FILESYSTEM_FULL_CONTROL"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud backup task."
+        },
+        {
+          "Name": "snapshot_id",
+          "Argument": "snapshotId",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the snapshot to restore."
+        },
+        {
+          "Name": "subfolder",
+          "Argument": "subfolder",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Path within the snapshot to restore."
+        },
+        {
+          "Name": "destination_path",
+          "Argument": "destinationPath",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Local path to restore to."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupRestoreOptions"
+          },
+          "Description": "Additional restore options."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupSync",
+      "OperationId": "cloud_backup.sync",
+      "Method": "CALL",
+      "Path": "cloud_backup.sync",
+      "Description": "Run the cloud backup job `id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.sync",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "CLOUD_BACKUP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "The cloud backup task ID."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupSyncOptions"
+          },
+          "Description": "Sync options."
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupTransferSettingChoices",
+      "OperationId": "cloud_backup.transfer_setting_choices",
+      "Method": "CALL",
+      "Path": "cloud_backup.transfer_setting_choices",
+      "Description": "Return all possible choices for `cloud_backup.create.transfer_setting`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.transfer_setting_choices",
+        "Read": true,
+        "Roles": [
+          "CLOUD_BACKUP_READ",
+          "CLOUD_BACKUP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CloudBackupUpdate",
+      "OperationId": "cloud_backup.update",
+      "Method": "CALL",
+      "Path": "cloud_backup.update",
+      "Description": "Update the cloud backup entry `id` with `data`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudBackupQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloud_backup.update",
+        "Item": true,
+        "Roles": [
+          "CLOUD_BACKUP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud backup task to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration data for the cloud backup task."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "CloudBackup",
+      "SchemaName": "CloudBackup",
+      "Description": "Configuration for the new cloud backup task.",
+      "Fields": [
+        {
+          "Name": "AbsolutePaths",
+          "JsonName": "absolute_paths",
+          "Description": "Preserve absolute paths in each backup (cannot be set when `snapshot=True`).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "CachePath",
+          "JsonName": "cache_path",
+          "Description": "Cache path. If not set, performance may degrade.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "ID of the cloud credential to use for each backup.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KeepLast",
+          "JsonName": "keep_last",
+          "Description": "How many of the most recent backup snapshots to keep after each backup.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for the remote repository.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RateLimit",
+          "JsonName": "rate_limit",
+          "Description": "Maximum upload/download rate in KiB/s. Passed to `restic --limit-upload` on `cloud_backup.sync` and     `restic --limit-download` on `cloud_backup.restore`. `null` indicates no rate limit will be imposed.\n\nCan be overridden on a sync or restore call.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferSetting",
+          "JsonName": "transfer_setting",
+          "Description": "* DEFAULT:\n    * pack size given by `$RESTIC_PACK_SIZE` (default 16 MiB)\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* PERFORMANCE:\n    * pack size = 29 MiB\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* FAST_STORAGE:\n    * pack size = 58 MiB\n    * read concurrency = 100 files",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupTransferSetting"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupGetInstanceOptions",
+      "SchemaName": "CloudBackupGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupQueryOptions",
+      "SchemaName": "CloudBackupQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupQueryResultItem",
+      "SchemaName": "CloudBackupQueryResultItem",
+      "Description": "The new cloud backup task.",
+      "Fields": [
+        {
+          "Name": "AbsolutePaths",
+          "JsonName": "absolute_paths",
+          "Description": "Preserve absolute paths in each backup (cannot be set when `snapshot=True`).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "CachePath",
+          "JsonName": "cache_path",
+          "Description": "Cache path. If not set, performance may degrade.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "Cloud credentials to use for each backup.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudCredentialQueryResultItem"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this cloud storage configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Job",
+          "JsonName": "job",
+          "Description": "Information regarding the task's job state, e.g. progress.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "KeepLast",
+          "JsonName": "keep_last",
+          "Description": "How many of the most recent backup snapshots to keep after each backup.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "A locked task cannot run.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for the remote repository.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RateLimit",
+          "JsonName": "rate_limit",
+          "Description": "Maximum upload/download rate in KiB/s. Passed to `restic --limit-upload` on `cloud_backup.sync` and     `restic --limit-download` on `cloud_backup.restore`. `null` indicates no rate limit will be imposed.\n\nCan be overridden on a sync or restore call.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferSetting",
+          "JsonName": "transfer_setting",
+          "Description": "* DEFAULT:\n    * pack size given by `$RESTIC_PACK_SIZE` (default 16 MiB)\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* PERFORMANCE:\n    * pack size = 29 MiB\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* FAST_STORAGE:\n    * pack size = 58 MiB\n    * read concurrency = 100 files",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupQueryResultItemTransferSetting"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupRestoreOptions",
+      "SchemaName": "CloudBackupRestoreOptions",
+      "Description": "Additional restore options.",
+      "Fields": [
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to exclude from a restore using `restic restore --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to include in a restore using `restic restore --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "RateLimit",
+          "JsonName": "rate_limit",
+          "Description": "Maximum download rate in KiB/s. Passed to `restic --limit-download`.\n\nIf provided, overrides the task's rate limit.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupSnapshot",
+      "SchemaName": "CloudBackupSnapshot",
+      "Fields": [
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "Host that created the snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this cloud backup snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Paths",
+          "JsonName": "paths",
+          "Description": "Paths that the snapshot includes.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Time",
+          "JsonName": "time",
+          "Description": "Time at which the snapshot was created.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupSnapshotItem",
+      "SchemaName": "CloudBackupSnapshotItem",
+      "Fields": [
+        {
+          "Name": "Mtime",
+          "JsonName": "mtime",
+          "Description": "Last modified time.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the item.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Item's path in the snapshot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Size of the file in bytes.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Directory or file.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupSnapshotItemType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupSyncOptions",
+      "SchemaName": "CloudBackupSyncOptions",
+      "Description": "Sync options.",
+      "Fields": [
+        {
+          "Name": "DryRun",
+          "JsonName": "dry_run",
+          "Description": "Simulate the backup without actually writing to the remote repository.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RateLimit",
+          "JsonName": "rate_limit",
+          "Description": "Maximum upload rate in KiB/s. Passed to `restic --limit-upload`.\n\nIf provided, overrides the task's rate limit.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupUpdateData",
+      "SchemaName": "CloudBackupUpdateData",
+      "Description": "Updated configuration data for the cloud backup task.",
+      "Fields": [
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "CachePath",
+          "JsonName": "cache_path",
+          "Description": "Cache path. If not set, performance may degrade.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "ID of the cloud credential to use for each backup.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KeepLast",
+          "JsonName": "keep_last",
+          "Description": "How many of the most recent backup snapshots to keep after each backup.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for the remote repository.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RateLimit",
+          "JsonName": "rate_limit",
+          "Description": "Maximum upload/download rate in KiB/s. Passed to `restic --limit-upload` on `cloud_backup.sync` and     `restic --limit-download` on `cloud_backup.restore`. `null` indicates no rate limit will be imposed.\n\nCan be overridden on a sync or restore call.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferSetting",
+          "JsonName": "transfer_setting",
+          "Description": "* DEFAULT:\n    * pack size given by `$RESTIC_PACK_SIZE` (default 16 MiB)\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* PERFORMANCE:\n    * pack size = 29 MiB\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* FAST_STORAGE:\n    * pack size = 58 MiB\n    * read concurrency = 100 files",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudBackupUpdateDataTransferSetting"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "CloudBackupQueryResultItemTransferSetting",
+      "SchemaName": "CloudBackupQueryResultItemTransferSetting",
+      "Description": "* DEFAULT:\n    * pack size given by `$RESTIC_PACK_SIZE` (default 16 MiB)\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* PERFORMANCE:\n    * pack size = 29 MiB\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* FAST_STORAGE:\n    * pack size = 58 MiB\n    * read concurrency = 100 files",
+      "Values": [
+        {
+          "Name": "CloudBackupQueryResultItemTransferSettingDEFAULT",
+          "Value": "DEFAULT"
+        },
+        {
+          "Name": "CloudBackupQueryResultItemTransferSettingPERFORMANCE",
+          "Value": "PERFORMANCE"
+        },
+        {
+          "Name": "CloudBackupQueryResultItemTransferSettingFASTSTORAGE",
+          "Value": "FAST_STORAGE"
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupSnapshotItemType",
+      "SchemaName": "CloudBackupSnapshotItemType",
+      "Description": "Directory or file.",
+      "Values": [
+        {
+          "Name": "CloudBackupSnapshotItemTypeDir",
+          "Value": "dir"
+        },
+        {
+          "Name": "CloudBackupSnapshotItemTypeFile",
+          "Value": "file"
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupTransferSetting",
+      "SchemaName": "CloudBackupTransferSetting",
+      "Description": "* DEFAULT:\n    * pack size given by `$RESTIC_PACK_SIZE` (default 16 MiB)\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* PERFORMANCE:\n    * pack size = 29 MiB\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* FAST_STORAGE:\n    * pack size = 58 MiB\n    * read concurrency = 100 files",
+      "Values": [
+        {
+          "Name": "CloudBackupTransferSettingDEFAULT",
+          "Value": "DEFAULT"
+        },
+        {
+          "Name": "CloudBackupTransferSettingPERFORMANCE",
+          "Value": "PERFORMANCE"
+        },
+        {
+          "Name": "CloudBackupTransferSettingFASTSTORAGE",
+          "Value": "FAST_STORAGE"
+        }
+      ]
+    },
+    {
+      "Name": "CloudBackupUpdateDataTransferSetting",
+      "SchemaName": "CloudBackupUpdateDataTransferSetting",
+      "Description": "* DEFAULT:\n    * pack size given by `$RESTIC_PACK_SIZE` (default 16 MiB)\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* PERFORMANCE:\n    * pack size = 29 MiB\n    * read concurrency given by `$RESTIC_READ_CONCURRENCY` (default 2 files)\n\n* FAST_STORAGE:\n    * pack size = 58 MiB\n    * read concurrency = 100 files",
+      "Values": [
+        {
+          "Name": "CloudBackupUpdateDataTransferSettingDEFAULT",
+          "Value": "DEFAULT"
+        },
+        {
+          "Name": "CloudBackupUpdateDataTransferSettingPERFORMANCE",
+          "Value": "PERFORMANCE"
+        },
+        {
+          "Name": "CloudBackupUpdateDataTransferSettingFASTSTORAGE",
+          "Value": "FAST_STORAGE"
+        }
+      ]
+    }
+  ]
+}

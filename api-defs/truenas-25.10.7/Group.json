@@ -1,0 +1,1086 @@
+{
+  "Name": "Group",
+  "Tag": "group",
+  "Operations": [
+    {
+      "Name": "GroupCreate",
+      "OperationId": "group.create",
+      "Method": "CALL",
+      "Path": "group.create",
+      "Description": "Create a new group.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.create",
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "group_create",
+          "Argument": "groupCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupCreate"
+          },
+          "Required": true,
+          "Description": "Group configuration data for the new group."
+        }
+      ]
+    },
+    {
+      "Name": "GroupDelete",
+      "OperationId": "group.delete",
+      "Method": "CALL",
+      "Path": "group.delete",
+      "Description": "Delete group `id`.\n\nThe `delete_users` option deletes all users that have this group as their primary group.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.delete",
+        "Item": true,
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "API identifier of the group to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupDeleteOptions"
+          },
+          "Description": "Options controlling group deletion behavior."
+        }
+      ]
+    },
+    {
+      "Name": "GroupGetGroupObj",
+      "OperationId": "group.get_group_obj",
+      "Method": "CALL",
+      "Path": "group.get_group_obj",
+      "Description": "Returns dictionary containing information from struct grp for the group specified by either\nthe `groupname` or `gid`.\n\nIf `sid_info` is specified then addition SMB / domain information is returned for the\ngroup.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "GroupGetGroupObjAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.get_group_obj",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "get_group_obj",
+          "Argument": "getGroupObj",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GetGroupObj"
+          },
+          "Required": true,
+          "Description": "GroupGetGroupObjArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "GroupGetInstance",
+      "OperationId": "group.get_instance",
+      "Method": "CALL",
+      "Path": "group.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "GroupGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.get_instance",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "GroupGetNextGid",
+      "OperationId": "group.get_next_gid",
+      "Method": "CALL",
+      "Path": "group.get_next_gid",
+      "Description": "Get the next available/free gid.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.get_next_gid",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "GroupHasPasswordEnabledUser",
+      "OperationId": "group.has_password_enabled_user",
+      "Method": "CALL",
+      "Path": "group.has_password_enabled_user",
+      "Description": "Checks whether at least one local user with a password is a member of any of the `group_ids`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.has_password_enabled_user",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "gids",
+          "Argument": "gids",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          },
+          "Required": true,
+          "Description": "Array of group IDs to check for password-enabled users."
+        },
+        {
+          "Name": "exclude_user_ids",
+          "Argument": "excludeUserIds",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          },
+          "Description": "Array of user IDs to exclude from the check."
+        }
+      ]
+    },
+    {
+      "Name": "GroupQuery",
+      "OperationId": "group.query",
+      "Method": "CALL",
+      "Path": "group.query",
+      "Description": "Query groups with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "GroupQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "GroupQueryCount",
+      "OperationId": "group.query#count",
+      "Method": "CALL",
+      "Path": "group.query#count",
+      "Description": "Query groups with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "GroupQueryOne",
+      "OperationId": "group.query#get",
+      "Method": "CALL",
+      "Path": "group.query#get",
+      "Description": "Query groups with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "GroupQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "GroupUpdate",
+      "OperationId": "group.update",
+      "Method": "CALL",
+      "Path": "group.update",
+      "Description": "Update attributes of an existing group.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "group.update",
+        "Item": true,
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "The API identifier of the group to update."
+        },
+        {
+          "Name": "group_update",
+          "Argument": "groupUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupUpdate"
+          },
+          "Required": true,
+          "Description": "Updated group configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "GetGroupObj",
+      "SchemaName": "GetGroupObj",
+      "Description": "GroupGetGroupObjArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Group ID to look up or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Groupname",
+          "JsonName": "groupname",
+          "Description": "Name of the group to look up or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SidInfo",
+          "JsonName": "sid_info",
+          "Description": "Whether to include SID information in the response.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupCreate",
+      "SchemaName": "GroupCreate",
+      "Description": "Group configuration data for the new group.",
+      "Fields": [
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "If `null`, it is automatically filled with the next one available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "If set to `True`, the group can be used for SMB share ACL entries. The group is mapped to an NT group account     on the TrueNAS SMB server and has a `sid` value.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is not prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subgid mapping for this group. If DIRECT then the GID will be     directly mapped to all containers. Alternatively, the target GID may be     explicitly specified. If null, then the GID will not be mapped.\n\n**NOTE: This field will be ignored for groups that have been assigned TrueNAS roles.**",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Users",
+          "JsonName": "users",
+          "Description": "A list a API user identifiers for local users who are members of this group. These IDs match the `id` field     from `user.query`.\n\nNOTE: This field is empty for groups that come from directory services (`local` is `False`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupDeleteOptions",
+      "SchemaName": "GroupDeleteOptions",
+      "Description": "Options controlling group deletion behavior.",
+      "Fields": [
+        {
+          "Name": "DeleteUsers",
+          "JsonName": "delete_users",
+          "Description": "Deletes all users that have this group as their primary group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupGetGroupObjAnswer",
+      "SchemaName": "GroupGetGroupObjAnswer",
+      "Description": "GroupGetGroupObjResult return fields.",
+      "Fields": [
+        {
+          "Name": "GrGid",
+          "JsonName": "gr_gid",
+          "Description": "Group ID of the group.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "GrMem",
+          "JsonName": "gr_mem",
+          "Description": "List of group names that are members of the group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "GrName",
+          "JsonName": "gr_name",
+          "Description": "Name of the group.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "This group is local to the NAS or provided by a directory service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "Optional SID value for the account that is present if `sid_info` is specified in payload.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "The name server switch module that provided the user. Options are:\n\n* FILES: Local user in passwd file of server.\n* WINBIND: User provided by winbindd.\n* SSS: User provided by SSSD.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GroupGetGroupObjAnswerSource"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupGetInstanceAnswer",
+      "SchemaName": "GroupGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "If `True`, the group is an internal system account for the TrueNAS server. Typically, one should     create dedicated groups for access to the TrueNAS server webui and shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "A non-negative integer used to identify a group. TrueNAS uses this value for permission checks and many other     system purposes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "A string used to identify a group. Identical to the `name` key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "This is the API identifier for the group. Use this ID for `group.update` and `group.delete` API calls. This ID     also appears in the `groups` array for each user entry in `user.query` results.\n\nNOTE: For groups from a directory service, the `id` is calculated by adding 100000000 to the `gid`. This ensures     consistent API results. You cannot change directory service accounts through TrueNAS.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "This is a read-only field showing if the group entry can be changed. If `True`, the group is immutable and     cannot be changed. If `False`, the group can be changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "If `True`, the group is local to the TrueNAS server. If `False`, the group is provided by a directory service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "A string used to identify a group.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "List of roles assigned to this groups. Roles control administrative access to TrueNAS through the web UI and     API. You can change group roles by using `privilege.create`, `privilege.update`, and `privilege.delete`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "The Security Identifier (SID) of the user if the account an `smb` account. The SMB server uses this value to     check share access and for other purposes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "If set to `True`, the group can be used for SMB share ACL entries. The group is mapped to an NT group account     on the TrueNAS SMB server and has a `sid` value.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is not prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subgid mapping for this group. If DIRECT then the GID will be     directly mapped to all containers. Alternatively, the target GID may be     explicitly specified. If null, then the GID will not be mapped.\n\n**NOTE: This field will be ignored for groups that have been assigned TrueNAS roles.**",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Users",
+          "JsonName": "users",
+          "Description": "A list a API user identifiers for local users who are members of this group. These IDs match the `id` field     from `user.query`.\n\nNOTE: This field is empty for groups that come from directory services (`local` is `False`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupGetInstanceOptions",
+      "SchemaName": "GroupGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupQueryOptions",
+      "SchemaName": "GroupQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupQueryResultItem",
+      "SchemaName": "GroupQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "If `True`, the group is an internal system account for the TrueNAS server. Typically, one should     create dedicated groups for access to the TrueNAS server webui and shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "A non-negative integer used to identify a group. TrueNAS uses this value for permission checks and many other     system purposes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "A string used to identify a group. Identical to the `name` key.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "This is the API identifier for the group. Use this ID for `group.update` and `group.delete` API calls. This ID     also appears in the `groups` array for each user entry in `user.query` results.\n\nNOTE: For groups from a directory service, the `id` is calculated by adding 100000000 to the `gid`. This ensures     consistent API results. You cannot change directory service accounts through TrueNAS.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "This is a read-only field showing if the group entry can be changed. If `True`, the group is immutable and     cannot be changed. If `False`, the group can be changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "If `True`, the group is local to the TrueNAS server. If `False`, the group is provided by a directory service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "A string used to identify a group.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "List of roles assigned to this groups. Roles control administrative access to TrueNAS through the web UI and     API. You can change group roles by using `privilege.create`, `privilege.update`, and `privilege.delete`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "The Security Identifier (SID) of the user if the account an `smb` account. The SMB server uses this value to     check share access and for other purposes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "If set to `True`, the group can be used for SMB share ACL entries. The group is mapped to an NT group account     on the TrueNAS SMB server and has a `sid` value.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is not prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subgid mapping for this group. If DIRECT then the GID will be     directly mapped to all containers. Alternatively, the target GID may be     explicitly specified. If null, then the GID will not be mapped.\n\n**NOTE: This field will be ignored for groups that have been assigned TrueNAS roles.**",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Users",
+          "JsonName": "users",
+          "Description": "A list a API user identifiers for local users who are members of this group. These IDs match the `id` field     from `user.query`.\n\nNOTE: This field is empty for groups that come from directory services (`local` is `False`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GroupUpdate",
+      "SchemaName": "GroupUpdate",
+      "Description": "Updated group configuration data.",
+      "Fields": [
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "A string used to identify a group.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "If set to `True`, the group can be used for SMB share ACL entries. The group is mapped to an NT group account     on the TrueNAS SMB server and has a `sid` value.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "A list of commands that group members may execute with elevated privileges. User is not prompted for password     when executing any command from the list.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subgid mapping for this group. If DIRECT then the GID will be     directly mapped to all containers. Alternatively, the target GID may be     explicitly specified. If null, then the GID will not be mapped.\n\n**NOTE: This field will be ignored for groups that have been assigned TrueNAS roles.**",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Users",
+          "JsonName": "users",
+          "Description": "A list a API user identifiers for local users who are members of this group. These IDs match the `id` field     from `user.query`.\n\nNOTE: This field is empty for groups that come from directory services (`local` is `False`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "GroupGetGroupObjAnswerSource",
+      "SchemaName": "GroupGetGroupObjAnswerSource",
+      "Description": "The name server switch module that provided the user. Options are:\n\n* FILES: Local user in passwd file of server.\n* WINBIND: User provided by winbindd.\n* SSS: User provided by SSSD.",
+      "Values": [
+        {
+          "Name": "GroupGetGroupObjAnswerSourceLOCAL",
+          "Value": "LOCAL"
+        },
+        {
+          "Name": "GroupGetGroupObjAnswerSourceACTIVEDIRECTORY",
+          "Value": "ACTIVEDIRECTORY"
+        },
+        {
+          "Name": "GroupGetGroupObjAnswerSourceLDAP",
+          "Value": "LDAP"
+        }
+      ]
+    }
+  ]
+}

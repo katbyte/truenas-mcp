@@ -1,0 +1,743 @@
+{
+  "Name": "Update",
+  "Tag": "update",
+  "Operations": [
+    {
+      "Name": "UpdateAvailableVersions",
+      "OperationId": "update.available_versions",
+      "Method": "CALL",
+      "Path": "update.available_versions",
+      "Description": "TrueNAS versions available for update.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateAvailableVersion"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.available_versions",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_UPDATE_READ",
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpdateConfig",
+      "OperationId": "update.config",
+      "Method": "CALL",
+      "Path": "update.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UpdateConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_UPDATE_READ",
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpdateDownload",
+      "OperationId": "update.download",
+      "Method": "CALL",
+      "Path": "update.download",
+      "Description": "Download updates.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.download",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "train",
+          "Argument": "train",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Specifies the train from which to download the update. If both `train` and `version` are `null``, the most     recent version that matches the currently selected update profile is used."
+        },
+        {
+          "Name": "version",
+          "Argument": "version",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Specific version to download. `null` to download the latest version from the specified train."
+        }
+      ]
+    },
+    {
+      "Name": "UpdateFile",
+      "OperationId": "update.file",
+      "Method": "CALL",
+      "Path": "update.file",
+      "Description": "Updates the system using the uploaded .tar file.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.file",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateFileOptions"
+          },
+          "Description": "Options for controlling the manual update file upload process."
+        }
+      ]
+    },
+    {
+      "Name": "UpdateManual",
+      "OperationId": "update.manual",
+      "Method": "CALL",
+      "Path": "update.manual",
+      "Description": "Update the system using a manual update file.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.manual",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The absolute path to the update file."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateManualOptions"
+          },
+          "Description": "Options for controlling the manual update process."
+        }
+      ]
+    },
+    {
+      "Name": "UpdateProfileChoices",
+      "OperationId": "update.profile_choices",
+      "Method": "CALL",
+      "Path": "update.profile_choices",
+      "Description": "`profile` choices for configuration update.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateProfileChoice"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.profile_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_UPDATE_READ",
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpdateRun",
+      "OperationId": "update.run",
+      "Method": "CALL",
+      "Path": "update.run",
+      "Description": "Downloads (if not already in cache) and apply an update.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.run",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "attrs",
+          "Argument": "attrs",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateRunAttrs"
+          },
+          "Description": "Attributes controlling the system update execution process."
+        }
+      ]
+    },
+    {
+      "Name": "UpdateStatus",
+      "OperationId": "update.status",
+      "Method": "CALL",
+      "Path": "update.status",
+      "Description": "Update status.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UpdateStatusAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.status",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_UPDATE_READ",
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpdateUpdate",
+      "OperationId": "update.update",
+      "Method": "CALL",
+      "Path": "update.update",
+      "Description": "Update update configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UpdateUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "update.update",
+        "Roles": [
+          "SYSTEM_UPDATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration for system update settings."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "UpdateAvailableVersion",
+      "SchemaName": "UpdateAvailableVersion",
+      "Fields": [
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "Train that provides this version.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "Detailed information about this available version.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateStatusNewVersion"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateConfigAnswer",
+      "SchemaName": "UpdateConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Autocheck",
+          "JsonName": "autocheck",
+          "Description": "Automatically check and download updates every night.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the update configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Profile",
+          "JsonName": "profile",
+          "Description": "Update profile used for the system.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateDownloadProgress",
+      "SchemaName": "UpdateDownloadProgress",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the current download activity.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Percent",
+          "JsonName": "percent",
+          "Description": "Download completion percentage (0.0 to 100.0).",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "Version number being downloaded.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateFileOptions",
+      "SchemaName": "UpdateFileOptions",
+      "Description": "Options for controlling the manual update file upload process.",
+      "Fields": [
+        {
+          "Name": "Destination",
+          "JsonName": "destination",
+          "Description": "Create a temporary location by default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Resume",
+          "JsonName": "resume",
+          "Description": "Should be set to `true` if a previous call to this method returned a `CallError` with `errno=EAGAIN` meaning     that an upgrade can be performed with a warning and that warning is accepted. In that case, re-uploading the file     is not necessary.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateManualOptions",
+      "SchemaName": "UpdateManualOptions",
+      "Description": "Options for controlling the manual update process.",
+      "Fields": [
+        {
+          "Name": "Cleanup",
+          "JsonName": "cleanup",
+          "Description": "If set to `false`, the manual update file won't be removed on update success and newly created BE won't be     removed on update failure (useful for debugging purposes).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "DatasetName",
+          "JsonName": "dataset_name",
+          "Description": "Name of the ZFS dataset to use for the new boot environment. `null` for automatic naming.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Resume",
+          "JsonName": "resume",
+          "Description": "Should be set to `true` if a previous call to this method returned a `CallError` with `errno=EAGAIN` meaning     that an upgrade can be performed with a warning and that warning is accepted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateProfileChoice",
+      "SchemaName": "UpdateProfileChoice",
+      "Fields": [
+        {
+          "Name": "Available",
+          "JsonName": "available",
+          "Description": "Whether profile is available for selection.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Profile description.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Footnote",
+          "JsonName": "footnote",
+          "Description": "Profile footnote.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Profile name.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateRunAttrs",
+      "SchemaName": "UpdateRunAttrs",
+      "Description": "Attributes controlling the system update execution process.",
+      "Fields": [
+        {
+          "Name": "DatasetName",
+          "JsonName": "dataset_name",
+          "Description": "Name of the ZFS dataset to use for the new boot environment. `null` for automatic naming.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Reboot",
+          "JsonName": "reboot",
+          "Description": "Whether to automatically reboot the system after applying the update.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Resume",
+          "JsonName": "resume",
+          "Description": "Should be set to `true` if a previous call to this method returned a `CallError` with `errno=EAGAIN` meaning     that an upgrade can be performed with a warning and that warning is accepted. In that case, update process will     be continued using an already downloaded file without performing any extra checks.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "Specifies the train from which to download the update. If both `train` and `version` are `null``, the most     recent version that matches the currently selected update profile is used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "Specific version to update to. `null` to use the latest version from the specified train.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "UpdateStatusAnswer",
+      "SchemaName": "UpdateStatusAnswer",
+      "Description": "Current system update status and availability information.",
+      "Fields": [
+        {
+          "Name": "Code",
+          "JsonName": "code",
+          "Description": "Status code:\n* NORMAL - normal status, see `status` dictionary for details.\n* ERROR - an error occurred, see `error` for details.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateStatusAnswerCode"
+          }
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if code is ERROR. `null` otherwise.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateStatusError"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Detailed update status information. `null` if code is ERROR.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateStatusStatus"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UpdateDownloadProgress",
+          "JsonName": "update_download_progress",
+          "Description": "Current update download progress.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateDownloadProgress"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "UpdateStatusError",
+      "SchemaName": "UpdateStatusError",
+      "Fields": [
+        {
+          "Name": "Errname",
+          "JsonName": "errname",
+          "Description": "Error code (i.e. ENONET).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Reason",
+          "JsonName": "reason",
+          "Description": "Error text.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateStatusNewVersion",
+      "SchemaName": "UpdateStatusNewVersion",
+      "Description": "Detailed information about this available version.",
+      "Fields": [
+        {
+          "Name": "Manifest",
+          "JsonName": "manifest",
+          "Description": "Object containing detailed version information and metadata.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ReleaseNotes",
+          "JsonName": "release_notes",
+          "Description": "Release notes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ReleaseNotesUrl",
+          "JsonName": "release_notes_url",
+          "Description": "Release notes URL.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "Newly available version number.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateStatusStatus",
+      "SchemaName": "UpdateStatusStatus",
+      "Fields": [
+        {
+          "Name": "CurrentVersion",
+          "JsonName": "current_version",
+          "Description": "Currently running system version information.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateStatusStatusCurrentVersion"
+          }
+        },
+        {
+          "Name": "NewVersion",
+          "JsonName": "new_version",
+          "Description": "New system version information (or `null` if no new system version is available).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpdateStatusNewVersion"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "UpdateStatusStatusCurrentVersion",
+      "SchemaName": "UpdateStatusStatusCurrentVersion",
+      "Description": "Currently running system version information.",
+      "Fields": [
+        {
+          "Name": "MatchesProfile",
+          "JsonName": "matches_profile",
+          "Description": "Whether the system version running matches the configured update profile.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Profile",
+          "JsonName": "profile",
+          "Description": "Update profile assigned for the version.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "Train name.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateUpdateAnswer",
+      "SchemaName": "UpdateUpdateAnswer",
+      "Description": "The updated system update configuration.",
+      "Fields": [
+        {
+          "Name": "Autocheck",
+          "JsonName": "autocheck",
+          "Description": "Automatically check and download updates every night.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the update configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Profile",
+          "JsonName": "profile",
+          "Description": "Update profile used for the system.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpdateUpdateData",
+      "SchemaName": "UpdateUpdateData",
+      "Description": "Updated configuration for system update settings.",
+      "Fields": [
+        {
+          "Name": "Autocheck",
+          "JsonName": "autocheck",
+          "Description": "Automatically check and download updates every night.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Profile",
+          "JsonName": "profile",
+          "Description": "Update profile used for the system.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "UpdateStatusAnswerCode",
+      "SchemaName": "UpdateStatusAnswerCode",
+      "Description": "Status code:\n* NORMAL - normal status, see `status` dictionary for details.\n* ERROR - an error occurred, see `error` for details.",
+      "Values": [
+        {
+          "Name": "UpdateStatusAnswerCodeNORMAL",
+          "Value": "NORMAL"
+        },
+        {
+          "Name": "UpdateStatusAnswerCodeERROR",
+          "Value": "ERROR"
+        }
+      ]
+    }
+  ]
+}

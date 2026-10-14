@@ -1,0 +1,488 @@
+{
+  "Name": "NvmetGlobal",
+  "Tag": "nvmet.global",
+  "Operations": [
+    {
+      "Name": "NvmetGlobalConfig",
+      "OperationId": "nvmet.global.config",
+      "Method": "CALL",
+      "Path": "nvmet.global.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NvmetGlobalConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.global.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "NvmetGlobalSessions",
+      "OperationId": "nvmet.global.sessions",
+      "Method": "CALL",
+      "Path": "nvmet.global.sessions",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetGlobalSessionsItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.global.sessions",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetGlobalSessionsOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetGlobalSessionsCount",
+      "OperationId": "nvmet.global.sessions#count",
+      "Method": "CALL",
+      "Path": "nvmet.global.sessions#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.global.sessions",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetGlobalSessionsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetGlobalSessionsOne",
+      "OperationId": "nvmet.global.sessions#get",
+      "Method": "CALL",
+      "Path": "nvmet.global.sessions#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetGlobalSessionsItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.global.sessions",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetGlobalSessionsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetGlobalUpdate",
+      "OperationId": "nvmet.global.update",
+      "Method": "CALL",
+      "Path": "nvmet.global.update",
+      "Description": "Update NVMe target global config.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NvmetGlobalUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.global.update",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nvmet_update",
+          "Argument": "nvmetUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetUpdate"
+          },
+          "Required": true,
+          "Description": "NVMetGlobalUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NVMetGlobalSessionsItemQueryResultItem",
+      "SchemaName": "NVMetGlobalSessionsItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Ctrl",
+          "JsonName": "ctrl",
+          "Description": "NVMe controller number.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "HostTraddr",
+          "JsonName": "host_traddr",
+          "Description": "Address of the connected host. For example an IP address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostnqn",
+          "JsonName": "hostnqn",
+          "Description": "NQN of the connected host.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PortId",
+          "JsonName": "port_id",
+          "Description": "`id` of the port on this TrueNAS through which the host is connected.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SubsysId",
+          "JsonName": "subsys_id",
+          "Description": "`id` of the subsystem on this TrueNAS that the host is connected to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetGlobalConfigAnswer",
+      "SchemaName": "NvmetGlobalConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Ana",
+          "JsonName": "ana",
+          "Description": "Asymmetric Namespace Access (ANA) enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Basenqn",
+          "JsonName": "basenqn",
+          "Description": "NQN to be used as the prefix on the creation of a subsystem, if a subnqn is not supplied to `nvmet.subsys.create`.\n\nModifying this value will *not* change the subnqn of any existing subsystems.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the NVMe-oF global configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kernel",
+          "JsonName": "kernel",
+          "Description": "Select the NVMe-oF backend.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Rdma",
+          "JsonName": "rdma",
+          "Description": "RDMA is enabled for NVMe-oF.\n\nEnabling is limited to TrueNAS Enterprise-licensed systems and requires the system and network environment have     Remote Direct Memory Access (RDMA)-capable hardware.\n\nOnce enabled one or more `ports` may be configured with RDMA selected as the transport. See `nvmet.port.create`.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "XportReferral",
+          "JsonName": "xport_referral",
+          "Description": "Controls whether cross-port referrals will be generated for ports on this TrueNAS.\n\nIf ANA is active then referrals will always be generated between the peer ports on each TrueNAS controller node.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetGlobalSessionsOptions",
+      "SchemaName": "NvmetGlobalSessionsOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetGlobalUpdateAnswer",
+      "SchemaName": "NvmetGlobalUpdateAnswer",
+      "Description": "The updated NVMe-oF global configuration.",
+      "Fields": [
+        {
+          "Name": "Ana",
+          "JsonName": "ana",
+          "Description": "Asymmetric Namespace Access (ANA) enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Basenqn",
+          "JsonName": "basenqn",
+          "Description": "NQN to be used as the prefix on the creation of a subsystem, if a subnqn is not supplied to `nvmet.subsys.create`.\n\nModifying this value will *not* change the subnqn of any existing subsystems.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the NVMe-oF global configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kernel",
+          "JsonName": "kernel",
+          "Description": "Select the NVMe-oF backend.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Rdma",
+          "JsonName": "rdma",
+          "Description": "RDMA is enabled for NVMe-oF.\n\nEnabling is limited to TrueNAS Enterprise-licensed systems and requires the system and network environment have     Remote Direct Memory Access (RDMA)-capable hardware.\n\nOnce enabled one or more `ports` may be configured with RDMA selected as the transport. See `nvmet.port.create`.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "XportReferral",
+          "JsonName": "xport_referral",
+          "Description": "Controls whether cross-port referrals will be generated for ports on this TrueNAS.\n\nIf ANA is active then referrals will always be generated between the peer ports on each TrueNAS controller node.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetUpdate",
+      "SchemaName": "NvmetUpdate",
+      "Description": "NVMetGlobalUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Ana",
+          "JsonName": "ana",
+          "Description": "Asymmetric Namespace Access (ANA) enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Basenqn",
+          "JsonName": "basenqn",
+          "Description": "NQN to be used as the prefix on the creation of a subsystem, if a subnqn is not supplied to `nvmet.subsys.create`.\n\nModifying this value will *not* change the subnqn of any existing subsystems.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Kernel",
+          "JsonName": "kernel",
+          "Description": "Select the NVMe-oF backend.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Rdma",
+          "JsonName": "rdma",
+          "Description": "RDMA is enabled for NVMe-oF.\n\nEnabling is limited to TrueNAS Enterprise-licensed systems and requires the system and network environment have     Remote Direct Memory Access (RDMA)-capable hardware.\n\nOnce enabled one or more `ports` may be configured with RDMA selected as the transport. See `nvmet.port.create`.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "XportReferral",
+          "JsonName": "xport_referral",
+          "Description": "Controls whether cross-port referrals will be generated for ports on this TrueNAS.\n\nIf ANA is active then referrals will always be generated between the peer ports on each TrueNAS controller node.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

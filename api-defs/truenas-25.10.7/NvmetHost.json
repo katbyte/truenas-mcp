@@ -1,0 +1,771 @@
+{
+  "Name": "NvmetHost",
+  "Tag": "nvmet.host",
+  "Operations": [
+    {
+      "Name": "NvmetHostCreate",
+      "OperationId": "nvmet.host.create",
+      "Method": "CALL",
+      "Path": "nvmet.host.create",
+      "Description": "Create an NVMe target `host`.\n\nThis may be then be associated with one or more `subsystems` to control access.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetHostQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nvmet_host_create",
+          "Argument": "nvmetHostCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostCreate"
+          },
+          "Required": true,
+          "Description": "NVMe-oF host configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostDelete",
+      "OperationId": "nvmet.host.delete",
+      "Method": "CALL",
+      "Path": "nvmet.host.delete",
+      "Description": "Delete NVMe target `host` of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NVMe-oF host to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DeleteOptions"
+          },
+          "Description": "Options controlling host deletion behavior."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostDhchapDhgroupChoices",
+      "OperationId": "nvmet.host.dhchap_dhgroup_choices",
+      "Method": "CALL",
+      "Path": "nvmet.host.dhchap_dhgroup_choices",
+      "Description": "Returns possible choices for `dhchap_dhgroup` attribute of `host` create and update.\nNone is an additional choice.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.dhchap_dhgroup_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "NvmetHostDhchapHashChoices",
+      "OperationId": "nvmet.host.dhchap_hash_choices",
+      "Method": "CALL",
+      "Path": "nvmet.host.dhchap_hash_choices",
+      "Description": "Returns possible choices for `dhchap_hash` attribute of `host` create and update.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.dhchap_hash_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "NvmetHostGenerateKey",
+      "OperationId": "nvmet.host.generate_key",
+      "Method": "CALL",
+      "Path": "nvmet.host.generate_key",
+      "Description": "Generate a secret key that may be used when configuring `host` authentication.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.generate_key",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dhchap_hash",
+          "Argument": "dhchapHash",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostGenerateKeyDhchapHash"
+          },
+          "Description": "Hash to be used with the generated key."
+        },
+        {
+          "Name": "nqn",
+          "Argument": "nqn",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "NQN to be used for the transformation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostGetInstance",
+      "OperationId": "nvmet.host.get_instance",
+      "Method": "CALL",
+      "Path": "nvmet.host.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetHostQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostQuery",
+      "OperationId": "nvmet.host.query",
+      "Method": "CALL",
+      "Path": "nvmet.host.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetHostQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostQueryCount",
+      "OperationId": "nvmet.host.query#count",
+      "Method": "CALL",
+      "Path": "nvmet.host.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostQueryOne",
+      "OperationId": "nvmet.host.query#get",
+      "Method": "CALL",
+      "Path": "nvmet.host.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetHostQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostUpdate",
+      "OperationId": "nvmet.host.update",
+      "Method": "CALL",
+      "Path": "nvmet.host.update",
+      "Description": "Update NVMe target `host` of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetHostQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.host.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NVMe-oF host to update."
+        },
+        {
+          "Name": "nvmet_host_update",
+          "Argument": "nvmetHostUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostUpdate"
+          },
+          "Required": true,
+          "Description": "Updated NVMe-oF host configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NvmetHostCreate",
+      "SchemaName": "NvmetHostCreate",
+      "Description": "NVMe-oF host configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "DhchapCtrlKey",
+          "JsonName": "dhchap_ctrl_key",
+          "Description": "If set, the secret that this TrueNAS will present to the host when the host is connecting (Bi-Directional     Authentication).\n\nA suitable secret can be generated using `nvme gen-dhchap-key`, or by using the `nvmet.host.generate_key` API.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DhchapDhgroup",
+          "JsonName": "dhchap_dhgroup",
+          "Description": "If selected, the DH (Diffie-Hellman) key exchange built on top of CHAP to be used for authentication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostCreateDhchapDhgroup"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DhchapHash",
+          "JsonName": "dhchap_hash",
+          "Description": "HMAC (Hashed Message Authentication Code) to be used in conjunction if a `dhchap_dhgroup` is selected.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostCreateDhchapHash"
+          }
+        },
+        {
+          "Name": "DhchapKey",
+          "JsonName": "dhchap_key",
+          "Description": "If set, the secret that the host must present when connecting.\n\nA suitable secret can be generated using `nvme gen-dhchap-key`, or by using the `nvmet.host.generate_key` API.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hostnqn",
+          "JsonName": "hostnqn",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostGetInstanceOptions",
+      "SchemaName": "NvmetHostGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostQueryOptions",
+      "SchemaName": "NvmetHostQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostUpdate",
+      "SchemaName": "NvmetHostUpdate",
+      "Description": "Updated NVMe-oF host configuration data.",
+      "Fields": [
+        {
+          "Name": "DhchapCtrlKey",
+          "JsonName": "dhchap_ctrl_key",
+          "Description": "If set, the secret that this TrueNAS will present to the host when the host is connecting (Bi-Directional     Authentication).\n\nA suitable secret can be generated using `nvme gen-dhchap-key`, or by using the `nvmet.host.generate_key` API.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DhchapDhgroup",
+          "JsonName": "dhchap_dhgroup",
+          "Description": "If selected, the DH (Diffie-Hellman) key exchange built on top of CHAP to be used for authentication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostUpdateDhchapDhgroup"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DhchapHash",
+          "JsonName": "dhchap_hash",
+          "Description": "HMAC (Hashed Message Authentication Code) to be used in conjunction if a `dhchap_dhgroup` is selected.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetHostUpdateDhchapHash"
+          }
+        },
+        {
+          "Name": "DhchapKey",
+          "JsonName": "dhchap_key",
+          "Description": "If set, the secret that the host must present when connecting.\n\nA suitable secret can be generated using `nvme gen-dhchap-key`, or by using the `nvmet.host.generate_key` API.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hostnqn",
+          "JsonName": "hostnqn",
+          "Description": "NQN of the host that will connect to this TrueNAS.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "NvmetHostCreateDhchapDhgroup",
+      "SchemaName": "NvmetHostCreateDhchapDhgroup",
+      "Values": [
+        {
+          "Name": "NvmetHostCreateDhchapDhgroupN2048BIT",
+          "Value": "2048-BIT"
+        },
+        {
+          "Name": "NvmetHostCreateDhchapDhgroupN3072BIT",
+          "Value": "3072-BIT"
+        },
+        {
+          "Name": "NvmetHostCreateDhchapDhgroupN4096BIT",
+          "Value": "4096-BIT"
+        },
+        {
+          "Name": "NvmetHostCreateDhchapDhgroupN6144BIT",
+          "Value": "6144-BIT"
+        },
+        {
+          "Name": "NvmetHostCreateDhchapDhgroupN8192BIT",
+          "Value": "8192-BIT"
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostCreateDhchapHash",
+      "SchemaName": "NvmetHostCreateDhchapHash",
+      "Description": "HMAC (Hashed Message Authentication Code) to be used in conjunction if a `dhchap_dhgroup` is selected.",
+      "Values": [
+        {
+          "Name": "NvmetHostCreateDhchapHashSHA256",
+          "Value": "SHA-256"
+        },
+        {
+          "Name": "NvmetHostCreateDhchapHashSHA384",
+          "Value": "SHA-384"
+        },
+        {
+          "Name": "NvmetHostCreateDhchapHashSHA512",
+          "Value": "SHA-512"
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostGenerateKeyDhchapHash",
+      "SchemaName": "NvmetHostGenerateKeyDhchapHash",
+      "Description": "Hash to be used with the generated key.",
+      "Values": [
+        {
+          "Name": "NvmetHostGenerateKeyDhchapHashSHA256",
+          "Value": "SHA-256"
+        },
+        {
+          "Name": "NvmetHostGenerateKeyDhchapHashSHA384",
+          "Value": "SHA-384"
+        },
+        {
+          "Name": "NvmetHostGenerateKeyDhchapHashSHA512",
+          "Value": "SHA-512"
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostUpdateDhchapDhgroup",
+      "SchemaName": "NvmetHostUpdateDhchapDhgroup",
+      "Values": [
+        {
+          "Name": "NvmetHostUpdateDhchapDhgroupN2048BIT",
+          "Value": "2048-BIT"
+        },
+        {
+          "Name": "NvmetHostUpdateDhchapDhgroupN3072BIT",
+          "Value": "3072-BIT"
+        },
+        {
+          "Name": "NvmetHostUpdateDhchapDhgroupN4096BIT",
+          "Value": "4096-BIT"
+        },
+        {
+          "Name": "NvmetHostUpdateDhchapDhgroupN6144BIT",
+          "Value": "6144-BIT"
+        },
+        {
+          "Name": "NvmetHostUpdateDhchapDhgroupN8192BIT",
+          "Value": "8192-BIT"
+        }
+      ]
+    },
+    {
+      "Name": "NvmetHostUpdateDhchapHash",
+      "SchemaName": "NvmetHostUpdateDhchapHash",
+      "Description": "HMAC (Hashed Message Authentication Code) to be used in conjunction if a `dhchap_dhgroup` is selected.",
+      "Values": [
+        {
+          "Name": "NvmetHostUpdateDhchapHashSHA256",
+          "Value": "SHA-256"
+        },
+        {
+          "Name": "NvmetHostUpdateDhchapHashSHA384",
+          "Value": "SHA-384"
+        },
+        {
+          "Name": "NvmetHostUpdateDhchapHashSHA512",
+          "Value": "SHA-512"
+        }
+      ]
+    }
+  ]
+}

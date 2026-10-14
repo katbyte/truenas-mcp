@@ -17,6 +17,8 @@ extend-exclude = [
   "**/go.mod", # commit hashes in pinned versions
   "**/go.sum",
   "api-defs/*.json", # TrueNAS's own description of its API, its words and not ours
+  "api-defs/truenas-*/", # the definitions imported from it
+  "sdk/truenas/", # generated from those, names and descriptions as TrueNAS wrote them
 ]
 
 [default]

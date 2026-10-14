@@ -1,0 +1,403 @@
+{
+  "Name": "Kmip",
+  "Tag": "kmip",
+  "Operations": [
+    {
+      "Name": "KmipClearSyncPendingKeys",
+      "OperationId": "kmip.clear_sync_pending_keys",
+      "Method": "CALL",
+      "Path": "kmip.clear_sync_pending_keys",
+      "Description": "Clear all keys which are pending to be synced between KMIP server and TN database.\n\nFor ZFS/SED keys, we remove the UID from local database with which we are able to retrieve ZFS/SED keys.\nIt should be used with caution.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kmip.clear_sync_pending_keys",
+        "Roles": [
+          "KMIP_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "KmipConfig",
+      "OperationId": "kmip.config",
+      "Method": "CALL",
+      "Path": "kmip.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KmipConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kmip.config",
+        "Read": true,
+        "Roles": [
+          "KMIP_READ",
+          "KMIP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "KmipKmipSyncPending",
+      "OperationId": "kmip.kmip_sync_pending",
+      "Method": "CALL",
+      "Path": "kmip.kmip_sync_pending",
+      "Description": "Returns true or false based on if there are keys which are to be synced from local database to remote KMIP\nserver or vice versa.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kmip.kmip_sync_pending",
+        "Read": true,
+        "Roles": [
+          "KMIP_READ",
+          "KMIP_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "KmipSyncKeys",
+      "OperationId": "kmip.sync_keys",
+      "Method": "CALL",
+      "Path": "kmip.sync_keys",
+      "Description": "Sync ZFS/SED keys between KMIP Server and TN database.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kmip.sync_keys",
+        "Roles": [
+          "KMIP_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "KmipUpdate",
+      "OperationId": "kmip.update",
+      "Method": "CALL",
+      "Path": "kmip.update",
+      "Description": "Update KMIP Server Configuration.\n\nSystem currently authenticates connection with remote KMIP Server with a TLS handshake. `certificate` and\n`certificate_authority` determine the certs which will be used to initiate the TLS handshake with `server`.\n\n`validate` is enabled by default. When enabled, system will test connection to `server` making sure\nit's reachable.\n\n`manage_zfs_keys`/`manage_sed_disks` when enabled will sync keys from local database to remote KMIP server.\nWhen disabled, if there are any keys left to be retrieved from the KMIP server,\nit will sync them back to local database.\n\n`enabled` if true, cannot be set to disabled if there are existing keys pending to be synced. However users\ncan still perform this action by enabling `force_clear`.\n\n`ssl_version` can be specified to match the ssl configuration being used by KMIP server.\n\n`change_server` is a boolean field which allows users to migrate data between two KMIP servers. System\nwill first migrate keys from old KMIP server to local database and then migrate the keys from local database\nto new KMIP server. If it is unable to retrieve all the keys from old server, this will fail. Users can bypass\nthis by enabling `force_clear`.\n\n`force_clear` is a boolean option which when enabled will in this case remove all\npending keys to be synced from database. It should be used with extreme caution as users may end up with\nnot having ZFS dataset or SED disks keys leaving them locked forever. It is disabled by default.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KmipUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kmip.update",
+        "Job": true,
+        "Roles": [
+          "KMIP_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "kmip_update",
+          "Argument": "kmipUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KmipUpdate"
+          },
+          "Required": true,
+          "Description": "KMIPUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "KmipConfigAnswer",
+      "SchemaName": "KmipConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "ID of the client certificate for KMIP authentication or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CertificateAuthority",
+          "JsonName": "certificate_authority",
+          "Description": "ID of the certificate authority for server verification or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether KMIP (Key Management Interoperability Protocol) is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the KMIP configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ManageSedDisks",
+          "JsonName": "manage_sed_disks",
+          "Description": "Whether to use KMIP for managing SED (Self-Encrypting Drive) keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ManageZfsKeys",
+          "JsonName": "manage_zfs_keys",
+          "Description": "Whether to use KMIP for managing ZFS encryption keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the KMIP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Server",
+          "JsonName": "server",
+          "Description": "Hostname or IP address of the KMIP server or `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SslVersion",
+          "JsonName": "ssl_version",
+          "Description": "SSL/TLS protocol version to use for KMIP connections.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KmipSslVersion"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KmipUpdate",
+      "SchemaName": "KmipUpdate",
+      "Description": "KMIPUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "ID of the client certificate for KMIP authentication or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CertificateAuthority",
+          "JsonName": "certificate_authority",
+          "Description": "ID of the certificate authority for server verification or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ChangeServer",
+          "JsonName": "change_server",
+          "Description": "Whether the KMIP server configuration is being changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether to enable KMIP functionality.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ForceClear",
+          "JsonName": "force_clear",
+          "Description": "Whether to force clear existing keys when disabling KMIP.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ManageSedDisks",
+          "JsonName": "manage_sed_disks",
+          "Description": "Whether to use KMIP for managing SED (Self-Encrypting Drive) keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ManageZfsKeys",
+          "JsonName": "manage_zfs_keys",
+          "Description": "Whether to use KMIP for managing ZFS encryption keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the KMIP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Server",
+          "JsonName": "server",
+          "Description": "Hostname or IP address of the KMIP server or `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SslVersion",
+          "JsonName": "ssl_version",
+          "Description": "SSL/TLS protocol version to use for KMIP connections.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KmipSslVersion"
+          }
+        },
+        {
+          "Name": "Validate",
+          "JsonName": "validate",
+          "Description": "Whether to validate the KMIP server connection before saving.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KmipUpdateAnswer",
+      "SchemaName": "KmipUpdateAnswer",
+      "Description": "The updated KMIP configuration.",
+      "Fields": [
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "ID of the client certificate for KMIP authentication or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CertificateAuthority",
+          "JsonName": "certificate_authority",
+          "Description": "ID of the certificate authority for server verification or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether KMIP (Key Management Interoperability Protocol) is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the KMIP configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ManageSedDisks",
+          "JsonName": "manage_sed_disks",
+          "Description": "Whether to use KMIP for managing SED (Self-Encrypting Drive) keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ManageZfsKeys",
+          "JsonName": "manage_zfs_keys",
+          "Description": "Whether to use KMIP for managing ZFS encryption keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "TCP port number for the KMIP server connection.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Server",
+          "JsonName": "server",
+          "Description": "Hostname or IP address of the KMIP server or `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SslVersion",
+          "JsonName": "ssl_version",
+          "Description": "SSL/TLS protocol version to use for KMIP connections.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KmipSslVersion"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "KmipSslVersion",
+      "SchemaName": "KmipSslVersion",
+      "Description": "SSL/TLS protocol version to use for KMIP connections.",
+      "Values": [
+        {
+          "Name": "KmipSslVersionPROTOCOLTLSv1",
+          "Value": "PROTOCOL_TLSv1"
+        },
+        {
+          "Name": "KmipSslVersionPROTOCOLTLSv11",
+          "Value": "PROTOCOL_TLSv1_1"
+        },
+        {
+          "Name": "KmipSslVersionPROTOCOLTLSv12",
+          "Value": "PROTOCOL_TLSv1_2"
+        }
+      ]
+    }
+  ]
+}

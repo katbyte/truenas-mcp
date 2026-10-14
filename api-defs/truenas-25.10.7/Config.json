@@ -1,0 +1,123 @@
+{
+  "Name": "Config",
+  "Tag": "config",
+  "Operations": [
+    {
+      "Name": "ConfigReset",
+      "OperationId": "config.reset",
+      "Method": "CALL",
+      "Path": "config.reset",
+      "Description": "Reset database to configuration defaults.\n\nIf `reboot` is true this job will reboot the system after its completed with a delay of 10\nseconds.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "config.reset",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ConfigResetOptions"
+          },
+          "Description": "Options controlling the configuration reset behavior."
+        }
+      ]
+    },
+    {
+      "Name": "ConfigSave",
+      "OperationId": "config.save",
+      "Method": "CALL",
+      "Path": "config.save",
+      "Description": "Create a tar file of security-sensitive information. These options select which information\nis included in the tar file:\n\n`secretseed` bool: When true, include password secret seed.\n`pool_keys` bool: IGNORED and DEPRECATED as it does not apply on SCALE systems.\n`root_authorized_keys` bool: When true, include \"/root/.ssh/authorized_keys\" file for the root user.\n\nIf none of these options are set, the tar file is not generated and the database file is returned.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "config.save",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ConfigSaveOptions"
+          },
+          "Description": "Options controlling what data to include in the configuration backup."
+        }
+      ]
+    },
+    {
+      "Name": "ConfigUpload",
+      "OperationId": "config.upload",
+      "Method": "CALL",
+      "Path": "config.upload",
+      "Description": "Accepts a configuration file via job pipe.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "config.upload",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ],
+        "Uploadable": true
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "ConfigResetOptions",
+      "SchemaName": "ConfigResetOptions",
+      "Description": "Options controlling the configuration reset behavior.",
+      "Fields": [
+        {
+          "Name": "Reboot",
+          "JsonName": "reboot",
+          "Description": "Whether to reboot the system after resetting configuration.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ConfigSaveOptions",
+      "SchemaName": "ConfigSaveOptions",
+      "Description": "Options controlling what data to include in the configuration backup.",
+      "Fields": [
+        {
+          "Name": "PoolKeys",
+          "JsonName": "pool_keys",
+          "Description": "Whether to include encryption keys for storage pools in the backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RootAuthorizedKeys",
+          "JsonName": "root_authorized_keys",
+          "Description": "Whether to include root user's SSH authorized keys in the backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Secretseed",
+          "JsonName": "secretseed",
+          "Description": "Whether to include the secret seed in the configuration backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

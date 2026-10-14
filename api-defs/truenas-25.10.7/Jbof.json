@@ -1,0 +1,646 @@
+{
+  "Name": "Jbof",
+  "Tag": "jbof",
+  "Operations": [
+    {
+      "Name": "JbofCreate",
+      "OperationId": "jbof.create",
+      "Method": "CALL",
+      "Path": "jbof.create",
+      "Description": "Create a new JBOF.\n\nThis will use the supplied Redfish credentials to configure the data plane on\nthe expansion shelf for direct connection to ROCE capable network cards on\nthe TrueNAS head unit.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "JBOFQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.create",
+        "Roles": [
+          "JBOF_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "JbofCreateData"
+          },
+          "Required": true,
+          "Description": "JBOF configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "JbofDelete",
+      "OperationId": "jbof.delete",
+      "Method": "CALL",
+      "Path": "jbof.delete",
+      "Description": "Delete a JBOF by ID.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.delete",
+        "Item": true,
+        "Roles": [
+          "JBOF_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the JBOF to delete."
+        },
+        {
+          "Name": "force",
+          "Argument": "force",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to force deletion even if the JBOF is in use."
+        }
+      ]
+    },
+    {
+      "Name": "JbofGetInstance",
+      "OperationId": "jbof.get_instance",
+      "Method": "CALL",
+      "Path": "jbof.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "JBOFQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.get_instance",
+        "Read": true,
+        "Roles": [
+          "JBOF_READ",
+          "JBOF_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "JbofGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "JbofLicensed",
+      "OperationId": "jbof.licensed",
+      "Method": "CALL",
+      "Path": "jbof.licensed",
+      "Description": "Return a count of the number of JBOF units licensed.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.licensed",
+        "Read": true,
+        "Roles": [
+          "JBOF_READ",
+          "JBOF_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "JbofQuery",
+      "OperationId": "jbof.query",
+      "Method": "CALL",
+      "Path": "jbof.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "JBOFQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "JBOF_READ",
+          "JBOF_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "JbofQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "JbofQueryCount",
+      "OperationId": "jbof.query#count",
+      "Method": "CALL",
+      "Path": "jbof.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "JBOF_READ",
+          "JBOF_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "JbofQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "JbofQueryOne",
+      "OperationId": "jbof.query#get",
+      "Method": "CALL",
+      "Path": "jbof.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "JBOFQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "JBOF_READ",
+          "JBOF_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "JbofQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "JbofReapplyConfig",
+      "OperationId": "jbof.reapply_config",
+      "Method": "CALL",
+      "Path": "jbof.reapply_config",
+      "Description": "Reapply the JBOF configuration to attached JBOFs.\n\nIf an IOM is replaced in a JBOF, then it is expected to be configured to have\nthe same redfish IP, user & password as was previously the case.\n\nThis API can then be called to configure each JBOF with the expected data-plane\nIP configuration, and then attach NVMe drives.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.reapply_config",
+        "Roles": [
+          "JBOF_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "JbofUpdate",
+      "OperationId": "jbof.update",
+      "Method": "CALL",
+      "Path": "jbof.update",
+      "Description": "Update JBOF of `id`",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "JBOFQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "jbof.update",
+        "Item": true,
+        "Roles": [
+          "JBOF_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the JBOF to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "JbofUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated JBOF configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "JBOFQueryResultItem",
+      "SchemaName": "JBOFQueryResultItem",
+      "Description": "The created JBOF configuration.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description of the JBOF.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the JBOF configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Index",
+          "JsonName": "index",
+          "Description": "Index of the JBOF.  Used to determine data plane IP addresses.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MgmtIp1",
+          "JsonName": "mgmt_ip1",
+          "Description": "IP of first Redfish management interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtIp2",
+          "JsonName": "mgmt_ip2",
+          "Description": "Optional IP of second Redfish management interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtPassword",
+          "JsonName": "mgmt_password",
+          "Description": "Redfish administrative password.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtUsername",
+          "JsonName": "mgmt_username",
+          "Description": "Redfish administrative username.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uuid",
+          "JsonName": "uuid",
+          "Description": "UUID of the JBOF as reported by the enclosure firmware.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "JbofCreateData",
+      "SchemaName": "JbofCreateData",
+      "Description": "JBOF configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description of the JBOF.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtIp1",
+          "JsonName": "mgmt_ip1",
+          "Description": "IP of first Redfish management interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtIp2",
+          "JsonName": "mgmt_ip2",
+          "Description": "Optional IP of second Redfish management interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtPassword",
+          "JsonName": "mgmt_password",
+          "Description": "Redfish administrative password.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtUsername",
+          "JsonName": "mgmt_username",
+          "Description": "Redfish administrative username.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "JbofGetInstanceOptions",
+      "SchemaName": "JbofGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "JbofQueryOptions",
+      "SchemaName": "JbofQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "JbofUpdateData",
+      "SchemaName": "JbofUpdateData",
+      "Description": "Updated JBOF configuration data.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description of the JBOF.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtIp1",
+          "JsonName": "mgmt_ip1",
+          "Description": "IP of first Redfish management interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtIp2",
+          "JsonName": "mgmt_ip2",
+          "Description": "Optional IP of second Redfish management interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtPassword",
+          "JsonName": "mgmt_password",
+          "Description": "Redfish administrative password.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MgmtUsername",
+          "JsonName": "mgmt_username",
+          "Description": "Redfish administrative username.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

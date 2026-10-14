@@ -1,0 +1,1145 @@
+{
+  "Name": "ZfsResource",
+  "Tag": "zfs.resource",
+  "Operations": [
+    {
+      "Name": "ZfsResourceQuery",
+      "OperationId": "zfs.resource.query",
+      "Method": "CALL",
+      "Path": "zfs.resource.query",
+      "Description": "Query ZFS resources (datasets and volumes) with flexible filtering options.\n\nThis method provides a high-performance interface for retrieving information         about ZFS resources, including their properties, hierarchical relationships,         and metadata. The query can be customized to retrieve specific resources,         properties, and control the output format.\n\nRaises:\n    ValidationError: If:\n        - Snapshot paths are provided (snapshots not currently supported)\n        - Overlapping paths are provided with get_children=True\n        - Requested paths don't exist (errno.ENOENT)\n\nExamples:\n    # Query all resources with default properties\n    query()\n\n    # Query specific resources with all properties\n    query({\"paths\": [\"tank/documents\", \"tank/media\"]})\n\n    # Query with specific properties and children\n    query({\n        \"paths\": [\"tank\"],\n        \"properties\": [\"mounted\", \"compression\", \"used\"],\n        \"get_children\": True\n    })\n\n    # Get hierarchical view of resources\n    query({\"paths\": [\"tank\"], \"nest_results\": True, \"get_children\": True})",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ZFSResourceEntry"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "zfs.resource.query",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "ZFS_RESOURCE_READ"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ZfsResourceQueryData"
+          },
+          "Description": "Query parameters for retrieving ZFS resource information."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "PropertyValue",
+      "SchemaName": "PropertyValue",
+      "Description": "Determines how ACLs are modified during chmod operations.",
+      "Fields": [
+        {
+          "Name": "Raw",
+          "JsonName": "raw",
+          "Description": "The raw value of the property.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "The source from where this property received its value.",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The parsed raw value of the property.",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SourceValue",
+      "SchemaName": "SourceValue",
+      "Fields": [
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The source type.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SourceValueType"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The source value.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ZFSResourceEntry",
+      "SchemaName": "ZFSResourceEntry",
+      "Fields": [
+        {
+          "Name": "Children",
+          "JsonName": "children",
+          "Description": "The children of this zfs resource.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Createtxg",
+          "JsonName": "createtxg",
+          "Description": "Transaction group when resource was created.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Guid",
+          "JsonName": "guid",
+          "Description": "Globally unique identifier for the resource.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The name of the zfs resource.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "The name of the zpool that the zfs resouce is associated to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Properties",
+          "JsonName": "properties",
+          "Description": "The zfs properties for the resource.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ZFSResourceEntryProperties"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of ZFS resource.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ZFSResourceEntryType"
+          }
+        },
+        {
+          "Name": "UserProperties",
+          "JsonName": "user_properties",
+          "Description": "Custom metadata properties with colon-separated names (max 256 chars).",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ZFSResourceEntryProperties",
+      "SchemaName": "ZFSResourceEntryProperties",
+      "Description": "The zfs properties for the resource.",
+      "Fields": [
+        {
+          "Name": "Aclinherit",
+          "JsonName": "aclinherit",
+          "Description": "Controls how ACEs are inherited for new files/directories.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ZFSResourceEntryPropertiesAclinherit"
+          }
+        },
+        {
+          "Name": "Aclmode",
+          "JsonName": "aclmode",
+          "Description": "Determines how ACLs are modified during chmod operations.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "Specifies type of ACL to use (off, nfsv4, posix).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Atime",
+          "JsonName": "atime",
+          "Description": "Controls whether access time is updated on file reads.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Available",
+          "JsonName": "available",
+          "Description": "Amount of space available to dataset and its children.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Canmount",
+          "JsonName": "canmount",
+          "Description": "Controls whether filesystem can be mounted.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Casesensitivity",
+          "JsonName": "casesensitivity",
+          "Description": "Determines filename matching algorithm sensitivity.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Checksum",
+          "JsonName": "checksum",
+          "Description": "Controls checksum algorithm used to verify data integrity.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Compression",
+          "JsonName": "compression",
+          "Description": "Controls compression algorithm used for this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Compressratio",
+          "JsonName": "compressratio",
+          "Description": "(READ-ONLY): Property showing achieved compression ratio.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Context",
+          "JsonName": "context",
+          "Description": "SELinux security context for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Copies",
+          "JsonName": "copies",
+          "Description": "Controls number of copies of data stored (1, 2, or 3).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Createtxg",
+          "JsonName": "createtxg",
+          "Description": "(READ-ONLY): Transaction group when dataset was created.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Creation",
+          "JsonName": "creation",
+          "Description": "(READ-ONLY): Timestamp when dataset was created.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Dedup",
+          "JsonName": "dedup",
+          "Description": "Controls data deduplication for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defaultgroupobjquota",
+          "JsonName": "defaultgroupobjquota",
+          "Description": "Default object quota for new groups.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defaultgroupquota",
+          "JsonName": "defaultgroupquota",
+          "Description": "Default space quota for new groups.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defaultprojectobjquota",
+          "JsonName": "defaultprojectobjquota",
+          "Description": "Default object quota for new projects.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defaultprojectquota",
+          "JsonName": "defaultprojectquota",
+          "Description": "Default space quota for new projects.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defaultuserobjquota",
+          "JsonName": "defaultuserobjquota",
+          "Description": "Default object quota for new users.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defaultuserquota",
+          "JsonName": "defaultuserquota",
+          "Description": "Default space quota for new users.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Defcontext",
+          "JsonName": "defcontext",
+          "Description": "SELinux default security context for new files.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Devices",
+          "JsonName": "devices",
+          "Description": "Controls whether device files can be opened.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Direct",
+          "JsonName": "direct",
+          "Description": "Controls direct I/O behavior (standard or always).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Dnodesize",
+          "JsonName": "dnodesize",
+          "Description": "Controls dnode size for new objects.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "Controls encryption cipher suite for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Encryptionroot",
+          "JsonName": "encryptionroot",
+          "Description": "(READ-ONLY): Property showing encryption root dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Exec",
+          "JsonName": "exec",
+          "Description": "Controls whether programs can be executed from filesystem.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "FilesystemCount",
+          "JsonName": "filesystem_count",
+          "Description": "(READ-ONLY): Count of child filesystems.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "FilesystemLimit",
+          "JsonName": "filesystem_limit",
+          "Description": "Maximum number of child filesystems allowed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Fscontext",
+          "JsonName": "fscontext",
+          "Description": "SELinux filesystem security context.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Guid",
+          "JsonName": "guid",
+          "Description": "(READ-ONLY): Globally unique identifier for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Keyformat",
+          "JsonName": "keyformat",
+          "Description": "Encryption key format (raw, hex, or passphrase).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Keylocation",
+          "JsonName": "keylocation",
+          "Description": "Location where encryption key is stored.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Keystatus",
+          "JsonName": "keystatus",
+          "Description": "(READ-ONLY): Encryption key status (available/unavailable).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Logbias",
+          "JsonName": "logbias",
+          "Description": "Controls ZIL write behavior (latency or throughput).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Logicalreferenced",
+          "JsonName": "logicalreferenced",
+          "Description": "(READ-ONLY): Logical space referenced by dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Logicalused",
+          "JsonName": "logicalused",
+          "Description": "(READ-ONLY): Logical space used by dataset and descendants.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Longname",
+          "JsonName": "longname",
+          "Description": "Controls support for long filenames.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Mlslabel",
+          "JsonName": "mlslabel",
+          "Description": "Multi-level security label for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Mounted",
+          "JsonName": "mounted",
+          "Description": "(READ-ONLY): Property indicating if filesystem is mounted.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Mountpoint",
+          "JsonName": "mountpoint",
+          "Description": "Controls mount point used for this filesystem.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Nbmand",
+          "JsonName": "nbmand",
+          "Description": "Controls non-blocking mandatory locking behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Normalization",
+          "JsonName": "normalization",
+          "Description": "Unicode normalization property for filenames.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Objsetid",
+          "JsonName": "objsetid",
+          "Description": "(READ-ONLY): Object set identifier for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Origin",
+          "JsonName": "origin",
+          "Description": "(READ-ONLY): Snapshot this dataset was cloned from.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Overlay",
+          "JsonName": "overlay",
+          "Description": "Controls overlay mount behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Pbkdf2iters",
+          "JsonName": "pbkdf2iters",
+          "Description": "Number of PBKDF2 iterations for key derivation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Prefetch",
+          "JsonName": "prefetch",
+          "Description": "Controls prefetch behavior (all, metadata, or none).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Primarycache",
+          "JsonName": "primarycache",
+          "Description": "Controls primary cache usage (all, metadata, or none).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Quota",
+          "JsonName": "quota",
+          "Description": "Limits space consumed by dataset and descendants.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Readonly",
+          "JsonName": "readonly",
+          "Description": "Controls whether dataset can be modified.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "ReceiveResumeToken",
+          "JsonName": "receive_resume_token",
+          "Description": "(READ-ONLY): Token for resuming interrupted zfs receive.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Recordsize",
+          "JsonName": "recordsize",
+          "Description": "Maximum block size for files in this filesystem.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "RedactSnaps",
+          "JsonName": "redact_snaps",
+          "Description": "(READ-ONLY): List of redaction snapshots.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "RedundantMetadata",
+          "JsonName": "redundant_metadata",
+          "Description": "Controls redundant metadata storage (all or most).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Refcompressratio",
+          "JsonName": "refcompressratio",
+          "Description": "(READ-ONLY): Compression ratio for referenced data.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Referenced",
+          "JsonName": "referenced",
+          "Description": "(READ-ONLY): Space referenced by this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Refquota",
+          "JsonName": "refquota",
+          "Description": "Limits space consumed by dataset itself (no descendants).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Refreservation",
+          "JsonName": "refreservation",
+          "Description": "Minimum space reserved for volume itself.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Relatime",
+          "JsonName": "relatime",
+          "Description": "Controls relative access time updates.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Reservation",
+          "JsonName": "reservation",
+          "Description": "Minimum space reserved for dataset and descendants.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Rootcontext",
+          "JsonName": "rootcontext",
+          "Description": "SELinux root directory security context.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Secondarycache",
+          "JsonName": "secondarycache",
+          "Description": "Controls secondary cache usage (all, metadata, or none).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Setuid",
+          "JsonName": "setuid",
+          "Description": "Controls setuid/setgid bit respect on executable files.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Sharenfs",
+          "JsonName": "sharenfs",
+          "Description": "Controls NFS sharing options for the filesystem.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Sharesmb",
+          "JsonName": "sharesmb",
+          "Description": "Controls SMB/CIFS sharing options for the filesystem.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Snapdev",
+          "JsonName": "snapdev",
+          "Description": "Controls snapshot device visibility (hidden or visible).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Snapdir",
+          "JsonName": "snapdir",
+          "Description": "Controls snapshot directory visibility (hidden or visible).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "SnapshotCount",
+          "JsonName": "snapshot_count",
+          "Description": "(READ-ONLY): Count of snapshots in this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "SnapshotLimit",
+          "JsonName": "snapshot_limit",
+          "Description": "Maximum number of snapshots allowed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "SnapshotsChanged",
+          "JsonName": "snapshots_changed",
+          "Description": "(READ-ONLY): Property indicating snapshot changes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "SpecialSmallBlocks",
+          "JsonName": "special_small_blocks",
+          "Description": "Size threshold for storing blocks on special vdevs.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Sync",
+          "JsonName": "sync",
+          "Description": "Controls synchronous write behavior (standard, always, disabled).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "(READ-ONLY): Type of ZFS dataset (filesystem, volume, etc).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Used",
+          "JsonName": "used",
+          "Description": "(READ-ONLY): Space used by dataset and descendants.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Usedbychildren",
+          "JsonName": "usedbychildren",
+          "Description": "(READ-ONLY): Space used by child datasets.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Usedbydataset",
+          "JsonName": "usedbydataset",
+          "Description": "(READ-ONLY): Space used by this dataset itself.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Usedbyrefreservation",
+          "JsonName": "usedbyrefreservation",
+          "Description": "(READ-ONLY): Space used by refreservation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Usedbysnapshots",
+          "JsonName": "usedbysnapshots",
+          "Description": "(READ-ONLY): Space used by snapshots.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Utf8only",
+          "JsonName": "utf8only",
+          "Description": "Controls whether only UTF-8 filenames are allowed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "(READ-ONLY): Filesystem version number.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Volblocksize",
+          "JsonName": "volblocksize",
+          "Description": "Block size for volume (typically 8K or 16K).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Volmode",
+          "JsonName": "volmode",
+          "Description": "Controls volume mode (default, geom, dev, none).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Volsize",
+          "JsonName": "volsize",
+          "Description": "Logical size of the volume.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Volthreading",
+          "JsonName": "volthreading",
+          "Description": "Controls volume threading behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Vscan",
+          "JsonName": "vscan",
+          "Description": "Controls virus scanning behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Written",
+          "JsonName": "written",
+          "Description": "(READ-ONLY): Space referenced since previous snapshot.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Xattr",
+          "JsonName": "xattr",
+          "Description": "Controls extended attribute behavior (on, off, sa, dir).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        },
+        {
+          "Name": "Zoned",
+          "JsonName": "zoned",
+          "Description": "Controls whether filesystem is managed from a zone.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PropertyValue"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ZFSResourceEntryPropertiesAclinherit",
+      "SchemaName": "ZFSResourceEntryPropertiesAclinherit",
+      "Description": "Controls how ACEs are inherited for new files/directories.",
+      "Fields": [
+        {
+          "Name": "Raw",
+          "JsonName": "raw",
+          "Description": "The raw value of the property.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "The source from where this property received its value.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SourceValue"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The parsed raw value of the property.",
+          "Type": {
+            "Type": "Any"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ZfsResourceQueryData",
+      "SchemaName": "ZfsResourceQueryData",
+      "Description": "Query parameters for retrieving ZFS resource information.",
+      "Fields": [
+        {
+          "Name": "GetChildren",
+          "JsonName": "get_children",
+          "Description": "Retrieve children information for the zfs resource.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "GetSource",
+          "JsonName": "get_source",
+          "Description": "Hidden field to retrieve source information for a zfs property.\n\nNOTE: This should only ever be toggled by internal consumers and     you should know what you're doing by toggling this to False.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "GetUserProperties",
+          "JsonName": "get_user_properties",
+          "Description": "Retrieve user properties for zfs resource(s).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "NestResults",
+          "JsonName": "nest_results",
+          "Description": "Return a nested object that associates all children to their     respective parents in the filesystem. By default, each zfs resource     is returned as a separate item in the array and is not associated     to its parent.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Paths",
+          "JsonName": "paths",
+          "Description": "A list of zfs filesystem or volume paths to be queried.     In almost all scenarios, you should provide a path of what you     want to query. By providing path(s) here, it allows the API to     apply optimizations so that the requested information is retrieved     as efficiently and quickly as possible.\n\nExample 1:\n    {\"paths\": [\"tank/foo\"]} will query the relevant information for             this resource only.\nExample 2:\n    {\"paths\": [\"tank/foo\", \"dozer/test\"]} will query the relevant             information for these resources only.\n\nNOTE:\n    paths must be non-overlapping if `get_children` is True.\n    (i.e. this won't work and will raise a validation error)\n        {\n            \"paths\": [\"tank/foo1\", \"tank/foo1/foo2\"],\n            \"get_children\": True\n        }",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Properties",
+          "JsonName": "properties",
+          "Description": "A list of zfs properties to be retrieved. Defaults to an     empty list which will return a default set of zfs properties.\nSetting this to None will retrieve no zfs properties.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SourceValueType",
+      "SchemaName": "SourceValueType",
+      "Description": "The source type.",
+      "Values": [
+        {
+          "Name": "SourceValueTypeNONE",
+          "Value": "NONE"
+        },
+        {
+          "Name": "SourceValueTypeDEFAULT",
+          "Value": "DEFAULT"
+        },
+        {
+          "Name": "SourceValueTypeTEMPORARY",
+          "Value": "TEMPORARY"
+        },
+        {
+          "Name": "SourceValueTypeLOCAL",
+          "Value": "LOCAL"
+        },
+        {
+          "Name": "SourceValueTypeINHERITED",
+          "Value": "INHERITED"
+        },
+        {
+          "Name": "SourceValueTypeRECEIVED",
+          "Value": "RECEIVED"
+        }
+      ]
+    },
+    {
+      "Name": "ZFSResourceEntryType",
+      "SchemaName": "ZFSResourceEntryType",
+      "Description": "The type of ZFS resource.",
+      "Values": [
+        {
+          "Name": "ZFSResourceEntryTypeFILESYSTEM",
+          "Value": "FILESYSTEM"
+        },
+        {
+          "Name": "ZFSResourceEntryTypeVOLUME",
+          "Value": "VOLUME"
+        }
+      ]
+    }
+  ]
+}

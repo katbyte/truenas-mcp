@@ -1,0 +1,1053 @@
+{
+  "Name": "SystemAdvanced",
+  "Tag": "system.advanced",
+  "Operations": [
+    {
+      "Name": "SystemAdvancedConfig",
+      "OperationId": "system.advanced.config",
+      "Method": "CALL",
+      "Path": "system.advanced.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemAdvancedConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedGetGpuPciChoices",
+      "OperationId": "system.advanced.get_gpu_pci_choices",
+      "Method": "CALL",
+      "Path": "system.advanced.get_gpu_pci_choices",
+      "Description": "This endpoint gives all the gpu pci ids/slots that can be isolated.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.get_gpu_pci_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedLoginBanner",
+      "OperationId": "system.advanced.login_banner",
+      "Method": "CALL",
+      "Path": "system.advanced.login_banner",
+      "Description": "Returns user set login banner",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.login_banner",
+        "NoAuth": true
+      }
+    },
+    {
+      "Name": "SystemAdvancedSedGlobalPassword",
+      "OperationId": "system.advanced.sed_global_password",
+      "Method": "CALL",
+      "Path": "system.advanced.sed_global_password",
+      "Description": "Returns configured global SED password in clear-text if one\nis configured, otherwise an empty string",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.sed_global_password",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedSedGlobalPasswordIsSet",
+      "OperationId": "system.advanced.sed_global_password_is_set",
+      "Method": "CALL",
+      "Path": "system.advanced.sed_global_password_is_set",
+      "Description": "Returns a boolean identifying whether or not a global\nSED password has been set",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.sed_global_password_is_set",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedSerialPortChoices",
+      "OperationId": "system.advanced.serial_port_choices",
+      "Method": "CALL",
+      "Path": "system.advanced.serial_port_choices",
+      "Description": "Get available choices for `serialport`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.serial_port_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedSyslogCertificateAuthorityChoices",
+      "OperationId": "system.advanced.syslog_certificate_authority_choices",
+      "Method": "CALL",
+      "Path": "system.advanced.syslog_certificate_authority_choices",
+      "Description": "Return choices of certificate authorities which can be used for `syslog_tls_certificate_authority`.\n---- NO LONGER USED: TO BE REMOVED AFTER UI UPDATE ----",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.syslog_certificate_authority_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedSyslogCertificateChoices",
+      "OperationId": "system.advanced.syslog_certificate_choices",
+      "Method": "CALL",
+      "Path": "system.advanced.syslog_certificate_choices",
+      "Description": "Return choices of certificates which can be used for `syslogservers.N.tls_certificate`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.syslog_certificate_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_ADVANCED_READ",
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemAdvancedUpdate",
+      "OperationId": "system.advanced.update",
+      "Method": "CALL",
+      "Path": "system.advanced.update",
+      "Description": "Update System Advanced Service Configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemAdvancedUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.update",
+        "Roles": [
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated system advanced configuration data."
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedUpdateGpuPciIds",
+      "OperationId": "system.advanced.update_gpu_pci_ids",
+      "Method": "CALL",
+      "Path": "system.advanced.update_gpu_pci_ids",
+      "Description": "`isolated_gpu_pci_ids` is a list of PCI ids which are isolated from host system.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.advanced.update_gpu_pci_ids",
+        "Roles": [
+          "SYSTEM_ADVANCED_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Required": true,
+          "Description": "List of GPU PCI IDs to isolate for VM passthrough."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SyslogServer",
+      "SchemaName": "SyslogServer",
+      "Fields": [
+        {
+          "Name": "Host",
+          "JsonName": "host",
+          "Description": "Remote syslog server DNS hostname or IP address.\n\nNonstandard port numbers can be used by appending a colon and port number to the hostname, like     mysyslogserver:1928.\n\nPort 514 is used by default for TCP and UDP transports as per RFC3164; port 6514 is used by default for TLS     transport as per RFC5425.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TlsCertificate",
+          "JsonName": "tls_certificate",
+          "Description": "Applies only if `transport` is \"TLS\".\n\nID of the local certificate to send for mutual TLS (mTLS) connections. `null` indicates one-way TLS in which only     the server identified by `host` will need to provide a certificate.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Transport",
+          "JsonName": "transport",
+          "Description": "Transport Protocol for the remote system log server connection.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SyslogServerTransport"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedConfigAnswer",
+      "SchemaName": "SystemAdvancedConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Advancedmode",
+          "JsonName": "advancedmode",
+          "Description": "Enable advanced mode to show additional configuration options in the web interface.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Anonstats",
+          "JsonName": "anonstats",
+          "Description": "Enable anonymous usage statistics reporting to help improve TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AnonstatsToken",
+          "JsonName": "anonstats_token",
+          "Description": "Token used for anonymous statistics reporting.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Autotune",
+          "JsonName": "autotune",
+          "Description": "Execute autotune script which attempts to optimize the system based on the installed hardware.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "BootScrub",
+          "JsonName": "boot_scrub",
+          "Description": "Number of days between automatic boot pool scrubs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Consolemenu",
+          "JsonName": "consolemenu",
+          "Description": "Enable console menu. Default to standard login in the console if disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Consolemsg",
+          "JsonName": "consolemsg",
+          "Description": "Deprecated: Please use `consolemsg` attribute in the `system.general` plugin instead.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Debugkernel",
+          "JsonName": "debugkernel",
+          "Description": "Enable debug kernel for additional logging and debugging capabilities.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FqdnSyslog",
+          "JsonName": "fqdn_syslog",
+          "Description": "Include the full domain name in syslog messages.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "IsolatedGpuPciIds",
+          "JsonName": "isolated_gpu_pci_ids",
+          "Description": "List of GPU PCI IDs to isolate from the host system for VM passthrough.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KdumpEnabled",
+          "JsonName": "kdump_enabled",
+          "Description": "Enable kernel crash dumps for debugging system crashes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KernelExtraOptions",
+          "JsonName": "kernel_extra_options",
+          "Description": "Additional kernel boot parameters to pass to the Linux kernel.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LoginBanner",
+          "JsonName": "login_banner",
+          "Description": "Banner message displayed before login prompt.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Motd",
+          "JsonName": "motd",
+          "Description": "Message of the day displayed after login.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Overprovision",
+          "JsonName": "overprovision",
+          "Description": "Percentage of SSD overprovisioning to reserve for wear leveling.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Powerdaemon",
+          "JsonName": "powerdaemon",
+          "Description": "Enable the power management daemon for automatic power management.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SedUser",
+          "JsonName": "sed_user",
+          "Description": "SED (Self-Encrypting Drive) user type for drive encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSedUser"
+          }
+        },
+        {
+          "Name": "Serialconsole",
+          "JsonName": "serialconsole",
+          "Description": "Enable serial console access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Serialport",
+          "JsonName": "serialport",
+          "Description": "Serial port device for console access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Serialspeed",
+          "JsonName": "serialspeed",
+          "Description": "Baud rate for serial console communication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSerialspeed"
+          }
+        },
+        {
+          "Name": "SyslogAudit",
+          "JsonName": "syslog_audit",
+          "Description": "The remote syslog server(s) will also receive audit messages.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sysloglevel",
+          "JsonName": "sysloglevel",
+          "Description": "Minimum log level for syslog messages. F_EMERG is most critical, F_DEBUG is least critical.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSysloglevel"
+          }
+        },
+        {
+          "Name": "Syslogservers",
+          "JsonName": "syslogservers",
+          "Description": "Configurations for up to two remote syslog servers.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SyslogServer"
+            }
+          }
+        },
+        {
+          "Name": "Traceback",
+          "JsonName": "traceback",
+          "Description": "Enable generation and saving of tracebacks for debugging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uploadcrash",
+          "JsonName": "uploadcrash",
+          "Description": "Automatically upload crash reports to iXsystems for analysis.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedUpdateAnswer",
+      "SchemaName": "SystemAdvancedUpdateAnswer",
+      "Description": "The updated system advanced configuration.",
+      "Fields": [
+        {
+          "Name": "Advancedmode",
+          "JsonName": "advancedmode",
+          "Description": "Enable advanced mode to show additional configuration options in the web interface.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Anonstats",
+          "JsonName": "anonstats",
+          "Description": "Enable anonymous usage statistics reporting to help improve TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AnonstatsToken",
+          "JsonName": "anonstats_token",
+          "Description": "Token used for anonymous statistics reporting.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Autotune",
+          "JsonName": "autotune",
+          "Description": "Execute autotune script which attempts to optimize the system based on the installed hardware.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "BootScrub",
+          "JsonName": "boot_scrub",
+          "Description": "Number of days between automatic boot pool scrubs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Consolemenu",
+          "JsonName": "consolemenu",
+          "Description": "Enable console menu. Default to standard login in the console if disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Consolemsg",
+          "JsonName": "consolemsg",
+          "Description": "Deprecated: Please use `consolemsg` attribute in the `system.general` plugin instead.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Debugkernel",
+          "JsonName": "debugkernel",
+          "Description": "Enable debug kernel for additional logging and debugging capabilities.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FqdnSyslog",
+          "JsonName": "fqdn_syslog",
+          "Description": "Include the full domain name in syslog messages.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "IsolatedGpuPciIds",
+          "JsonName": "isolated_gpu_pci_ids",
+          "Description": "List of GPU PCI IDs to isolate from the host system for VM passthrough.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KdumpEnabled",
+          "JsonName": "kdump_enabled",
+          "Description": "Enable kernel crash dumps for debugging system crashes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KernelExtraOptions",
+          "JsonName": "kernel_extra_options",
+          "Description": "Additional kernel boot parameters to pass to the Linux kernel.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LoginBanner",
+          "JsonName": "login_banner",
+          "Description": "Banner message displayed before login prompt.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Motd",
+          "JsonName": "motd",
+          "Description": "Message of the day displayed after login.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Overprovision",
+          "JsonName": "overprovision",
+          "Description": "Percentage of SSD overprovisioning to reserve for wear leveling.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Powerdaemon",
+          "JsonName": "powerdaemon",
+          "Description": "Enable the power management daemon for automatic power management.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SedUser",
+          "JsonName": "sed_user",
+          "Description": "SED (Self-Encrypting Drive) user type for drive encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSedUser"
+          }
+        },
+        {
+          "Name": "Serialconsole",
+          "JsonName": "serialconsole",
+          "Description": "Enable serial console access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Serialport",
+          "JsonName": "serialport",
+          "Description": "Serial port device for console access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Serialspeed",
+          "JsonName": "serialspeed",
+          "Description": "Baud rate for serial console communication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSerialspeed"
+          }
+        },
+        {
+          "Name": "SyslogAudit",
+          "JsonName": "syslog_audit",
+          "Description": "The remote syslog server(s) will also receive audit messages.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sysloglevel",
+          "JsonName": "sysloglevel",
+          "Description": "Minimum log level for syslog messages. F_EMERG is most critical, F_DEBUG is least critical.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSysloglevel"
+          }
+        },
+        {
+          "Name": "Syslogservers",
+          "JsonName": "syslogservers",
+          "Description": "Configurations for up to two remote syslog servers.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SyslogServer"
+            }
+          }
+        },
+        {
+          "Name": "Traceback",
+          "JsonName": "traceback",
+          "Description": "Enable generation and saving of tracebacks for debugging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uploadcrash",
+          "JsonName": "uploadcrash",
+          "Description": "Automatically upload crash reports to iXsystems for analysis.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedUpdateData",
+      "SchemaName": "SystemAdvancedUpdateData",
+      "Description": "Updated system advanced configuration data.",
+      "Fields": [
+        {
+          "Name": "Advancedmode",
+          "JsonName": "advancedmode",
+          "Description": "Enable advanced mode to show additional configuration options in the web interface.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Anonstats",
+          "JsonName": "anonstats",
+          "Description": "Enable anonymous usage statistics reporting to help improve TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Autotune",
+          "JsonName": "autotune",
+          "Description": "Execute autotune script which attempts to optimize the system based on the installed hardware.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "BootScrub",
+          "JsonName": "boot_scrub",
+          "Description": "Number of days between automatic boot pool scrubs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Consolemenu",
+          "JsonName": "consolemenu",
+          "Description": "Enable console menu. Default to standard login in the console if disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Consolemsg",
+          "JsonName": "consolemsg",
+          "Description": "Deprecated: Please use `consolemsg` attribute in the `system.general` plugin instead.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Debugkernel",
+          "JsonName": "debugkernel",
+          "Description": "Enable debug kernel for additional logging and debugging capabilities.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FqdnSyslog",
+          "JsonName": "fqdn_syslog",
+          "Description": "Include the full domain name in syslog messages.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KdumpEnabled",
+          "JsonName": "kdump_enabled",
+          "Description": "Enable kernel crash dumps for debugging system crashes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KernelExtraOptions",
+          "JsonName": "kernel_extra_options",
+          "Description": "Additional kernel boot parameters to pass to the Linux kernel.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LoginBanner",
+          "JsonName": "login_banner",
+          "Description": "Banner message displayed before login prompt.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Motd",
+          "JsonName": "motd",
+          "Description": "Message of the day displayed after login.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Overprovision",
+          "JsonName": "overprovision",
+          "Description": "Percentage of SSD overprovisioning to reserve for wear leveling.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Powerdaemon",
+          "JsonName": "powerdaemon",
+          "Description": "Enable the power management daemon for automatic power management.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SedPasswd",
+          "JsonName": "sed_passwd",
+          "Description": "Password for SED (Self-Encrypting Drive) global unlock.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SedUser",
+          "JsonName": "sed_user",
+          "Description": "SED (Self-Encrypting Drive) user type for drive encryption.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSedUser"
+          }
+        },
+        {
+          "Name": "Serialconsole",
+          "JsonName": "serialconsole",
+          "Description": "Enable serial console access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Serialport",
+          "JsonName": "serialport",
+          "Description": "Serial port device for console access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Serialspeed",
+          "JsonName": "serialspeed",
+          "Description": "Baud rate for serial console communication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSerialspeed"
+          }
+        },
+        {
+          "Name": "SyslogAudit",
+          "JsonName": "syslog_audit",
+          "Description": "The remote syslog server(s) will also receive audit messages.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sysloglevel",
+          "JsonName": "sysloglevel",
+          "Description": "Minimum log level for syslog messages. F_EMERG is most critical, F_DEBUG is least critical.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemAdvancedSysloglevel"
+          }
+        },
+        {
+          "Name": "Syslogservers",
+          "JsonName": "syslogservers",
+          "Description": "Configurations for up to two remote syslog servers.\n\n**If provided, will overwrite the entire array in the existing entry.**",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SyslogServer"
+            }
+          }
+        },
+        {
+          "Name": "Traceback",
+          "JsonName": "traceback",
+          "Description": "Enable generation and saving of tracebacks for debugging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uploadcrash",
+          "JsonName": "uploadcrash",
+          "Description": "Automatically upload crash reports to iXsystems for analysis.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SyslogServerTransport",
+      "SchemaName": "SyslogServerTransport",
+      "Description": "Transport Protocol for the remote system log server connection.",
+      "Values": [
+        {
+          "Name": "SyslogServerTransportUDP",
+          "Value": "UDP"
+        },
+        {
+          "Name": "SyslogServerTransportTCP",
+          "Value": "TCP"
+        },
+        {
+          "Name": "SyslogServerTransportTLS",
+          "Value": "TLS"
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedSedUser",
+      "SchemaName": "SystemAdvancedSedUser",
+      "Description": "SED (Self-Encrypting Drive) user type for drive encryption.",
+      "Values": [
+        {
+          "Name": "SystemAdvancedSedUserUSER",
+          "Value": "USER"
+        },
+        {
+          "Name": "SystemAdvancedSedUserMASTER",
+          "Value": "MASTER"
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedSerialspeed",
+      "SchemaName": "SystemAdvancedSerialspeed",
+      "Description": "Baud rate for serial console communication.",
+      "Values": [
+        {
+          "Name": "SystemAdvancedSerialspeedN9600",
+          "Value": "9600"
+        },
+        {
+          "Name": "SystemAdvancedSerialspeedN19200",
+          "Value": "19200"
+        },
+        {
+          "Name": "SystemAdvancedSerialspeedN38400",
+          "Value": "38400"
+        },
+        {
+          "Name": "SystemAdvancedSerialspeedN57600",
+          "Value": "57600"
+        },
+        {
+          "Name": "SystemAdvancedSerialspeedN115200",
+          "Value": "115200"
+        }
+      ]
+    },
+    {
+      "Name": "SystemAdvancedSysloglevel",
+      "SchemaName": "SystemAdvancedSysloglevel",
+      "Description": "Minimum log level for syslog messages. F_EMERG is most critical, F_DEBUG is least critical.",
+      "Values": [
+        {
+          "Name": "SystemAdvancedSysloglevelFEMERG",
+          "Value": "F_EMERG"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFALERT",
+          "Value": "F_ALERT"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFCRIT",
+          "Value": "F_CRIT"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFERR",
+          "Value": "F_ERR"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFWARNING",
+          "Value": "F_WARNING"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFNOTICE",
+          "Value": "F_NOTICE"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFINFO",
+          "Value": "F_INFO"
+        },
+        {
+          "Name": "SystemAdvancedSysloglevelFDEBUG",
+          "Value": "F_DEBUG"
+        }
+      ]
+    }
+  ]
+}

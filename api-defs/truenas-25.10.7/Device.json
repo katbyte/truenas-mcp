@@ -1,0 +1,58 @@
+{
+  "Name": "Device",
+  "Tag": "device",
+  "Operations": [
+    {
+      "Name": "DeviceGetInfo",
+      "OperationId": "device.get_info",
+      "Method": "CALL",
+      "Path": "device.get_info",
+      "Description": "Get info for `type` device.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "device.get_info",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DeviceGetInfoData"
+          },
+          "Required": true,
+          "Description": "Device information query parameters specifying type and options."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "DeviceGetInfoData",
+      "Description": "Device information query parameters specifying type and options.",
+      "Union": [
+        "DeviceGetInfoDisk",
+        "DeviceGetInfoOther"
+      ],
+      "Members": [
+        {
+          "Model": "DeviceGetInfoDisk"
+        },
+        {
+          "Model": "DeviceGetInfoOther"
+        }
+      ]
+    }
+  ]
+}

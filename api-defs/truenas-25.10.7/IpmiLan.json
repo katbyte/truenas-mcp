@@ -1,0 +1,185 @@
+{
+  "Name": "IpmiLan",
+  "Tag": "ipmi.lan",
+  "Operations": [
+    {
+      "Name": "IpmiLanChannels",
+      "OperationId": "ipmi.lan.channels",
+      "Method": "CALL",
+      "Path": "ipmi.lan.channels",
+      "Description": "Return a list of available IPMI channels.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Integer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.lan.channels",
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "IpmiLanQuery",
+      "OperationId": "ipmi.lan.query",
+      "Method": "CALL",
+      "Path": "ipmi.lan.query",
+      "Description": "Query available IPMI Channels with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.lan.query",
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiLanQueryData"
+          },
+          "Description": "Query parameters for IPMI LAN configuration."
+        }
+      ]
+    },
+    {
+      "Name": "IpmiLanUpdate",
+      "OperationId": "ipmi.lan.update",
+      "Method": "CALL",
+      "Path": "ipmi.lan.update",
+      "Description": "Update IPMI channel configuration",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.lan.update",
+        "Roles": [
+          "IPMI_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "channel",
+          "Argument": "channel",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "IPMI LAN channel number to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiLanUpdateData"
+          },
+          "Required": true,
+          "Description": "IPMI LAN configuration data (DHCP or static IP)."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IpmiLanQueryData",
+      "SchemaName": "IpmiLanQueryData",
+      "Description": "Query parameters for IPMI LAN configuration.",
+      "Fields": [
+        {
+          "Name": "IpmiOptions",
+          "JsonName": "ipmi-options",
+          "Description": "IPMI-specific query options.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiLanQueryDataIpmiOptions"
+          }
+        },
+        {
+          "Name": "QueryFilters",
+          "JsonName": "query-filters",
+          "Description": "Query filters to apply to IPMI LAN configuration results.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "QueryOptions",
+          "JsonName": "query-options",
+          "Description": "Query options for sorting and pagination.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryOptions"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IpmiLanQueryDataIpmiOptions",
+      "SchemaName": "IpmiLanQueryDataIpmiOptions",
+      "Description": "IPMI-specific query options.",
+      "Fields": [
+        {
+          "Name": "QueryRemote",
+          "JsonName": "query-remote",
+          "Description": "Whether to query remote IPMI LAN configuration on HA systems.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IpmiLanUpdateData",
+      "Description": "IPMI LAN configuration data (DHCP or static IP).",
+      "Union": [
+        "IPMILanUpdateOptionsDHCP",
+        "IPMILanUpdateOptionsStatic"
+      ],
+      "Discriminator": "dhcp",
+      "Members": [
+        {
+          "Model": "IPMILanUpdateOptionsDHCP",
+          "Kinds": [
+            "True"
+          ]
+        },
+        {
+          "Model": "IPMILanUpdateOptionsStatic",
+          "Kinds": [
+            "False"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,843 @@
+{
+  "Name": "Alertservice",
+  "Tag": "alertservice",
+  "Operations": [
+    {
+      "Name": "AlertserviceCreate",
+      "OperationId": "alertservice.create",
+      "Method": "CALL",
+      "Path": "alertservice.create",
+      "Description": "Create an Alert Service of specified `type`.\n\nIf `enabled`, it sends alerts to the configured `type` of Alert Service.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AlertServiceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.create",
+        "Roles": [
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "alert_service_create",
+          "Argument": "alertServiceCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceCreate"
+          },
+          "Required": true,
+          "Description": "Alert service configuration data for the new service."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceDelete",
+      "OperationId": "alertservice.delete",
+      "Method": "CALL",
+      "Path": "alertservice.delete",
+      "Description": "Delete Alert Service of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.delete",
+        "Item": true,
+        "Roles": [
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the alert service to delete."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceGetInstance",
+      "OperationId": "alertservice.get_instance",
+      "Method": "CALL",
+      "Path": "alertservice.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AlertServiceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.get_instance",
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertserviceGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceQuery",
+      "OperationId": "alertservice.query",
+      "Method": "CALL",
+      "Path": "alertservice.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertserviceQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceQueryCount",
+      "OperationId": "alertservice.query#count",
+      "Method": "CALL",
+      "Path": "alertservice.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertserviceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceQueryOne",
+      "OperationId": "alertservice.query#get",
+      "Method": "CALL",
+      "Path": "alertservice.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AlertServiceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertserviceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceTest",
+      "OperationId": "alertservice.test",
+      "Method": "CALL",
+      "Path": "alertservice.test",
+      "Description": "Send a test alert using `type` of Alert Service.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.test",
+        "Roles": [
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "alert_service_create",
+          "Argument": "alertServiceCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceCreate"
+          },
+          "Required": true,
+          "Description": "Alert service configuration to test for connectivity and functionality."
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceUpdate",
+      "OperationId": "alertservice.update",
+      "Method": "CALL",
+      "Path": "alertservice.update",
+      "Description": "Update Alert Service of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AlertServiceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertservice.update",
+        "Item": true,
+        "Roles": [
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the alert service to update."
+        },
+        {
+          "Name": "alert_service_update",
+          "Argument": "alertServiceUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceUpdate"
+          },
+          "Required": true,
+          "Description": "Updated alert service configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AlertServiceCreate",
+      "SchemaName": "AlertServiceCreate",
+      "Description": "Alert service configuration data for the new service.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Service-specific configuration attributes (credentials, endpoints, etc.).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceCreateAttributes"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the alert service is active and will send notifications.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Level",
+          "JsonName": "level",
+          "Description": "Minimum alert severity level that triggers notifications through this service.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceLevel"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the alert service.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertServiceCreateAttributes",
+      "Description": "Service-specific configuration attributes (credentials, endpoints, etc.).",
+      "Union": [
+        "AWSSNSServiceModel",
+        "InfluxDBServiceModel",
+        "MailServiceModel",
+        "MattermostServiceModel",
+        "OpsGenieServiceModel",
+        "PagerDutyServiceModel",
+        "SlackServiceModel",
+        "SNMPTrapServiceModel",
+        "TelegramServiceModel",
+        "VictorOpsServiceModel"
+      ],
+      "Discriminator": "type",
+      "Members": [
+        {
+          "Model": "AWSSNSServiceModel",
+          "Kinds": [
+            "AWSSNS"
+          ]
+        },
+        {
+          "Model": "InfluxDBServiceModel",
+          "Kinds": [
+            "InfluxDB"
+          ]
+        },
+        {
+          "Model": "MailServiceModel",
+          "Kinds": [
+            "Mail"
+          ]
+        },
+        {
+          "Model": "MattermostServiceModel",
+          "Kinds": [
+            "Mattermost"
+          ]
+        },
+        {
+          "Model": "OpsGenieServiceModel",
+          "Kinds": [
+            "OpsGenie"
+          ]
+        },
+        {
+          "Model": "PagerDutyServiceModel",
+          "Kinds": [
+            "PagerDuty"
+          ]
+        },
+        {
+          "Model": "SlackServiceModel",
+          "Kinds": [
+            "Slack"
+          ]
+        },
+        {
+          "Model": "SNMPTrapServiceModel",
+          "Kinds": [
+            "SNMPTrap"
+          ]
+        },
+        {
+          "Model": "TelegramServiceModel",
+          "Kinds": [
+            "Telegram"
+          ]
+        },
+        {
+          "Model": "VictorOpsServiceModel",
+          "Kinds": [
+            "VictorOps"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "AlertServiceQueryResultItem",
+      "SchemaName": "AlertServiceQueryResultItem",
+      "Description": "The created alert service configuration.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Service-specific configuration attributes (credentials, endpoints, etc.).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceQueryResultItemAttributes"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the alert service is active and will send notifications.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the alert service.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Level",
+          "JsonName": "level",
+          "Description": "Minimum alert severity level that triggers notifications through this service.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceLevel"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the alert service.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TypeTitle",
+          "JsonName": "type__title",
+          "Description": "Human-readable title for the alert service type.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertServiceQueryResultItemAttributes",
+      "Description": "Service-specific configuration attributes (credentials, endpoints, etc.).",
+      "Union": [
+        "AWSSNSServiceModel",
+        "InfluxDBServiceModel",
+        "MailServiceModel",
+        "MattermostServiceModel",
+        "OpsGenieServiceModel",
+        "PagerDutyServiceModel",
+        "SlackServiceModel",
+        "SNMPTrapServiceModel",
+        "TelegramServiceModel",
+        "VictorOpsServiceModel"
+      ],
+      "Discriminator": "type",
+      "Members": [
+        {
+          "Model": "AWSSNSServiceModel",
+          "Kinds": [
+            "AWSSNS"
+          ]
+        },
+        {
+          "Model": "InfluxDBServiceModel",
+          "Kinds": [
+            "InfluxDB"
+          ]
+        },
+        {
+          "Model": "MailServiceModel",
+          "Kinds": [
+            "Mail"
+          ]
+        },
+        {
+          "Model": "MattermostServiceModel",
+          "Kinds": [
+            "Mattermost"
+          ]
+        },
+        {
+          "Model": "OpsGenieServiceModel",
+          "Kinds": [
+            "OpsGenie"
+          ]
+        },
+        {
+          "Model": "PagerDutyServiceModel",
+          "Kinds": [
+            "PagerDuty"
+          ]
+        },
+        {
+          "Model": "SlackServiceModel",
+          "Kinds": [
+            "Slack"
+          ]
+        },
+        {
+          "Model": "SNMPTrapServiceModel",
+          "Kinds": [
+            "SNMPTrap"
+          ]
+        },
+        {
+          "Model": "TelegramServiceModel",
+          "Kinds": [
+            "Telegram"
+          ]
+        },
+        {
+          "Model": "VictorOpsServiceModel",
+          "Kinds": [
+            "VictorOps"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "AlertServiceUpdate",
+      "SchemaName": "AlertServiceUpdate",
+      "Description": "Updated alert service configuration data.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Service-specific configuration attributes (credentials, endpoints, etc.).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceUpdateAttributes"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the alert service is active and will send notifications.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Level",
+          "JsonName": "level",
+          "Description": "Minimum alert severity level that triggers notifications through this service.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceLevel"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the alert service.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertServiceUpdateAttributes",
+      "Description": "Service-specific configuration attributes (credentials, endpoints, etc.).",
+      "Union": [
+        "AWSSNSServiceModel",
+        "InfluxDBServiceModel",
+        "MailServiceModel",
+        "MattermostServiceModel",
+        "OpsGenieServiceModel",
+        "PagerDutyServiceModel",
+        "SlackServiceModel",
+        "SNMPTrapServiceModel",
+        "TelegramServiceModel",
+        "VictorOpsServiceModel"
+      ],
+      "Discriminator": "type",
+      "Members": [
+        {
+          "Model": "AWSSNSServiceModel",
+          "Kinds": [
+            "AWSSNS"
+          ]
+        },
+        {
+          "Model": "InfluxDBServiceModel",
+          "Kinds": [
+            "InfluxDB"
+          ]
+        },
+        {
+          "Model": "MailServiceModel",
+          "Kinds": [
+            "Mail"
+          ]
+        },
+        {
+          "Model": "MattermostServiceModel",
+          "Kinds": [
+            "Mattermost"
+          ]
+        },
+        {
+          "Model": "OpsGenieServiceModel",
+          "Kinds": [
+            "OpsGenie"
+          ]
+        },
+        {
+          "Model": "PagerDutyServiceModel",
+          "Kinds": [
+            "PagerDuty"
+          ]
+        },
+        {
+          "Model": "SlackServiceModel",
+          "Kinds": [
+            "Slack"
+          ]
+        },
+        {
+          "Model": "SNMPTrapServiceModel",
+          "Kinds": [
+            "SNMPTrap"
+          ]
+        },
+        {
+          "Model": "TelegramServiceModel",
+          "Kinds": [
+            "Telegram"
+          ]
+        },
+        {
+          "Model": "VictorOpsServiceModel",
+          "Kinds": [
+            "VictorOps"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceGetInstanceOptions",
+      "SchemaName": "AlertserviceGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertserviceQueryOptions",
+      "SchemaName": "AlertserviceQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

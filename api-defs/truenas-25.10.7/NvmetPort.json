@@ -1,0 +1,568 @@
+{
+  "Name": "NvmetPort",
+  "Tag": "nvmet.port",
+  "Operations": [
+    {
+      "Name": "NvmetPortCreate",
+      "OperationId": "nvmet.port.create",
+      "Method": "CALL",
+      "Path": "nvmet.port.create",
+      "Description": "Create a NVMe target `port`.\n\n`ports` are the means through which subsystems (`subsys`) are made available to clients (`hosts`).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nvmet_port_create",
+          "Argument": "nvmetPortCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortCreateNvmetPortCreate"
+          },
+          "Required": true,
+          "Description": "NVMe-oF port configuration data for creation (TCP/RDMA or Fibre Channel)."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortDelete",
+      "OperationId": "nvmet.port.delete",
+      "Method": "CALL",
+      "Path": "nvmet.port.delete",
+      "Description": "Delete NVMe target `port` of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NVMe-oF port to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DeleteOptions"
+          },
+          "Description": "Options controlling port deletion behavior."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortGetInstance",
+      "OperationId": "nvmet.port.get_instance",
+      "Method": "CALL",
+      "Path": "nvmet.port.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortQuery",
+      "OperationId": "nvmet.port.query",
+      "Method": "CALL",
+      "Path": "nvmet.port.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetPortQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortQueryCount",
+      "OperationId": "nvmet.port.query#count",
+      "Method": "CALL",
+      "Path": "nvmet.port.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortQueryOne",
+      "OperationId": "nvmet.port.query#get",
+      "Method": "CALL",
+      "Path": "nvmet.port.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortTransportAddressChoices",
+      "OperationId": "nvmet.port.transport_address_choices",
+      "Method": "CALL",
+      "Path": "nvmet.port.transport_address_choices",
+      "Description": "Returns possible choices for `addr_traddr` attribute of `port` create and update.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.transport_address_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "addr_trtype",
+          "Argument": "addrTrtype",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortAddrTrtype"
+          },
+          "Required": true,
+          "Description": "Fabric transport technology name."
+        },
+        {
+          "Name": "force_ana",
+          "Argument": "forceAna",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Return information as if ANA was enabled."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortUpdate",
+      "OperationId": "nvmet.port.update",
+      "Method": "CALL",
+      "Path": "nvmet.port.update",
+      "Description": "Update NVMe target `port` of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NVMe-oF port to update."
+        },
+        {
+          "Name": "nvmet_port_update",
+          "Argument": "nvmetPortUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortUpdateNvmetPortUpdate"
+          },
+          "Required": true,
+          "Description": "Updated NVMe-oF port configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NvmetPortCreateNvmetPortCreate",
+      "Description": "NVMe-oF port configuration data for creation (TCP/RDMA or Fibre Channel).",
+      "Union": [
+        "NVMetPortCreateRDMATCP",
+        "NVMetPortCreateFC"
+      ],
+      "Discriminator": "addr_trtype",
+      "Members": [
+        {
+          "Model": "NVMetPortCreateRDMATCP",
+          "Kinds": [
+            "RDMA",
+            "TCP"
+          ]
+        },
+        {
+          "Model": "NVMetPortCreateFC",
+          "Kinds": [
+            "FC"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortGetInstanceOptions",
+      "SchemaName": "NvmetPortGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortQueryOptions",
+      "SchemaName": "NvmetPortQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortUpdateNvmetPortUpdate",
+      "Description": "Updated NVMe-oF port configuration data.",
+      "Union": [
+        "NVMetPortUpdateRDMATCP",
+        "NVMetPortUpdateFC"
+      ],
+      "Members": [
+        {
+          "Model": "NVMetPortUpdateRDMATCP"
+        },
+        {
+          "Model": "NVMetPortUpdateFC"
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "NvmetPortAddrTrtype",
+      "SchemaName": "NvmetPortAddrTrtype",
+      "Description": "Fabric transport technology name.",
+      "Values": [
+        {
+          "Name": "NvmetPortAddrTrtypeTCP",
+          "Value": "TCP"
+        },
+        {
+          "Name": "NvmetPortAddrTrtypeRDMA",
+          "Value": "RDMA"
+        },
+        {
+          "Name": "NvmetPortAddrTrtypeFC",
+          "Value": "FC"
+        }
+      ]
+    }
+  ]
+}

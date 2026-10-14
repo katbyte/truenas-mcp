@@ -1,0 +1,1765 @@
+{
+  "Name": "VmDevice",
+  "Tag": "vm.device",
+  "Operations": [
+    {
+      "Name": "VmDeviceBindChoices",
+      "OperationId": "vm.device.bind_choices",
+      "Method": "CALL",
+      "Path": "vm.device.bind_choices",
+      "Description": "Available choices for Bind attribute.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.bind_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceConvert",
+      "OperationId": "vm.device.convert",
+      "Method": "CALL",
+      "Path": "vm.device.convert",
+      "Description": "Convert between disk images and ZFS volumes. Supported disk image formats         are qcow2, qed, raw, vdi, vhdx, and vmdk. The conversion direction is determined         automatically based on file extension.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.convert",
+        "Job": true,
+        "Roles": [
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vm_convert",
+          "Argument": "vmConvert",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmConvert"
+          },
+          "Required": true,
+          "Description": "VMDeviceConvertArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceCreate",
+      "OperationId": "vm.device.create",
+      "Method": "CALL",
+      "Path": "vm.device.create",
+      "Description": "Create a new device for the VM of id `vm`.\n\nIf `attributes.dtype` is the `RAW` type and a new raw file is to be created, `attributes.exists` will be\npassed as false. This means the API handles creating the raw file and raises the appropriate exception if\nfile creation fails.\n\nIf `attributes.dtype` is of `DISK` type and a new Zvol is to be created, `attributes.create_zvol` will be\npassed as true with valid `attributes.zvol_name` and `attributes.zvol_volsize` values.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmDeviceCreateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.create",
+        "Roles": [
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vm_device_create",
+          "Argument": "vmDeviceCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceCreate"
+          },
+          "Required": true,
+          "Description": "VMDeviceCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceDelete",
+      "OperationId": "vm.device.delete",
+      "Method": "CALL",
+      "Path": "vm.device.delete",
+      "Description": "Delete a VM device of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.delete",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the VM device to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceDeleteOptions"
+          },
+          "Description": "Options controlling the device deletion process."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceDiskChoices",
+      "OperationId": "vm.device.disk_choices",
+      "Method": "CALL",
+      "Path": "vm.device.disk_choices",
+      "Description": "Returns disk choices for device type \"DISK\".",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.disk_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceGetInstance",
+      "OperationId": "vm.device.get_instance",
+      "Method": "CALL",
+      "Path": "vm.device.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmDeviceGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceIommuEnabled",
+      "OperationId": "vm.device.iommu_enabled",
+      "Method": "CALL",
+      "Path": "vm.device.iommu_enabled",
+      "Description": "Returns \"true\" if iommu is enabled, \"false\" otherwise",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.iommu_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceIotypeChoices",
+      "OperationId": "vm.device.iotype_choices",
+      "Method": "CALL",
+      "Path": "vm.device.iotype_choices",
+      "Description": "IO-type choices for storage devices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmDeviceIotypeChoicesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.iotype_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceNicAttachChoices",
+      "OperationId": "vm.device.nic_attach_choices",
+      "Method": "CALL",
+      "Path": "vm.device.nic_attach_choices",
+      "Description": "Available choices for NIC Attach attribute.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.nic_attach_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDevicePassthroughDevice",
+      "OperationId": "vm.device.passthrough_device",
+      "Method": "CALL",
+      "Path": "vm.device.passthrough_device",
+      "Description": "Retrieve details about `device` PCI device",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmDevicePassthroughDeviceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.passthrough_device",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "device",
+          "Argument": "device",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "PCI device identifier to get passthrough information for."
+        }
+      ]
+    },
+    {
+      "Name": "VmDevicePassthroughDeviceChoices",
+      "OperationId": "vm.device.passthrough_device_choices",
+      "Method": "CALL",
+      "Path": "vm.device.passthrough_device_choices",
+      "Description": "Available choices for PCI passthru devices",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VmDevicePassthroughDeviceAnswer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.passthrough_device_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDevicePptdevChoices",
+      "OperationId": "vm.device.pptdev_choices",
+      "Method": "CALL",
+      "Path": "vm.device.pptdev_choices",
+      "Description": "Available choices for PCI passthru device",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VmDevicePassthroughDeviceAnswer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.pptdev_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceQuery",
+      "OperationId": "vm.device.query",
+      "Method": "CALL",
+      "Path": "vm.device.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VMDeviceQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceQueryCount",
+      "OperationId": "vm.device.query#count",
+      "Method": "CALL",
+      "Path": "vm.device.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceQueryOne",
+      "OperationId": "vm.device.query#get",
+      "Method": "CALL",
+      "Path": "vm.device.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMDeviceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUpdate",
+      "OperationId": "vm.device.update",
+      "Method": "CALL",
+      "Path": "vm.device.update",
+      "Description": "Update a VM device of `id`.\n\nPass `attributes.size` to resize a `dtype` `RAW` device. The raw file will be resized.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmDeviceUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.update",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the VM device to update."
+        },
+        {
+          "Name": "vm_device_update",
+          "Argument": "vmDeviceUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the VM device."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUsbControllerChoices",
+      "OperationId": "vm.device.usb_controller_choices",
+      "Method": "CALL",
+      "Path": "vm.device.usb_controller_choices",
+      "Description": "Retrieve USB controller type choices",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.usb_controller_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceUsbPassthroughChoices",
+      "OperationId": "vm.device.usb_passthrough_choices",
+      "Method": "CALL",
+      "Path": "vm.device.usb_passthrough_choices",
+      "Description": "Available choices for USB passthrough devices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceUsbPassthroughDeviceAnswer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.usb_passthrough_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmDeviceUsbPassthroughDevice",
+      "OperationId": "vm.device.usb_passthrough_device",
+      "Method": "CALL",
+      "Path": "vm.device.usb_passthrough_device",
+      "Description": "Retrieve details about `device` USB device.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmDeviceUsbPassthroughDeviceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.usb_passthrough_device",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "device",
+          "Argument": "device",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "USB device identifier to get passthrough information for."
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceVirtualSize",
+      "OperationId": "vm.device.virtual_size",
+      "Method": "CALL",
+      "Path": "vm.device.virtual_size",
+      "Description": "Get the virtual size of a disk image using qemu-img info.\n\nArgs:\n    file_path: Absolute path to the disk image file\n\nReturns:\n    Virtual size in bytes (int)\n\nRaise:\n    ValidationError if any failure occurs",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.device.virtual_size",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vm_virtual_size",
+          "Argument": "vmVirtualSize",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmVirtualSize"
+          },
+          "Required": true,
+          "Description": "VMDeviceVirtualSizeArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "VMDeviceIOMMUGroup",
+      "SchemaName": "VMDeviceIOMMUGroup",
+      "Fields": [
+        {
+          "Name": "Addresses",
+          "JsonName": "addresses",
+          "Description": "Array of PCI addresses in this IOMMU group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VMDeviceIOMMUGroupAddress"
+            }
+          }
+        },
+        {
+          "Name": "Number",
+          "JsonName": "number",
+          "Description": "IOMMU group number for device isolation.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMDeviceIOMMUGroupAddress",
+      "SchemaName": "VMDeviceIOMMUGroupAddress",
+      "Fields": [
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "PCI bus number for this IOMMU group address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Domain",
+          "JsonName": "domain",
+          "Description": "PCI domain number for this IOMMU group address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Function",
+          "JsonName": "function",
+          "Description": "PCI function number for this IOMMU group address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Slot",
+          "JsonName": "slot",
+          "Description": "PCI slot number for this IOMMU group address.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMDeviceQueryResultItem",
+      "SchemaName": "VMDeviceQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMDeviceQueryResultItemAttributes"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VM device.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device (lower numbers boot first).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMDeviceQueryResultItemAttributes",
+      "Description": "Device-specific configuration attributes.",
+      "Union": [
+        "VMCDROMDevice",
+        "VMDisplayDevice",
+        "VMNICDevice",
+        "VMPCIDevice",
+        "VMRAWDevice",
+        "VMDiskDevice",
+        "VMUSBDevice"
+      ],
+      "Discriminator": "dtype",
+      "Members": [
+        {
+          "Model": "VMCDROMDevice",
+          "Kinds": [
+            "CDROM"
+          ]
+        },
+        {
+          "Model": "VMDisplayDevice",
+          "Kinds": [
+            "DISPLAY"
+          ]
+        },
+        {
+          "Model": "VMNICDevice",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "VMPCIDevice",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "VMRAWDevice",
+          "Kinds": [
+            "RAW"
+          ]
+        },
+        {
+          "Model": "VMDiskDevice",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "VMUSBDevice",
+          "Kinds": [
+            "USB"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VmConvert",
+      "SchemaName": "VmConvert",
+      "Description": "VMDeviceConvertArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Destination",
+          "JsonName": "destination",
+          "Description": "Destination path for the conversion (disk image file or ZFS volume).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Source path for the conversion (disk image file or ZFS volume).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceCreate",
+      "SchemaName": "VmDeviceCreate",
+      "Description": "VMDeviceCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceCreateAttributes"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device. `null` for automatic assignment.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceCreateAnswer",
+      "SchemaName": "VmDeviceCreateAnswer",
+      "Description": "The newly created VM device configuration.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceCreateAnswerAttributes"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VM device.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device (lower numbers boot first).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceCreateAnswerAttributes",
+      "Description": "Device-specific configuration attributes.",
+      "Union": [
+        "VMCDROMDevice",
+        "VMDisplayDevice",
+        "VMNICDevice",
+        "VMPCIDevice",
+        "VMRAWDevice",
+        "VMDiskDevice",
+        "VMUSBDevice"
+      ],
+      "Discriminator": "dtype",
+      "Members": [
+        {
+          "Model": "VMCDROMDevice",
+          "Kinds": [
+            "CDROM"
+          ]
+        },
+        {
+          "Model": "VMDisplayDevice",
+          "Kinds": [
+            "DISPLAY"
+          ]
+        },
+        {
+          "Model": "VMNICDevice",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "VMPCIDevice",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "VMRAWDevice",
+          "Kinds": [
+            "RAW"
+          ]
+        },
+        {
+          "Model": "VMDiskDevice",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "VMUSBDevice",
+          "Kinds": [
+            "USB"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceCreateAttributes",
+      "Description": "Device-specific configuration attributes.",
+      "Union": [
+        "VMCDROMDevice",
+        "VMDisplayDevice",
+        "VMNICDevice",
+        "VMPCIDevice",
+        "VMRAWDevice",
+        "VMDiskDevice",
+        "VMUSBDevice"
+      ],
+      "Discriminator": "dtype",
+      "Members": [
+        {
+          "Model": "VMCDROMDevice",
+          "Kinds": [
+            "CDROM"
+          ]
+        },
+        {
+          "Model": "VMDisplayDevice",
+          "Kinds": [
+            "DISPLAY"
+          ]
+        },
+        {
+          "Model": "VMNICDevice",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "VMPCIDevice",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "VMRAWDevice",
+          "Kinds": [
+            "RAW"
+          ]
+        },
+        {
+          "Model": "VMDiskDevice",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "VMUSBDevice",
+          "Kinds": [
+            "USB"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceDeleteOptions",
+      "SchemaName": "VmDeviceDeleteOptions",
+      "Description": "Options controlling the device deletion process.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force deletion even if the device is in use.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RawFile",
+          "JsonName": "raw_file",
+          "Description": "Delete the underlying raw disk file when removing the device.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Zvol",
+          "JsonName": "zvol",
+          "Description": "Delete the underlying ZFS volume when removing the device.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceGetInstanceAnswer",
+      "SchemaName": "VmDeviceGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceGetInstanceAnswerAttributes"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VM device.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device (lower numbers boot first).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceGetInstanceAnswerAttributes",
+      "Description": "Device-specific configuration attributes.",
+      "Union": [
+        "VMCDROMDevice",
+        "VMDisplayDevice",
+        "VMNICDevice",
+        "VMPCIDevice",
+        "VMRAWDevice",
+        "VMDiskDevice",
+        "VMUSBDevice"
+      ],
+      "Discriminator": "dtype",
+      "Members": [
+        {
+          "Model": "VMCDROMDevice",
+          "Kinds": [
+            "CDROM"
+          ]
+        },
+        {
+          "Model": "VMDisplayDevice",
+          "Kinds": [
+            "DISPLAY"
+          ]
+        },
+        {
+          "Model": "VMNICDevice",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "VMPCIDevice",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "VMRAWDevice",
+          "Kinds": [
+            "RAW"
+          ]
+        },
+        {
+          "Model": "VMDiskDevice",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "VMUSBDevice",
+          "Kinds": [
+            "USB"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceGetInstanceOptions",
+      "SchemaName": "VmDeviceGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceIotypeChoicesAnswer",
+      "SchemaName": "VmDeviceIotypeChoicesAnswer",
+      "Description": "VMDeviceIotypeChoicesResult return fields.",
+      "Fields": [
+        {
+          "Name": "IOURING",
+          "JsonName": "IO_URING",
+          "Description": "Linux io_uring interface for high-performance async I/O.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "NATIVE",
+          "JsonName": "NATIVE",
+          "Description": "Native asynchronous I/O for best performance with NVMe.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "THREADS",
+          "JsonName": "THREADS",
+          "Description": "Thread-based I/O suitable for most storage types.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDevicePassthroughDeviceAnswer",
+      "SchemaName": "VmDevicePassthroughDeviceAnswer",
+      "Description": "Detailed information about the specified PCI passthrough device.",
+      "Fields": [
+        {
+          "Name": "Available",
+          "JsonName": "available",
+          "Description": "Whether the device is available for passthrough to virtual machines.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Capability",
+          "JsonName": "capability",
+          "Description": "PCI device capability information.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDevicePassthroughDeviceAnswerCapability"
+          }
+        },
+        {
+          "Name": "ControllerType",
+          "JsonName": "controller_type",
+          "Description": "Type of controller this device provides. `null` if not a controller.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Critical",
+          "JsonName": "critical",
+          "Description": "Whether this device is critical to host system operation.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the PCI device.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DevicePath",
+          "JsonName": "device_path",
+          "Description": "Device filesystem path. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Drivers",
+          "JsonName": "drivers",
+          "Description": "Array of kernel drivers currently bound to this device.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if the device cannot be used for passthrough. `null` if no error.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "IommuGroup",
+          "JsonName": "iommu_group",
+          "Description": "IOMMU group information for device isolation. `null` if IOMMU not available.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMDeviceIOMMUGroup"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ResetMechanismDefined",
+          "JsonName": "reset_mechanism_defined",
+          "Description": "Whether the device supports proper reset mechanisms for passthrough.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDevicePassthroughDeviceAnswerCapability",
+      "SchemaName": "VmDevicePassthroughDeviceAnswerCapability",
+      "Description": "PCI device capability information.",
+      "Fields": [
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "PCI bus number. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Class",
+          "JsonName": "class",
+          "Description": "PCI device class identifier. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Domain",
+          "JsonName": "domain",
+          "Description": "PCI domain number. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Function",
+          "JsonName": "function",
+          "Description": "PCI function number. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Product",
+          "JsonName": "product",
+          "Description": "Product name of the PCI device. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Slot",
+          "JsonName": "slot",
+          "Description": "PCI slot number. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vendor",
+          "JsonName": "vendor",
+          "Description": "Vendor name of the PCI device. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceQueryOptions",
+      "SchemaName": "VmDeviceQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUpdate",
+      "SchemaName": "VmDeviceUpdate",
+      "Description": "Updated configuration for the VM device.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device. `null` for automatic assignment.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUpdateAnswer",
+      "SchemaName": "VmDeviceUpdateAnswer",
+      "Description": "The updated VM device configuration.",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceUpdateAnswerAttributes"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VM device.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device (lower numbers boot first).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUpdateAnswerAttributes",
+      "Description": "Device-specific configuration attributes.",
+      "Union": [
+        "VMCDROMDevice",
+        "VMDisplayDevice",
+        "VMNICDevice",
+        "VMPCIDevice",
+        "VMRAWDevice",
+        "VMDiskDevice",
+        "VMUSBDevice"
+      ],
+      "Discriminator": "dtype",
+      "Members": [
+        {
+          "Model": "VMCDROMDevice",
+          "Kinds": [
+            "CDROM"
+          ]
+        },
+        {
+          "Model": "VMDisplayDevice",
+          "Kinds": [
+            "DISPLAY"
+          ]
+        },
+        {
+          "Model": "VMNICDevice",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "VMPCIDevice",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "VMRAWDevice",
+          "Kinds": [
+            "RAW"
+          ]
+        },
+        {
+          "Model": "VMDiskDevice",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "VMUSBDevice",
+          "Kinds": [
+            "USB"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUsbPassthroughDeviceAnswer",
+      "SchemaName": "VmDeviceUsbPassthroughDeviceAnswer",
+      "Fields": [
+        {
+          "Name": "Available",
+          "JsonName": "available",
+          "Description": "Whether the USB device is available for passthrough to virtual machines.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Capability",
+          "JsonName": "capability",
+          "Description": "USB device capability and identification information.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeviceUsbPassthroughDeviceAnswerCapability"
+          }
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if the device cannot be used for passthrough. `null` if no error.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VmDeviceUsbPassthroughDeviceAnswerCapability",
+      "SchemaName": "VmDeviceUsbPassthroughDeviceAnswerCapability",
+      "Description": "USB device capability and identification information.",
+      "Fields": [
+        {
+          "Name": "Bus",
+          "JsonName": "bus",
+          "Description": "USB bus number. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Device",
+          "JsonName": "device",
+          "Description": "USB device number on bus. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Product",
+          "JsonName": "product",
+          "Description": "USB product name. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ProductId",
+          "JsonName": "product_id",
+          "Description": "USB product identifier. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vendor",
+          "JsonName": "vendor",
+          "Description": "USB vendor name. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VendorId",
+          "JsonName": "vendor_id",
+          "Description": "USB vendor identifier. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VmVirtualSize",
+      "SchemaName": "VmVirtualSize",
+      "Description": "VMDeviceVirtualSizeArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Absolute path to the disk image.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

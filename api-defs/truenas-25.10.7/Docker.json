@@ -1,0 +1,688 @@
+{
+  "Name": "Docker",
+  "Tag": "docker",
+  "Operations": [
+    {
+      "Name": "DockerBackup",
+      "OperationId": "docker.backup",
+      "Method": "CALL",
+      "Path": "docker.backup",
+      "Description": "Create a backup of existing apps.\n\nThis creates a backup of existing apps on the same pool in which docker is initialized.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.backup",
+        "Job": true,
+        "Roles": [
+          "DOCKER_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "backup_name",
+          "Argument": "backupName",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Name for the backup or `null` to generate a timestamp-based name."
+        }
+      ]
+    },
+    {
+      "Name": "DockerBackupToPool",
+      "OperationId": "docker.backup_to_pool",
+      "Method": "CALL",
+      "Path": "docker.backup_to_pool",
+      "Description": "Create a backup of existing apps on `target_pool`.\n\nThis creates a backup of existing apps on the `target_pool` specified. If this is executed multiple times,\nin the next iteration it will incrementally backup the apps that have changed since the last backup.\n\nNote: This will stop the docker service (which means current active apps will be stopped) and\nthen start it again after snapshot has been taken of the current apps dataset.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.backup_to_pool",
+        "Job": true,
+        "Roles": [
+          "DOCKER_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "target_pool",
+          "Argument": "targetPool",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the storage pool to backup Docker data to."
+        }
+      ]
+    },
+    {
+      "Name": "DockerConfig",
+      "OperationId": "docker.config",
+      "Method": "CALL",
+      "Path": "docker.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DockerConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.config",
+        "Read": true,
+        "Roles": [
+          "DOCKER_READ",
+          "DOCKER_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "DockerDeleteBackup",
+      "OperationId": "docker.delete_backup",
+      "Method": "CALL",
+      "Path": "docker.delete_backup",
+      "Description": "Delete `backup_name` app backup.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.delete_backup",
+        "Roles": [
+          "DOCKER_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "backup_name",
+          "Argument": "backupName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the backup to delete."
+        }
+      ]
+    },
+    {
+      "Name": "DockerListBackups",
+      "OperationId": "docker.list_backups",
+      "Method": "CALL",
+      "Path": "docker.list_backups",
+      "Description": "List existing app backups.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "BackupInfo"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.list_backups",
+        "Read": true,
+        "Roles": [
+          "DOCKER_READ",
+          "DOCKER_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "DockerNvidiaPresent",
+      "OperationId": "docker.nvidia_present",
+      "Method": "CALL",
+      "Path": "docker.nvidia_present",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.nvidia_present",
+        "Read": true,
+        "Roles": [
+          "DOCKER_READ",
+          "DOCKER_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "DockerRestoreBackup",
+      "OperationId": "docker.restore_backup",
+      "Method": "CALL",
+      "Path": "docker.restore_backup",
+      "Description": "Restore a backup of existing apps.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.restore_backup",
+        "Job": true,
+        "Roles": [
+          "DOCKER_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "backup_name",
+          "Argument": "backupName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the backup to restore."
+        }
+      ]
+    },
+    {
+      "Name": "DockerStatus",
+      "OperationId": "docker.status",
+      "Method": "CALL",
+      "Path": "docker.status",
+      "Description": "Returns the status of the docker service.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DockerStatusAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.status",
+        "Read": true,
+        "Roles": [
+          "DOCKER_READ",
+          "DOCKER_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "DockerUpdate",
+      "OperationId": "docker.update",
+      "Method": "CALL",
+      "Path": "docker.update",
+      "Description": "Update Docker service configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DockerUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "docker.update",
+        "Job": true,
+        "Roles": [
+          "DOCKER_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "docker_update",
+          "Argument": "dockerUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DockerUpdate"
+          },
+          "Required": true,
+          "Description": "DockerUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AddressPool",
+      "SchemaName": "AddressPool",
+      "Fields": [
+        {
+          "Name": "Base",
+          "JsonName": "base",
+          "Description": "Base network address with prefix for the pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Subnet size for networks allocated from this pool.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppInfo",
+      "SchemaName": "AppInfo",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier of the application.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name of the application.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current running state of the application.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BackupInfo",
+      "SchemaName": "BackupInfo",
+      "Fields": [
+        {
+          "Name": "Apps",
+          "JsonName": "apps",
+          "Description": "Array of applications included in this backup.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppInfo"
+            }
+          }
+        },
+        {
+          "Name": "BackupPath",
+          "JsonName": "backup_path",
+          "Description": "Filesystem path where the backup is stored.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "CreatedOn",
+          "JsonName": "created_on",
+          "Description": "Timestamp when the backup was created.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SnapshotName",
+          "JsonName": "snapshot_name",
+          "Description": "ZFS snapshot name associated with this backup.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DockerConfigAnswer",
+      "SchemaName": "DockerConfigAnswer",
+      "Fields": [
+        {
+          "Name": "AddressPools",
+          "JsonName": "address_pools",
+          "Description": "Array of network address pools for container networking.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Dictionary",
+              "NestedItem": {
+                "Type": "Any"
+              }
+            }
+          }
+        },
+        {
+          "Name": "CidrV6",
+          "JsonName": "cidr_v6",
+          "Description": "IPv6 CIDR block for Docker container networking.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "ZFS dataset used for Docker data storage or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "EnableImageUpdates",
+          "JsonName": "enable_image_updates",
+          "Description": "Whether automatic Docker image updates are enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the Docker configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "InsecureRegistryMirrors",
+          "JsonName": "insecure_registry_mirrors",
+          "Description": "Array of insecure (HTTP) registry mirror URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Nvidia",
+          "JsonName": "nvidia",
+          "Description": "Whether NVIDIA GPU support is enabled for containers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Storage pool used for Docker or `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureRegistryMirrors",
+          "JsonName": "secure_registry_mirrors",
+          "Description": "Array of secure (HTTPS) registry mirror URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DockerStatusAnswer",
+      "SchemaName": "DockerStatusAnswer",
+      "Description": "Current Docker service status information.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the current Docker service status.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current state of the Docker service.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DockerStatusAnswerStatus"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DockerUpdate",
+      "SchemaName": "DockerUpdate",
+      "Description": "DockerUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "AddressPools",
+          "JsonName": "address_pools",
+          "Description": "Array of network address pools for container networking.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AddressPool"
+            }
+          }
+        },
+        {
+          "Name": "CidrV6",
+          "JsonName": "cidr_v6",
+          "Description": "IPv6 CIDR block for Docker container networking.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableImageUpdates",
+          "JsonName": "enable_image_updates",
+          "Description": "Whether automatic Docker image updates are enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "InsecureRegistryMirrors",
+          "JsonName": "insecure_registry_mirrors",
+          "Description": "Array of insecure (HTTP) registry mirror URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "MigrateApplications",
+          "JsonName": "migrate_applications",
+          "Description": "Whether to migrate existing applications when changing pools.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Nvidia",
+          "JsonName": "nvidia",
+          "Description": "Whether NVIDIA GPU support is enabled for containers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Storage pool used for Docker or `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureRegistryMirrors",
+          "JsonName": "secure_registry_mirrors",
+          "Description": "Array of secure (HTTPS) registry mirror URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DockerUpdateAnswer",
+      "SchemaName": "DockerUpdateAnswer",
+      "Description": "The updated Docker configuration.",
+      "Fields": [
+        {
+          "Name": "AddressPools",
+          "JsonName": "address_pools",
+          "Description": "Array of network address pools for container networking.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Dictionary",
+              "NestedItem": {
+                "Type": "Any"
+              }
+            }
+          }
+        },
+        {
+          "Name": "CidrV6",
+          "JsonName": "cidr_v6",
+          "Description": "IPv6 CIDR block for Docker container networking.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "ZFS dataset used for Docker data storage or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "EnableImageUpdates",
+          "JsonName": "enable_image_updates",
+          "Description": "Whether automatic Docker image updates are enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the Docker configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "InsecureRegistryMirrors",
+          "JsonName": "insecure_registry_mirrors",
+          "Description": "Array of insecure (HTTP) registry mirror URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Nvidia",
+          "JsonName": "nvidia",
+          "Description": "Whether NVIDIA GPU support is enabled for containers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Storage pool used for Docker or `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureRegistryMirrors",
+          "JsonName": "secure_registry_mirrors",
+          "Description": "Array of secure (HTTPS) registry mirror URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "DockerStatusAnswerStatus",
+      "SchemaName": "DockerStatusAnswerStatus",
+      "Description": "Current state of the Docker service.",
+      "Values": [
+        {
+          "Name": "DockerStatusAnswerStatusPENDING",
+          "Value": "PENDING"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusRUNNING",
+          "Value": "RUNNING"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusSTOPPED",
+          "Value": "STOPPED"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusINITIALIZING",
+          "Value": "INITIALIZING"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusSTOPPING",
+          "Value": "STOPPING"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusUNCONFIGURED",
+          "Value": "UNCONFIGURED"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusFAILED",
+          "Value": "FAILED"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusMIGRATING",
+          "Value": "MIGRATING"
+        },
+        {
+          "Name": "DockerStatusAnswerStatusMIGRATIONFAILED",
+          "Value": "MIGRATION_FAILED"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "Name": "IpmiChassis",
+  "Tag": "ipmi.chassis",
+  "Operations": [
+    {
+      "Name": "IpmiChassisIdentify",
+      "OperationId": "ipmi.chassis.identify",
+      "Method": "CALL",
+      "Path": "ipmi.chassis.identify",
+      "Description": "Toggle the chassis identify light.\n\n`verb`: str if 'ON' turn identify light on. if 'OFF' turn identify light off.\n`apply_remote`: bool if True on HA systems, apply to remote controller.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.chassis.identify",
+        "Roles": [
+          "IPMI_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiChassisIdentifyData"
+          },
+          "Description": "Request parameters for IPMI chassis identify operation."
+        }
+      ]
+    },
+    {
+      "Name": "IpmiChassisInfo",
+      "OperationId": "ipmi.chassis.info",
+      "Method": "CALL",
+      "Path": "ipmi.chassis.info",
+      "Description": "Return IPMI chassis info.\n\n`query-remote`: [optional] if True on HA system, then return info from remote controller.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.chassis.info",
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiChassisInfoData"
+          },
+          "Description": "Request parameters for IPMI chassis information."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IpmiChassisIdentifyData",
+      "SchemaName": "IpmiChassisIdentifyData",
+      "Description": "Request parameters for IPMI chassis identify operation.",
+      "Fields": [
+        {
+          "Name": "ApplyRemote",
+          "JsonName": "apply_remote",
+          "Description": "If on an HA system, and this field is set to True, the settings will be sent to the remote controller.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Verb",
+          "JsonName": "verb",
+          "Description": "Action to perform on the chassis identify LED.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiChassisIdentifyDataVerb"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IpmiChassisInfoData",
+      "SchemaName": "IpmiChassisInfoData",
+      "Description": "Request parameters for IPMI chassis information.",
+      "Fields": [
+        {
+          "Name": "QueryRemote",
+          "JsonName": "query-remote",
+          "Description": "Whether to query remote IPMI chassis information on HA systems.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "IpmiChassisIdentifyDataVerb",
+      "SchemaName": "IpmiChassisIdentifyDataVerb",
+      "Description": "Action to perform on the chassis identify LED.",
+      "Values": [
+        {
+          "Name": "IpmiChassisIdentifyDataVerbON",
+          "Value": "ON"
+        },
+        {
+          "Name": "IpmiChassisIdentifyDataVerbOFF",
+          "Value": "OFF"
+        }
+      ]
+    }
+  ]
+}

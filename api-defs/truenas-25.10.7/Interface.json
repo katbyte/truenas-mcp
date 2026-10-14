@@ -1,0 +1,3021 @@
+{
+  "Name": "Interface",
+  "Tag": "interface",
+  "Operations": [
+    {
+      "Name": "InterfaceBridgeMembersChoices",
+      "OperationId": "interface.bridge_members_choices",
+      "Method": "CALL",
+      "Path": "interface.bridge_members_choices",
+      "Description": "Return available interface choices that can be added to a `br` (bridge) interface.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.bridge_members_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Name of existing bridge interface whose member interfaces should be included in the result."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCancelRollback",
+      "OperationId": "interface.cancel_rollback",
+      "Method": "CALL",
+      "Path": "interface.cancel_rollback",
+      "Description": "If this method is called after interface changes have been committed and within the checkin timeout,\nthen the task that automatically rolls back any interface changes is cancelled and the in-memory snapshot\nof database tables for the various interface tables will NOT be cleared.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.cancel_rollback",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceCheckin",
+      "OperationId": "interface.checkin",
+      "Method": "CALL",
+      "Path": "interface.checkin",
+      "Description": "If this method is called after interface changes have been committed and within the checkin timeout,\nthen the task that automatically rolls back any interface changes is cancelled and the in-memory snapshot\nof database tables for the various interface tables will be cleared. The idea is that the end-user has\nverified the changes work as intended and need to be committed permanently.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.checkin",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceCheckinWaiting",
+      "OperationId": "interface.checkin_waiting",
+      "Method": "CALL",
+      "Path": "interface.checkin_waiting",
+      "Description": "Returns whether we are waiting for the user to check in the applied network changes\nbefore they are rolled back.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.checkin_waiting",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceChoices",
+      "OperationId": "interface.choices",
+      "Method": "CALL",
+      "Path": "interface.choices",
+      "Description": "Choices of available network interfaces.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceChoicesOptions"
+          },
+          "Description": "Options for filtering interface choices."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCommit",
+      "OperationId": "interface.commit",
+      "Method": "CALL",
+      "Path": "interface.commit",
+      "Description": "Commit/apply pending interfaces changes.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.commit",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceCommitOptions"
+          },
+          "Description": "Options for committing interface changes."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreate",
+      "OperationId": "interface.create",
+      "Method": "CALL",
+      "Path": "interface.create",
+      "Description": "Create virtual interfaces (Link Aggregation, VLAN)",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceCreateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.create",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration data for the new interface."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceDelete",
+      "OperationId": "interface.delete",
+      "Method": "CALL",
+      "Path": "interface.delete",
+      "Description": "Delete Interface of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.delete",
+        "Item": true,
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the interface to delete."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceGetInstance",
+      "OperationId": "interface.get_instance",
+      "Method": "CALL",
+      "Path": "interface.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.get_instance",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceHasPendingChanges",
+      "OperationId": "interface.has_pending_changes",
+      "Method": "CALL",
+      "Path": "interface.has_pending_changes",
+      "Description": "Return whether there are pending interfaces changes to be applied or not.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.has_pending_changes",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceIpInUse",
+      "OperationId": "interface.ip_in_use",
+      "Method": "CALL",
+      "Path": "interface.ip_in_use",
+      "Description": "Get all IPv4 / IPv6 from all valid interfaces",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceIPInUseItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.ip_in_use",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceIpInUseOptions"
+          },
+          "Description": "Options for filtering IP addresses in use."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceLacpduRateChoices",
+      "OperationId": "interface.lacpdu_rate_choices",
+      "Method": "CALL",
+      "Path": "interface.lacpdu_rate_choices",
+      "Description": "Available lacpdu rate policies for the LACP lagg type interfaces.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceLacpduRateChoicesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.lacpdu_rate_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceLagPortsChoices",
+      "OperationId": "interface.lag_ports_choices",
+      "Method": "CALL",
+      "Path": "interface.lag_ports_choices",
+      "Description": "Return available interface choices that can be added to a `bond` (lag) interface.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.lag_ports_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Name of existing bond interface whose member interfaces should be included in the result."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceNetworkConfigToBeRemoved",
+      "OperationId": "interface.network_config_to_be_removed",
+      "Method": "CALL",
+      "Path": "interface.network_config_to_be_removed",
+      "Description": "Determines which network configuration items will be removed during interface setup.\n\nOn a fresh install of SCALE, dhclient is started for every interface so IP\naddresses/routes could be installed via that program. However, when the\nend-user goes to configure the first interface we tear down all other interfaces\nconfigs AND delete the default route. We also remove the default route if the\nconfigured gateway doesn't match the one currently installed in kernel.\n\nAdditionally, this checks for nameserver configurations that exist in the current\nnetwork state but are not configured in the database, indicating they will be\nremoved during reconfiguration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.network_config_to_be_removed",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceQuery",
+      "OperationId": "interface.query",
+      "Method": "CALL",
+      "Path": "interface.query",
+      "Description": "Query Interfaces with `query-filters` and `query-options`\n\n`options.extra.retrieve_names_only` (bool): Only return interface names.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceQueryCount",
+      "OperationId": "interface.query#count",
+      "Method": "CALL",
+      "Path": "interface.query#count",
+      "Description": "Query Interfaces with `query-filters` and `query-options`\n\n`options.extra.retrieve_names_only` (bool): Only return interface names.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceQueryOne",
+      "OperationId": "interface.query#get",
+      "Method": "CALL",
+      "Path": "interface.query#get",
+      "Description": "Query Interfaces with `query-filters` and `query-options`\n\n`options.extra.retrieve_names_only` (bool): Only return interface names.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceRollback",
+      "OperationId": "interface.rollback",
+      "Method": "CALL",
+      "Path": "interface.rollback",
+      "Description": "Rollback pending interfaces changes.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.rollback",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceSaveNetworkConfig",
+      "OperationId": "interface.save_network_config",
+      "Method": "CALL",
+      "Path": "interface.save_network_config",
+      "Description": "Saves network configuration settings to prevent network isolation during interface changes.\n\nThis method provides a path for remediation when interface modifications would remove\nnetwork connectivity. It accepts a configuration object containing network settings\nthat will be validated and applied to the global network configuration.\n\nThis makes 2 assumptions:\n1. `interface.create`/`update`/`delete` must have been called before\n    calling this method.\n2. This method must be called before `interface.commit` is called.\n\nThis method exists for the predominant scenario for new users:\n1. Fresh install SCALE.\n2. All interfaces start DHCPv4 (v6 is ignored for now).\n3. One of the interfaces receives an IP address.\n4. Along with the IP, the kernel receives a default route\n    (by design, of course).\n5. User goes to configure this interface as having a static\n    IP address.\n6. As we go through and \"commit\" the changes, we remove the default\n    route because it exists in the kernel FIB but doesn't exist\n    in the database.\n7. IF the user is connecting via layer3, then they will lose all\n    access to the TrueNAS and never be able to finalize the changes\n    to the network because we ripped out the default route which\n    is how they were communicating to begin with.\n\nIn the above scenario, we're going to try and prevent this by doing\nthe following:\n1. Fresh install SCALE.\n2. All interfaces start DHCPv4.\n3. Default route is received.\n4. User configures an interface.\n5. When user pushes \"Test Changes\" (`interface.commit`), webUI will call\n    `interface.network_config_to_be_removed` BEFORE `interface.commit`.\n6. If `interface.network_config_to_be_removed` returns any fields,\n    then webUI will open a new modal dialog that gives the end-user\n    ample warning describing the situation. Furthermore, the\n    modal will allow the user to input a default gateway and nameservers.\n7. If user gives gateway, webUI will call this method providing the info\n    and we'll validate accordingly.\n8. OR if user doesn't give gateway, they will need to \"confirm\" this is\n    desired.\n9. The network configuration provided (gateway and nameservers) will be stored\n    in the same in-memory cache that we use for storing the interface changes\n    and will be rolled back accordingly in this plugin just like everything else.\n\nThere are a few other scenarios where this is beneficial, but the one listed above\nis seen most often by end-users/support team.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.save_network_config",
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "config",
+          "Argument": "config",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceSaveNetworkConfigConfig"
+          },
+          "Required": true,
+          "Description": "InterfaceSaveNetworkConfigArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceServicesRestartedOnSync",
+      "OperationId": "interface.services_restarted_on_sync",
+      "Method": "CALL",
+      "Path": "interface.services_restarted_on_sync",
+      "Description": "Returns which services will be set to listen on 0.0.0.0 (and, thus, restarted) on sync.\n\nExample result:\n[\n    // Samba service will be set ot listen on 0.0.0.0 and restarted because it was set up to listen on\n    // 192.168.0.1 which is being removed.\n    {\"type\": \"SYSTEM_SERVICE\", \"service\": \"cifs\", \"ips\": [\"192.168.0.1\"]},\n]",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceServicesRestartedOnSyncItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.services_restarted_on_sync",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceUpdate",
+      "OperationId": "interface.update",
+      "Method": "CALL",
+      "Path": "interface.update",
+      "Description": "Update Interface of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.update",
+        "Item": true,
+        "Roles": [
+          "NETWORK_INTERFACE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the interface to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated interface configuration data."
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceVlanParentInterfaceChoices",
+      "OperationId": "interface.vlan_parent_interface_choices",
+      "Method": "CALL",
+      "Path": "interface.vlan_parent_interface_choices",
+      "Description": "Return available interface choices for `vlan_parent_interface` attribute.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.vlan_parent_interface_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceWebsocketInterface",
+      "OperationId": "interface.websocket_interface",
+      "Method": "CALL",
+      "Path": "interface.websocket_interface",
+      "Description": "Returns the interface this websocket is connected to.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceEntry"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.websocket_interface",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceWebsocketLocalIp",
+      "OperationId": "interface.websocket_local_ip",
+      "Method": "CALL",
+      "Path": "interface.websocket_local_ip",
+      "Description": "Returns the local ip address for this websocket session.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.websocket_local_ip",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "InterfaceXmitHashPolicyChoices",
+      "OperationId": "interface.xmit_hash_policy_choices",
+      "Method": "CALL",
+      "Path": "interface.xmit_hash_policy_choices",
+      "Description": "Available transmit hash policies for the LACP or LOADBALANCE\nlagg type interfaces.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "InterfaceXmitHashPolicyChoicesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "interface.xmit_hash_policy_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "InterfaceChoicesOptions",
+      "SchemaName": "InterfaceChoicesOptions",
+      "Description": "Options for filtering interface choices.",
+      "Fields": [
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "Include BRIDGE members.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Prefixes of interfaces to exclude from the result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ExcludeTypes",
+          "JsonName": "exclude_types",
+          "Description": "Types of interfaces to exclude from the result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceChoicesOptionsExcludeTypes"
+            }
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Specific interfaces to include even if they would normally be excluded.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "Include LINK_AGGREGATION ports.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VlanParent",
+          "JsonName": "vlan_parent",
+          "Description": "Include VLAN parent interface.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCommitOptions",
+      "SchemaName": "InterfaceCommitOptions",
+      "Description": "Options for committing interface changes.",
+      "Fields": [
+        {
+          "Name": "CheckinTimeout",
+          "JsonName": "checkin_timeout",
+          "Description": "Number of seconds to wait for the checkin call to acknowledge the interface changes happened as planned from     the user. If checkin does not happen within this period of time, the changes will get reverted.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Rollback",
+          "JsonName": "rollback",
+          "Description": "Roll back changes in case they fail to apply.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreateAlias",
+      "SchemaName": "InterfaceCreateAlias",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "The IP address for the failover alias.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Netmask",
+          "JsonName": "netmask",
+          "Description": "The network mask in CIDR notation.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of IP address (INET for IPv4, INET6 for IPv6).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceCreateAliasType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreateAnswer",
+      "SchemaName": "InterfaceCreateAnswer",
+      "Description": "The created interface configuration.",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases configured on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interface names that are members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Whether MAC address learning is enabled for bridge interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Fake",
+          "JsonName": "fake",
+          "Description": "Whether this is a fake/simulated interface for testing purposes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Whether IPv4 DHCP is enabled for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Whether IPv6 autoconfiguration is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names that are members of this link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol (LACP, FAILOVER, LOADBALANCE, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current runtime state information for the interface.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "State"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of interface (PHYSICAL, BRIDGE, LINK_AGGREGATION, VLAN, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number for VLAN interfaces.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreateData",
+      "SchemaName": "InterfaceCreateData",
+      "Description": "Configuration data for the new interface.",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases to configure on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceCreateAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interfaces to add as members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Enable MAC address learning for bridge interfaces. When enabled, the bridge learns MAC addresses     from incoming frames and builds a forwarding table to optimize traffic flow.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FailoverAliases",
+          "JsonName": "failover_aliases",
+          "Description": "List of IP aliases for failover configuration. These IPs are assigned to the interface during normal     operation and migrate during failover.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceCreateFailoverAlias"
+            }
+          }
+        },
+        {
+          "Name": "FailoverCritical",
+          "JsonName": "failover_critical",
+          "Description": "Whether this interface is critical for failover functionality. Critical interfaces are monitored for     failover events and can trigger failover when they fail.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FailoverGroup",
+          "JsonName": "failover_group",
+          "Description": "Failover group identifier for clustering. Interfaces in the same group fail over together during     failover events.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FailoverVhid",
+          "JsonName": "failover_vhid",
+          "Description": "Virtual Host ID for VRRP failover configuration. Must be unique within the VRRP group and match     between failover nodes.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FailoverVirtualAliases",
+          "JsonName": "failover_virtual_aliases",
+          "Description": "List of virtual IP aliases for failover configuration. These are shared IPs that float between nodes     during failover events.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceCreateFailoverAlias"
+            }
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Enable IPv4 DHCP for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Enable IPv6 autoconfiguration.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LacpduRate",
+          "JsonName": "lacpdu_rate",
+          "Description": "LACP data unit transmission rate. SLOW sends LACPDUs every 30 seconds, FAST sends every 1 second for     quicker link failure detection.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceDataLacpduRate"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names to include in the link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol to use for bonding interfaces. LACP uses 802.3ad dynamic negotiation,     FAILOVER provides active-backup, LOADBALANCE and ROUNDROBIN distribute traffic across links.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceDataLagProtocol"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface (68-9216 bytes).",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Generate a name if not provided based on `type`, e.g. \"br0\", \"bond1\", \"vlan0\".",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Stp",
+          "JsonName": "stp",
+          "Description": "Enable Spanning Tree Protocol for bridge interfaces. STP prevents network loops by blocking redundant     paths and enables automatic failover when the primary path fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of interface to create.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceCreateDataType"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization (0-7). Values 0-7 map to different QoS priority levels,     with 0 being lowest and 7 highest priority.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number (1-4094).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "XmitHashPolicy",
+          "JsonName": "xmit_hash_policy",
+          "Description": "Transmit hash policy for load balancing in link aggregation. LAYER2 uses MAC addresses, LAYER2+3 adds IP     addresses, and LAYER3+4 includes TCP/UDP ports for distribution.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceDataXmitHashPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreateFailoverAlias",
+      "SchemaName": "InterfaceCreateFailoverAlias",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "The IP address for the failover alias.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of IP address (INET for IPv4, INET6 for IPv6).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceCreateAliasType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceEntry",
+      "SchemaName": "InterfaceEntry",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases configured on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interface names that are members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Whether MAC address learning is enabled for bridge interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Fake",
+          "JsonName": "fake",
+          "Description": "Whether this is a fake/simulated interface for testing purposes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Whether IPv4 DHCP is enabled for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Whether IPv6 autoconfiguration is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names that are members of this link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol (LACP, FAILOVER, LOADBALANCE, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current runtime state information for the interface.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "State"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of interface (PHYSICAL, BRIDGE, LINK_AGGREGATION, VLAN, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number for VLAN interfaces.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceEntryAlias",
+      "SchemaName": "InterfaceEntryAlias",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "The IP address value.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Netmask",
+          "JsonName": "netmask",
+          "Description": "The network mask for the IP address, either as a string or CIDR notation integer.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of IP address (INET for IPv4, INET6 for IPv6).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceEntryStateAlias",
+      "SchemaName": "InterfaceEntryStateAlias",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "The IP address value.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Broadcast",
+          "JsonName": "broadcast",
+          "Description": "Broadcast address for the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Netmask",
+          "JsonName": "netmask",
+          "Description": "The network mask for the IP address, either as a string or CIDR notation integer.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of IP address (INET for IPv4, INET6 for IPv6).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceEntryStatePort",
+      "SchemaName": "InterfaceEntryStatePort",
+      "Fields": [
+        {
+          "Name": "Flags",
+          "JsonName": "flags",
+          "Description": "List of flags associated with the port.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The name of the port interface.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceGetInstanceAnswer",
+      "SchemaName": "InterfaceGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases configured on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interface names that are members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Whether MAC address learning is enabled for bridge interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Fake",
+          "JsonName": "fake",
+          "Description": "Whether this is a fake/simulated interface for testing purposes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Whether IPv4 DHCP is enabled for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Whether IPv6 autoconfiguration is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names that are members of this link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol (LACP, FAILOVER, LOADBALANCE, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current runtime state information for the interface.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "State"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of interface (PHYSICAL, BRIDGE, LINK_AGGREGATION, VLAN, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number for VLAN interfaces.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceGetInstanceOptions",
+      "SchemaName": "InterfaceGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceIPInUseItem",
+      "SchemaName": "InterfaceIPInUseItem",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "The IP address that is in use.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Broadcast",
+          "JsonName": "broadcast",
+          "Description": "The broadcast address for IPv4 networks.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Netmask",
+          "JsonName": "netmask",
+          "Description": "The network mask in CIDR notation.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of IP address (INET for IPv4, INET6 for IPv6).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceIpInUseOptions",
+      "SchemaName": "InterfaceIpInUseOptions",
+      "Description": "Options for filtering IP addresses in use.",
+      "Fields": [
+        {
+          "Name": "Any",
+          "JsonName": "any",
+          "Description": "Return wildcard addresses (0.0.0.0 and ::).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Interfaces",
+          "JsonName": "interfaces",
+          "Description": "Only return IPs from specified interfaces. If empty, returns IPs from all interfaces.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Ipv4",
+          "JsonName": "ipv4",
+          "Description": "Include IPv4 addresses in the results.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6",
+          "JsonName": "ipv6",
+          "Description": "Include IPv6 addresses in the results.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6LinkLocal",
+          "JsonName": "ipv6_link_local",
+          "Description": "Include IPv6 link-local addresses in the results.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Loopback",
+          "JsonName": "loopback",
+          "Description": "Return loopback interface addresses.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Static",
+          "JsonName": "static",
+          "Description": "Only return configured static IPs.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceLacpduRateChoicesAnswer",
+      "SchemaName": "InterfaceLacpduRateChoicesAnswer",
+      "Description": "InterfaceLacpduRateChoicesResult return fields.",
+      "Fields": [
+        {
+          "Name": "FAST",
+          "JsonName": "FAST",
+          "Description": "Send LACPDUs every 1 second for rapid link failure detection.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceLacpduRateChoicesAnswerFAST"
+          }
+        },
+        {
+          "Name": "SLOW",
+          "JsonName": "SLOW",
+          "Description": "Send LACPDUs every 30 seconds for standard link monitoring.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceLacpduRateChoicesAnswerSLOW"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceQueryOptions",
+      "SchemaName": "InterfaceQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceQueryResultItem",
+      "SchemaName": "InterfaceQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases configured on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interface names that are members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Whether MAC address learning is enabled for bridge interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Fake",
+          "JsonName": "fake",
+          "Description": "Whether this is a fake/simulated interface for testing purposes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Whether IPv4 DHCP is enabled for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Whether IPv6 autoconfiguration is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names that are members of this link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol (LACP, FAILOVER, LOADBALANCE, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current runtime state information for the interface.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "State"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of interface (PHYSICAL, BRIDGE, LINK_AGGREGATION, VLAN, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number for VLAN interfaces.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceSaveNetworkConfigConfig",
+      "SchemaName": "InterfaceSaveNetworkConfigConfig",
+      "Description": "InterfaceSaveNetworkConfigArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Ipv4gateway",
+          "JsonName": "ipv4gateway",
+          "Description": "IPv4 address of the default gateway to save.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver1",
+          "JsonName": "nameserver1",
+          "Description": "Primary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver2",
+          "JsonName": "nameserver2",
+          "Description": "Secondary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver3",
+          "JsonName": "nameserver3",
+          "Description": "Tertiary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceServicesRestartedOnSyncItem",
+      "SchemaName": "InterfaceServicesRestartedOnSyncItem",
+      "Fields": [
+        {
+          "Name": "Ips",
+          "JsonName": "ips",
+          "Description": "List of IP addresses associated with the service restart.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Service",
+          "JsonName": "service",
+          "Description": "The name of the service that was restarted.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of service restart event.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceUpdateAnswer",
+      "SchemaName": "InterfaceUpdateAnswer",
+      "Description": "The updated interface configuration.",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases configured on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interface names that are members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Whether MAC address learning is enabled for bridge interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Fake",
+          "JsonName": "fake",
+          "Description": "Whether this is a fake/simulated interface for testing purposes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Whether IPv4 DHCP is enabled for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Whether IPv6 autoconfiguration is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names that are members of this link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol (LACP, FAILOVER, LOADBALANCE, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current runtime state information for the interface.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "State"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of interface (PHYSICAL, BRIDGE, LINK_AGGREGATION, VLAN, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number for VLAN interfaces.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceUpdateData",
+      "SchemaName": "InterfaceUpdateData",
+      "Description": "Updated interface configuration data.",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases to configure on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceCreateAlias"
+            }
+          }
+        },
+        {
+          "Name": "BridgeMembers",
+          "JsonName": "bridge_members",
+          "Description": "List of interfaces to add as members of this bridge.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableLearning",
+          "JsonName": "enable_learning",
+          "Description": "Enable MAC address learning for bridge interfaces. When enabled, the bridge learns MAC addresses     from incoming frames and builds a forwarding table to optimize traffic flow.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FailoverAliases",
+          "JsonName": "failover_aliases",
+          "Description": "List of IP aliases for failover configuration. These IPs are assigned to the interface during normal     operation and migrate during failover.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceCreateFailoverAlias"
+            }
+          }
+        },
+        {
+          "Name": "FailoverCritical",
+          "JsonName": "failover_critical",
+          "Description": "Whether this interface is critical for failover functionality. Critical interfaces are monitored for     failover events and can trigger failover when they fail.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FailoverGroup",
+          "JsonName": "failover_group",
+          "Description": "Failover group identifier for clustering. Interfaces in the same group fail over together during     failover events.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FailoverVhid",
+          "JsonName": "failover_vhid",
+          "Description": "Virtual Host ID for VRRP failover configuration. Must be unique within the VRRP group and match     between failover nodes.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FailoverVirtualAliases",
+          "JsonName": "failover_virtual_aliases",
+          "Description": "List of virtual IP aliases for failover configuration. These are shared IPs that float between nodes     during failover events.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceCreateFailoverAlias"
+            }
+          }
+        },
+        {
+          "Name": "Ipv4Dhcp",
+          "JsonName": "ipv4_dhcp",
+          "Description": "Enable IPv4 DHCP for automatic IP address assignment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Auto",
+          "JsonName": "ipv6_auto",
+          "Description": "Enable IPv6 autoconfiguration.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LacpduRate",
+          "JsonName": "lacpdu_rate",
+          "Description": "LACP data unit transmission rate. SLOW sends LACPDUs every 30 seconds, FAST sends every 1 second for     quicker link failure detection.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceDataLacpduRate"
+          }
+        },
+        {
+          "Name": "LagPorts",
+          "JsonName": "lag_ports",
+          "Description": "List of interface names to include in the link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LagProtocol",
+          "JsonName": "lag_protocol",
+          "Description": "Link aggregation protocol to use for bonding interfaces. LACP uses 802.3ad dynamic negotiation,     FAILOVER provides active-backup, LOADBALANCE and ROUNDROBIN distribute traffic across links.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceDataLagProtocol"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface (68-9216 bytes).",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Generate a name if not provided based on `type`, e.g. \"br0\", \"bond1\", \"vlan0\".",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Stp",
+          "JsonName": "stp",
+          "Description": "Enable Spanning Tree Protocol for bridge interfaces. STP prevents network loops by blocking redundant     paths and enables automatic failover when the primary path fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VlanParentInterface",
+          "JsonName": "vlan_parent_interface",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VlanPcp",
+          "JsonName": "vlan_pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization (0-7). Values 0-7 map to different QoS priority levels,     with 0 being lowest and 7 highest priority.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VlanTag",
+          "JsonName": "vlan_tag",
+          "Description": "VLAN tag number (1-4094).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "XmitHashPolicy",
+          "JsonName": "xmit_hash_policy",
+          "Description": "Transmit hash policy for load balancing in link aggregation. LAYER2 uses MAC addresses, LAYER2+3 adds IP     addresses, and LAYER3+4 includes TCP/UDP ports for distribution.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceDataXmitHashPolicy"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceXmitHashPolicyChoicesAnswer",
+      "SchemaName": "InterfaceXmitHashPolicyChoicesAnswer",
+      "Description": "InterfaceXmitHashPolicyChoicesResult return fields.",
+      "Fields": [
+        {
+          "Name": "LAYER2",
+          "JsonName": "LAYER2",
+          "Description": "Use MAC addresses for traffic distribution across bond members.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceXmitHashPolicyChoicesAnswerLAYER2"
+          }
+        },
+        {
+          "Name": "LAYER23",
+          "JsonName": "LAYER2+3",
+          "Description": "Use MAC and IP addresses for traffic distribution across bond members.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceXmitHashPolicyChoicesAnswerLAYER23"
+          }
+        },
+        {
+          "Name": "LAYER34",
+          "JsonName": "LAYER3+4",
+          "Description": "Use MAC, IP, and TCP/UDP port information for traffic distribution across bond members.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "InterfaceXmitHashPolicyChoicesAnswerLAYER34"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "State",
+      "SchemaName": "State",
+      "Description": "Current runtime state information for the interface.",
+      "Fields": [
+        {
+          "Name": "ActiveMediaSubtype",
+          "JsonName": "active_media_subtype",
+          "Description": "Currently active media subtype. This reflects the actual negotiated connection speed and type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ActiveMediaType",
+          "JsonName": "active_media_type",
+          "Description": "Currently active media type. This may differ from configured media_type during autonegotiation.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "List of IP address aliases configured on the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryStateAlias"
+            }
+          }
+        },
+        {
+          "Name": "Capabilities",
+          "JsonName": "capabilities",
+          "Description": "List of hardware capabilities supported by the interface. Common capabilities include VLAN_MTU, JUMBO_MTU,     VLAN_HWTAGGING, VLAN_HWCSUM, and TSO4.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Cloned",
+          "JsonName": "cloned",
+          "Description": "Whether the interface is a cloned/virtual interface.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Flags",
+          "JsonName": "flags",
+          "Description": "List of interface flags indicating various states and capabilities. Common flags include UP, DOWN, RUNNING,     MULTICAST, BROADCAST, LOOPBACK, and POINTOPOINT.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "HardwareLinkAddress",
+          "JsonName": "hardware_link_address",
+          "Description": "Hardware MAC address of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LacpduRate",
+          "JsonName": "lacpdu_rate",
+          "Description": "LACP data unit transmission rate. SLOW sends LACPDUs every 30 seconds, FAST sends every 1 second for     quicker link failure detection.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LinkAddress",
+          "JsonName": "link_address",
+          "Description": "MAC address of the interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LinkState",
+          "JsonName": "link_state",
+          "Description": "Current link state of the interface (up, down, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MediaOptions",
+          "JsonName": "media_options",
+          "Description": "Available media options for the interface. Options may include 'full-duplex', 'half-duplex', 'flowcontrol',     or 'rxpause'.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MediaSubtype",
+          "JsonName": "media_subtype",
+          "Description": "Subtype of media/connection for the interface. Examples include 1000baseT, 100baseTX, or autoselect.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "MediaType",
+          "JsonName": "media_type",
+          "Description": "Type of media/connection for the interface. Examples include Ethernet, 802.11, or loopback.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mtu",
+          "JsonName": "mtu",
+          "Description": "Maximum transmission unit size for the interface.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Current name of the network interface.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nd6Flags",
+          "JsonName": "nd6_flags",
+          "Description": "IPv6 neighbor discovery flags. These control IPv6 autoconfiguration behavior and include flags like     AUTO_LINKLOCAL, ACCEPT_RTADV, and PERFORMNUD.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "OrigName",
+          "JsonName": "orig_name",
+          "Description": "Original name of the network interface before any renaming.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Parent",
+          "JsonName": "parent",
+          "Description": "Parent interface for VLAN configuration.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pcp",
+          "JsonName": "pcp",
+          "Description": "Priority Code Point for VLAN traffic prioritization. Values 0-7 map to different QoS priority levels,     with 0 being lowest and 7 highest priority.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PermanentLinkAddress",
+          "JsonName": "permanent_link_address",
+          "Description": "Permanent MAC address of the interface if different from current.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Ports",
+          "JsonName": "ports",
+          "Description": "List of ports that are members of this link aggregation group.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "InterfaceEntryStatePort"
+            }
+          }
+        },
+        {
+          "Name": "Protocol",
+          "JsonName": "protocol",
+          "Description": "Link aggregation protocol used (LACP, FAILOVER, etc.).",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RxQueues",
+          "JsonName": "rx_queues",
+          "Description": "Number of receive queues configured for the interface.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SupportedMedia",
+          "JsonName": "supported_media",
+          "Description": "List of supported media types for the interface. Contains media descriptors like '1000baseT <full-duplex>'     or 'autoselect'.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Tag",
+          "JsonName": "tag",
+          "Description": "VLAN tag number.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "TxQueues",
+          "JsonName": "tx_queues",
+          "Description": "Number of transmit queues configured for the interface.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "VrrpConfig",
+          "JsonName": "vrrp_config",
+          "Description": "VRRP (Virtual Router Redundancy Protocol) configuration for the interface.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "XmitHashPolicy",
+          "JsonName": "xmit_hash_policy",
+          "Description": "Transmit hash policy for load balancing in link aggregation. LAYER2 uses MAC addresses, LAYER2+3 adds IP     addresses, and LAYER3+4 includes TCP/UDP ports for distribution.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "InterfaceChoicesOptionsExcludeTypes",
+      "SchemaName": "InterfaceChoicesOptionsExcludeTypes",
+      "Values": [
+        {
+          "Name": "InterfaceChoicesOptionsExcludeTypesBRIDGE",
+          "Value": "BRIDGE"
+        },
+        {
+          "Name": "InterfaceChoicesOptionsExcludeTypesLINKAGGREGATION",
+          "Value": "LINK_AGGREGATION"
+        },
+        {
+          "Name": "InterfaceChoicesOptionsExcludeTypesPHYSICAL",
+          "Value": "PHYSICAL"
+        },
+        {
+          "Name": "InterfaceChoicesOptionsExcludeTypesUNKNOWN",
+          "Value": "UNKNOWN"
+        },
+        {
+          "Name": "InterfaceChoicesOptionsExcludeTypesVLAN",
+          "Value": "VLAN"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreateAliasType",
+      "SchemaName": "InterfaceCreateAliasType",
+      "Description": "The type of IP address (INET for IPv4, INET6 for IPv6).",
+      "Values": [
+        {
+          "Name": "InterfaceCreateAliasTypeINET",
+          "Value": "INET"
+        },
+        {
+          "Name": "InterfaceCreateAliasTypeINET6",
+          "Value": "INET6"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceCreateDataType",
+      "SchemaName": "InterfaceCreateDataType",
+      "Description": "Type of interface to create.",
+      "Values": [
+        {
+          "Name": "InterfaceCreateDataTypeBRIDGE",
+          "Value": "BRIDGE"
+        },
+        {
+          "Name": "InterfaceCreateDataTypeLINKAGGREGATION",
+          "Value": "LINK_AGGREGATION"
+        },
+        {
+          "Name": "InterfaceCreateDataTypeVLAN",
+          "Value": "VLAN"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceDataLacpduRate",
+      "SchemaName": "InterfaceDataLacpduRate",
+      "Description": "LACP data unit transmission rate. SLOW sends LACPDUs every 30 seconds, FAST sends every 1 second for     quicker link failure detection.",
+      "Values": [
+        {
+          "Name": "InterfaceDataLacpduRateSLOW",
+          "Value": "SLOW"
+        },
+        {
+          "Name": "InterfaceDataLacpduRateFAST",
+          "Value": "FAST"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceDataLagProtocol",
+      "SchemaName": "InterfaceDataLagProtocol",
+      "Description": "Link aggregation protocol to use for bonding interfaces. LACP uses 802.3ad dynamic negotiation,     FAILOVER provides active-backup, LOADBALANCE and ROUNDROBIN distribute traffic across links.",
+      "Values": [
+        {
+          "Name": "InterfaceDataLagProtocolLACP",
+          "Value": "LACP"
+        },
+        {
+          "Name": "InterfaceDataLagProtocolFAILOVER",
+          "Value": "FAILOVER"
+        },
+        {
+          "Name": "InterfaceDataLagProtocolLOADBALANCE",
+          "Value": "LOADBALANCE"
+        },
+        {
+          "Name": "InterfaceDataLagProtocolROUNDROBIN",
+          "Value": "ROUNDROBIN"
+        },
+        {
+          "Name": "InterfaceDataLagProtocolNONE",
+          "Value": "NONE"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceDataXmitHashPolicy",
+      "SchemaName": "InterfaceDataXmitHashPolicy",
+      "Description": "Transmit hash policy for load balancing in link aggregation. LAYER2 uses MAC addresses, LAYER2+3 adds IP     addresses, and LAYER3+4 includes TCP/UDP ports for distribution.",
+      "Values": [
+        {
+          "Name": "InterfaceDataXmitHashPolicyLAYER2",
+          "Value": "LAYER2"
+        },
+        {
+          "Name": "InterfaceDataXmitHashPolicyLAYER23",
+          "Value": "LAYER2+3"
+        },
+        {
+          "Name": "InterfaceDataXmitHashPolicyLAYER34",
+          "Value": "LAYER3+4"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceLacpduRateChoicesAnswerFAST",
+      "SchemaName": "InterfaceLacpduRateChoicesAnswerFAST",
+      "Description": "Send LACPDUs every 1 second for rapid link failure detection.",
+      "Values": [
+        {
+          "Name": "InterfaceLacpduRateChoicesAnswerFASTFAST",
+          "Value": "FAST"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceLacpduRateChoicesAnswerSLOW",
+      "SchemaName": "InterfaceLacpduRateChoicesAnswerSLOW",
+      "Description": "Send LACPDUs every 30 seconds for standard link monitoring.",
+      "Values": [
+        {
+          "Name": "InterfaceLacpduRateChoicesAnswerSLOWSLOW",
+          "Value": "SLOW"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceXmitHashPolicyChoicesAnswerLAYER2",
+      "SchemaName": "InterfaceXmitHashPolicyChoicesAnswerLAYER2",
+      "Description": "Use MAC addresses for traffic distribution across bond members.",
+      "Values": [
+        {
+          "Name": "InterfaceXmitHashPolicyChoicesAnswerLAYER2LAYER2",
+          "Value": "LAYER2"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceXmitHashPolicyChoicesAnswerLAYER23",
+      "SchemaName": "InterfaceXmitHashPolicyChoicesAnswerLAYER23",
+      "Description": "Use MAC and IP addresses for traffic distribution across bond members.",
+      "Values": [
+        {
+          "Name": "InterfaceXmitHashPolicyChoicesAnswerLAYER23LAYER23",
+          "Value": "LAYER2+3"
+        }
+      ]
+    },
+    {
+      "Name": "InterfaceXmitHashPolicyChoicesAnswerLAYER34",
+      "SchemaName": "InterfaceXmitHashPolicyChoicesAnswerLAYER34",
+      "Description": "Use MAC, IP, and TCP/UDP port information for traffic distribution across bond members.",
+      "Values": [
+        {
+          "Name": "InterfaceXmitHashPolicyChoicesAnswerLAYER34LAYER34",
+          "Value": "LAYER3+4"
+        }
+      ]
+    }
+  ]
+}

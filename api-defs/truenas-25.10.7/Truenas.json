@@ -1,0 +1,188 @@
+{
+  "Name": "Truenas",
+  "Tag": "truenas",
+  "Operations": [
+    {
+      "Name": "TruenasAcceptEula",
+      "OperationId": "truenas.accept_eula",
+      "Method": "CALL",
+      "Path": "truenas.accept_eula",
+      "Description": "Accept TrueNAS EULA.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.accept_eula",
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "TruenasGetChassisHardware",
+      "OperationId": "truenas.get_chassis_hardware",
+      "Method": "CALL",
+      "Path": "truenas.get_chassis_hardware",
+      "Description": "Returns what type of hardware this is, detected from dmidecode.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.get_chassis_hardware",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "TruenasGetEula",
+      "OperationId": "truenas.get_eula",
+      "Method": "CALL",
+      "Path": "truenas.get_eula",
+      "Description": "Returns the TrueNAS End-User License Agreement (EULA).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.get_eula",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "TruenasIsEulaAccepted",
+      "OperationId": "truenas.is_eula_accepted",
+      "Method": "CALL",
+      "Path": "truenas.is_eula_accepted",
+      "Description": "Returns whether the EULA is accepted or not.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.is_eula_accepted",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "TruenasIsIxHardware",
+      "OperationId": "truenas.is_ix_hardware",
+      "Method": "CALL",
+      "Path": "truenas.is_ix_hardware",
+      "Description": "Return a boolean value on whether this is hardware that iXsystems sells.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.is_ix_hardware",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "TruenasIsProduction",
+      "OperationId": "truenas.is_production",
+      "Method": "CALL",
+      "Path": "truenas.is_production",
+      "Description": "Returns if system is marked as production.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.is_production",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "TruenasManagedByTruecommand",
+      "OperationId": "truenas.managed_by_truecommand",
+      "Method": "CALL",
+      "Path": "truenas.managed_by_truecommand",
+      "Description": "Returns whether TrueNAS is being managed by TrueCommand",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.managed_by_truecommand",
+        "NoAuth": true
+      }
+    },
+    {
+      "Name": "TruenasSetProduction",
+      "OperationId": "truenas.set_production",
+      "Method": "CALL",
+      "Path": "truenas.set_production",
+      "Description": "Sets system production state and optionally sends initial debug.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "truenas.set_production",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "production",
+          "Argument": "production",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Required": true,
+          "Description": "Whether to configure the system for production use."
+        },
+        {
+          "Name": "attach_debug",
+          "Argument": "attachDebug",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to attach debug information when transitioning to production mode."
+        }
+      ]
+    }
+  ]
+}

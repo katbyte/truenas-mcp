@@ -1,0 +1,1053 @@
+{
+  "Name": "Smb",
+  "Tag": "smb",
+  "Operations": [
+    {
+      "Name": "SmbBindipChoices",
+      "OperationId": "smb.bindip_choices",
+      "Method": "CALL",
+      "Path": "smb.bindip_choices",
+      "Description": "List of valid choices for IP addresses to which to bind the SMB service.\nAddresses assigned by DHCP are excluded from the results.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "smb.bindip_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_READ",
+          "SHARING_SMB_READ",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SmbConfig",
+      "OperationId": "smb.config",
+      "Method": "CALL",
+      "Path": "smb.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SmbConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "smb.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_READ",
+          "SHARING_SMB_READ",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SmbUnixcharsetChoices",
+      "OperationId": "smb.unixcharset_choices",
+      "Method": "CALL",
+      "Path": "smb.unixcharset_choices",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "smb.unixcharset_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_READ",
+          "SHARING_SMB_READ",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SmbUpdate",
+      "OperationId": "smb.update",
+      "Method": "CALL",
+      "Path": "smb.update",
+      "Description": "Update SMB Service Configuration.\n\n`netbiosname` defaults to the original hostname of the system.\n\n`netbiosalias` a list of netbios aliases. If Server is joined to an AD domain, additional Kerberos\nService Principal Names will be generated for these aliases.\n\n`workgroup` specifies the NetBIOS workgroup to which the TrueNAS server belongs. This will be\nautomatically set to the correct value during the process of joining an AD domain.\nNOTE: `workgroup` and `netbiosname` should have different values.\n\n`enable_smb1` allows legacy SMB clients to connect to the server when enabled.\n\n`aapl_extensions` enables support for SMB2 protocol extensions for MacOS clients. This is not a\nrequirement for MacOS support, but is currently a requirement for time machine support.\n\n`localmaster` when set, determines if the system participates in a browser election.\n\n`guest` attribute is specified to select the account to be used for guest access. It defaults to \"nobody\".\n\nThe group specified as the SMB `admin_group` will be automatically added as a foreign group member\nof S-1-5-32-544 (builtin\\admins). This will afford the group all privileges granted to a local admin.\nAny SMB group may be selected (including AD groups).\n\n`ntlmv1_auth` enables a legacy and insecure authentication method, which may be required for legacy or\npoorly-implemented SMB clients.\n\n`encryption` set global server behavior with regard to SMB encrpytion. Options are DEFAULT (which\nfollows the upstream defaults -- currently identical to NEGOTIATE), NEGOTIATE encrypts SMB transport\nonly if requested by the SMB client, DESIRED encrypts SMB transport if supported by the SMB client,\nREQUIRED only allows encrypted transport to the SMB server. Mandatory SMB encryption is not\ncompatible with SMB1 server support in TrueNAS.\n\n`smb_options` smb.conf parameters that are not covered by the above supported configuration options may be\nadded as an smb_option. Not all options are tested or supported, and behavior of smb_options may change\nbetween releases. Stability of smb.conf options is not guaranteed.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SmbUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "smb.update",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "smb_update",
+          "Argument": "smbUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbUpdate"
+          },
+          "Required": true,
+          "Description": "SMBUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SmbConfigAnswer",
+      "SchemaName": "SmbConfigAnswer",
+      "Description": "TrueNAS SMB server configuration.",
+      "Fields": [
+        {
+          "Name": "AaplExtensions",
+          "JsonName": "aapl_extensions",
+          "Description": "Enable support for SMB2/3 AAPL protocol extensions. This setting makes the TrueNAS server advertise support     for Apple protocol extensions as a MacOS server. Enabling this is required for Time Machine support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AdminGroup",
+          "JsonName": "admin_group",
+          "Description": "The selected group has full administrator privileges on TrueNAS via the SMB protocol.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Bindip",
+          "JsonName": "bindip",
+          "Description": "List of IP addresses used by the TrueNAS SMB server.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Debug",
+          "JsonName": "debug",
+          "Description": "Set SMB log levels to debug. Use this setting only when troubleshooting a specific SMB issue. Do not use it     in production environments.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description of the SMB server. SMB clients may see this description during some operations.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dirmask",
+          "JsonName": "dirmask",
+          "Description": "`smb.conf` directory mask. DEFAULT applies current server default which is 775.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableSmb1",
+          "JsonName": "enable_smb1",
+          "Description": "Enable SMB1 support on the server. WARNING: using the SMB1 protocol is not recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "SMB2/3 transport encryption setting for the TrueNAS SMB server.\n\n* `NEGOTIATE`: Enable negotiation of data encryption. Encrypt data only if the client explicitly requests it.\n* `DESIRED`: Enable negotiation of data encryption. Encrypt data on sessions and share connections for clients       that support it.\n* `REQUIRED`: Require data encryption for sessions and share connections.\n  NOTE: Clients that do not support encryption cannot access SMB shares.\n* `DEFAULT`: Use the TrueNAS SMB server default encryption settings. Currently, this is the same as `NEGOTIATE`.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbEncryption"
+          }
+        },
+        {
+          "Name": "Filemask",
+          "JsonName": "filemask",
+          "Description": "`smb.conf` create mask. DEFAULT applies current server default which is 664.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Guest",
+          "JsonName": "guest",
+          "Description": "SMB guest account username. This username provides access to legacy SMB shares with guest access enabled.     It must be a valid, existing local user account.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the SMB service configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localmaster",
+          "JsonName": "localmaster",
+          "Description": "When set to `true` the NetBIOS name server in TrueNAS participates in elections for the local master browser.\nWhen set to `false` the NetBIOS name server does not attempt to become a local master browser on a subnet and     loses all browsing elections.\n\nNOTE: This parameter has no effect if the NetBIOS name server is disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Multichannel",
+          "JsonName": "multichannel",
+          "Description": "Enable SMB3 multi-channel support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Netbiosalias",
+          "JsonName": "netbiosalias",
+          "Description": "Alternative netbios names of the TrueNAS server. These names are announced through NetBIOS name server and     registered in Active Directory when TrueNAS joins the domain.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Netbiosname",
+          "JsonName": "netbiosname",
+          "Description": "The NetBIOS name of this server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ntlmv1Auth",
+          "JsonName": "ntlmv1_auth",
+          "Description": "Enable legacy and very insecure NTLMv1 authentication. This should never be done except     in extreme edge cases and may be against regulations in non-home environments.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ServerSid",
+          "JsonName": "server_sid",
+          "Description": "The unique identifier for the TrueNAS SMB server. It also serves as the domain SID for all local SMB user and     group accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SmbOptions",
+          "JsonName": "smb_options",
+          "Description": "Additional unvalidated and unsupported configuration options for the SMB server.\nWARNING: Using `smb_options` may produce unexpected server behavior.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Syslog",
+          "JsonName": "syslog",
+          "Description": "Send log messages to syslog. Enable this option if you want SMB server error logs to be included in     information sent to a remote syslog server. NOTE: This requires that remote syslog is globally configured on     TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Unixcharset",
+          "JsonName": "unixcharset",
+          "Description": "Select character set for file names on local filesystem. Use this option only if you know the names are not     UTF-8.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbUnixcharset"
+          }
+        },
+        {
+          "Name": "Workgroup",
+          "JsonName": "workgroup",
+          "Description": "Workgroup name. When TrueNAS joins active directory, it automatically changes this value to match the NetBIOS     domain of the Active Directory domain.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SmbUpdate",
+      "SchemaName": "SmbUpdate",
+      "Description": "SMBUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "AaplExtensions",
+          "JsonName": "aapl_extensions",
+          "Description": "Enable support for SMB2/3 AAPL protocol extensions. This setting makes the TrueNAS server advertise support     for Apple protocol extensions as a MacOS server. Enabling this is required for Time Machine support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AdminGroup",
+          "JsonName": "admin_group",
+          "Description": "The selected group has full administrator privileges on TrueNAS via the SMB protocol.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Bindip",
+          "JsonName": "bindip",
+          "Description": "List of IP addresses used by the TrueNAS SMB server.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Debug",
+          "JsonName": "debug",
+          "Description": "Set SMB log levels to debug. Use this setting only when troubleshooting a specific SMB issue. Do not use it     in production environments.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description of the SMB server. SMB clients may see this description during some operations.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dirmask",
+          "JsonName": "dirmask",
+          "Description": "`smb.conf` directory mask. DEFAULT applies current server default which is 775.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableSmb1",
+          "JsonName": "enable_smb1",
+          "Description": "Enable SMB1 support on the server. WARNING: using the SMB1 protocol is not recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "SMB2/3 transport encryption setting for the TrueNAS SMB server.\n\n* `NEGOTIATE`: Enable negotiation of data encryption. Encrypt data only if the client explicitly requests it.\n* `DESIRED`: Enable negotiation of data encryption. Encrypt data on sessions and share connections for clients       that support it.\n* `REQUIRED`: Require data encryption for sessions and share connections.\n  NOTE: Clients that do not support encryption cannot access SMB shares.\n* `DEFAULT`: Use the TrueNAS SMB server default encryption settings. Currently, this is the same as `NEGOTIATE`.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbEncryption"
+          }
+        },
+        {
+          "Name": "Filemask",
+          "JsonName": "filemask",
+          "Description": "`smb.conf` create mask. DEFAULT applies current server default which is 664.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Guest",
+          "JsonName": "guest",
+          "Description": "SMB guest account username. This username provides access to legacy SMB shares with guest access enabled.     It must be a valid, existing local user account.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Localmaster",
+          "JsonName": "localmaster",
+          "Description": "When set to `true` the NetBIOS name server in TrueNAS participates in elections for the local master browser.\nWhen set to `false` the NetBIOS name server does not attempt to become a local master browser on a subnet and     loses all browsing elections.\n\nNOTE: This parameter has no effect if the NetBIOS name server is disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Multichannel",
+          "JsonName": "multichannel",
+          "Description": "Enable SMB3 multi-channel support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Netbiosalias",
+          "JsonName": "netbiosalias",
+          "Description": "Alternative netbios names of the TrueNAS server. These names are announced through NetBIOS name server and     registered in Active Directory when TrueNAS joins the domain.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Netbiosname",
+          "JsonName": "netbiosname",
+          "Description": "The NetBIOS name of this server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ntlmv1Auth",
+          "JsonName": "ntlmv1_auth",
+          "Description": "Enable legacy and very insecure NTLMv1 authentication. This should never be done except     in extreme edge cases and may be against regulations in non-home environments.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ServerSid",
+          "JsonName": "server_sid",
+          "Description": "The unique identifier for the TrueNAS SMB server. It also serves as the domain SID for all local SMB user and     group accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SmbOptions",
+          "JsonName": "smb_options",
+          "Description": "Additional unvalidated and unsupported configuration options for the SMB server.\nWARNING: Using `smb_options` may produce unexpected server behavior.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Syslog",
+          "JsonName": "syslog",
+          "Description": "Send log messages to syslog. Enable this option if you want SMB server error logs to be included in     information sent to a remote syslog server. NOTE: This requires that remote syslog is globally configured on     TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Unixcharset",
+          "JsonName": "unixcharset",
+          "Description": "Select character set for file names on local filesystem. Use this option only if you know the names are not     UTF-8.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbUnixcharset"
+          }
+        },
+        {
+          "Name": "Workgroup",
+          "JsonName": "workgroup",
+          "Description": "Workgroup name. When TrueNAS joins active directory, it automatically changes this value to match the NetBIOS     domain of the Active Directory domain.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SmbUpdateAnswer",
+      "SchemaName": "SmbUpdateAnswer",
+      "Description": "The updated SMB service configuration.",
+      "Fields": [
+        {
+          "Name": "AaplExtensions",
+          "JsonName": "aapl_extensions",
+          "Description": "Enable support for SMB2/3 AAPL protocol extensions. This setting makes the TrueNAS server advertise support     for Apple protocol extensions as a MacOS server. Enabling this is required for Time Machine support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AdminGroup",
+          "JsonName": "admin_group",
+          "Description": "The selected group has full administrator privileges on TrueNAS via the SMB protocol.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Bindip",
+          "JsonName": "bindip",
+          "Description": "List of IP addresses used by the TrueNAS SMB server.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Debug",
+          "JsonName": "debug",
+          "Description": "Set SMB log levels to debug. Use this setting only when troubleshooting a specific SMB issue. Do not use it     in production environments.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description of the SMB server. SMB clients may see this description during some operations.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dirmask",
+          "JsonName": "dirmask",
+          "Description": "`smb.conf` directory mask. DEFAULT applies current server default which is 775.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableSmb1",
+          "JsonName": "enable_smb1",
+          "Description": "Enable SMB1 support on the server. WARNING: using the SMB1 protocol is not recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "SMB2/3 transport encryption setting for the TrueNAS SMB server.\n\n* `NEGOTIATE`: Enable negotiation of data encryption. Encrypt data only if the client explicitly requests it.\n* `DESIRED`: Enable negotiation of data encryption. Encrypt data on sessions and share connections for clients       that support it.\n* `REQUIRED`: Require data encryption for sessions and share connections.\n  NOTE: Clients that do not support encryption cannot access SMB shares.\n* `DEFAULT`: Use the TrueNAS SMB server default encryption settings. Currently, this is the same as `NEGOTIATE`.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbEncryption"
+          }
+        },
+        {
+          "Name": "Filemask",
+          "JsonName": "filemask",
+          "Description": "`smb.conf` create mask. DEFAULT applies current server default which is 664.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Guest",
+          "JsonName": "guest",
+          "Description": "SMB guest account username. This username provides access to legacy SMB shares with guest access enabled.     It must be a valid, existing local user account.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the SMB service configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Localmaster",
+          "JsonName": "localmaster",
+          "Description": "When set to `true` the NetBIOS name server in TrueNAS participates in elections for the local master browser.\nWhen set to `false` the NetBIOS name server does not attempt to become a local master browser on a subnet and     loses all browsing elections.\n\nNOTE: This parameter has no effect if the NetBIOS name server is disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Multichannel",
+          "JsonName": "multichannel",
+          "Description": "Enable SMB3 multi-channel support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Netbiosalias",
+          "JsonName": "netbiosalias",
+          "Description": "Alternative netbios names of the TrueNAS server. These names are announced through NetBIOS name server and     registered in Active Directory when TrueNAS joins the domain.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Netbiosname",
+          "JsonName": "netbiosname",
+          "Description": "The NetBIOS name of this server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ntlmv1Auth",
+          "JsonName": "ntlmv1_auth",
+          "Description": "Enable legacy and very insecure NTLMv1 authentication. This should never be done except     in extreme edge cases and may be against regulations in non-home environments.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ServerSid",
+          "JsonName": "server_sid",
+          "Description": "The unique identifier for the TrueNAS SMB server. It also serves as the domain SID for all local SMB user and     group accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SmbOptions",
+          "JsonName": "smb_options",
+          "Description": "Additional unvalidated and unsupported configuration options for the SMB server.\nWARNING: Using `smb_options` may produce unexpected server behavior.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Syslog",
+          "JsonName": "syslog",
+          "Description": "Send log messages to syslog. Enable this option if you want SMB server error logs to be included in     information sent to a remote syslog server. NOTE: This requires that remote syslog is globally configured on     TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Unixcharset",
+          "JsonName": "unixcharset",
+          "Description": "Select character set for file names on local filesystem. Use this option only if you know the names are not     UTF-8.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SmbUnixcharset"
+          }
+        },
+        {
+          "Name": "Workgroup",
+          "JsonName": "workgroup",
+          "Description": "Workgroup name. When TrueNAS joins active directory, it automatically changes this value to match the NetBIOS     domain of the Active Directory domain.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SmbEncryption",
+      "SchemaName": "SmbEncryption",
+      "Description": "SMB2/3 transport encryption setting for the TrueNAS SMB server.\n\n* `NEGOTIATE`: Enable negotiation of data encryption. Encrypt data only if the client explicitly requests it.\n* `DESIRED`: Enable negotiation of data encryption. Encrypt data on sessions and share connections for clients       that support it.\n* `REQUIRED`: Require data encryption for sessions and share connections.\n  NOTE: Clients that do not support encryption cannot access SMB shares.\n* `DEFAULT`: Use the TrueNAS SMB server default encryption settings. Currently, this is the same as `NEGOTIATE`.",
+      "Values": [
+        {
+          "Name": "SmbEncryptionDEFAULT",
+          "Value": "DEFAULT"
+        },
+        {
+          "Name": "SmbEncryptionNEGOTIATE",
+          "Value": "NEGOTIATE"
+        },
+        {
+          "Name": "SmbEncryptionDESIRED",
+          "Value": "DESIRED"
+        },
+        {
+          "Name": "SmbEncryptionREQUIRED",
+          "Value": "REQUIRED"
+        }
+      ]
+    },
+    {
+      "Name": "SmbUnixcharset",
+      "SchemaName": "SmbUnixcharset",
+      "Description": "Select character set for file names on local filesystem. Use this option only if you know the names are not     UTF-8.",
+      "Values": [
+        {
+          "Name": "SmbUnixcharsetUTF8",
+          "Value": "UTF-8"
+        },
+        {
+          "Name": "SmbUnixcharsetGB2312",
+          "Value": "GB2312"
+        },
+        {
+          "Name": "SmbUnixcharsetHZGB2312",
+          "Value": "HZ-GB-2312"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1361",
+          "Value": "CP1361"
+        },
+        {
+          "Name": "SmbUnixcharsetBIG5",
+          "Value": "BIG5"
+        },
+        {
+          "Name": "SmbUnixcharsetBIG5HKSCS",
+          "Value": "BIG5HKSCS"
+        },
+        {
+          "Name": "SmbUnixcharsetCP037",
+          "Value": "CP037"
+        },
+        {
+          "Name": "SmbUnixcharsetCP273",
+          "Value": "CP273"
+        },
+        {
+          "Name": "SmbUnixcharsetCP424",
+          "Value": "CP424"
+        },
+        {
+          "Name": "SmbUnixcharsetCP437",
+          "Value": "CP437"
+        },
+        {
+          "Name": "SmbUnixcharsetCP500",
+          "Value": "CP500"
+        },
+        {
+          "Name": "SmbUnixcharsetCP775",
+          "Value": "CP775"
+        },
+        {
+          "Name": "SmbUnixcharsetCP850",
+          "Value": "CP850"
+        },
+        {
+          "Name": "SmbUnixcharsetCP852",
+          "Value": "CP852"
+        },
+        {
+          "Name": "SmbUnixcharsetCP855",
+          "Value": "CP855"
+        },
+        {
+          "Name": "SmbUnixcharsetCP857",
+          "Value": "CP857"
+        },
+        {
+          "Name": "SmbUnixcharsetCP858",
+          "Value": "CP858"
+        },
+        {
+          "Name": "SmbUnixcharsetCP860",
+          "Value": "CP860"
+        },
+        {
+          "Name": "SmbUnixcharsetCP861",
+          "Value": "CP861"
+        },
+        {
+          "Name": "SmbUnixcharsetCP862",
+          "Value": "CP862"
+        },
+        {
+          "Name": "SmbUnixcharsetCP863",
+          "Value": "CP863"
+        },
+        {
+          "Name": "SmbUnixcharsetCP864",
+          "Value": "CP864"
+        },
+        {
+          "Name": "SmbUnixcharsetCP865",
+          "Value": "CP865"
+        },
+        {
+          "Name": "SmbUnixcharsetCP866",
+          "Value": "CP866"
+        },
+        {
+          "Name": "SmbUnixcharsetCP869",
+          "Value": "CP869"
+        },
+        {
+          "Name": "SmbUnixcharsetCP932",
+          "Value": "CP932"
+        },
+        {
+          "Name": "SmbUnixcharsetCP949",
+          "Value": "CP949"
+        },
+        {
+          "Name": "SmbUnixcharsetCP950",
+          "Value": "CP950"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1026",
+          "Value": "CP1026"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1125",
+          "Value": "CP1125"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1140",
+          "Value": "CP1140"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1250",
+          "Value": "CP1250"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1251",
+          "Value": "CP1251"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1252",
+          "Value": "CP1252"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1253",
+          "Value": "CP1253"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1254",
+          "Value": "CP1254"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1255",
+          "Value": "CP1255"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1256",
+          "Value": "CP1256"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1257",
+          "Value": "CP1257"
+        },
+        {
+          "Name": "SmbUnixcharsetCP1258",
+          "Value": "CP1258"
+        },
+        {
+          "Name": "SmbUnixcharsetEUCJIS2004",
+          "Value": "EUC_JIS_2004"
+        },
+        {
+          "Name": "SmbUnixcharsetEUCJISX0213",
+          "Value": "EUC_JISX0213"
+        },
+        {
+          "Name": "SmbUnixcharsetEUCJP",
+          "Value": "EUC_JP"
+        },
+        {
+          "Name": "SmbUnixcharsetEUCKR",
+          "Value": "EUC_KR"
+        },
+        {
+          "Name": "SmbUnixcharsetGB18030",
+          "Value": "GB18030"
+        },
+        {
+          "Name": "SmbUnixcharsetGBK",
+          "Value": "GBK"
+        },
+        {
+          "Name": "SmbUnixcharsetHZ",
+          "Value": "HZ"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022JP",
+          "Value": "ISO2022_JP"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022JP1",
+          "Value": "ISO2022_JP_1"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022JP2",
+          "Value": "ISO2022_JP_2"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022JP2004",
+          "Value": "ISO2022_JP_2004"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022JP3",
+          "Value": "ISO2022_JP_3"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022JPEXT",
+          "Value": "ISO2022_JP_EXT"
+        },
+        {
+          "Name": "SmbUnixcharsetISO2022KR",
+          "Value": "ISO2022_KR"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88591",
+          "Value": "ISO8859_1"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88592",
+          "Value": "ISO8859_2"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88593",
+          "Value": "ISO8859_3"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88594",
+          "Value": "ISO8859_4"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88595",
+          "Value": "ISO8859_5"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88596",
+          "Value": "ISO8859_6"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88597",
+          "Value": "ISO8859_7"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88598",
+          "Value": "ISO8859_8"
+        },
+        {
+          "Name": "SmbUnixcharsetISO88599",
+          "Value": "ISO8859_9"
+        },
+        {
+          "Name": "SmbUnixcharsetISO885910",
+          "Value": "ISO8859_10"
+        },
+        {
+          "Name": "SmbUnixcharsetISO885911",
+          "Value": "ISO8859_11"
+        },
+        {
+          "Name": "SmbUnixcharsetISO885913",
+          "Value": "ISO8859_13"
+        },
+        {
+          "Name": "SmbUnixcharsetISO885914",
+          "Value": "ISO8859_14"
+        },
+        {
+          "Name": "SmbUnixcharsetISO885915",
+          "Value": "ISO8859_15"
+        },
+        {
+          "Name": "SmbUnixcharsetISO885916",
+          "Value": "ISO8859_16"
+        },
+        {
+          "Name": "SmbUnixcharsetJOHAB",
+          "Value": "JOHAB"
+        },
+        {
+          "Name": "SmbUnixcharsetKOI8R",
+          "Value": "KOI8_R"
+        },
+        {
+          "Name": "SmbUnixcharsetKZ1048",
+          "Value": "KZ1048"
+        },
+        {
+          "Name": "SmbUnixcharsetLATIN1",
+          "Value": "LATIN_1"
+        },
+        {
+          "Name": "SmbUnixcharsetMACCYRILLIC",
+          "Value": "MAC_CYRILLIC"
+        },
+        {
+          "Name": "SmbUnixcharsetMACGREEK",
+          "Value": "MAC_GREEK"
+        },
+        {
+          "Name": "SmbUnixcharsetMACICELAND",
+          "Value": "MAC_ICELAND"
+        },
+        {
+          "Name": "SmbUnixcharsetMACLATIN2",
+          "Value": "MAC_LATIN2"
+        },
+        {
+          "Name": "SmbUnixcharsetMACROMAN",
+          "Value": "MAC_ROMAN"
+        },
+        {
+          "Name": "SmbUnixcharsetMACTURKISH",
+          "Value": "MAC_TURKISH"
+        },
+        {
+          "Name": "SmbUnixcharsetPTCP154",
+          "Value": "PTCP154"
+        },
+        {
+          "Name": "SmbUnixcharsetSHIFTJIS",
+          "Value": "SHIFT_JIS"
+        },
+        {
+          "Name": "SmbUnixcharsetSHIFTJIS2004",
+          "Value": "SHIFT_JIS_2004"
+        },
+        {
+          "Name": "SmbUnixcharsetSHIFTJISX0213",
+          "Value": "SHIFT_JISX0213"
+        },
+        {
+          "Name": "SmbUnixcharsetTIS620",
+          "Value": "TIS_620"
+        },
+        {
+          "Name": "SmbUnixcharsetUTF16",
+          "Value": "UTF_16"
+        },
+        {
+          "Name": "SmbUnixcharsetUTF16BE",
+          "Value": "UTF_16_BE"
+        },
+        {
+          "Name": "SmbUnixcharsetUTF16LE",
+          "Value": "UTF_16_LE"
+        }
+      ]
+    }
+  ]
+}

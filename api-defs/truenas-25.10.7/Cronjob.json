@@ -1,0 +1,669 @@
+{
+  "Name": "Cronjob",
+  "Tag": "cronjob",
+  "Operations": [
+    {
+      "Name": "CronjobCreate",
+      "OperationId": "cronjob.create",
+      "Method": "CALL",
+      "Path": "cronjob.create",
+      "Description": "Create a new cron job.\n\n`stderr` and `stdout` are boolean values which if `true`, represent that we would like to suppress\nstandard error / standard output respectively.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CronJobQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.create",
+        "Roles": [
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CronjobCreateData"
+          },
+          "Required": true,
+          "Description": "Cron job configuration data for the new job."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobDelete",
+      "OperationId": "cronjob.delete",
+      "Method": "CALL",
+      "Path": "cronjob.delete",
+      "Description": "Delete cronjob of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.delete",
+        "Item": true,
+        "Roles": [
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cron job to delete."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobGetInstance",
+      "OperationId": "cronjob.get_instance",
+      "Method": "CALL",
+      "Path": "cronjob.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CronJobQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_CRON_READ",
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CronjobGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobQuery",
+      "OperationId": "cronjob.query",
+      "Method": "CALL",
+      "Path": "cronjob.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CronJobQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_CRON_READ",
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CronjobQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobQueryCount",
+      "OperationId": "cronjob.query#count",
+      "Method": "CALL",
+      "Path": "cronjob.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_CRON_READ",
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CronjobQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobQueryOne",
+      "OperationId": "cronjob.query#get",
+      "Method": "CALL",
+      "Path": "cronjob.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CronJobQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_CRON_READ",
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CronjobQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobRun",
+      "OperationId": "cronjob.run",
+      "Method": "CALL",
+      "Path": "cronjob.run",
+      "Description": "Job to run cronjob task of `id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.run",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cron job to run immediately."
+        },
+        {
+          "Name": "skip_disabled",
+          "Argument": "skipDisabled",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to skip execution if the cron job is disabled."
+        }
+      ]
+    },
+    {
+      "Name": "CronjobUpdate",
+      "OperationId": "cronjob.update",
+      "Method": "CALL",
+      "Path": "cronjob.update",
+      "Description": "Update cronjob of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CronJobQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cronjob.update",
+        "Item": true,
+        "Roles": [
+          "SYSTEM_CRON_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cron job to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CronjobUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated cron job configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "CronJobQueryResultItem",
+      "SchemaName": "CronJobQueryResultItem",
+      "Description": "The created cron job configuration.",
+      "Fields": [
+        {
+          "Name": "Command",
+          "JsonName": "command",
+          "Description": "Shell command or script to execute.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of what this cron job does.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the cron job is active and will be executed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the cron job.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule configuration for when the job runs.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Stderr",
+          "JsonName": "stderr",
+          "Description": "Whether to IGNORE standard error (if `false`, it will be added to email).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Stdout",
+          "JsonName": "stdout",
+          "Description": "Whether to IGNORE standard output (if `false`, it will be added to email).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "System user account to run the command as.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CronjobCreateData",
+      "SchemaName": "CronjobCreateData",
+      "Description": "Cron job configuration data for the new job.",
+      "Fields": [
+        {
+          "Name": "Command",
+          "JsonName": "command",
+          "Description": "Shell command or script to execute.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of what this cron job does.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the cron job is active and will be executed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule configuration for when the job runs.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Stderr",
+          "JsonName": "stderr",
+          "Description": "Whether to IGNORE standard error (if `false`, it will be added to email).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Stdout",
+          "JsonName": "stdout",
+          "Description": "Whether to IGNORE standard output (if `false`, it will be added to email).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "System user account to run the command as.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CronjobGetInstanceOptions",
+      "SchemaName": "CronjobGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CronjobQueryOptions",
+      "SchemaName": "CronjobQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CronjobUpdateData",
+      "SchemaName": "CronjobUpdateData",
+      "Description": "Updated cron job configuration data.",
+      "Fields": [
+        {
+          "Name": "Command",
+          "JsonName": "command",
+          "Description": "Shell command or script to execute.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of what this cron job does.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the cron job is active and will be executed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule configuration for when the job runs.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Stderr",
+          "JsonName": "stderr",
+          "Description": "Whether to IGNORE standard error (if `false`, it will be added to email).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Stdout",
+          "JsonName": "stdout",
+          "Description": "Whether to IGNORE standard output (if `false`, it will be added to email).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "System user account to run the command as.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

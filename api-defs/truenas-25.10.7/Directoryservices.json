@@ -1,0 +1,787 @@
+{
+  "Name": "Directoryservices",
+  "Tag": "directoryservices",
+  "Operations": [
+    {
+      "Name": "DirectoryservicesCacheRefresh",
+      "OperationId": "directoryservices.cache_refresh",
+      "Method": "CALL",
+      "Path": "directoryservices.cache_refresh",
+      "Description": "This method refreshes the directory services cache for users and groups that is\nused as a backing for `user.query` and `group.query` methods. The first cache fill in\nan Active Directory domain may take a significant amount of time to complete and\nso it is performed as within a job. The most likely situation in which a user may\ndesire to refresh the directory services cache is after new users or groups  to a remote\ndirectory server with the intention to have said users or groups appear in the\nresults of the aforementioned account-related methods.\n\nA cache refresh is not required in order to use newly-added users and groups for in\npermissions and ACL related methods. Likewise, a cache refresh will not resolve issues\nwith users being unable to authenticate to shares.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.cache_refresh",
+        "Job": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "DirectoryservicesCertificateChoices",
+      "OperationId": "directoryservices.certificate_choices",
+      "Method": "CALL",
+      "Path": "directoryservices.certificate_choices",
+      "Description": "Available certificate choices for use with the `LDAP_MTLS` `credential_type`.\nNote that prior configuration of LDAP server is required and uploading a custom\ncertificate to TrueNAS may also be required.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.certificate_choices",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "DirectoryservicesConfig",
+      "OperationId": "directoryservices.config",
+      "Method": "CALL",
+      "Path": "directoryservices.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DirectoryservicesConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.config",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "DirectoryservicesLeave",
+      "OperationId": "directoryservices.leave",
+      "Method": "CALL",
+      "Path": "directoryservices.leave",
+      "Description": "Leave an Active Directory or IPA domain. Calling this endpoint when the directory services status is\n`HEALTHY` will cause TrueNAS to remove its account from the domain and then reset the local directory\nservices configuration on TrueNAS.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.leave",
+        "Job": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "credential",
+          "Argument": "credential",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesLeaveCredential"
+          },
+          "Required": true,
+          "Description": "DirectoryServicesLeaveArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesStatus",
+      "OperationId": "directoryservices.status",
+      "Method": "CALL",
+      "Path": "directoryservices.status",
+      "Description": "Provide the type and status of the currently-enabled directory service",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DirectoryservicesStatusAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.status",
+        "Read": true
+      }
+    },
+    {
+      "Name": "DirectoryservicesSyncKeytab",
+      "OperationId": "directoryservices.sync_keytab",
+      "Method": "CALL",
+      "Path": "directoryservices.sync_keytab",
+      "Description": "Sync local keytab with remote domain controller. This is required if additional\nkerberos SPNs were added to the truenas account in the remote domain controller after\njoining the directory service.\n\nThis is currently only implemented for active directory.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.sync_keytab",
+        "Job": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "DirectoryservicesUpdate",
+      "OperationId": "directoryservices.update",
+      "Method": "CALL",
+      "Path": "directoryservices.update",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "DirectoryservicesUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "directoryservices.update",
+        "Job": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "directoryservices_update",
+          "Argument": "directoryservicesUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesUpdate"
+          },
+          "Required": true,
+          "Description": "DirectoryServicesUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "CredKRBUser",
+      "SchemaName": "CredKRBUser",
+      "Fields": [
+        {
+          "Name": "CredentialType",
+          "JsonName": "credential_type",
+          "Description": "Credential type identifier for Kerberos user authentication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CredKRBUserCredentialType"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "The password for the user account that will obtain the kerberos ticket.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username of the account to use to create a kerberos ticket for authentication to directory services. This     account must exist on the domain controller.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesConfigAnswer",
+      "SchemaName": "DirectoryservicesConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Configuration",
+          "JsonName": "configuration",
+          "Description": "The service_type specific configuration for the directory sevices plugin.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesConfigAnswerConfiguration"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Credential",
+          "JsonName": "credential",
+          "Description": "Credential used to bind to the specified directory service. Kerberos credentials are required for Active     Directory or IPA domains. Generic LDAP environments support various authentication methods. Available methods     depend on the remote LDAP server configuration. If Kerberos credentials are selected for LDAP, GSSAPI binds     replace plain LDAP binds. Use Kerberos or mutual TLS authentication when possible for better security.\n\nThe following credential types are supported based on `service_type`:\n\n`ACTIVEDIRECTORY` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`.\n\n`LDAP` service_type: `LDAP_PLAIN`, `LDAP_ANONYMOUS`, `LDAP_MTLS`, `KERBEROS_USER`, and `KERBEROS_PRINCIPAL`.     NOTE: prior configuration of kerberos realm is required in order to use kerberos credentials with the `LDAP`     `service_type`.\n\n`IPA` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`. NOTE: `KERBEROS_USER` should be used when initially     joining an IPA domain.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesConfigAnswerCredential"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enable",
+          "JsonName": "enable",
+          "Description": "Enable the directory service.\n\nIf TrueNAS has never joined the specified domain (IPA or Active Directory), setting this to True causes TrueNAS to     attempt to join the domain.\n\nNOTE: The domain join process for Active Directory and IPA will make changes to the domain such as creating a new     computer account for the TrueNAS server and creating DNS records for TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableAccountCache",
+          "JsonName": "enable_account_cache",
+          "Description": "Enable backend caching for user and group lists. If enabled, then directory services users and groups will be     presented as choices in the UI dropdowns and in API responses for user and group queries. This setting also     controls whether users and groups appear in getent results. Disable this setting to reduce load on the directory     server when necessary.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableDnsUpdates",
+          "JsonName": "enable_dns_updates",
+          "Description": "Enable automatic DNS updates for the TrueNAS server in the domain via nsupdate and gssapi / TSIG.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the directory services configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "KerberosRealm",
+          "JsonName": "kerberos_realm",
+          "Description": "Name of kerberos realm used for authentication to the directory service. If set to null, then Kerberos     is not used for binding to the directory service. When joining an Active Directory or IPA domain for the first     time, the realm is detected and configured automatically if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ServiceType",
+          "JsonName": "service_type",
+          "Description": "The pre-existing directory service type to which to bind TrueNAS. Select ACTIVEDIRECTORY to join an Active     Directory domain. Select IPA to join a FreeIPA domain. Select LDAP to bind to one or more OpenLDAP-compatible     servers.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesType"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "The timeout value for DNS queries that are performed as part of the join process and NETWORK_TIMEOUT for LDAP     requests.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesConfigAnswerConfiguration",
+      "Description": "The service_type specific configuration for the directory sevices plugin.",
+      "Union": [
+        "ActiveDirectoryConfig",
+        "IPAConfig",
+        "LDAPConfig"
+      ],
+      "Discriminator": "service_type",
+      "Members": [
+        {
+          "Model": "ActiveDirectoryConfig",
+          "Kinds": [
+            "ACTIVEDIRECTORY"
+          ]
+        },
+        {
+          "Model": "IPAConfig",
+          "Kinds": [
+            "IPA"
+          ]
+        },
+        {
+          "Model": "LDAPConfig",
+          "Kinds": [
+            "LDAP"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesConfigAnswerCredential",
+      "Description": "Credential used to bind to the specified directory service. Kerberos credentials are required for Active     Directory or IPA domains. Generic LDAP environments support various authentication methods. Available methods     depend on the remote LDAP server configuration. If Kerberos credentials are selected for LDAP, GSSAPI binds     replace plain LDAP binds. Use Kerberos or mutual TLS authentication when possible for better security.\n\nThe following credential types are supported based on `service_type`:\n\n`ACTIVEDIRECTORY` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`.\n\n`LDAP` service_type: `LDAP_PLAIN`, `LDAP_ANONYMOUS`, `LDAP_MTLS`, `KERBEROS_USER`, and `KERBEROS_PRINCIPAL`.     NOTE: prior configuration of kerberos realm is required in order to use kerberos credentials with the `LDAP`     `service_type`.\n\n`IPA` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`. NOTE: `KERBEROS_USER` should be used when initially     joining an IPA domain.",
+      "Union": [
+        "CredKRBUser",
+        "CredKRBPrincipal",
+        "CredLDAPPlain",
+        "CredLDAPAnonymous",
+        "CredLDAPMTLS"
+      ],
+      "Discriminator": "credential_type",
+      "Members": [
+        {
+          "Model": "CredKRBUser",
+          "Kinds": [
+            "KERBEROS_USER"
+          ]
+        },
+        {
+          "Model": "CredKRBPrincipal",
+          "Kinds": [
+            "KERBEROS_PRINCIPAL"
+          ]
+        },
+        {
+          "Model": "CredLDAPPlain",
+          "Kinds": [
+            "LDAP_PLAIN"
+          ]
+        },
+        {
+          "Model": "CredLDAPAnonymous",
+          "Kinds": [
+            "LDAP_ANONYMOUS"
+          ]
+        },
+        {
+          "Model": "CredLDAPMTLS",
+          "Kinds": [
+            "LDAP_MTLS"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesLeaveCredential",
+      "SchemaName": "DirectoryservicesLeaveCredential",
+      "Description": "DirectoryServicesLeaveArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Credential",
+          "JsonName": "credential",
+          "Description": "Kerberos user credentials with administrative privileges to leave the domain.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CredKRBUser"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesStatusAnswer",
+      "SchemaName": "DirectoryservicesStatusAnswer",
+      "Description": "DirectoryServicesStatusResult return fields.",
+      "Fields": [
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "This field shows the directory service status from the last health check. The status is null if directory     services are disabled.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesStatusAnswerStatus"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StatusMsg",
+          "JsonName": "status_msg",
+          "Description": "This field shows the reason why the directory service is FAULTED after a failed health check. If the directory     service is not faulted, the field is null.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The type of enabled directory service.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesType"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesUpdate",
+      "SchemaName": "DirectoryservicesUpdate",
+      "Description": "DirectoryServicesUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Configuration",
+          "JsonName": "configuration",
+          "Description": "The service_type specific configuration for the directory sevices plugin.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesUpdateConfiguration"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Credential",
+          "JsonName": "credential",
+          "Description": "Credential used to bind to the specified directory service. Kerberos credentials are required for Active     Directory or IPA domains. Generic LDAP environments support various authentication methods. Available methods     depend on the remote LDAP server configuration. If Kerberos credentials are selected for LDAP, GSSAPI binds     replace plain LDAP binds. Use Kerberos or mutual TLS authentication when possible for better security.\n\nThe following credential types are supported based on `service_type`:\n\n`ACTIVEDIRECTORY` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`.\n\n`LDAP` service_type: `LDAP_PLAIN`, `LDAP_ANONYMOUS`, `LDAP_MTLS`, `KERBEROS_USER`, and `KERBEROS_PRINCIPAL`.     NOTE: prior configuration of kerberos realm is required in order to use kerberos credentials with the `LDAP`     `service_type`.\n\n`IPA` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`. NOTE: `KERBEROS_USER` should be used when initially     joining an IPA domain.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesUpdateCredential"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enable",
+          "JsonName": "enable",
+          "Description": "Enable the directory service.\n\nIf TrueNAS has never joined the specified domain (IPA or Active Directory), setting this to True causes TrueNAS to     attempt to join the domain.\n\nNOTE: The domain join process for Active Directory and IPA will make changes to the domain such as creating a new     computer account for the TrueNAS server and creating DNS records for TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableAccountCache",
+          "JsonName": "enable_account_cache",
+          "Description": "Enable backend caching for user and group lists. If enabled, then directory services users and groups will be     presented as choices in the UI dropdowns and in API responses for user and group queries. This setting also     controls whether users and groups appear in getent results. Disable this setting to reduce load on the directory     server when necessary.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableDnsUpdates",
+          "JsonName": "enable_dns_updates",
+          "Description": "Enable automatic DNS updates for the TrueNAS server in the domain via nsupdate and gssapi / TSIG.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Bypass validation to check if a server with this hostname and NetBIOS name is already registered in an IPA or     Active Directory domain. Use this option, for example, to replace an existing server with a TrueNAS server. Do not     use the force parameter indiscriminately. Using it may cause production outages for clients that rely on the     existing server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KerberosRealm",
+          "JsonName": "kerberos_realm",
+          "Description": "Name of kerberos realm used for authentication to the directory service. If set to null, then Kerberos     is not used for binding to the directory service. When joining an Active Directory or IPA domain for the first     time, the realm is detected and configured automatically if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ServiceType",
+          "JsonName": "service_type",
+          "Description": "The pre-existing directory service type to which to bind TrueNAS. Select ACTIVEDIRECTORY to join an Active     Directory domain. Select IPA to join a FreeIPA domain. Select LDAP to bind to one or more OpenLDAP-compatible     servers.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesType"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "The timeout value for DNS queries that are performed as part of the join process and NETWORK_TIMEOUT for LDAP     requests.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesUpdateAnswer",
+      "SchemaName": "DirectoryservicesUpdateAnswer",
+      "Description": "The updated directory services configuration.",
+      "Fields": [
+        {
+          "Name": "Configuration",
+          "JsonName": "configuration",
+          "Description": "The service_type specific configuration for the directory sevices plugin.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesUpdateAnswerConfiguration"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Credential",
+          "JsonName": "credential",
+          "Description": "Credential used to bind to the specified directory service. Kerberos credentials are required for Active     Directory or IPA domains. Generic LDAP environments support various authentication methods. Available methods     depend on the remote LDAP server configuration. If Kerberos credentials are selected for LDAP, GSSAPI binds     replace plain LDAP binds. Use Kerberos or mutual TLS authentication when possible for better security.\n\nThe following credential types are supported based on `service_type`:\n\n`ACTIVEDIRECTORY` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`.\n\n`LDAP` service_type: `LDAP_PLAIN`, `LDAP_ANONYMOUS`, `LDAP_MTLS`, `KERBEROS_USER`, and `KERBEROS_PRINCIPAL`.     NOTE: prior configuration of kerberos realm is required in order to use kerberos credentials with the `LDAP`     `service_type`.\n\n`IPA` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`. NOTE: `KERBEROS_USER` should be used when initially     joining an IPA domain.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesUpdateAnswerCredential"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enable",
+          "JsonName": "enable",
+          "Description": "Enable the directory service.\n\nIf TrueNAS has never joined the specified domain (IPA or Active Directory), setting this to True causes TrueNAS to     attempt to join the domain.\n\nNOTE: The domain join process for Active Directory and IPA will make changes to the domain such as creating a new     computer account for the TrueNAS server and creating DNS records for TrueNAS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableAccountCache",
+          "JsonName": "enable_account_cache",
+          "Description": "Enable backend caching for user and group lists. If enabled, then directory services users and groups will be     presented as choices in the UI dropdowns and in API responses for user and group queries. This setting also     controls whether users and groups appear in getent results. Disable this setting to reduce load on the directory     server when necessary.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableDnsUpdates",
+          "JsonName": "enable_dns_updates",
+          "Description": "Enable automatic DNS updates for the TrueNAS server in the domain via nsupdate and gssapi / TSIG.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the directory services configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "KerberosRealm",
+          "JsonName": "kerberos_realm",
+          "Description": "Name of kerberos realm used for authentication to the directory service. If set to null, then Kerberos     is not used for binding to the directory service. When joining an Active Directory or IPA domain for the first     time, the realm is detected and configured automatically if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ServiceType",
+          "JsonName": "service_type",
+          "Description": "The pre-existing directory service type to which to bind TrueNAS. Select ACTIVEDIRECTORY to join an Active     Directory domain. Select IPA to join a FreeIPA domain. Select LDAP to bind to one or more OpenLDAP-compatible     servers.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DirectoryservicesType"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "The timeout value for DNS queries that are performed as part of the join process and NETWORK_TIMEOUT for LDAP     requests.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesUpdateAnswerConfiguration",
+      "Description": "The service_type specific configuration for the directory sevices plugin.",
+      "Union": [
+        "ActiveDirectoryConfig",
+        "IPAConfig",
+        "LDAPConfig"
+      ],
+      "Discriminator": "service_type",
+      "Members": [
+        {
+          "Model": "ActiveDirectoryConfig",
+          "Kinds": [
+            "ACTIVEDIRECTORY"
+          ]
+        },
+        {
+          "Model": "IPAConfig",
+          "Kinds": [
+            "IPA"
+          ]
+        },
+        {
+          "Model": "LDAPConfig",
+          "Kinds": [
+            "LDAP"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesUpdateAnswerCredential",
+      "Description": "Credential used to bind to the specified directory service. Kerberos credentials are required for Active     Directory or IPA domains. Generic LDAP environments support various authentication methods. Available methods     depend on the remote LDAP server configuration. If Kerberos credentials are selected for LDAP, GSSAPI binds     replace plain LDAP binds. Use Kerberos or mutual TLS authentication when possible for better security.\n\nThe following credential types are supported based on `service_type`:\n\n`ACTIVEDIRECTORY` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`.\n\n`LDAP` service_type: `LDAP_PLAIN`, `LDAP_ANONYMOUS`, `LDAP_MTLS`, `KERBEROS_USER`, and `KERBEROS_PRINCIPAL`.     NOTE: prior configuration of kerberos realm is required in order to use kerberos credentials with the `LDAP`     `service_type`.\n\n`IPA` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`. NOTE: `KERBEROS_USER` should be used when initially     joining an IPA domain.",
+      "Union": [
+        "CredKRBUser",
+        "CredKRBPrincipal",
+        "CredLDAPPlain",
+        "CredLDAPAnonymous",
+        "CredLDAPMTLS"
+      ],
+      "Discriminator": "credential_type",
+      "Members": [
+        {
+          "Model": "CredKRBUser",
+          "Kinds": [
+            "KERBEROS_USER"
+          ]
+        },
+        {
+          "Model": "CredKRBPrincipal",
+          "Kinds": [
+            "KERBEROS_PRINCIPAL"
+          ]
+        },
+        {
+          "Model": "CredLDAPPlain",
+          "Kinds": [
+            "LDAP_PLAIN"
+          ]
+        },
+        {
+          "Model": "CredLDAPAnonymous",
+          "Kinds": [
+            "LDAP_ANONYMOUS"
+          ]
+        },
+        {
+          "Model": "CredLDAPMTLS",
+          "Kinds": [
+            "LDAP_MTLS"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesUpdateConfiguration",
+      "Description": "The service_type specific configuration for the directory sevices plugin.",
+      "Union": [
+        "ActiveDirectoryConfig",
+        "IPAConfig",
+        "LDAPConfig"
+      ],
+      "Discriminator": "service_type",
+      "Members": [
+        {
+          "Model": "ActiveDirectoryConfig",
+          "Kinds": [
+            "ACTIVEDIRECTORY"
+          ]
+        },
+        {
+          "Model": "IPAConfig",
+          "Kinds": [
+            "IPA"
+          ]
+        },
+        {
+          "Model": "LDAPConfig",
+          "Kinds": [
+            "LDAP"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesUpdateCredential",
+      "Description": "Credential used to bind to the specified directory service. Kerberos credentials are required for Active     Directory or IPA domains. Generic LDAP environments support various authentication methods. Available methods     depend on the remote LDAP server configuration. If Kerberos credentials are selected for LDAP, GSSAPI binds     replace plain LDAP binds. Use Kerberos or mutual TLS authentication when possible for better security.\n\nThe following credential types are supported based on `service_type`:\n\n`ACTIVEDIRECTORY` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`.\n\n`LDAP` service_type: `LDAP_PLAIN`, `LDAP_ANONYMOUS`, `LDAP_MTLS`, `KERBEROS_USER`, and `KERBEROS_PRINCIPAL`.     NOTE: prior configuration of kerberos realm is required in order to use kerberos credentials with the `LDAP`     `service_type`.\n\n`IPA` service_type: `KERBEROS_USER` and `KERBEROS_PRINCIPAL`. NOTE: `KERBEROS_USER` should be used when initially     joining an IPA domain.",
+      "Union": [
+        "CredKRBUser",
+        "CredKRBPrincipal",
+        "CredLDAPPlain",
+        "CredLDAPAnonymous",
+        "CredLDAPMTLS"
+      ],
+      "Discriminator": "credential_type",
+      "Members": [
+        {
+          "Model": "CredKRBUser",
+          "Kinds": [
+            "KERBEROS_USER"
+          ]
+        },
+        {
+          "Model": "CredKRBPrincipal",
+          "Kinds": [
+            "KERBEROS_PRINCIPAL"
+          ]
+        },
+        {
+          "Model": "CredLDAPPlain",
+          "Kinds": [
+            "LDAP_PLAIN"
+          ]
+        },
+        {
+          "Model": "CredLDAPAnonymous",
+          "Kinds": [
+            "LDAP_ANONYMOUS"
+          ]
+        },
+        {
+          "Model": "CredLDAPMTLS",
+          "Kinds": [
+            "LDAP_MTLS"
+          ]
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "CredKRBUserCredentialType",
+      "SchemaName": "CredKRBUserCredentialType",
+      "Description": "Credential type identifier for Kerberos user authentication.",
+      "Values": [
+        {
+          "Name": "CredKRBUserCredentialTypeKERBEROSUSER",
+          "Value": "KERBEROS_USER"
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesStatusAnswerStatus",
+      "SchemaName": "DirectoryservicesStatusAnswerStatus",
+      "Values": [
+        {
+          "Name": "DirectoryservicesStatusAnswerStatusDISABLED",
+          "Value": "DISABLED"
+        },
+        {
+          "Name": "DirectoryservicesStatusAnswerStatusFAULTED",
+          "Value": "FAULTED"
+        },
+        {
+          "Name": "DirectoryservicesStatusAnswerStatusLEAVING",
+          "Value": "LEAVING"
+        },
+        {
+          "Name": "DirectoryservicesStatusAnswerStatusJOINING",
+          "Value": "JOINING"
+        },
+        {
+          "Name": "DirectoryservicesStatusAnswerStatusHEALTHY",
+          "Value": "HEALTHY"
+        }
+      ]
+    },
+    {
+      "Name": "DirectoryservicesType",
+      "SchemaName": "DirectoryservicesType",
+      "Values": [
+        {
+          "Name": "DirectoryservicesTypeACTIVEDIRECTORY",
+          "Value": "ACTIVEDIRECTORY"
+        },
+        {
+          "Name": "DirectoryservicesTypeIPA",
+          "Value": "IPA"
+        },
+        {
+          "Name": "DirectoryservicesTypeLDAP",
+          "Value": "LDAP"
+        }
+      ]
+    }
+  ]
+}

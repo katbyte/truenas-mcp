@@ -1,0 +1,545 @@
+{
+  "Name": "Catalog",
+  "Tag": "catalog",
+  "Operations": [
+    {
+      "Name": "CatalogApps",
+      "OperationId": "catalog.apps",
+      "Method": "CALL",
+      "Path": "catalog.apps",
+      "Description": "Retrieve apps details for `label` catalog.\n\n`options.cache` is a boolean which when set will try to get apps details for `label` catalog from cache\nif available.\n\n`options.cache_only` is a boolean which when set will force usage of cache only for retrieving catalog\ninformation. If the content for the catalog in question is not cached, no content would be returned. If\n`options.cache` is unset, this attribute has no effect.\n\n`options.retrieve_all_trains` is a boolean value which when set will retrieve information for all the trains\npresent in the catalog ( it is set by default ).\n\n`options.trains` is a list of train name(s) which will allow selective filtering to retrieve only information\nof desired trains in a catalog. If `options.retrieve_all_trains` is set, it has precedence over `options.train`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "CatalogGetAppDetailsAnswer"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "catalog.apps",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "catalog_apps_options",
+          "Argument": "catalogAppsOptions",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CatalogAppsOptions"
+          },
+          "Required": true,
+          "Description": "CatalogAppsArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CatalogConfig",
+      "OperationId": "catalog.config",
+      "Method": "CALL",
+      "Path": "catalog.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CatalogConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "catalog.config",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CatalogGetAppDetails",
+      "OperationId": "catalog.get_app_details",
+      "Method": "CALL",
+      "Path": "catalog.get_app_details",
+      "Description": "Retrieve information of `app_name` `app_version_details.catalog` catalog app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CatalogGetAppDetailsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "catalog.get_app_details",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the app to get details for."
+        },
+        {
+          "Name": "app_version_details",
+          "Argument": "appVersionDetails",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppVersionDetails"
+          },
+          "Required": true,
+          "Description": "Version and train information for the specific app."
+        }
+      ]
+    },
+    {
+      "Name": "CatalogSync",
+      "OperationId": "catalog.sync",
+      "Method": "CALL",
+      "Path": "catalog.sync",
+      "Description": "Sync truenas catalog to retrieve latest changes from upstream.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "catalog.sync",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE",
+          "CATALOG_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "CatalogTrains",
+      "OperationId": "catalog.trains",
+      "Method": "CALL",
+      "Path": "catalog.trains",
+      "Description": "Retrieve available trains.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "catalog.trains",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CatalogUpdate",
+      "OperationId": "catalog.update",
+      "Method": "CALL",
+      "Path": "catalog.update",
+      "Description": "Update catalog preferences.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CatalogUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "catalog.update",
+        "Roles": [
+          "APPS_WRITE",
+          "CATALOG_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "catalog_update",
+          "Argument": "catalogUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CatalogUpdate"
+          },
+          "Required": true,
+          "Description": "CatalogUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AppVersionDetails",
+      "SchemaName": "AppVersionDetails",
+      "Description": "Version and train information for the specific app.",
+      "Fields": [
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "Train name where the app version is located.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CatalogAppsOptions",
+      "SchemaName": "CatalogAppsOptions",
+      "Description": "CatalogAppsArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Cache",
+          "JsonName": "cache",
+          "Description": "Whether to use cached catalog data if available.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CacheOnly",
+          "JsonName": "cache_only",
+          "Description": "Whether to only return cached data without fetching updates.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RetrieveAllTrains",
+          "JsonName": "retrieve_all_trains",
+          "Description": "Whether to retrieve apps from all available trains.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Trains",
+          "JsonName": "trains",
+          "Description": "Specific train names to retrieve apps from (empty array means all trains).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CatalogConfigAnswer",
+      "SchemaName": "CatalogConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the catalog.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "Catalog identifier. Must start with alphanumeric, then allow alphanumeric, periods, and hyphens.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "Git repository URL or local path to the catalog.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreferredTrains",
+          "JsonName": "preferred_trains",
+          "Description": "Array of preferred train names for this catalog.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CatalogGetAppDetailsAnswer",
+      "SchemaName": "CatalogGetAppDetailsAnswer",
+      "Fields": [
+        {
+          "Name": "AppReadme",
+          "JsonName": "app_readme",
+          "Description": "HTML content of the app README.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Categories",
+          "JsonName": "categories",
+          "Description": "List of categories for the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Short description of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Healthy",
+          "JsonName": "healthy",
+          "Description": "Health status of the app.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HealthyError",
+          "JsonName": "healthy_error",
+          "Description": "Error if app is not healthy.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "Homepage URL of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "IconUrl",
+          "JsonName": "icon_url",
+          "Description": "URL of the app icon.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LastUpdate",
+          "JsonName": "last_update",
+          "Description": "Timestamp of the last update in ISO format.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestAppVersion",
+          "JsonName": "latest_app_version",
+          "Description": "Latest available app version in repository.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestHumanVersion",
+          "JsonName": "latest_human_version",
+          "Description": "Human-readable version of the app.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestVersion",
+          "JsonName": "latest_version",
+          "Description": "Latest available app version.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "Local path to the app's location.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Maintainers",
+          "JsonName": "maintainers",
+          "Description": "List of app maintainers.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "Maintainer"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Recommended",
+          "JsonName": "recommended",
+          "Description": "Indicates if the app is recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Screenshots",
+          "JsonName": "screenshots",
+          "Description": "List of screenshot URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Sources",
+          "JsonName": "sources",
+          "Description": "List of source URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Tags",
+          "JsonName": "tags",
+          "Description": "Tags associated with the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Title of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CatalogUpdate",
+      "SchemaName": "CatalogUpdate",
+      "Description": "CatalogUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "PreferredTrains",
+          "JsonName": "preferred_trains",
+          "Description": "Updated array of preferred train names for the catalog.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CatalogUpdateAnswer",
+      "SchemaName": "CatalogUpdateAnswer",
+      "Description": "The updated catalog configuration.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the catalog.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "Catalog identifier. Must start with alphanumeric, then allow alphanumeric, periods, and hyphens.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "Git repository URL or local path to the catalog.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreferredTrains",
+          "JsonName": "preferred_trains",
+          "Description": "Array of preferred train names for this catalog.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

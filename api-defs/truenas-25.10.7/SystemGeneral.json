@@ -1,0 +1,868 @@
+{
+  "Name": "SystemGeneral",
+  "Tag": "system.general",
+  "Operations": [
+    {
+      "Name": "SystemGeneralCheckin",
+      "OperationId": "system.general.checkin",
+      "Method": "CALL",
+      "Path": "system.general.checkin",
+      "Description": "After UI settings are saved with `rollback_timeout` this method needs to be called within that timeout limit\nto prevent reverting the changes.\n\nThis is to ensure user verifies the changes went as planned and its working.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.checkin",
+        "Roles": [
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralCheckinWaiting",
+      "OperationId": "system.general.checkin_waiting",
+      "Method": "CALL",
+      "Path": "system.general.checkin_waiting",
+      "Description": "Determines whether we are waiting user to check in the applied UI settings changes before they are rolled\nback. Returns a number of seconds before the automatic rollback or null if there are no changes pending.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.checkin_waiting",
+        "Roles": [
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralConfig",
+      "OperationId": "system.general.config",
+      "Method": "CALL",
+      "Path": "system.general.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemGeneralConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralCountryChoices",
+      "OperationId": "system.general.country_choices",
+      "Method": "CALL",
+      "Path": "system.general.country_choices",
+      "Description": "Return a dictionary whose keys represent the\nISO 3166-1 alpha 2 country code and values represent\nthe English short name (used in ISO 3166/MA)",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.country_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralKbdmapChoices",
+      "OperationId": "system.general.kbdmap_choices",
+      "Method": "CALL",
+      "Path": "system.general.kbdmap_choices",
+      "Description": "Returns keyboard map choices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.kbdmap_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralLocalUrl",
+      "OperationId": "system.general.local_url",
+      "Method": "CALL",
+      "Path": "system.general.local_url",
+      "Description": "Returns configured local url in the format of protocol://host:port",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.local_url",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralTimezoneChoices",
+      "OperationId": "system.general.timezone_choices",
+      "Method": "CALL",
+      "Path": "system.general.timezone_choices",
+      "Description": "Returns available timezones",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.timezone_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralUiAddressChoices",
+      "OperationId": "system.general.ui_address_choices",
+      "Method": "CALL",
+      "Path": "system.general.ui_address_choices",
+      "Description": "Returns network interfaces that have statically configured\nIPv4 address(es). These addresses can be used to bind the UI\nserver.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.ui_address_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralUiCertificateChoices",
+      "OperationId": "system.general.ui_certificate_choices",
+      "Method": "CALL",
+      "Path": "system.general.ui_certificate_choices",
+      "Description": "Return available certificates that may be used to\nbind the webserver to when connecting via HTTPS protocol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.ui_certificate_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralUiHttpsprotocolsChoices",
+      "OperationId": "system.general.ui_httpsprotocols_choices",
+      "Method": "CALL",
+      "Path": "system.general.ui_httpsprotocols_choices",
+      "Description": "Returns available HTTPS protocols.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.ui_httpsprotocols_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralUiRestart",
+      "OperationId": "system.general.ui_restart",
+      "Method": "CALL",
+      "Path": "system.general.ui_restart",
+      "Description": "Restart HTTP server to use latest UI settings.\n\nHTTP server will be restarted after `delay` seconds.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.ui_restart",
+        "Roles": [
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "delay",
+          "Argument": "delay",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Description": "How long to wait before the UI is restarted."
+        }
+      ]
+    },
+    {
+      "Name": "SystemGeneralUiV6addressChoices",
+      "OperationId": "system.general.ui_v6address_choices",
+      "Method": "CALL",
+      "Path": "system.general.ui_v6address_choices",
+      "Description": "Returns network interfaces that have statically configured\nIPv6 address(es). These addresses can be used to bind the UI\nserver.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.ui_v6address_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemGeneralUpdate",
+      "OperationId": "system.general.update",
+      "Method": "CALL",
+      "Path": "system.general.update",
+      "Description": "Update System General Service Configuration.\n\nUI configuration is not applied automatically. Call `system.general.ui_restart` to apply new UI settings (all\nHTTP connections will be aborted) or specify `ui_restart_delay` (in seconds) to automatically apply them after\nsome small amount of time necessary you might need to receive the response for your settings update request.\n\nIf incorrect UI configuration is applied, you might loss API connectivity and won't be able to fix the settings.\nTo avoid that, specify `rollback_timeout` (in seconds). It will automatically roll back UI configuration to the\npreviously working settings after `rollback_timeout` passes unless you call `system.general.checkin` in case\nthe new settings were correct and no rollback is necessary.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemGeneralUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.general.update",
+        "Roles": [
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "general_settings",
+          "Argument": "generalSettings",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GeneralSettings"
+          },
+          "Required": true,
+          "Description": "SystemGeneralUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "GeneralSettings",
+      "SchemaName": "GeneralSettings",
+      "Description": "SystemGeneralUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "DsAuth",
+          "JsonName": "ds_auth",
+          "Description": "Controls whether configured Directory Service users that are granted with Privileges are allowed to log in to     the Web UI or use TrueNAS API.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Kbdmap",
+          "JsonName": "kbdmap",
+          "Description": "System keyboard layout mapping.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RollbackTimeout",
+          "JsonName": "rollback_timeout",
+          "Description": "Timeout in seconds for automatic rollback of UI changes. `null` for no timeout.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timezone",
+          "JsonName": "timezone",
+          "Description": "System timezone identifier.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UiAddress",
+          "JsonName": "ui_address",
+          "Description": "A list of valid IPv4 addresses which the system will listen on.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiAllowlist",
+          "JsonName": "ui_allowlist",
+          "Description": "A list of IP addresses and networks that are allow to use API and UI. If this list is empty, then all IP     addresses are allowed to use API and UI.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiCertificate",
+          "JsonName": "ui_certificate",
+          "Description": "Used to enable HTTPS access to the system. If `ui_certificate` is not configured on boot, it is automatically     created by the system.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UiConsolemsg",
+          "JsonName": "ui_consolemsg",
+          "Description": "Whether to show console messages on the web UI.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UiHttpsport",
+          "JsonName": "ui_httpsport",
+          "Description": "HTTPS port for the web UI.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UiHttpsprotocols",
+          "JsonName": "ui_httpsprotocols",
+          "Description": "Array of TLS protocol versions enabled for HTTPS connections.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "GeneralSettingsUiHttpsprotocols"
+            }
+          }
+        },
+        {
+          "Name": "UiHttpsredirect",
+          "JsonName": "ui_httpsredirect",
+          "Description": "When set, makes sure that all HTTP requests are converted to HTTPS requests to better enhance security.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UiPort",
+          "JsonName": "ui_port",
+          "Description": "HTTP port for the web UI.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UiRestartDelay",
+          "JsonName": "ui_restart_delay",
+          "Description": "Delay in seconds before restarting the UI after configuration changes. `null` to use default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UiV6address",
+          "JsonName": "ui_v6address",
+          "Description": "A list of valid IPv6 addresses which the system will listen on.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiXFrameOptions",
+          "JsonName": "ui_x_frame_options",
+          "Description": "X-Frame-Options header policy for web UI security.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GeneralSettingsUiXFrameOptions"
+          }
+        },
+        {
+          "Name": "UsageCollection",
+          "JsonName": "usage_collection",
+          "Description": "Whether usage data collection is enabled. `null` if not set.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SystemGeneralConfigAnswer",
+      "SchemaName": "SystemGeneralConfigAnswer",
+      "Fields": [
+        {
+          "Name": "DsAuth",
+          "JsonName": "ds_auth",
+          "Description": "Controls whether configured Directory Service users that are granted with Privileges are allowed to log in to     the Web UI or use TrueNAS API.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the system general configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kbdmap",
+          "JsonName": "kbdmap",
+          "Description": "System keyboard layout mapping.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Timezone",
+          "JsonName": "timezone",
+          "Description": "System timezone identifier.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UiAddress",
+          "JsonName": "ui_address",
+          "Description": "A list of valid IPv4 addresses which the system will listen on.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiAllowlist",
+          "JsonName": "ui_allowlist",
+          "Description": "A list of IP addresses and networks that are allow to use API and UI. If this list is empty, then all IP     addresses are allowed to use API and UI.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiCertificate",
+          "JsonName": "ui_certificate",
+          "Description": "Used to enable HTTPS access to the system. If `ui_certificate` is not configured on boot, it is automatically     created by the system.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[map[string]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UiConsolemsg",
+          "JsonName": "ui_consolemsg",
+          "Description": "Whether to show console messages on the web UI.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UiHttpsport",
+          "JsonName": "ui_httpsport",
+          "Description": "HTTPS port for the web UI.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UiHttpsprotocols",
+          "JsonName": "ui_httpsprotocols",
+          "Description": "Array of TLS protocol versions enabled for HTTPS connections.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "truenasrpc.Set[SystemGeneralAnswerUiHttpsprotocols]",
+            "Import": "github.com/katbyte/truenas-mcp/sdk/truenasrpc"
+          }
+        },
+        {
+          "Name": "UiHttpsredirect",
+          "JsonName": "ui_httpsredirect",
+          "Description": "When set, makes sure that all HTTP requests are converted to HTTPS requests to better enhance security.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UiPort",
+          "JsonName": "ui_port",
+          "Description": "HTTP port for the web UI.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UiV6address",
+          "JsonName": "ui_v6address",
+          "Description": "A list of valid IPv6 addresses which the system will listen on.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiXFrameOptions",
+          "JsonName": "ui_x_frame_options",
+          "Description": "X-Frame-Options header policy for web UI security.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemGeneralAnswerUiXFrameOptions"
+          }
+        },
+        {
+          "Name": "UsageCollection",
+          "JsonName": "usage_collection",
+          "Description": "Whether usage data collection is enabled. `null` if not set.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UsageCollectionIsSet",
+          "JsonName": "usage_collection_is_set",
+          "Description": "Whether the usage collection preference has been explicitly set.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Wizardshown",
+          "JsonName": "wizardshown",
+          "Description": "Whether the initial setup wizard has been shown.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemGeneralUpdateAnswer",
+      "SchemaName": "SystemGeneralUpdateAnswer",
+      "Description": "The updated system general configuration.",
+      "Fields": [
+        {
+          "Name": "DsAuth",
+          "JsonName": "ds_auth",
+          "Description": "Controls whether configured Directory Service users that are granted with Privileges are allowed to log in to     the Web UI or use TrueNAS API.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the system general configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kbdmap",
+          "JsonName": "kbdmap",
+          "Description": "System keyboard layout mapping.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Timezone",
+          "JsonName": "timezone",
+          "Description": "System timezone identifier.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UiAddress",
+          "JsonName": "ui_address",
+          "Description": "A list of valid IPv4 addresses which the system will listen on.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiAllowlist",
+          "JsonName": "ui_allowlist",
+          "Description": "A list of IP addresses and networks that are allow to use API and UI. If this list is empty, then all IP     addresses are allowed to use API and UI.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiCertificate",
+          "JsonName": "ui_certificate",
+          "Description": "Used to enable HTTPS access to the system. If `ui_certificate` is not configured on boot, it is automatically     created by the system.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[map[string]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UiConsolemsg",
+          "JsonName": "ui_consolemsg",
+          "Description": "Whether to show console messages on the web UI.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UiHttpsport",
+          "JsonName": "ui_httpsport",
+          "Description": "HTTPS port for the web UI.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UiHttpsprotocols",
+          "JsonName": "ui_httpsprotocols",
+          "Description": "Array of TLS protocol versions enabled for HTTPS connections.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "truenasrpc.Set[SystemGeneralAnswerUiHttpsprotocols]",
+            "Import": "github.com/katbyte/truenas-mcp/sdk/truenasrpc"
+          }
+        },
+        {
+          "Name": "UiHttpsredirect",
+          "JsonName": "ui_httpsredirect",
+          "Description": "When set, makes sure that all HTTP requests are converted to HTTPS requests to better enhance security.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UiPort",
+          "JsonName": "ui_port",
+          "Description": "HTTP port for the web UI.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UiV6address",
+          "JsonName": "ui_v6address",
+          "Description": "A list of valid IPv6 addresses which the system will listen on.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UiXFrameOptions",
+          "JsonName": "ui_x_frame_options",
+          "Description": "X-Frame-Options header policy for web UI security.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemGeneralAnswerUiXFrameOptions"
+          }
+        },
+        {
+          "Name": "UsageCollection",
+          "JsonName": "usage_collection",
+          "Description": "Whether usage data collection is enabled. `null` if not set.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UsageCollectionIsSet",
+          "JsonName": "usage_collection_is_set",
+          "Description": "Whether the usage collection preference has been explicitly set.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Wizardshown",
+          "JsonName": "wizardshown",
+          "Description": "Whether the initial setup wizard has been shown.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "GeneralSettingsUiHttpsprotocols",
+      "SchemaName": "GeneralSettingsUiHttpsprotocols",
+      "Values": [
+        {
+          "Name": "GeneralSettingsUiHttpsprotocolsTLSv1",
+          "Value": "TLSv1"
+        },
+        {
+          "Name": "GeneralSettingsUiHttpsprotocolsTLSv11",
+          "Value": "TLSv1.1"
+        },
+        {
+          "Name": "GeneralSettingsUiHttpsprotocolsTLSv12",
+          "Value": "TLSv1.2"
+        },
+        {
+          "Name": "GeneralSettingsUiHttpsprotocolsTLSv13",
+          "Value": "TLSv1.3"
+        }
+      ]
+    },
+    {
+      "Name": "GeneralSettingsUiXFrameOptions",
+      "SchemaName": "GeneralSettingsUiXFrameOptions",
+      "Description": "X-Frame-Options header policy for web UI security.",
+      "Values": [
+        {
+          "Name": "GeneralSettingsUiXFrameOptionsSAMEORIGIN",
+          "Value": "SAMEORIGIN"
+        },
+        {
+          "Name": "GeneralSettingsUiXFrameOptionsDENY",
+          "Value": "DENY"
+        },
+        {
+          "Name": "GeneralSettingsUiXFrameOptionsALLOWALL",
+          "Value": "ALLOW_ALL"
+        }
+      ]
+    },
+    {
+      "Name": "SystemGeneralAnswerUiXFrameOptions",
+      "SchemaName": "SystemGeneralAnswerUiXFrameOptions",
+      "Description": "X-Frame-Options header policy for web UI security.",
+      "Values": [
+        {
+          "Name": "SystemGeneralAnswerUiXFrameOptionsSAMEORIGIN",
+          "Value": "SAMEORIGIN"
+        },
+        {
+          "Name": "SystemGeneralAnswerUiXFrameOptionsDENY",
+          "Value": "DENY"
+        },
+        {
+          "Name": "SystemGeneralAnswerUiXFrameOptionsALLOWALL",
+          "Value": "ALLOW_ALL"
+        }
+      ]
+    }
+  ]
+}

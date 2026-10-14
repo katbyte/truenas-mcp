@@ -1,0 +1,33 @@
+{
+  "Name": "FailoverDisabled",
+  "Tag": "failover.disabled",
+  "Operations": [
+    {
+      "Name": "FailoverDisabledReasons",
+      "OperationId": "failover.disabled.reasons",
+      "Method": "CALL",
+      "Path": "failover.disabled.reasons",
+      "Description": "Returns a list of reasons why failover is not enabled/functional.\nSee `DisabledReasonsEnum` for the reasons and their explanation.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "failover.disabled.reasons",
+        "Read": true,
+        "Roles": [
+          "FAILOVER_READ",
+          "FAILOVER_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ]
+}

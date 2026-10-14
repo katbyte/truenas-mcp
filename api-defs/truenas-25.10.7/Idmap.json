@@ -1,0 +1,21 @@
+{
+  "Name": "Idmap",
+  "Tag": "idmap",
+  "Operations": [
+    {
+      "Name": "IdmapClearIdmapCache",
+      "OperationId": "idmap.clear_idmap_cache",
+      "Method": "CALL",
+      "Path": "idmap.clear_idmap_cache",
+      "Description": "Stop samba, remove the winbindd_cache.tdb file, start samba, flush samba's cache.\nThis should be performed after finalizing idmap changes.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "idmap.clear_idmap_cache",
+        "Job": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      }
+    }
+  ]
+}

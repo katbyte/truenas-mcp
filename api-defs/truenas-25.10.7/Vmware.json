@@ -1,0 +1,859 @@
+{
+  "Name": "Vmware",
+  "Tag": "vmware",
+  "Operations": [
+    {
+      "Name": "VmwareCreate",
+      "OperationId": "vmware.create",
+      "Method": "CALL",
+      "Path": "vmware.create",
+      "Description": "Create VMWare snapshot.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMWareQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.create",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vmware_create",
+          "Argument": "vmwareCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareCreate"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new VMware integration."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareDatasetHasVms",
+      "OperationId": "vmware.dataset_has_vms",
+      "Method": "CALL",
+      "Path": "vmware.dataset_has_vms",
+      "Description": "Returns \"true\" if `dataset` is configured with a VMWare snapshot",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.dataset_has_vms",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dataset",
+          "Argument": "dataset",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ZFS dataset path to check for VMware virtual machines."
+        },
+        {
+          "Name": "recursive",
+          "Argument": "recursive",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Required": true,
+          "Description": "Whether to check child datasets recursively."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareDelete",
+      "OperationId": "vmware.delete",
+      "Method": "CALL",
+      "Path": "vmware.delete",
+      "Description": "Delete VMWare snapshot of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.delete",
+        "Item": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the VMware configuration to delete."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareGetDatastores",
+      "OperationId": "vmware.get_datastores",
+      "Method": "CALL",
+      "Path": "vmware.get_datastores",
+      "Description": "Get datastores from VMWare.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.get_datastores",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vmware-creds",
+          "Argument": "vmwareCreds",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareCreds"
+          },
+          "Required": true,
+          "Description": "VMWareGetDatastoresArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareGetInstance",
+      "OperationId": "vmware.get_instance",
+      "Method": "CALL",
+      "Path": "vmware.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMWareQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareMatchDatastoresWithDatasets",
+      "OperationId": "vmware.match_datastores_with_datasets",
+      "Method": "CALL",
+      "Path": "vmware.match_datastores_with_datasets",
+      "Description": "Requests datastores from vCenter server and tries to match them with local filesystems.\n\nReturns a list of datastores, a list of local filesystems and guessed relationship between them.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmwareMatchDatastoresWithDatasetsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.match_datastores_with_datasets",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vmware-creds",
+          "Argument": "vmwareCreds",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareCreds"
+          },
+          "Required": true,
+          "Description": "VMWareMatchDatastoresWithDatasetsArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareQuery",
+      "OperationId": "vmware.query",
+      "Method": "CALL",
+      "Path": "vmware.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VMWareQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareQueryCount",
+      "OperationId": "vmware.query#count",
+      "Method": "CALL",
+      "Path": "vmware.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareQueryOne",
+      "OperationId": "vmware.query#get",
+      "Method": "CALL",
+      "Path": "vmware.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMWareQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "SHARING_ADMIN",
+          "SNAPSHOT_TASK_READ",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmwareUpdate",
+      "OperationId": "vmware.update",
+      "Method": "CALL",
+      "Path": "vmware.update",
+      "Description": "Update VMWare snapshot of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMWareQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vmware.update",
+        "Item": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_TASK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the VMware configuration to update."
+        },
+        {
+          "Name": "vmware_update",
+          "Argument": "vmwareUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmwareUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the VMware integration."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "VMWareMatchDatastoresWithDatasetsResultDatastore",
+      "SchemaName": "VMWareMatchDatastoresWithDatasetsResultDatastore",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the datastore.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filesystems",
+          "JsonName": "filesystems",
+          "Description": "Array of local filesystem names that can provide storage for this datastore.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the VMware datastore.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMWareMatchDatastoresWithDatasetsResultFilesystem",
+      "SchemaName": "VMWareMatchDatastoresWithDatasetsResultFilesystem",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the filesystem or volume.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the local filesystem or volume.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of storage - FILESYSTEM for ZFS datasets, VOLUME for ZFS volumes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMWareMatchDatastoresWithDatasetsResultFilesystemType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMWareQueryResultItem",
+      "SchemaName": "VMWareQueryResultItem",
+      "Description": "The newly created VMware integration configuration.",
+      "Fields": [
+        {
+          "Name": "Datastore",
+          "JsonName": "datastore",
+          "Description": "Valid datastore name which exists on the VMWare host.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filesystem",
+          "JsonName": "filesystem",
+          "Description": "ZFS filesystem or dataset to use for VMware storage.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "Valid IP address / hostname of a VMWare host. When clustering, this is the vCenter server for the cluster.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VMware configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for VMware host authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current connection and synchronization state with the VMware host.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Credentials used to authorize access to the VMWare host.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmwareCreate",
+      "SchemaName": "VmwareCreate",
+      "Description": "Configuration for creating a new VMware integration.",
+      "Fields": [
+        {
+          "Name": "Datastore",
+          "JsonName": "datastore",
+          "Description": "Valid datastore name which exists on the VMWare host.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filesystem",
+          "JsonName": "filesystem",
+          "Description": "ZFS filesystem or dataset to use for VMware storage.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "Valid IP address / hostname of a VMWare host. When clustering, this is the vCenter server for the cluster.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for VMware host authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Credentials used to authorize access to the VMWare host.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmwareCreds",
+      "SchemaName": "VmwareCreds",
+      "Description": "VMWareGetDatastoresArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "IP address or hostname of the VMware host or vCenter server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for VMware host authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username for VMware host authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmwareGetInstanceOptions",
+      "SchemaName": "VmwareGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmwareMatchDatastoresWithDatasetsAnswer",
+      "SchemaName": "VmwareMatchDatastoresWithDatasetsAnswer",
+      "Description": "VMWareMatchDatastoresWithDatasetsResult return fields.",
+      "Fields": [
+        {
+          "Name": "Datastores",
+          "JsonName": "datastores",
+          "Description": "Array of VMware datastores with their matching local filesystems.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VMWareMatchDatastoresWithDatasetsResultDatastore"
+            }
+          }
+        },
+        {
+          "Name": "Filesystems",
+          "JsonName": "filesystems",
+          "Description": "Array of local filesystems that can be used for VMware storage.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VMWareMatchDatastoresWithDatasetsResultFilesystem"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmwareQueryOptions",
+      "SchemaName": "VmwareQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmwareUpdate",
+      "SchemaName": "VmwareUpdate",
+      "Description": "Updated configuration for the VMware integration.",
+      "Fields": [
+        {
+          "Name": "Datastore",
+          "JsonName": "datastore",
+          "Description": "Valid datastore name which exists on the VMWare host.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Filesystem",
+          "JsonName": "filesystem",
+          "Description": "ZFS filesystem or dataset to use for VMware storage.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "Valid IP address / hostname of a VMWare host. When clustering, this is the vCenter server for the cluster.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for VMware host authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Credentials used to authorize access to the VMWare host.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "VMWareMatchDatastoresWithDatasetsResultFilesystemType",
+      "SchemaName": "VMWareMatchDatastoresWithDatasetsResultFilesystemType",
+      "Description": "Type of storage - FILESYSTEM for ZFS datasets, VOLUME for ZFS volumes.",
+      "Values": [
+        {
+          "Name": "VMWareMatchDatastoresWithDatasetsResultFilesystemTypeFILESYSTEM",
+          "Value": "FILESYSTEM"
+        },
+        {
+          "Name": "VMWareMatchDatastoresWithDatasetsResultFilesystemTypeVOLUME",
+          "Value": "VOLUME"
+        }
+      ]
+    }
+  ]
+}

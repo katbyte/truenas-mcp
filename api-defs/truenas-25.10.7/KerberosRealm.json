@@ -1,0 +1,608 @@
+{
+  "Name": "KerberosRealm",
+  "Tag": "kerberos.realm",
+  "Operations": [
+    {
+      "Name": "KerberosRealmCreate",
+      "OperationId": "kerberos.realm.create",
+      "Method": "CALL",
+      "Path": "kerberos.realm.create",
+      "Description": "Create a new kerberos realm. This will be automatically populated during the\ndomain join process in an Active Directory environment. Kerberos realm names\nare case-sensitive, but convention is to only use upper-case.\n\nEntries for kdc, admin_server, and kpasswd_server are not required.\nIf they are unpopulated, then kerberos will use DNS srv records to\ndiscover the correct servers. The option to hard-code them is provided\ndue to AD site discovery. Kerberos has no concept of Active Directory\nsites. This means that middleware performs the site discovery and\nsets the kerberos configuration based on the AD site.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosRealmQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.create",
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmCreateData"
+          },
+          "Required": true,
+          "Description": "Kerberos realm configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmDelete",
+      "OperationId": "kerberos.realm.delete",
+      "Method": "CALL",
+      "Path": "kerberos.realm.delete",
+      "Description": "Delete a kerberos realm by ID.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.delete",
+        "Item": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the Kerberos realm to delete."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmGetInstance",
+      "OperationId": "kerberos.realm.get_instance",
+      "Method": "CALL",
+      "Path": "kerberos.realm.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosRealmQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.get_instance",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmQuery",
+      "OperationId": "kerberos.realm.query",
+      "Method": "CALL",
+      "Path": "kerberos.realm.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmQueryCount",
+      "OperationId": "kerberos.realm.query#count",
+      "Method": "CALL",
+      "Path": "kerberos.realm.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmQueryOne",
+      "OperationId": "kerberos.realm.query#get",
+      "Method": "CALL",
+      "Path": "kerberos.realm.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosRealmQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmUpdate",
+      "OperationId": "kerberos.realm.update",
+      "Method": "CALL",
+      "Path": "kerberos.realm.update",
+      "Description": "Update a kerberos realm by id. This will be automatically populated during the\ndomain join process in an Active Directory environment. Kerberos realm names\nare case-sensitive, but convention is to only use upper-case.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosRealmQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.realm.update",
+        "Item": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the Kerberos realm to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosRealmUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated Kerberos realm configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "KerberosRealmCreateData",
+      "SchemaName": "KerberosRealmCreateData",
+      "Description": "Kerberos realm configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "AdminServer",
+          "JsonName": "admin_server",
+          "Description": "List of kerberos admin servers. If the list is empty then the kerberos     libraries will use DNS to look them up.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Kdc",
+          "JsonName": "kdc",
+          "Description": "List of kerberos domain controllers. If the list is empty then the kerberos     libraries will use DNS to look up KDCs. In some situations this is undesirable     as kerberos libraries are, for intance, not active directory site aware and so     may be suboptimal.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KpasswdServer",
+          "JsonName": "kpasswd_server",
+          "Description": "List of kerberos kpasswd servers. If the list is empty then DNS will be used     to look them up if needed.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "PrimaryKdc",
+          "JsonName": "primary_kdc",
+          "Description": "The master Kerberos domain controller for this realm. TrueNAS uses this as a fallback if it cannot get     credentials because of an invalid password. This can help in environments where the domain uses a hub-and-spoke     topology. Use this setting to reduce credential errors after TrueNAS automatically changes its machine password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Realm",
+          "JsonName": "realm",
+          "Description": "Kerberos realm name. This is external to TrueNAS and is case-sensitive.     The general convention for kerberos realms is that they are upper-case.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmGetInstanceOptions",
+      "SchemaName": "KerberosRealmGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmQueryOptions",
+      "SchemaName": "KerberosRealmQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmQueryResultItem",
+      "SchemaName": "KerberosRealmQueryResultItem",
+      "Description": "The created Kerberos realm configuration.",
+      "Fields": [
+        {
+          "Name": "AdminServer",
+          "JsonName": "admin_server",
+          "Description": "List of kerberos admin servers. If the list is empty then the kerberos     libraries will use DNS to look them up.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the Kerberos realm configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kdc",
+          "JsonName": "kdc",
+          "Description": "List of kerberos domain controllers. If the list is empty then the kerberos     libraries will use DNS to look up KDCs. In some situations this is undesirable     as kerberos libraries are, for intance, not active directory site aware and so     may be suboptimal.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KpasswdServer",
+          "JsonName": "kpasswd_server",
+          "Description": "List of kerberos kpasswd servers. If the list is empty then DNS will be used     to look them up if needed.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "PrimaryKdc",
+          "JsonName": "primary_kdc",
+          "Description": "The master Kerberos domain controller for this realm. TrueNAS uses this as a fallback if it cannot get     credentials because of an invalid password. This can help in environments where the domain uses a hub-and-spoke     topology. Use this setting to reduce credential errors after TrueNAS automatically changes its machine password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Realm",
+          "JsonName": "realm",
+          "Description": "Kerberos realm name. This is external to TrueNAS and is case-sensitive.     The general convention for kerberos realms is that they are upper-case.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosRealmUpdateData",
+      "SchemaName": "KerberosRealmUpdateData",
+      "Description": "Updated Kerberos realm configuration data.",
+      "Fields": [
+        {
+          "Name": "AdminServer",
+          "JsonName": "admin_server",
+          "Description": "List of kerberos admin servers. If the list is empty then the kerberos     libraries will use DNS to look them up.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Kdc",
+          "JsonName": "kdc",
+          "Description": "List of kerberos domain controllers. If the list is empty then the kerberos     libraries will use DNS to look up KDCs. In some situations this is undesirable     as kerberos libraries are, for intance, not active directory site aware and so     may be suboptimal.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "KpasswdServer",
+          "JsonName": "kpasswd_server",
+          "Description": "List of kerberos kpasswd servers. If the list is empty then DNS will be used     to look them up if needed.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "PrimaryKdc",
+          "JsonName": "primary_kdc",
+          "Description": "The master Kerberos domain controller for this realm. TrueNAS uses this as a fallback if it cannot get     credentials because of an invalid password. This can help in environments where the domain uses a hub-and-spoke     topology. Use this setting to reduce credential errors after TrueNAS automatically changes its machine password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Realm",
+          "JsonName": "realm",
+          "Description": "Kerberos realm name. This is external to TrueNAS and is case-sensitive.     The general convention for kerberos realms is that they are upper-case.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

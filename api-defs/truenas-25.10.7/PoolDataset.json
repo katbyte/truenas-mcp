@@ -1,0 +1,5419 @@
+{
+  "Name": "PoolDataset",
+  "Tag": "pool.dataset",
+  "Operations": [
+    {
+      "Name": "PoolDatasetAttachments",
+      "OperationId": "pool.dataset.attachments",
+      "Method": "CALL",
+      "Path": "pool.dataset.attachments",
+      "Description": "Return a list of services dependent of this dataset.\n\nResponsible for telling the user whether there is a related\nshare, asking for confirmation.\n\nExample return value:\n[\n  {\n    \"type\": \"NFS Share\",\n    \"service\": \"nfs\",\n    \"attachments\": [\"/mnt/tank/work\"]\n  }\n]",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolAttachment"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.attachments",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to retrieve attachments for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChangeKey",
+      "OperationId": "pool.dataset.change_key",
+      "Method": "CALL",
+      "Path": "pool.dataset.change_key",
+      "Description": "Change encryption properties for `id` encrypted dataset.\n\nChanging dataset encryption to use passphrase instead of a key is not allowed if:\n\n1) It has encrypted roots as children which are encrypted with a key\n2) If it is a root dataset where the system dataset is located",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.change_key",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to change the encryption key for."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChangeKeyOptions"
+          },
+          "Description": "Configuration options for changing the encryption key."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoices",
+      "OperationId": "pool.dataset.checksum_choices",
+      "Method": "CALL",
+      "Path": "pool.dataset.checksum_choices",
+      "Description": "Retrieve checksums supported for ZFS dataset.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetChecksumChoicesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.checksum_choices",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "PoolDatasetCompressionChoices",
+      "OperationId": "pool.dataset.compression_choices",
+      "Method": "CALL",
+      "Path": "pool.dataset.compression_choices",
+      "Description": "Retrieve compression algorithm supported by ZFS.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.compression_choices",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "PoolDatasetCreate",
+      "OperationId": "pool.dataset.create",
+      "Method": "CALL",
+      "Path": "pool.dataset.create",
+      "Description": "Creates a dataset/zvol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.create",
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration data for creating a new ZFS dataset."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetDelete",
+      "OperationId": "pool.dataset.delete",
+      "Method": "CALL",
+      "Path": "pool.dataset.delete",
+      "Description": "Delete dataset/zvol `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.delete",
+        "Item": true,
+        "Roles": [
+          "DATASET_DELETE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetDeleteOptions"
+          },
+          "Description": "Options controlling the deletion behavior such as recursive and force flags."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetDestroySnapshots",
+      "OperationId": "pool.dataset.destroy_snapshots",
+      "Method": "CALL",
+      "Path": "pool.dataset.destroy_snapshots",
+      "Description": "Destroy specified snapshots of a given dataset.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.destroy_snapshots",
+        "Job": true,
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "SNAPSHOT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset name to destroy snapshots for."
+        },
+        {
+          "Name": "snapshots",
+          "Argument": "snapshots",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetDestroySnapshotsSnapshots"
+          },
+          "Required": true,
+          "Description": "Specification of which snapshots to destroy (all, specific ones, or ranges)."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetDetails",
+      "OperationId": "pool.dataset.details",
+      "Method": "CALL",
+      "Path": "pool.dataset.details",
+      "Description": "Retrieve all dataset(s) details outlining any\nservices/tasks which might be consuming them.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.details",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoices",
+      "OperationId": "pool.dataset.encryption_algorithm_choices",
+      "Method": "CALL",
+      "Path": "pool.dataset.encryption_algorithm_choices",
+      "Description": "Retrieve encryption algorithms supported for ZFS dataset encryption.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.encryption_algorithm_choices",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "PoolDatasetEncryptionSummary",
+      "OperationId": "pool.dataset.encryption_summary",
+      "Method": "CALL",
+      "Path": "pool.dataset.encryption_summary",
+      "Description": "Retrieve summary of all encrypted roots under `id`.\n\nKeys/passphrase can be supplied to check if the keys are valid.\n\nExample output:\n[\n    {\n        \"name\": \"vol\",\n        \"key_format\": \"PASSPHRASE\",\n        \"key_present_in_database\": false,\n        \"valid_key\": true,\n        \"locked\": true,\n        \"unlock_error\": null,\n        \"unlock_successful\": true\n    },\n    {\n        \"name\": \"vol/c1/d1\",\n        \"key_format\": \"PASSPHRASE\",\n        \"key_present_in_database\": false,\n        \"valid_key\": false,\n        \"locked\": true,\n        \"unlock_error\": \"Provided key is invalid\",\n        \"unlock_successful\": false\n    },\n    {\n        \"name\": \"vol/c\",\n        \"key_format\": \"PASSPHRASE\",\n        \"key_present_in_database\": false,\n        \"valid_key\": false,\n        \"locked\": true,\n        \"unlock_error\": \"Key not provided\",\n        \"unlock_successful\": false\n    },\n    {\n        \"name\": \"vol/c/d2\",\n        \"key_format\": \"PASSPHRASE\",\n        \"key_present_in_database\": false,\n        \"valid_key\": false,\n        \"locked\": true,\n        \"unlock_error\": \"Child cannot be unlocked when parent \"vol/c\" is locked and provided key is invalid\",\n        \"unlock_successful\": false\n    }\n]",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionSummary"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.encryption_summary",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to generate an encryption summary for."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionSummaryOptions"
+          },
+          "Description": "Options for generating the encryption summary including force settings and datasets."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetExportKey",
+      "OperationId": "pool.dataset.export_key",
+      "Method": "CALL",
+      "Path": "pool.dataset.export_key",
+      "Description": "Export own encryption key for dataset `id`. If `download` is `true`, key will be downloaded in a json file\nwhere the same file can be used to unlock the dataset, otherwise it will be returned as string.\n\nPlease refer to websocket documentation for downloading the file.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.export_key",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to export the encryption key from."
+        },
+        {
+          "Name": "download",
+          "Argument": "download",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to prepare the key for download as a file."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetExportKeys",
+      "OperationId": "pool.dataset.export_keys",
+      "Method": "CALL",
+      "Path": "pool.dataset.export_keys",
+      "Description": "Export keys for `id` and its children which are stored in the system. The exported file is a JSON file\nwhich has a dictionary containing dataset names as keys and their keys as the value.\n\nPlease refer to websocket documentation for downloading the file.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.export_keys",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "REPLICATION_ADMIN",
+          "REPLICATION_TASK_WRITE",
+          "REPLICATION_TASK_WRITE_PULL",
+          "SHARING_ADMIN"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to export keys from recursively."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetExportKeysForReplication",
+      "OperationId": "pool.dataset.export_keys_for_replication",
+      "Method": "CALL",
+      "Path": "pool.dataset.export_keys_for_replication",
+      "Description": "Export keys for replication task `id` for source dataset(s) which are stored in the system. The exported file\nis a JSON file which has a dictionary containing dataset names as keys and their keys as the value.\n\nPlease refer to websocket documentation for downloading the file.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.export_keys_for_replication",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "REPLICATION_ADMIN",
+          "REPLICATION_TASK_WRITE",
+          "REPLICATION_TASK_WRITE_PULL",
+          "SHARING_ADMIN"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "The pool ID to export dataset keys for replication purposes."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetGetInstance",
+      "OperationId": "pool.dataset.get_instance",
+      "Method": "CALL",
+      "Path": "pool.dataset.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.get_instance",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetGetQuota",
+      "OperationId": "pool.dataset.get_quota",
+      "Method": "CALL",
+      "Path": "pool.dataset.get_quota",
+      "Description": "Return a list of the specified `quota_type` of quotas on the ZFS dataset `ds`.\nSupport `query-filters` and `query-options`.\n\nNote: SMB client requests to set a quota granting no space will result\nin an on-disk quota of 1 KiB.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetGetQuotaAnswer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.get_quota",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dataset",
+          "Argument": "dataset",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset path to retrieve quotas for."
+        },
+        {
+          "Name": "quota_type",
+          "Argument": "quotaType",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetGetQuotaQuotaType"
+          },
+          "Required": true,
+          "Description": "The type of quotas to retrieve."
+        },
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "Query filters to limit the results returned."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetGetQuotaOptions"
+          },
+          "Description": "Query options such as sorting and pagination."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetInheritParentEncryptionProperties",
+      "OperationId": "pool.dataset.inherit_parent_encryption_properties",
+      "Method": "CALL",
+      "Path": "pool.dataset.inherit_parent_encryption_properties",
+      "Description": "Allows inheriting parent's encryption root discarding its current encryption settings. This\ncan only be done where `id` has an encrypted parent and `id` itself is an encryption root.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.inherit_parent_encryption_properties",
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to inherit encryption properties from its parent."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetLock",
+      "OperationId": "pool.dataset.lock",
+      "Method": "CALL",
+      "Path": "pool.dataset.lock",
+      "Description": "Locks `id` dataset. It will unmount the dataset and its children before locking.\n\nAfter the dataset has been unmounted, system will set immutable flag on the dataset's mountpoint where\nthe dataset was mounted before it was locked making sure that the path cannot be modified. Once the dataset\nis unlocked, it will not be affected by this change and consumers can continue consuming it.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.lock",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to lock."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetLockOptions"
+          },
+          "Description": "Options for locking the dataset, such as force unmount settings."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetProcesses",
+      "OperationId": "pool.dataset.processes",
+      "Method": "CALL",
+      "Path": "pool.dataset.processes",
+      "Description": "Return a list of processes using this dataset.\n\nExample return value:\n\n[\n  {\n    \"pid\": 2520,\n    \"name\": \"smbd\",\n    \"service\": \"cifs\"\n  },\n  {\n    \"pid\": 97778,\n    \"name\": \"minio\",\n    \"cmdline\": \"/usr/local/bin/minio -C /usr/local/etc/minio server --address=0.0.0.0:9000 --quiet /mnt/tank/wk\"\n  }\n]",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolProcess"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.processes",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to list processes for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetPromote",
+      "OperationId": "pool.dataset.promote",
+      "Method": "CALL",
+      "Path": "pool.dataset.promote",
+      "Description": "Promote the cloned dataset `id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.promote",
+        "Item": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The clone dataset ID (full path) to promote to become the parent."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQuery",
+      "OperationId": "pool.dataset.query",
+      "Method": "CALL",
+      "Path": "pool.dataset.query",
+      "Description": "Query Pool Datasets with `query-filters` and `query-options`.\n\nWe provide two ways to retrieve datasets. The first is a flat structure (default), where\nall datasets in the system are returned as separate objects which contain all data\nthere is for their children. This retrieval type is slightly slower because of duplicates in each object.\nThe second type is hierarchical, where only top level datasets are returned in the list. They contain all the\nchildren in the `children` key. This retrieval type is slightly faster.\nThese options are controlled by the `query-options.extra.flat` attribute (default true).\n\nIn some cases it might be desirable to only retrieve details of a dataset itself and not it's children, in this\ncase `query-options.extra.retrieve_children` should be explicitly specified and set to `false` which will\nresult in children not being retrieved.\n\nIn case only some properties are desired to be retrieved for datasets, consumer should specify\n`query-options.extra.properties` which when `null` ( which is the default ) will retrieve all properties\nand otherwise a list can be specified like `[\"type\", \"used\", \"available\"]` to retrieve selective properties.\nIf no properties are desired, in that case an empty list should be sent. It should be noted that specifying\nempty list will still retrieve user properties. If user properties are not desired, in that case\n`query-options.extra.retrieve_user_props` should be set to `false`.\n\n`query-options.extra.snapshots` can be set to retrieve snapshot(s) of dataset in question.\n\n`query-options.extra.snapshots_recursive` can be set to retrieve snapshot(s) recursively of dataset in question.\nIf `query-options.extra.snapshots_recursive` and `query-options.extra.snapshots` are set, snapshot(s) will be\nretrieved recursively.\n\n`query-options.extra.snapshots_properties` can be specified to list out properties which should be retrieved\nfor snapshot(s) related to each dataset. By default only name of the snapshot would be retrieved, however\nif `null` is specified all properties of the snapshot would be retrieved in this case.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryCount",
+      "OperationId": "pool.dataset.query#count",
+      "Method": "CALL",
+      "Path": "pool.dataset.query#count",
+      "Description": "Query Pool Datasets with `query-filters` and `query-options`.\n\nWe provide two ways to retrieve datasets. The first is a flat structure (default), where\nall datasets in the system are returned as separate objects which contain all data\nthere is for their children. This retrieval type is slightly slower because of duplicates in each object.\nThe second type is hierarchical, where only top level datasets are returned in the list. They contain all the\nchildren in the `children` key. This retrieval type is slightly faster.\nThese options are controlled by the `query-options.extra.flat` attribute (default true).\n\nIn some cases it might be desirable to only retrieve details of a dataset itself and not it's children, in this\ncase `query-options.extra.retrieve_children` should be explicitly specified and set to `false` which will\nresult in children not being retrieved.\n\nIn case only some properties are desired to be retrieved for datasets, consumer should specify\n`query-options.extra.properties` which when `null` ( which is the default ) will retrieve all properties\nand otherwise a list can be specified like `[\"type\", \"used\", \"available\"]` to retrieve selective properties.\nIf no properties are desired, in that case an empty list should be sent. It should be noted that specifying\nempty list will still retrieve user properties. If user properties are not desired, in that case\n`query-options.extra.retrieve_user_props` should be set to `false`.\n\n`query-options.extra.snapshots` can be set to retrieve snapshot(s) of dataset in question.\n\n`query-options.extra.snapshots_recursive` can be set to retrieve snapshot(s) recursively of dataset in question.\nIf `query-options.extra.snapshots_recursive` and `query-options.extra.snapshots` are set, snapshot(s) will be\nretrieved recursively.\n\n`query-options.extra.snapshots_properties` can be specified to list out properties which should be retrieved\nfor snapshot(s) related to each dataset. By default only name of the snapshot would be retrieved, however\nif `null` is specified all properties of the snapshot would be retrieved in this case.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryOne",
+      "OperationId": "pool.dataset.query#get",
+      "Method": "CALL",
+      "Path": "pool.dataset.query#get",
+      "Description": "Query Pool Datasets with `query-filters` and `query-options`.\n\nWe provide two ways to retrieve datasets. The first is a flat structure (default), where\nall datasets in the system are returned as separate objects which contain all data\nthere is for their children. This retrieval type is slightly slower because of duplicates in each object.\nThe second type is hierarchical, where only top level datasets are returned in the list. They contain all the\nchildren in the `children` key. This retrieval type is slightly faster.\nThese options are controlled by the `query-options.extra.flat` attribute (default true).\n\nIn some cases it might be desirable to only retrieve details of a dataset itself and not it's children, in this\ncase `query-options.extra.retrieve_children` should be explicitly specified and set to `false` which will\nresult in children not being retrieved.\n\nIn case only some properties are desired to be retrieved for datasets, consumer should specify\n`query-options.extra.properties` which when `null` ( which is the default ) will retrieve all properties\nand otherwise a list can be specified like `[\"type\", \"used\", \"available\"]` to retrieve selective properties.\nIf no properties are desired, in that case an empty list should be sent. It should be noted that specifying\nempty list will still retrieve user properties. If user properties are not desired, in that case\n`query-options.extra.retrieve_user_props` should be set to `false`.\n\n`query-options.extra.snapshots` can be set to retrieve snapshot(s) of dataset in question.\n\n`query-options.extra.snapshots_recursive` can be set to retrieve snapshot(s) recursively of dataset in question.\nIf `query-options.extra.snapshots_recursive` and `query-options.extra.snapshots` are set, snapshot(s) will be\nretrieved recursively.\n\n`query-options.extra.snapshots_properties` can be specified to list out properties which should be retrieved\nfor snapshot(s) related to each dataset. By default only name of the snapshot would be retrieved, however\nif `null` is specified all properties of the snapshot would be retrieved in this case.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetRecommendedZvolBlocksize",
+      "OperationId": "pool.dataset.recommended_zvol_blocksize",
+      "Method": "CALL",
+      "Path": "pool.dataset.recommended_zvol_blocksize",
+      "Description": "Helper method to get recommended size for a new zvol (dataset of type VOLUME).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.recommended_zvol_blocksize",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "pool",
+          "Argument": "pool",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The pool name to get the recommended volume block size for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetRecordsizeChoices",
+      "OperationId": "pool.dataset.recordsize_choices",
+      "Method": "CALL",
+      "Path": "pool.dataset.recordsize_choices",
+      "Description": "Retrieve recordsize choices for datasets.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.recordsize_choices",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "pool_name",
+          "Argument": "poolName",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Optional pool name to get record size choices for. If not provided, returns general choices."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetRename",
+      "OperationId": "pool.dataset.rename",
+      "Method": "CALL",
+      "Path": "pool.dataset.rename",
+      "Description": "Rename a pool dataset `id`.\n\nNo safety checks are performed when renaming ZFS resources. If the dataset is in use by services such\nas SMB, iSCSI, snapshot tasks, replication, or cloud sync, renaming may cause disruptions or service failures.\n\nProceed only if you are certain the ZFS resource is not in use and fully understand the risks.\nSet Force to continue.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.rename",
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The current dataset ID (full path) to rename."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetRenameData"
+          },
+          "Required": true,
+          "Description": "The rename operation options including the new name and safety flags."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSetQuota",
+      "OperationId": "pool.dataset.set_quota",
+      "Method": "CALL",
+      "Path": "pool.dataset.set_quota",
+      "Description": "Allow users to set multiple quotas simultaneously by submitting a list of quotas.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.set_quota",
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dataset",
+          "Argument": "dataset",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The name of the target ZFS dataset."
+        },
+        {
+          "Name": "quotas",
+          "Argument": "quotas",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolDatasetSetQuota"
+            }
+          },
+          "Description": "Specify an array of quota entries to apply to dataset. The array may contain all supported quota types."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSnapshotCount",
+      "OperationId": "pool.dataset.snapshot_count",
+      "Method": "CALL",
+      "Path": "pool.dataset.snapshot_count",
+      "Description": "Returns snapshot count for specified `dataset`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.snapshot_count",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dataset",
+          "Argument": "dataset",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset path to count snapshots for."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUnlock",
+      "OperationId": "pool.dataset.unlock",
+      "Method": "CALL",
+      "Path": "pool.dataset.unlock",
+      "Description": "Unlock dataset `id` (and its children if `unlock_options.recursive` is `true`).\n\nIf `id` dataset is not encrypted an exception will be raised. There is one exception:\nwhen `id` is a root dataset and `unlock_options.recursive` is specified, encryption\nvalidation will not be performed for `id`. This allow unlocking encrypted children for the entire pool `id`.\n\nThere are two ways to supply the key(s)/passphrase(s) for unlocking a dataset:\n\n1. Upload a json file which contains encrypted dataset keys (it will be read from the input pipe if\n`unlock_options.key_file` is `true`). The format is the one that is used for exporting encrypted dataset keys\n(`pool.export_keys`).\n\n2. Specify a key or a passphrase for each unlocked dataset using `unlock_options.datasets`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetUnlockAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.unlock",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to unlock."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetUnlockOptions"
+          },
+          "Description": "Options for unlocking including force settings, recursion, and dataset-specific keys."
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUpdate",
+      "OperationId": "pool.dataset.update",
+      "Method": "CALL",
+      "Path": "pool.dataset.update",
+      "Description": "Updates a dataset/zvol `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolDatasetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.dataset.update",
+        "Item": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "The dataset ID (full path) to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetUpdateData"
+          },
+          "Required": true,
+          "Description": "The dataset properties to update."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "PoolDatasetChangeKeyOptions",
+      "SchemaName": "PoolDatasetChangeKeyOptions",
+      "Description": "Configuration options for changing the encryption key.",
+      "Fields": [
+        {
+          "Name": "GenerateKey",
+          "JsonName": "generate_key",
+          "Description": "Generate a new random encryption key instead of using a provided key or passphrase.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "Raw hex-encoded encryption key.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "KeyFile",
+          "JsonName": "key_file",
+          "Description": "Whether the provided key is from a key file rather than entered directly.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Passphrase",
+          "JsonName": "passphrase",
+          "Description": "Passphrase to use for encryption key derivation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pbkdf2iters",
+          "JsonName": "pbkdf2iters",
+          "Description": "Number of PBKDF2 iterations for passphrase-based keys. Higher values improve security against     brute force attacks but increase unlock time. Default 350,000 balances security and performance.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswer",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswer",
+      "Description": "PoolDatasetChecksumChoicesResult return fields.",
+      "Fields": [
+        {
+          "Name": "BLAKE3",
+          "JsonName": "BLAKE3",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerBLAKE3"
+          }
+        },
+        {
+          "Name": "EDONR",
+          "JsonName": "EDONR",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerEDONR"
+          }
+        },
+        {
+          "Name": "FLETCHER2",
+          "JsonName": "FLETCHER2",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerFLETCHER2"
+          }
+        },
+        {
+          "Name": "FLETCHER4",
+          "JsonName": "FLETCHER4",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerFLETCHER4"
+          }
+        },
+        {
+          "Name": "ON",
+          "JsonName": "ON",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerON"
+          }
+        },
+        {
+          "Name": "SHA256",
+          "JsonName": "SHA256",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerSHA256"
+          }
+        },
+        {
+          "Name": "SHA512",
+          "JsonName": "SHA512",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerSHA512"
+          }
+        },
+        {
+          "Name": "SKEIN",
+          "JsonName": "SKEIN",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksumChoicesAnswerSKEIN"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetCreateData",
+      "Description": "Configuration data for creating a new ZFS dataset.",
+      "Union": [
+        "PoolDatasetCreateFilesystem",
+        "PoolDatasetCreateVolume"
+      ],
+      "Members": [
+        {
+          "Model": "PoolDatasetCreateFilesystem"
+        },
+        {
+          "Model": "PoolDatasetCreateVolume"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetCreateUserProperty",
+      "SchemaName": "PoolDatasetCreateUserProperty",
+      "Fields": [
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "User property key in namespace:property format.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The value to assign to the user property.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetDeleteOptions",
+      "SchemaName": "PoolDatasetDeleteOptions",
+      "Description": "Options controlling the deletion behavior such as recursive and force flags.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Delete datasets even if they are busy.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Also delete/destroy all children datasets. When root dataset is specified as `id` with `recursive`, it will     destroy all the children of the root dataset present leaving root dataset intact.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetDestroySnapshotsSnapshots",
+      "SchemaName": "PoolDatasetDestroySnapshotsSnapshots",
+      "Description": "Specification of which snapshots to destroy (all, specific ones, or ranges).",
+      "Fields": [
+        {
+          "Name": "All",
+          "JsonName": "all",
+          "Description": "Whether to destroy all snapshots for the dataset.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to recursively destroy snapshots of child datasets.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Snapshots",
+          "JsonName": "snapshots",
+          "Description": "Array of specific snapshot names or snapshot range specifications to destroy.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswer",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswer",
+      "Description": "PoolDatasetEncryptionAlgorithmChoicesResult return fields.",
+      "Fields": [
+        {
+          "Name": "AES128CCM",
+          "JsonName": "AES-128-CCM",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128CCM"
+          }
+        },
+        {
+          "Name": "AES128GCM",
+          "JsonName": "AES-128-GCM",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128GCM"
+          }
+        },
+        {
+          "Name": "AES192CCM",
+          "JsonName": "AES-192-CCM",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192CCM"
+          }
+        },
+        {
+          "Name": "AES192GCM",
+          "JsonName": "AES-192-GCM",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192GCM"
+          }
+        },
+        {
+          "Name": "AES256CCM",
+          "JsonName": "AES-256-CCM",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256CCM"
+          }
+        },
+        {
+          "Name": "AES256GCM",
+          "JsonName": "AES-256-GCM",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256GCM"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionSummary",
+      "SchemaName": "PoolDatasetEncryptionSummary",
+      "Description": "There are 2 keys which show if a recursive unlock operation is done for `id`, which dataset will be unlocked and     if not why it won't be unlocked. The keys namely are `unlock_successful` and `unlock_error`. The former is a     boolean value showing if unlock would succeed/fail. The latter is description why it failed if it failed.\n\nIn some cases it's possible that the provided key/passphrase is valid but the path where the dataset is supposed     to be mounted after being unlocked already exists and is not empty. In this case, unlock operation would fail and     `unlock_error` will reflect this error appropriately. This can be overridden by setting     `options.datasets.X.force` boolean flag or by setting `options.force` flag. In practice, when the dataset is     going to be unlocked and these flags have been provided to `pool.dataset.unlock`, system will rename the     directory/file path where the dataset should be mounted resulting in successful unlock of the dataset.\n\nIf a dataset is already unlocked, it will show up as true for \"unlock_successful\" regardless of what key user     provided as the unlock keys in the output are to reflect what a real unlock operation would behave. If user is     interested in seeing if a provided key is valid or not, then the key to look out for in the output is \"valid_key\"     which based on what system has in database or if a user provided one, validates the key and sets a boolean value     for the dataset.",
+      "Fields": [
+        {
+          "Name": "KeyFormat",
+          "JsonName": "key_format",
+          "Description": "The format of the encryption key (hex, raw, or passphrase).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "KeyPresentInDatabase",
+          "JsonName": "key_present_in_database",
+          "Description": "Whether an encryption key for this dataset exists in the system database.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "Whether the dataset is currently locked.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The dataset name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UnlockError",
+          "JsonName": "unlock_error",
+          "Description": "Error message if unlock would fail, or `null` if unlock would succeed.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UnlockSuccessful",
+          "JsonName": "unlock_successful",
+          "Description": "Whether an unlock operation would be successful.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ValidKey",
+          "JsonName": "valid_key",
+          "Description": "Whether the provided key is valid for this dataset.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionSummaryOptions",
+      "SchemaName": "PoolDatasetEncryptionSummaryOptions",
+      "Description": "Options for generating the encryption summary including force settings and datasets.",
+      "Fields": [
+        {
+          "Name": "Datasets",
+          "JsonName": "datasets",
+          "Description": "Array of dataset-specific unlock options and credentials.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolDatasetEncryptionSummaryOptionsDataset"
+            }
+          }
+        },
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force unlock operations even if mount paths already exist.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KeyFile",
+          "JsonName": "key_file",
+          "Description": "Whether keys are provided via key files rather than directly.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionSummaryOptionsDataset",
+      "SchemaName": "PoolDatasetEncryptionSummaryOptionsDataset",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force unlock even if the mount path already exists and is not empty.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "Raw hex-encoded encryption key for this dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The dataset name to unlock.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Passphrase",
+          "JsonName": "passphrase",
+          "Description": "Passphrase for this dataset if using passphrase-based encryption.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetGetInstanceOptions",
+      "SchemaName": "PoolDatasetGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetGetQuotaAnswer",
+      "Union": [
+        "PoolDatasetUserGroupQuota",
+        "PoolDatasetDatasetQuota",
+        "PoolDatasetProjectQuota"
+      ],
+      "Discriminator": "quota_type",
+      "Members": [
+        {
+          "Model": "PoolDatasetUserGroupQuota",
+          "Kinds": [
+            "GROUP",
+            "USER"
+          ]
+        },
+        {
+          "Model": "PoolDatasetDatasetQuota",
+          "Kinds": [
+            "DATASET"
+          ]
+        },
+        {
+          "Model": "PoolDatasetProjectQuota",
+          "Kinds": [
+            "PROJECT"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetGetQuotaOptions",
+      "SchemaName": "PoolDatasetGetQuotaOptions",
+      "Description": "Query options such as sorting and pagination.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetLockOptions",
+      "SchemaName": "PoolDatasetLockOptions",
+      "Description": "Options for locking the dataset, such as force unmount settings.",
+      "Fields": [
+        {
+          "Name": "ForceUmount",
+          "JsonName": "force_umount",
+          "Description": "Force unmounting of the dataset before locking.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryOptions",
+      "SchemaName": "PoolDatasetQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItem",
+      "SchemaName": "PoolDatasetQueryResultItem",
+      "Description": "The newly created dataset information.",
+      "Fields": [
+        {
+          "Name": "Aclmode",
+          "JsonName": "aclmode",
+          "Description": "How Access Control Lists (ACLs) are handled when chmod is used.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemAclmode"
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "The type of Access Control List system used (NFSV4, POSIX, or OFF).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemAcltype"
+          }
+        },
+        {
+          "Name": "Atime",
+          "JsonName": "atime",
+          "Description": "Whether file access times are updated when files are accessed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemAtime"
+          }
+        },
+        {
+          "Name": "Available",
+          "JsonName": "available",
+          "Description": "Amount of disk space available to this dataset and its children.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemAvailable"
+          }
+        },
+        {
+          "Name": "Casesensitivity",
+          "JsonName": "casesensitivity",
+          "Description": "File name case sensitivity setting (sensitive/insensitive).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemCasesensitivity"
+          }
+        },
+        {
+          "Name": "Checksum",
+          "JsonName": "checksum",
+          "Description": "Data integrity checksum algorithm used for this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemChecksum"
+          }
+        },
+        {
+          "Name": "Children",
+          "JsonName": "children",
+          "Description": "Array of child dataset objects nested under this dataset.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Comments",
+          "JsonName": "comments",
+          "Description": "ZFS comments property for storing descriptive text about the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemComments"
+          }
+        },
+        {
+          "Name": "Compression",
+          "JsonName": "compression",
+          "Description": "Compression algorithm and level applied to data in this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemCompression"
+          }
+        },
+        {
+          "Name": "Compressratio",
+          "JsonName": "compressratio",
+          "Description": "The achieved compression ratio as a decimal (e.g., '2.50x').",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemCompressratio"
+          }
+        },
+        {
+          "Name": "Copies",
+          "JsonName": "copies",
+          "Description": "Number of copies of data blocks to maintain for redundancy (1-3).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemCopies"
+          }
+        },
+        {
+          "Name": "Creation",
+          "JsonName": "creation",
+          "Description": "Timestamp when this dataset was created.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemCreation"
+          }
+        },
+        {
+          "Name": "Deduplication",
+          "JsonName": "deduplication",
+          "Description": "ZFS deduplication setting - whether identical data blocks are stored only once.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemDeduplication"
+          }
+        },
+        {
+          "Name": "Encrypted",
+          "JsonName": "encrypted",
+          "Description": "Whether the dataset is encrypted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionAlgorithm",
+          "JsonName": "encryption_algorithm",
+          "Description": "Encryption algorithm used (e.g., AES-256-GCM). Only relevant for encrypted datasets.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemEncryptionAlgorithm"
+          }
+        },
+        {
+          "Name": "EncryptionRoot",
+          "JsonName": "encryption_root",
+          "Description": "The root dataset where encryption is enabled. `null` if the dataset is not encrypted.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Exec",
+          "JsonName": "exec",
+          "Description": "Whether files in this dataset can be executed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemExec"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "The full dataset path including pool name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "KeyFormat",
+          "JsonName": "key_format",
+          "Description": "Format of the encryption key (hex/raw/passphrase). Only relevant for encrypted datasets.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemKeyFormat"
+          }
+        },
+        {
+          "Name": "KeyLoaded",
+          "JsonName": "key_loaded",
+          "Description": "Whether the encryption key is currently loaded for encrypted datasets. `null` for unencrypted datasets.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "Whether an encrypted dataset is currently locked (key not loaded).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Managedby",
+          "JsonName": "managedby",
+          "Description": "Identifies which service or system manages this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemManagedby"
+          }
+        },
+        {
+          "Name": "Mountpoint",
+          "JsonName": "mountpoint",
+          "Description": "Filesystem path where this dataset is mounted. Null for unmounted datasets or volumes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The dataset name without the pool prefix.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Origin",
+          "JsonName": "origin",
+          "Description": "The snapshot from which this clone was created. Empty for non-clone datasets.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemOrigin"
+          }
+        },
+        {
+          "Name": "Pbkdf2iters",
+          "JsonName": "pbkdf2iters",
+          "Description": "Number of PBKDF2 iterations used for passphrase-based encryption keys.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemPbkdf2iters"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "The name of the ZFS pool containing this dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Quota",
+          "JsonName": "quota",
+          "Description": "Maximum amount of disk space this dataset and its children can consume.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemQuota"
+          }
+        },
+        {
+          "Name": "QuotaCritical",
+          "JsonName": "quota_critical",
+          "Description": "ZFS quota critical threshold property as a percentage.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemQuotaCritical"
+          }
+        },
+        {
+          "Name": "QuotaWarning",
+          "JsonName": "quota_warning",
+          "Description": "ZFS quota warning threshold property as a percentage.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemQuotaWarning"
+          }
+        },
+        {
+          "Name": "Readonly",
+          "JsonName": "readonly",
+          "Description": "Whether the dataset is read-only.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemReadonly"
+          }
+        },
+        {
+          "Name": "Recordsize",
+          "JsonName": "recordsize",
+          "Description": "The suggested block size for files in this filesystem dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemRecordsize"
+          }
+        },
+        {
+          "Name": "Refquota",
+          "JsonName": "refquota",
+          "Description": "Maximum amount of disk space this dataset itself can consume (excluding children).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemRefquota"
+          }
+        },
+        {
+          "Name": "RefquotaCritical",
+          "JsonName": "refquota_critical",
+          "Description": "ZFS reference quota critical threshold property as a percentage.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemRefquotaCritical"
+          }
+        },
+        {
+          "Name": "RefquotaWarning",
+          "JsonName": "refquota_warning",
+          "Description": "ZFS reference quota warning threshold property as a percentage.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemRefquotaWarning"
+          }
+        },
+        {
+          "Name": "Refreservation",
+          "JsonName": "refreservation",
+          "Description": "Minimum amount of disk space guaranteed to be available to this dataset itself.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemRefreservation"
+          }
+        },
+        {
+          "Name": "Reservation",
+          "JsonName": "reservation",
+          "Description": "Minimum amount of disk space guaranteed to be available to this dataset and its children.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemReservation"
+          }
+        },
+        {
+          "Name": "Snapdev",
+          "JsonName": "snapdev",
+          "Description": "Controls visibility of volume snapshots under /dev/zvol/<pool>/.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemSnapdev"
+          }
+        },
+        {
+          "Name": "Snapdir",
+          "JsonName": "snapdir",
+          "Description": "Visibility of the .zfs/snapshot directory (visible/hidden).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemSnapdir"
+          }
+        },
+        {
+          "Name": "Sparse",
+          "JsonName": "sparse",
+          "Description": "For volumes, whether to use sparse (thin) provisioning.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemSparse"
+          }
+        },
+        {
+          "Name": "SpecialSmallBlockSize",
+          "JsonName": "special_small_block_size",
+          "Description": "Size threshold below which blocks are stored on special vdevs if configured.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemSpecialSmallBlockSize"
+          }
+        },
+        {
+          "Name": "Sync",
+          "JsonName": "sync",
+          "Description": "Synchronous write behavior (standard/always/disabled).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemSync"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The dataset type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Used",
+          "JsonName": "used",
+          "Description": "Total amount of disk space consumed by this dataset and all its children.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemUsed"
+          }
+        },
+        {
+          "Name": "Usedbychildren",
+          "JsonName": "usedbychildren",
+          "Description": "Amount of disk space consumed by child datasets.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemUsedbychildren"
+          }
+        },
+        {
+          "Name": "Usedbydataset",
+          "JsonName": "usedbydataset",
+          "Description": "Amount of disk space consumed by this dataset itself, excluding children and snapshots.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemUsedbydataset"
+          }
+        },
+        {
+          "Name": "Usedbyrefreservation",
+          "JsonName": "usedbyrefreservation",
+          "Description": "Amount of disk space consumed by the refreservation of this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemUsedbyrefreservation"
+          }
+        },
+        {
+          "Name": "Usedbysnapshots",
+          "JsonName": "usedbysnapshots",
+          "Description": "Amount of disk space consumed by snapshots of this dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemUsedbysnapshots"
+          }
+        },
+        {
+          "Name": "UserProperties",
+          "JsonName": "user_properties",
+          "Description": "Custom user-defined ZFS properties set on this dataset as key-value pairs.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Volblocksize",
+          "JsonName": "volblocksize",
+          "Description": "For volumes, the block size used by the volume.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemVolblocksize"
+          }
+        },
+        {
+          "Name": "Volsize",
+          "JsonName": "volsize",
+          "Description": "For volumes, the logical size of the volume.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemVolsize"
+          }
+        },
+        {
+          "Name": "Xattr",
+          "JsonName": "xattr",
+          "Description": "Extended attributes storage method (on/off).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetQueryResultItemXattr"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemAclmode",
+      "SchemaName": "PoolDatasetQueryResultItemAclmode",
+      "Description": "How Access Control Lists (ACLs) are handled when chmod is used.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemAcltype",
+      "SchemaName": "PoolDatasetQueryResultItemAcltype",
+      "Description": "The type of Access Control List system used (NFSV4, POSIX, or OFF).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemAtime",
+      "SchemaName": "PoolDatasetQueryResultItemAtime",
+      "Description": "Whether file access times are updated when files are accessed.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemAvailable",
+      "SchemaName": "PoolDatasetQueryResultItemAvailable",
+      "Description": "Amount of disk space available to this dataset and its children.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemCasesensitivity",
+      "SchemaName": "PoolDatasetQueryResultItemCasesensitivity",
+      "Description": "File name case sensitivity setting (sensitive/insensitive).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemChecksum",
+      "SchemaName": "PoolDatasetQueryResultItemChecksum",
+      "Description": "Data integrity checksum algorithm used for this dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemComments",
+      "SchemaName": "PoolDatasetQueryResultItemComments",
+      "Description": "ZFS comments property for storing descriptive text about the dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemCompression",
+      "SchemaName": "PoolDatasetQueryResultItemCompression",
+      "Description": "Compression algorithm and level applied to data in this dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemCompressratio",
+      "SchemaName": "PoolDatasetQueryResultItemCompressratio",
+      "Description": "The achieved compression ratio as a decimal (e.g., '2.50x').",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemCopies",
+      "SchemaName": "PoolDatasetQueryResultItemCopies",
+      "Description": "Number of copies of data blocks to maintain for redundancy (1-3).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemCreation",
+      "SchemaName": "PoolDatasetQueryResultItemCreation",
+      "Description": "Timestamp when this dataset was created.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemDeduplication",
+      "SchemaName": "PoolDatasetQueryResultItemDeduplication",
+      "Description": "ZFS deduplication setting - whether identical data blocks are stored only once.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemEncryptionAlgorithm",
+      "SchemaName": "PoolDatasetQueryResultItemEncryptionAlgorithm",
+      "Description": "Encryption algorithm used (e.g., AES-256-GCM). Only relevant for encrypted datasets.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemExec",
+      "SchemaName": "PoolDatasetQueryResultItemExec",
+      "Description": "Whether files in this dataset can be executed.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemKeyFormat",
+      "SchemaName": "PoolDatasetQueryResultItemKeyFormat",
+      "Description": "Format of the encryption key (hex/raw/passphrase). Only relevant for encrypted datasets.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemManagedby",
+      "SchemaName": "PoolDatasetQueryResultItemManagedby",
+      "Description": "Identifies which service or system manages this dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemOrigin",
+      "SchemaName": "PoolDatasetQueryResultItemOrigin",
+      "Description": "The snapshot from which this clone was created. Empty for non-clone datasets.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemPbkdf2iters",
+      "SchemaName": "PoolDatasetQueryResultItemPbkdf2iters",
+      "Description": "Number of PBKDF2 iterations used for passphrase-based encryption keys.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemQuota",
+      "SchemaName": "PoolDatasetQueryResultItemQuota",
+      "Description": "Maximum amount of disk space this dataset and its children can consume.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemQuotaCritical",
+      "SchemaName": "PoolDatasetQueryResultItemQuotaCritical",
+      "Description": "ZFS quota critical threshold property as a percentage.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemQuotaWarning",
+      "SchemaName": "PoolDatasetQueryResultItemQuotaWarning",
+      "Description": "ZFS quota warning threshold property as a percentage.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemReadonly",
+      "SchemaName": "PoolDatasetQueryResultItemReadonly",
+      "Description": "Whether the dataset is read-only.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemRecordsize",
+      "SchemaName": "PoolDatasetQueryResultItemRecordsize",
+      "Description": "The suggested block size for files in this filesystem dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemRefquota",
+      "SchemaName": "PoolDatasetQueryResultItemRefquota",
+      "Description": "Maximum amount of disk space this dataset itself can consume (excluding children).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemRefquotaCritical",
+      "SchemaName": "PoolDatasetQueryResultItemRefquotaCritical",
+      "Description": "ZFS reference quota critical threshold property as a percentage.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemRefquotaWarning",
+      "SchemaName": "PoolDatasetQueryResultItemRefquotaWarning",
+      "Description": "ZFS reference quota warning threshold property as a percentage.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemRefreservation",
+      "SchemaName": "PoolDatasetQueryResultItemRefreservation",
+      "Description": "Minimum amount of disk space guaranteed to be available to this dataset itself.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemReservation",
+      "SchemaName": "PoolDatasetQueryResultItemReservation",
+      "Description": "Minimum amount of disk space guaranteed to be available to this dataset and its children.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemSnapdev",
+      "SchemaName": "PoolDatasetQueryResultItemSnapdev",
+      "Description": "Controls visibility of volume snapshots under /dev/zvol/<pool>/.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemSnapdir",
+      "SchemaName": "PoolDatasetQueryResultItemSnapdir",
+      "Description": "Visibility of the .zfs/snapshot directory (visible/hidden).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemSparse",
+      "SchemaName": "PoolDatasetQueryResultItemSparse",
+      "Description": "For volumes, whether to use sparse (thin) provisioning.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemSpecialSmallBlockSize",
+      "SchemaName": "PoolDatasetQueryResultItemSpecialSmallBlockSize",
+      "Description": "Size threshold below which blocks are stored on special vdevs if configured.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemSync",
+      "SchemaName": "PoolDatasetQueryResultItemSync",
+      "Description": "Synchronous write behavior (standard/always/disabled).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemUsed",
+      "SchemaName": "PoolDatasetQueryResultItemUsed",
+      "Description": "Total amount of disk space consumed by this dataset and all its children.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemUsedbychildren",
+      "SchemaName": "PoolDatasetQueryResultItemUsedbychildren",
+      "Description": "Amount of disk space consumed by child datasets.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemUsedbydataset",
+      "SchemaName": "PoolDatasetQueryResultItemUsedbydataset",
+      "Description": "Amount of disk space consumed by this dataset itself, excluding children and snapshots.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemUsedbyrefreservation",
+      "SchemaName": "PoolDatasetQueryResultItemUsedbyrefreservation",
+      "Description": "Amount of disk space consumed by the refreservation of this dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemUsedbysnapshots",
+      "SchemaName": "PoolDatasetQueryResultItemUsedbysnapshots",
+      "Description": "Amount of disk space consumed by snapshots of this dataset.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemVolblocksize",
+      "SchemaName": "PoolDatasetQueryResultItemVolblocksize",
+      "Description": "For volumes, the block size used by the volume.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemVolsize",
+      "SchemaName": "PoolDatasetQueryResultItemVolsize",
+      "Description": "For volumes, the logical size of the volume.",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetQueryResultItemXattr",
+      "SchemaName": "PoolDatasetQueryResultItemXattr",
+      "Description": "Extended attributes storage method (on/off).",
+      "Fields": [
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "The ZFS property value parsed into the appropriate type (string, boolean, integer, etc.).",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Rawvalue",
+          "JsonName": "rawvalue",
+          "Description": "The raw string value of the ZFS property as stored in the pool. Can be null if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Indicates where the property value originates from.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SourceInfo",
+          "JsonName": "source_info",
+          "Description": "Additional metadata about the property source, such as the parent dataset for inherited values.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "The current effective value of the ZFS property as a string. Can be null if inherited or not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetRenameData",
+      "SchemaName": "PoolDatasetRenameData",
+      "Description": "The rename operation options including the new name and safety flags.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "This operation does not check whether the dataset is currently in use. Renaming an active dataset may disrupt     SMB shares, iSCSI targets, snapshots, replication, and other services.\n\nSet Force only if you understand and accept the risks.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "NewName",
+          "JsonName": "new_name",
+          "Description": "The new name for the dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to recursively rename child datasets.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSetQuota",
+      "SchemaName": "PoolDatasetSetQuota",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "The UID, GID, or name to which the quota applies. If `quota_type` is 'DATASET', then `id` must be either     `QUOTA` or `REFQUOTA`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "QuotaType",
+          "JsonName": "quota_type",
+          "Description": "The type of quota to apply to the dataset. There are three over-arching types of quotas for ZFS datasets:\n\n* **Dataset quotas and refquotas.** If a `DATASET` quota type is specified in this API call, then the API acts as     a wrapper for `pool.dataset.update`.\n* **User and group quotas.** These limit the amount of disk space consumed by files that are owned by the     specified users or groups. If the respective \"object quota\" type is specfied, then the quota limits the number     of objects that may be owned by the specified user or group.\n* **Project quotas.** These limit the amount of disk space consumed by files that are owned by the specified     project. *Project quotas are not yet implemented.*",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetSetQuotaQuotaType"
+          }
+        },
+        {
+          "Name": "QuotaValue",
+          "JsonName": "quota_value",
+          "Description": "The quota size in bytes. Setting a value of `0` removes the user or group quota.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUnlockAnswer",
+      "SchemaName": "PoolDatasetUnlockAnswer",
+      "Description": "Results of the unlock operation including successful and failed datasets.",
+      "Fields": [
+        {
+          "Name": "Failed",
+          "JsonName": "failed",
+          "Description": "Object containing datasets that failed to unlock and their respective error messages.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Unlocked",
+          "JsonName": "unlocked",
+          "Description": "Array of dataset names that were successfully unlocked.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUnlockOptions",
+      "SchemaName": "PoolDatasetUnlockOptions",
+      "Description": "Options for unlocking including force settings, recursion, and dataset-specific keys.",
+      "Fields": [
+        {
+          "Name": "Datasets",
+          "JsonName": "datasets",
+          "Description": "List of specific datasets with their individual unlock options.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolDatasetUnlockOptionsDataset"
+            }
+          }
+        },
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "In some cases it's possible that the provided key/passphrase is valid but the path where the dataset is     supposed to be mounted after being unlocked already exists and is not empty. In this case, unlock operation would     fail. This can be overridden by setting `datasets.X.force` boolean flag or by setting `force` flag. When any of     these flags are set, system will rename the existing directory/file path where the dataset should be mounted     resulting in successful unlock of the dataset.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KeyFile",
+          "JsonName": "key_file",
+          "Description": "Whether to use a key file instead of a passphrase for unlocking encrypted datasets.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to recursively unlock child datasets.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ToggleAttachments",
+          "JsonName": "toggle_attachments",
+          "Description": "Whether attachments should be put in action after unlocking the dataset(s). Toggling attachments can     theoretically lead to service interruption when daemons configurations are reloaded (this should not happen, and     if this happens it should be considered a bug). As TrueNAS does not have a state for resources that should be     unlocked but are still locked, disabling this option will put the system into an inconsistent state so it should     really never be disabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUnlockOptionsDataset",
+      "SchemaName": "PoolDatasetUnlockOptionsDataset",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force unlock even if the mount path already exists and is not empty.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "Raw hex-encoded encryption key for this dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The dataset name to unlock.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Passphrase",
+          "JsonName": "passphrase",
+          "Description": "Passphrase for this dataset if using passphrase-based encryption.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Apply the key or passphrase to all encrypted children.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUpdateData",
+      "SchemaName": "PoolDatasetUpdateData",
+      "Description": "The dataset properties to update.",
+      "Fields": [
+        {
+          "Name": "Aclmode",
+          "JsonName": "aclmode",
+          "Description": "How Access Control Lists are handled when chmod is used.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetAclmode"
+          }
+        },
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "The type of Access Control List system to use.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetAcltype"
+          }
+        },
+        {
+          "Name": "Atime",
+          "JsonName": "atime",
+          "Description": "Whether file access times are updated when files are accessed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetUpdateDataAtime"
+          }
+        },
+        {
+          "Name": "Checksum",
+          "JsonName": "checksum",
+          "Description": "Checksum algorithm to verify data integrity. Higher security algorithms like SHA256 provide better     protection but use more CPU.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetChecksum"
+          }
+        },
+        {
+          "Name": "Comments",
+          "JsonName": "comments",
+          "Description": "Comments or description for the dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Compression",
+          "JsonName": "compression",
+          "Description": "Compression algorithm to use for the dataset. Higher numbered variants provide better compression     but use more CPU. 'INHERIT' uses the parent dataset's setting.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetCompression"
+          }
+        },
+        {
+          "Name": "Copies",
+          "JsonName": "copies",
+          "Description": "Number of copies of data blocks to maintain for redundancy.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "CreateAncestors",
+          "JsonName": "create_ancestors",
+          "Description": "Whether to create any missing parent datasets.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Deduplication",
+          "JsonName": "deduplication",
+          "Description": "Deduplication setting. 'ON' enables dedup, 'VERIFY' enables with checksum verification, 'OFF' disables.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetDeduplication"
+          }
+        },
+        {
+          "Name": "Exec",
+          "JsonName": "exec",
+          "Description": "Whether files in this dataset can be executed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetUpdateDataExec"
+          }
+        },
+        {
+          "Name": "ForceSize",
+          "JsonName": "force_size",
+          "Description": "Force creation even if the size is not optimal.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Managedby",
+          "JsonName": "managedby",
+          "Description": "Identifies which service or system manages this dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Quota",
+          "JsonName": "quota",
+          "Description": "Maximum disk space this dataset and its children can consume in bytes.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "QuotaCritical",
+          "JsonName": "quota_critical",
+          "Description": "Percentage of dataset quota at which to issue a critical alert. 0-100 or 'INHERIT'.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "QuotaWarning",
+          "JsonName": "quota_warning",
+          "Description": "Percentage of dataset quota at which to issue a warning. 0-100 or 'INHERIT'.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Readonly",
+          "JsonName": "readonly",
+          "Description": "Whether the dataset is read-only.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetUpdateDataReadonly"
+          }
+        },
+        {
+          "Name": "Recordsize",
+          "JsonName": "recordsize",
+          "Description": "The suggested block size for files in this filesystem dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Refquota",
+          "JsonName": "refquota",
+          "Description": "Maximum disk space this dataset itself can consume in bytes.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "RefquotaCritical",
+          "JsonName": "refquota_critical",
+          "Description": "Percentage of reference quota at which to issue a critical alert. 0-100 or 'INHERIT'.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "RefquotaWarning",
+          "JsonName": "refquota_warning",
+          "Description": "Percentage of reference quota at which to issue a warning. 0-100 or 'INHERIT'.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Refreservation",
+          "JsonName": "refreservation",
+          "Description": "Minimum disk space guaranteed to this dataset itself in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Reservation",
+          "JsonName": "reservation",
+          "Description": "Minimum disk space guaranteed to this dataset and its children in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Snapdev",
+          "JsonName": "snapdev",
+          "Description": "Controls visibility of volume snapshots under /dev/zvol/.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetSnapdev"
+          }
+        },
+        {
+          "Name": "Snapdir",
+          "JsonName": "snapdir",
+          "Description": "Controls visibility of the `.zfs/snapshot` directory. 'DISABLED' hides snapshots, 'VISIBLE' shows them,     'HIDDEN' makes them accessible but not listed.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetSnapdir"
+          }
+        },
+        {
+          "Name": "SpecialSmallBlockSize",
+          "JsonName": "special_small_block_size",
+          "Description": "Size threshold below which blocks are stored on special vdevs.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Sync",
+          "JsonName": "sync",
+          "Description": "Synchronous write behavior for the dataset.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolDatasetSync"
+          }
+        },
+        {
+          "Name": "UserProperties",
+          "JsonName": "user_properties",
+          "Description": "Custom user-defined properties to set on the dataset.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolDatasetCreateUserProperty"
+            }
+          }
+        },
+        {
+          "Name": "UserPropertiesUpdate",
+          "JsonName": "user_properties_update",
+          "Description": "Array of user property updates to apply to the dataset.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "PoolDatasetUpdateUserProperty"
+            }
+          }
+        },
+        {
+          "Name": "Volsize",
+          "JsonName": "volsize",
+          "Description": "The volume size in bytes; supposed to be a multiple of the block size.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUpdateUserProperty",
+      "SchemaName": "PoolDatasetUpdateUserProperty",
+      "Fields": [
+        {
+          "Name": "Key",
+          "JsonName": "key",
+          "Description": "User property key in namespace:property format.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remove",
+          "JsonName": "remove",
+          "Description": "Whether to remove this user property from the dataset.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "New value for the user property. Not required if removing the property.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "PoolDatasetAclmode",
+      "SchemaName": "PoolDatasetAclmode",
+      "Description": "How Access Control Lists are handled when chmod is used.",
+      "Values": [
+        {
+          "Name": "PoolDatasetAclmodePASSTHROUGH",
+          "Value": "PASSTHROUGH"
+        },
+        {
+          "Name": "PoolDatasetAclmodeRESTRICTED",
+          "Value": "RESTRICTED"
+        },
+        {
+          "Name": "PoolDatasetAclmodeDISCARD",
+          "Value": "DISCARD"
+        },
+        {
+          "Name": "PoolDatasetAclmodeINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetAcltype",
+      "SchemaName": "PoolDatasetAcltype",
+      "Description": "The type of Access Control List system to use.",
+      "Values": [
+        {
+          "Name": "PoolDatasetAcltypeOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetAcltypeNFSV4",
+          "Value": "NFSV4"
+        },
+        {
+          "Name": "PoolDatasetAcltypePOSIX",
+          "Value": "POSIX"
+        },
+        {
+          "Name": "PoolDatasetAcltypeINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksum",
+      "SchemaName": "PoolDatasetChecksum",
+      "Description": "Checksum algorithm to verify data integrity. Higher security algorithms like SHA256 provide better     protection but use more CPU.",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolDatasetChecksumOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetChecksumFLETCHER2",
+          "Value": "FLETCHER2"
+        },
+        {
+          "Name": "PoolDatasetChecksumFLETCHER4",
+          "Value": "FLETCHER4"
+        },
+        {
+          "Name": "PoolDatasetChecksumSHA256",
+          "Value": "SHA256"
+        },
+        {
+          "Name": "PoolDatasetChecksumSHA512",
+          "Value": "SHA512"
+        },
+        {
+          "Name": "PoolDatasetChecksumSKEIN",
+          "Value": "SKEIN"
+        },
+        {
+          "Name": "PoolDatasetChecksumEDONR",
+          "Value": "EDONR"
+        },
+        {
+          "Name": "PoolDatasetChecksumBLAKE3",
+          "Value": "BLAKE3"
+        },
+        {
+          "Name": "PoolDatasetChecksumINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerBLAKE3",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerBLAKE3",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerBLAKE3BLAKE3",
+          "Value": "BLAKE3"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerEDONR",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerEDONR",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerEDONREDONR",
+          "Value": "EDONR"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerFLETCHER2",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerFLETCHER2",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerFLETCHER2FLETCHER2",
+          "Value": "FLETCHER2"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerFLETCHER4",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerFLETCHER4",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerFLETCHER4FLETCHER4",
+          "Value": "FLETCHER4"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerON",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerON",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerONON",
+          "Value": "ON"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerSHA256",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerSHA256",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerSHA256SHA256",
+          "Value": "SHA256"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerSHA512",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerSHA512",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerSHA512SHA512",
+          "Value": "SHA512"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetChecksumChoicesAnswerSKEIN",
+      "SchemaName": "PoolDatasetChecksumChoicesAnswerSKEIN",
+      "Values": [
+        {
+          "Name": "PoolDatasetChecksumChoicesAnswerSKEINSKEIN",
+          "Value": "SKEIN"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetCompression",
+      "SchemaName": "PoolDatasetCompression",
+      "Description": "Compression algorithm to use for the dataset. Higher numbered variants provide better compression     but use more CPU. 'INHERIT' uses the parent dataset's setting.",
+      "Values": [
+        {
+          "Name": "PoolDatasetCompressionON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolDatasetCompressionOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetCompressionLZ4",
+          "Value": "LZ4"
+        },
+        {
+          "Name": "PoolDatasetCompressionGZIP",
+          "Value": "GZIP"
+        },
+        {
+          "Name": "PoolDatasetCompressionGZIP1",
+          "Value": "GZIP-1"
+        },
+        {
+          "Name": "PoolDatasetCompressionGZIP9",
+          "Value": "GZIP-9"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD",
+          "Value": "ZSTD"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST",
+          "Value": "ZSTD-FAST"
+        },
+        {
+          "Name": "PoolDatasetCompressionZLE",
+          "Value": "ZLE"
+        },
+        {
+          "Name": "PoolDatasetCompressionLZJB",
+          "Value": "LZJB"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD1",
+          "Value": "ZSTD-1"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD2",
+          "Value": "ZSTD-2"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD3",
+          "Value": "ZSTD-3"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD4",
+          "Value": "ZSTD-4"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD5",
+          "Value": "ZSTD-5"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD6",
+          "Value": "ZSTD-6"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD7",
+          "Value": "ZSTD-7"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD8",
+          "Value": "ZSTD-8"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD9",
+          "Value": "ZSTD-9"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD10",
+          "Value": "ZSTD-10"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD11",
+          "Value": "ZSTD-11"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD12",
+          "Value": "ZSTD-12"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD13",
+          "Value": "ZSTD-13"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD14",
+          "Value": "ZSTD-14"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD15",
+          "Value": "ZSTD-15"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD16",
+          "Value": "ZSTD-16"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD17",
+          "Value": "ZSTD-17"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD18",
+          "Value": "ZSTD-18"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTD19",
+          "Value": "ZSTD-19"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST1",
+          "Value": "ZSTD-FAST-1"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST2",
+          "Value": "ZSTD-FAST-2"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST3",
+          "Value": "ZSTD-FAST-3"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST4",
+          "Value": "ZSTD-FAST-4"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST5",
+          "Value": "ZSTD-FAST-5"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST6",
+          "Value": "ZSTD-FAST-6"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST7",
+          "Value": "ZSTD-FAST-7"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST8",
+          "Value": "ZSTD-FAST-8"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST9",
+          "Value": "ZSTD-FAST-9"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST10",
+          "Value": "ZSTD-FAST-10"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST20",
+          "Value": "ZSTD-FAST-20"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST30",
+          "Value": "ZSTD-FAST-30"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST40",
+          "Value": "ZSTD-FAST-40"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST50",
+          "Value": "ZSTD-FAST-50"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST60",
+          "Value": "ZSTD-FAST-60"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST70",
+          "Value": "ZSTD-FAST-70"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST80",
+          "Value": "ZSTD-FAST-80"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST90",
+          "Value": "ZSTD-FAST-90"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST100",
+          "Value": "ZSTD-FAST-100"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST500",
+          "Value": "ZSTD-FAST-500"
+        },
+        {
+          "Name": "PoolDatasetCompressionZSTDFAST1000",
+          "Value": "ZSTD-FAST-1000"
+        },
+        {
+          "Name": "PoolDatasetCompressionINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetDeduplication",
+      "SchemaName": "PoolDatasetDeduplication",
+      "Description": "Deduplication setting. 'ON' enables dedup, 'VERIFY' enables with checksum verification, 'OFF' disables.",
+      "Values": [
+        {
+          "Name": "PoolDatasetDeduplicationON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolDatasetDeduplicationVERIFY",
+          "Value": "VERIFY"
+        },
+        {
+          "Name": "PoolDatasetDeduplicationOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetDeduplicationINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128CCM",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128CCM",
+      "Values": [
+        {
+          "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128CCMAES128CCM",
+          "Value": "AES-128-CCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128GCM",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128GCM",
+      "Values": [
+        {
+          "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES128GCMAES128GCM",
+          "Value": "AES-128-GCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192CCM",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192CCM",
+      "Values": [
+        {
+          "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192CCMAES192CCM",
+          "Value": "AES-192-CCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192GCM",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192GCM",
+      "Values": [
+        {
+          "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES192GCMAES192GCM",
+          "Value": "AES-192-GCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256CCM",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256CCM",
+      "Values": [
+        {
+          "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256CCMAES256CCM",
+          "Value": "AES-256-CCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256GCM",
+      "SchemaName": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256GCM",
+      "Values": [
+        {
+          "Name": "PoolDatasetEncryptionAlgorithmChoicesAnswerAES256GCMAES256GCM",
+          "Value": "AES-256-GCM"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetGetQuotaQuotaType",
+      "SchemaName": "PoolDatasetGetQuotaQuotaType",
+      "Description": "The type of quotas to retrieve.",
+      "Values": [
+        {
+          "Name": "PoolDatasetGetQuotaQuotaTypeUSER",
+          "Value": "USER"
+        },
+        {
+          "Name": "PoolDatasetGetQuotaQuotaTypeGROUP",
+          "Value": "GROUP"
+        },
+        {
+          "Name": "PoolDatasetGetQuotaQuotaTypeDATASET",
+          "Value": "DATASET"
+        },
+        {
+          "Name": "PoolDatasetGetQuotaQuotaTypePROJECT",
+          "Value": "PROJECT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSetQuotaQuotaType",
+      "SchemaName": "PoolDatasetSetQuotaQuotaType",
+      "Description": "The type of quota to apply to the dataset. There are three over-arching types of quotas for ZFS datasets:\n\n* **Dataset quotas and refquotas.** If a `DATASET` quota type is specified in this API call, then the API acts as     a wrapper for `pool.dataset.update`.\n* **User and group quotas.** These limit the amount of disk space consumed by files that are owned by the     specified users or groups. If the respective \"object quota\" type is specfied, then the quota limits the number     of objects that may be owned by the specified user or group.\n* **Project quotas.** These limit the amount of disk space consumed by files that are owned by the specified     project. *Project quotas are not yet implemented.*",
+      "Values": [
+        {
+          "Name": "PoolDatasetSetQuotaQuotaTypeDATASET",
+          "Value": "DATASET"
+        },
+        {
+          "Name": "PoolDatasetSetQuotaQuotaTypeUSER",
+          "Value": "USER"
+        },
+        {
+          "Name": "PoolDatasetSetQuotaQuotaTypeUSEROBJ",
+          "Value": "USEROBJ"
+        },
+        {
+          "Name": "PoolDatasetSetQuotaQuotaTypeGROUP",
+          "Value": "GROUP"
+        },
+        {
+          "Name": "PoolDatasetSetQuotaQuotaTypeGROUPOBJ",
+          "Value": "GROUPOBJ"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSnapdev",
+      "SchemaName": "PoolDatasetSnapdev",
+      "Description": "Controls visibility of volume snapshots under /dev/zvol/.",
+      "Values": [
+        {
+          "Name": "PoolDatasetSnapdevHIDDEN",
+          "Value": "HIDDEN"
+        },
+        {
+          "Name": "PoolDatasetSnapdevVISIBLE",
+          "Value": "VISIBLE"
+        },
+        {
+          "Name": "PoolDatasetSnapdevINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSnapdir",
+      "SchemaName": "PoolDatasetSnapdir",
+      "Description": "Controls visibility of the `.zfs/snapshot` directory. 'DISABLED' hides snapshots, 'VISIBLE' shows them,     'HIDDEN' makes them accessible but not listed.",
+      "Values": [
+        {
+          "Name": "PoolDatasetSnapdirDISABLED",
+          "Value": "DISABLED"
+        },
+        {
+          "Name": "PoolDatasetSnapdirVISIBLE",
+          "Value": "VISIBLE"
+        },
+        {
+          "Name": "PoolDatasetSnapdirHIDDEN",
+          "Value": "HIDDEN"
+        },
+        {
+          "Name": "PoolDatasetSnapdirINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetSync",
+      "SchemaName": "PoolDatasetSync",
+      "Description": "Synchronous write behavior for the dataset.",
+      "Values": [
+        {
+          "Name": "PoolDatasetSyncSTANDARD",
+          "Value": "STANDARD"
+        },
+        {
+          "Name": "PoolDatasetSyncALWAYS",
+          "Value": "ALWAYS"
+        },
+        {
+          "Name": "PoolDatasetSyncDISABLED",
+          "Value": "DISABLED"
+        },
+        {
+          "Name": "PoolDatasetSyncINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUpdateDataAtime",
+      "SchemaName": "PoolDatasetUpdateDataAtime",
+      "Description": "Whether file access times are updated when files are accessed.",
+      "Values": [
+        {
+          "Name": "PoolDatasetUpdateDataAtimeON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolDatasetUpdateDataAtimeOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetUpdateDataAtimeINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUpdateDataExec",
+      "SchemaName": "PoolDatasetUpdateDataExec",
+      "Description": "Whether files in this dataset can be executed.",
+      "Values": [
+        {
+          "Name": "PoolDatasetUpdateDataExecON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolDatasetUpdateDataExecOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetUpdateDataExecINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    },
+    {
+      "Name": "PoolDatasetUpdateDataReadonly",
+      "SchemaName": "PoolDatasetUpdateDataReadonly",
+      "Description": "Whether the dataset is read-only.",
+      "Values": [
+        {
+          "Name": "PoolDatasetUpdateDataReadonlyON",
+          "Value": "ON"
+        },
+        {
+          "Name": "PoolDatasetUpdateDataReadonlyOFF",
+          "Value": "OFF"
+        },
+        {
+          "Name": "PoolDatasetUpdateDataReadonlyINHERIT",
+          "Value": "INHERIT"
+        }
+      ]
+    }
+  ]
+}

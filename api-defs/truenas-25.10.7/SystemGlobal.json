@@ -1,0 +1,28 @@
+{
+  "Name": "SystemGlobal",
+  "Tag": "system.global",
+  "Operations": [
+    {
+      "Name": "SystemGlobalId",
+      "OperationId": "system.global.id",
+      "Method": "CALL",
+      "Path": "system.global.id",
+      "Description": "Retrieve a 128 bit hexadecimal UUID value unique for each TrueNAS system.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.global.id",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ]
+}

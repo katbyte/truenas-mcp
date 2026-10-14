@@ -1,0 +1,206 @@
+{
+  "Name": "PoolResilver",
+  "Tag": "pool.resilver",
+  "Operations": [
+    {
+      "Name": "PoolResilverConfig",
+      "OperationId": "pool.resilver.config",
+      "Method": "CALL",
+      "Path": "pool.resilver.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolResilverConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.resilver.config",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "PoolResilverUpdate",
+      "OperationId": "pool.resilver.update",
+      "Method": "CALL",
+      "Path": "pool.resilver.update",
+      "Description": "Configure Pool Resilver Priority.\n\nIf `begin` time is greater than `end` time it means it will rollover the day, e.g.\nbegin = \"19:00\", end = \"05:00\" will increase pool resilver priority from 19:00 of one day\nuntil 05:00 of the next day.\n\n`weekday` follows crontab(5) values 0-7 (0 or 7 is Sun).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolResilverUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.resilver.update",
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolResilverUpdateData"
+          },
+          "Required": true,
+          "Description": "The resilver schedule configuration to update."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "PoolResilverConfigAnswer",
+      "SchemaName": "PoolResilverConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Begin",
+          "JsonName": "begin",
+          "Description": "Time when the resilver operations window begins (24-hour format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the resilver schedule is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "End",
+          "JsonName": "end",
+          "Description": "Time when the resilver operations window ends (24-hour format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the resilver schedule entry.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Weekday",
+          "JsonName": "weekday",
+          "Description": "Array of weekdays when resilver operations are allowed (1=Monday through 7=Sunday).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolResilverUpdateAnswer",
+      "SchemaName": "PoolResilverUpdateAnswer",
+      "Description": "The updated resilver schedule configuration.",
+      "Fields": [
+        {
+          "Name": "Begin",
+          "JsonName": "begin",
+          "Description": "Time when the resilver operations window begins (24-hour format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the resilver schedule is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "End",
+          "JsonName": "end",
+          "Description": "Time when the resilver operations window ends (24-hour format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the resilver schedule entry.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Weekday",
+          "JsonName": "weekday",
+          "Description": "Array of weekdays when resilver operations are allowed (1=Monday through 7=Sunday).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolResilverUpdateData",
+      "SchemaName": "PoolResilverUpdateData",
+      "Description": "The resilver schedule configuration to update.",
+      "Fields": [
+        {
+          "Name": "Begin",
+          "JsonName": "begin",
+          "Description": "Time when the resilver operations window begins (24-hour format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the resilver schedule is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "End",
+          "JsonName": "end",
+          "Description": "Time when the resilver operations window ends (24-hour format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Weekday",
+          "JsonName": "weekday",
+          "Description": "Array of weekdays when resilver operations are allowed (1=Monday through 7=Sunday).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

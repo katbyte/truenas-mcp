@@ -1,0 +1,2501 @@
+{
+  "Name": "VirtInstance",
+  "Tag": "virt.instance",
+  "Operations": [
+    {
+      "Name": "VirtInstanceCreate",
+      "OperationId": "virt.instance.create",
+      "Method": "CALL",
+      "Path": "virt.instance.create",
+      "Description": "Create a new virtualized instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtInstanceCreateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.create",
+        "Job": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_instance_create",
+          "Argument": "virtInstanceCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceCreate"
+          },
+          "Required": true,
+          "Description": "VirtInstanceCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDelete",
+      "OperationId": "virt.instance.delete",
+      "Method": "CALL",
+      "Path": "virt.instance.delete",
+      "Description": "Delete an instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.delete",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to delete."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceAdd",
+      "OperationId": "virt.instance.device_add",
+      "Method": "CALL",
+      "Path": "virt.instance.device_add",
+      "Description": "Add a device to an instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.device_add",
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to add device to."
+        },
+        {
+          "Name": "device",
+          "Argument": "device",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceDeviceAddDevice"
+          },
+          "Required": true,
+          "Description": "Device configuration to add to the instance."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceDelete",
+      "OperationId": "virt.instance.device_delete",
+      "Method": "CALL",
+      "Path": "virt.instance.device_delete",
+      "Description": "Delete a device from an instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.device_delete",
+        "Roles": [
+          "VIRT_INSTANCE_DELETE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to remove device from."
+        },
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the device to remove."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceList",
+      "OperationId": "virt.instance.device_list",
+      "Method": "CALL",
+      "Path": "virt.instance.device_list",
+      "Description": "List all devices associated to an instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceDeviceListAnswer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.device_list",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to list devices for."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceUpdate",
+      "OperationId": "virt.instance.device_update",
+      "Method": "CALL",
+      "Path": "virt.instance.device_update",
+      "Description": "Update a device in an instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.device_update",
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to update device for."
+        },
+        {
+          "Name": "device",
+          "Argument": "device",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceDeviceUpdateDevice"
+          },
+          "Required": true,
+          "Description": "Updated device configuration."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceGetInstance",
+      "OperationId": "virt.instance.get_instance",
+      "Method": "CALL",
+      "Path": "virt.instance.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtInstanceGetInstanceAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceImageChoices",
+      "OperationId": "virt.instance.image_choices",
+      "Method": "CALL",
+      "Path": "virt.instance.image_choices",
+      "Description": "Provide choices for instance image from a remote repository.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ImageChoiceItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.image_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_instances_image_choices",
+          "Argument": "virtInstancesImageChoices",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstancesImageChoices"
+          },
+          "Description": "Options for filtering available images."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceQuery",
+      "OperationId": "virt.instance.query",
+      "Method": "CALL",
+      "Path": "virt.instance.query",
+      "Description": "Query all instances with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceQueryCount",
+      "OperationId": "virt.instance.query#count",
+      "Method": "CALL",
+      "Path": "virt.instance.query#count",
+      "Description": "Query all instances with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceQueryOne",
+      "OperationId": "virt.instance.query#get",
+      "Method": "CALL",
+      "Path": "virt.instance.query#get",
+      "Description": "Query all instances with `query-filters` and `query-options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtInstanceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_INSTANCE_READ",
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceRestart",
+      "OperationId": "virt.instance.restart",
+      "Method": "CALL",
+      "Path": "virt.instance.restart",
+      "Description": "Restart an instance.\n\nTimeout is how long it should wait for the instance to shutdown cleanly.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.restart",
+        "Job": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to stop."
+        },
+        {
+          "Name": "stop_args",
+          "Argument": "stopArgs",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StopArgs"
+          },
+          "Description": "Arguments controlling how the instance is stopped."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceSetBootableDisk",
+      "OperationId": "virt.instance.set_bootable_disk",
+      "Method": "CALL",
+      "Path": "virt.instance.set_bootable_disk",
+      "Description": "Specify `disk` to boot `id_` virt instance OS from.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.set_bootable_disk",
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Identifier of the virtual instance to configure."
+        },
+        {
+          "Name": "disk",
+          "Argument": "disk",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name or identifier of the disk device to set as bootable."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceStart",
+      "OperationId": "virt.instance.start",
+      "Method": "CALL",
+      "Path": "virt.instance.start",
+      "Description": "Start an instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.start",
+        "Job": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to start."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceStop",
+      "OperationId": "virt.instance.stop",
+      "Method": "CALL",
+      "Path": "virt.instance.stop",
+      "Description": "Stop an instance.\n\nTimeout is how long it should wait for the instance to shutdown cleanly.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.stop",
+        "Job": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to stop."
+        },
+        {
+          "Name": "stop_args",
+          "Argument": "stopArgs",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "StopArgs"
+          },
+          "Description": "Arguments controlling how the instance is stopped."
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceUpdate",
+      "OperationId": "virt.instance.update",
+      "Method": "CALL",
+      "Path": "virt.instance.update",
+      "Description": "Update instance.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtInstanceUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.instance.update",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "VIRT_INSTANCE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "ID of the virtual instance to update."
+        },
+        {
+          "Name": "virt_instance_update",
+          "Argument": "virtInstanceUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration data for the virtual instance."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IdmapUserNsEntry",
+      "SchemaName": "IdmapUserNsEntry",
+      "Fields": [
+        {
+          "Name": "Hostid",
+          "JsonName": "hostid",
+          "Description": "Starting host ID for the mapping range.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Maprange",
+          "JsonName": "maprange",
+          "Description": "Number of IDs to map in this range.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Nsid",
+          "JsonName": "nsid",
+          "Description": "Starting namespace ID for the mapping range.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Image",
+      "SchemaName": "Image",
+      "Description": "Image information used to create this instance.",
+      "Fields": [
+        {
+          "Name": "Architecture",
+          "JsonName": "architecture",
+          "Description": "Hardware architecture of the image (e.g., amd64, arm64).",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the image.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Os",
+          "JsonName": "os",
+          "Description": "Operating system family of the image.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Release",
+          "JsonName": "release",
+          "Description": "Version or release name of the operating system.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Secureboot",
+          "JsonName": "secureboot",
+          "Description": "Whether the image supports UEFI Secure Boot.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Unique serial identifier for the image.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of image (container, virtual-machine, etc.).",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Variant",
+          "JsonName": "variant",
+          "Description": "Image variant (default, cloud, minimal, etc.).",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ImageChoiceItem",
+      "SchemaName": "ImageChoiceItem",
+      "Fields": [
+        {
+          "Name": "Archs",
+          "JsonName": "archs",
+          "Description": "Array of supported hardware architectures.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "InstanceTypes",
+          "JsonName": "instance_types",
+          "Description": "Array of instance types this image supports.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "ImageChoiceItemInstanceTypes"
+            }
+          }
+        },
+        {
+          "Name": "Label",
+          "JsonName": "label",
+          "Description": "Human-readable label for the image.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Os",
+          "JsonName": "os",
+          "Description": "Operating system family of the image.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Release",
+          "JsonName": "release",
+          "Description": "Version or release name of the operating system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Secureboot",
+          "JsonName": "secureboot",
+          "Description": "Whether the image supports UEFI Secure Boot or `null` if not applicable.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Variant",
+          "JsonName": "variant",
+          "Description": "Image variant (default, cloud, minimal, etc.).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "StopArgs",
+      "SchemaName": "StopArgs",
+      "Description": "Arguments controlling how the instance is stopped.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Whether to force stop the instance immediately without graceful shutdown.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Timeout in seconds to wait for graceful shutdown (-1 for no timeout when `force = true`).",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserNsIdmap",
+      "SchemaName": "UserNsIdmap",
+      "Fields": [
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Group ID mapping configuration for user namespace isolation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IdmapUserNsEntry"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "User ID mapping configuration for user namespace isolation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IdmapUserNsEntry"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceAlias",
+      "SchemaName": "VirtInstanceAlias",
+      "Fields": [
+        {
+          "Name": "Address",
+          "JsonName": "address",
+          "Description": "IP address for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Netmask",
+          "JsonName": "netmask",
+          "Description": "Network mask in CIDR notation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of IP address (INET for IPv4, INET6 for IPv6).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceAliasType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceCreate",
+      "SchemaName": "VirtInstanceCreate",
+      "Description": "VirtInstanceCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether the instance should automatically start when the host boots.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Cpu",
+          "JsonName": "cpu",
+          "Description": "CPU allocation specification or `null` for automatic allocation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Devices",
+          "JsonName": "devices",
+          "Description": "Array of devices to attach to the instance.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VirtInstanceCreateDevices"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Environment",
+          "JsonName": "environment",
+          "Description": "Environment variables to set inside the instance.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Image identifier to use for creating the instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "InstanceType",
+          "JsonName": "instance_type",
+          "Description": "Type of instance to create.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceCreateInstanceType"
+          }
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Memory allocation in bytes or `null` for automatic allocation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name for the new virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PrivilegedMode",
+          "JsonName": "privileged_mode",
+          "Description": "This is only valid for containers and should only be set when container instance which is to be deployed is to     run in a privileged mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remote",
+          "JsonName": "remote",
+          "Description": "Remote image source to use.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtRemote"
+          }
+        },
+        {
+          "Name": "RootDiskIoBus",
+          "JsonName": "root_disk_io_bus",
+          "Description": "I/O bus type for the root disk (defaults to NVME for best performance).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceCreateRootDiskIoBus"
+          }
+        },
+        {
+          "Name": "RootDiskSize",
+          "JsonName": "root_disk_size",
+          "Description": "This can be specified when creating VMs so the root device's size can be configured. Root device for VMs     is a sparse zvol and the field specifies space in GBs and defaults to 10 GBs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SourceType",
+          "JsonName": "source_type",
+          "Description": "Source type for instance creation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceCreateSourceType"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool under which to allocate root filesystem. Must be one of the pools     listed in virt.global.config output under \"storage_pools\". If None (default) then the pool     specified in the global configuration will be used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceCreateAnswer",
+      "SchemaName": "VirtInstanceCreateAnswer",
+      "Description": "The created virtual instance configuration.",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "Array of IP aliases configured for the instance.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VirtInstanceAlias"
+            }
+          }
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether the instance automatically starts when the host boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Cpu",
+          "JsonName": "cpu",
+          "Description": "CPU configuration string or `null` for default allocation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Environment",
+          "JsonName": "environment",
+          "Description": "Environment variables to set inside the instance.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Image information used to create this instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Image"
+          }
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Memory allocation in bytes or `null` for default allocation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PrivilegedMode",
+          "JsonName": "privileged_mode",
+          "Description": "Whether the container runs in privileged mode or `null` for VMs.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Raw",
+          "JsonName": "raw",
+          "Description": "Raw low-level configuration options (advanced use only).",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[map[string]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RootDiskIoBus",
+          "JsonName": "root_disk_io_bus",
+          "Description": "I/O bus type for the root disk or `null` for default.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceRootDiskIoBus"
+          }
+        },
+        {
+          "Name": "RootDiskSize",
+          "JsonName": "root_disk_size",
+          "Description": "Size of the root disk in GB or `null` for default size.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureBoot",
+          "JsonName": "secure_boot",
+          "Description": "Whether UEFI Secure Boot is enabled (VMs only) or `null` for containers.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current operational status of the virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceStatus"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool in which the root of the instance is located.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceType"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "User namespace ID mapping configuration for privilege isolation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserNsIdmap"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncEnabled",
+          "JsonName": "vnc_enabled",
+          "Description": "Whether VNC remote access is enabled for the instance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VncPassword",
+          "JsonName": "vnc_password",
+          "Description": "Password for VNC access or `null` if no password is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncPort",
+          "JsonName": "vnc_port",
+          "Description": "TCP port number for VNC connections or `null` if VNC is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceCreateDevices",
+      "Union": [
+        "Disk",
+        "GPU2",
+        "Proxy",
+        "TPM",
+        "USB",
+        "NIC",
+        "PCI",
+        "CDROM"
+      ],
+      "Discriminator": "dev_type",
+      "Members": [
+        {
+          "Model": "Disk",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "GPU2",
+          "Kinds": [
+            "GPU"
+          ]
+        },
+        {
+          "Model": "Proxy",
+          "Kinds": [
+            "PROXY"
+          ]
+        },
+        {
+          "Model": "TPM",
+          "Kinds": [
+            "TPM"
+          ]
+        },
+        {
+          "Model": "USB",
+          "Kinds": [
+            "USB"
+          ]
+        },
+        {
+          "Model": "NIC",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "PCI",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "CDROM",
+          "Kinds": [
+            "CDROM"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceAddDevice",
+      "Description": "Device configuration to add to the instance.",
+      "Union": [
+        "Disk",
+        "GPU2",
+        "Proxy",
+        "TPM",
+        "USB",
+        "NIC",
+        "PCI",
+        "CDROM"
+      ],
+      "Discriminator": "dev_type",
+      "Members": [
+        {
+          "Model": "Disk",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "GPU2",
+          "Kinds": [
+            "GPU"
+          ]
+        },
+        {
+          "Model": "Proxy",
+          "Kinds": [
+            "PROXY"
+          ]
+        },
+        {
+          "Model": "TPM",
+          "Kinds": [
+            "TPM"
+          ]
+        },
+        {
+          "Model": "USB",
+          "Kinds": [
+            "USB"
+          ]
+        },
+        {
+          "Model": "NIC",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "PCI",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "CDROM",
+          "Kinds": [
+            "CDROM"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceListAnswer",
+      "Union": [
+        "Disk",
+        "GPU2",
+        "Proxy",
+        "TPM",
+        "USB",
+        "NIC",
+        "PCI",
+        "CDROM"
+      ],
+      "Discriminator": "dev_type",
+      "Members": [
+        {
+          "Model": "Disk",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "GPU2",
+          "Kinds": [
+            "GPU"
+          ]
+        },
+        {
+          "Model": "Proxy",
+          "Kinds": [
+            "PROXY"
+          ]
+        },
+        {
+          "Model": "TPM",
+          "Kinds": [
+            "TPM"
+          ]
+        },
+        {
+          "Model": "USB",
+          "Kinds": [
+            "USB"
+          ]
+        },
+        {
+          "Model": "NIC",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "PCI",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "CDROM",
+          "Kinds": [
+            "CDROM"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceDeviceUpdateDevice",
+      "Description": "Updated device configuration.",
+      "Union": [
+        "Disk",
+        "GPU2",
+        "Proxy",
+        "TPM",
+        "USB",
+        "NIC",
+        "PCI",
+        "CDROM"
+      ],
+      "Discriminator": "dev_type",
+      "Members": [
+        {
+          "Model": "Disk",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "GPU2",
+          "Kinds": [
+            "GPU"
+          ]
+        },
+        {
+          "Model": "Proxy",
+          "Kinds": [
+            "PROXY"
+          ]
+        },
+        {
+          "Model": "TPM",
+          "Kinds": [
+            "TPM"
+          ]
+        },
+        {
+          "Model": "USB",
+          "Kinds": [
+            "USB"
+          ]
+        },
+        {
+          "Model": "NIC",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "PCI",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "CDROM",
+          "Kinds": [
+            "CDROM"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceGetInstanceAnswer",
+      "SchemaName": "VirtInstanceGetInstanceAnswer",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "Array of IP aliases configured for the instance.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VirtInstanceAlias"
+            }
+          }
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether the instance automatically starts when the host boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Cpu",
+          "JsonName": "cpu",
+          "Description": "CPU configuration string or `null` for default allocation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Environment",
+          "JsonName": "environment",
+          "Description": "Environment variables to set inside the instance.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Image information used to create this instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Image"
+          }
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Memory allocation in bytes or `null` for default allocation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PrivilegedMode",
+          "JsonName": "privileged_mode",
+          "Description": "Whether the container runs in privileged mode or `null` for VMs.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Raw",
+          "JsonName": "raw",
+          "Description": "Raw low-level configuration options (advanced use only).",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[map[string]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RootDiskIoBus",
+          "JsonName": "root_disk_io_bus",
+          "Description": "I/O bus type for the root disk or `null` for default.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceRootDiskIoBus"
+          }
+        },
+        {
+          "Name": "RootDiskSize",
+          "JsonName": "root_disk_size",
+          "Description": "Size of the root disk in GB or `null` for default size.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureBoot",
+          "JsonName": "secure_boot",
+          "Description": "Whether UEFI Secure Boot is enabled (VMs only) or `null` for containers.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current operational status of the virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceStatus"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool in which the root of the instance is located.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceType"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "User namespace ID mapping configuration for privilege isolation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserNsIdmap"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncEnabled",
+          "JsonName": "vnc_enabled",
+          "Description": "Whether VNC remote access is enabled for the instance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VncPassword",
+          "JsonName": "vnc_password",
+          "Description": "Password for VNC access or `null` if no password is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncPort",
+          "JsonName": "vnc_port",
+          "Description": "TCP port number for VNC connections or `null` if VNC is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceGetInstanceOptions",
+      "SchemaName": "VirtInstanceGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceQueryOptions",
+      "SchemaName": "VirtInstanceQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceQueryResultItem",
+      "SchemaName": "VirtInstanceQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "Array of IP aliases configured for the instance.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VirtInstanceAlias"
+            }
+          }
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether the instance automatically starts when the host boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Cpu",
+          "JsonName": "cpu",
+          "Description": "CPU configuration string or `null` for default allocation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Environment",
+          "JsonName": "environment",
+          "Description": "Environment variables to set inside the instance.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Image information used to create this instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Image"
+          }
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Memory allocation in bytes or `null` for default allocation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PrivilegedMode",
+          "JsonName": "privileged_mode",
+          "Description": "Whether the container runs in privileged mode or `null` for VMs.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Raw",
+          "JsonName": "raw",
+          "Description": "Raw low-level configuration options (advanced use only).",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[map[string]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RootDiskIoBus",
+          "JsonName": "root_disk_io_bus",
+          "Description": "I/O bus type for the root disk or `null` for default.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceRootDiskIoBus"
+          }
+        },
+        {
+          "Name": "RootDiskSize",
+          "JsonName": "root_disk_size",
+          "Description": "Size of the root disk in GB or `null` for default size.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureBoot",
+          "JsonName": "secure_boot",
+          "Description": "Whether UEFI Secure Boot is enabled (VMs only) or `null` for containers.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current operational status of the virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceStatus"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool in which the root of the instance is located.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceType"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "User namespace ID mapping configuration for privilege isolation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserNsIdmap"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncEnabled",
+          "JsonName": "vnc_enabled",
+          "Description": "Whether VNC remote access is enabled for the instance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VncPassword",
+          "JsonName": "vnc_password",
+          "Description": "Password for VNC access or `null` if no password is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncPort",
+          "JsonName": "vnc_port",
+          "Description": "TCP port number for VNC connections or `null` if VNC is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceUpdate",
+      "SchemaName": "VirtInstanceUpdate",
+      "Description": "Updated configuration data for the virtual instance.",
+      "Fields": [
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether the instance should automatically start when the host boots.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Cpu",
+          "JsonName": "cpu",
+          "Description": "CPU allocation specification or `null` for automatic allocation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "EnableVnc",
+          "JsonName": "enable_vnc",
+          "Description": "Whether to enable VNC remote access for the instance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Environment",
+          "JsonName": "environment",
+          "Description": "Environment variables to set inside the instance.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ImageOs",
+          "JsonName": "image_os",
+          "Description": "Operating system type for the instance or `null` for auto-detection.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Memory allocation in bytes or `null` for automatic allocation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PrivilegedMode",
+          "JsonName": "privileged_mode",
+          "Description": "This is only valid for containers and should only be set when container instance which is to be deployed is to     run in a privileged mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RootDiskIoBus",
+          "JsonName": "root_disk_io_bus",
+          "Description": "I/O bus type for the root disk or `null` to keep current setting.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceRootDiskIoBus"
+          }
+        },
+        {
+          "Name": "RootDiskSize",
+          "JsonName": "root_disk_size",
+          "Description": "Size of the root disk in GB (minimum 5GB) or `null` to keep current size.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureBoot",
+          "JsonName": "secure_boot",
+          "Description": "Whether to enable UEFI Secure Boot (VMs only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VncPassword",
+          "JsonName": "vnc_password",
+          "Description": "Setting vnc_password to null will unset VNC password.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncPort",
+          "JsonName": "vnc_port",
+          "Description": "TCP port number for VNC access (5900-65535) or `null` to disable VNC.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceUpdateAnswer",
+      "SchemaName": "VirtInstanceUpdateAnswer",
+      "Description": "The updated virtual instance configuration.",
+      "Fields": [
+        {
+          "Name": "Aliases",
+          "JsonName": "aliases",
+          "Description": "Array of IP aliases configured for the instance.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VirtInstanceAlias"
+            }
+          }
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether the instance automatically starts when the host boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Cpu",
+          "JsonName": "cpu",
+          "Description": "CPU configuration string or `null` for default allocation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Environment",
+          "JsonName": "environment",
+          "Description": "Environment variables to set inside the instance.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Image information used to create this instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Image"
+          }
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Memory allocation in bytes or `null` for default allocation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for the virtual instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PrivilegedMode",
+          "JsonName": "privileged_mode",
+          "Description": "Whether the container runs in privileged mode or `null` for VMs.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Raw",
+          "JsonName": "raw",
+          "Description": "Raw low-level configuration options (advanced use only).",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[map[string]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RootDiskIoBus",
+          "JsonName": "root_disk_io_bus",
+          "Description": "I/O bus type for the root disk or `null` for default.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceRootDiskIoBus"
+          }
+        },
+        {
+          "Name": "RootDiskSize",
+          "JsonName": "root_disk_size",
+          "Description": "Size of the root disk in GB or `null` for default size.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecureBoot",
+          "JsonName": "secure_boot",
+          "Description": "Whether UEFI Secure Boot is enabled (VMs only) or `null` for containers.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current operational status of the virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceStatus"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool in which the root of the instance is located.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of virtual instance.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtInstanceType"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "User namespace ID mapping configuration for privilege isolation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserNsIdmap"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncEnabled",
+          "JsonName": "vnc_enabled",
+          "Description": "Whether VNC remote access is enabled for the instance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "VncPassword",
+          "JsonName": "vnc_password",
+          "Description": "Password for VNC access or `null` if no password is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VncPort",
+          "JsonName": "vnc_port",
+          "Description": "TCP port number for VNC connections or `null` if VNC is disabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstancesImageChoices",
+      "SchemaName": "VirtInstancesImageChoices",
+      "Description": "Options for filtering available images.",
+      "Fields": [
+        {
+          "Name": "Remote",
+          "JsonName": "remote",
+          "Description": "Remote image source to query for available images.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtRemote"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "ImageChoiceItemInstanceTypes",
+      "SchemaName": "ImageChoiceItemInstanceTypes",
+      "Values": [
+        {
+          "Name": "ImageChoiceItemInstanceTypesCONTAINER",
+          "Value": "CONTAINER"
+        },
+        {
+          "Name": "ImageChoiceItemInstanceTypesVM",
+          "Value": "VM"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceAliasType",
+      "SchemaName": "VirtInstanceAliasType",
+      "Description": "Type of IP address (INET for IPv4, INET6 for IPv6).",
+      "Values": [
+        {
+          "Name": "VirtInstanceAliasTypeINET",
+          "Value": "INET"
+        },
+        {
+          "Name": "VirtInstanceAliasTypeINET6",
+          "Value": "INET6"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceCreateInstanceType",
+      "SchemaName": "VirtInstanceCreateInstanceType",
+      "Description": "Type of instance to create.",
+      "Values": [
+        {
+          "Name": "VirtInstanceCreateInstanceTypeCONTAINER",
+          "Value": "CONTAINER"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceCreateRootDiskIoBus",
+      "SchemaName": "VirtInstanceCreateRootDiskIoBus",
+      "Description": "I/O bus type for the root disk (defaults to NVME for best performance).",
+      "Values": [
+        {
+          "Name": "VirtInstanceCreateRootDiskIoBusNVME",
+          "Value": "NVME"
+        },
+        {
+          "Name": "VirtInstanceCreateRootDiskIoBusVIRTIOBLK",
+          "Value": "VIRTIO-BLK"
+        },
+        {
+          "Name": "VirtInstanceCreateRootDiskIoBusVIRTIOSCSI",
+          "Value": "VIRTIO-SCSI"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceCreateSourceType",
+      "SchemaName": "VirtInstanceCreateSourceType",
+      "Description": "Source type for instance creation.",
+      "Values": [
+        {
+          "Name": "VirtInstanceCreateSourceTypeIMAGE",
+          "Value": "IMAGE"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceRootDiskIoBus",
+      "SchemaName": "VirtInstanceRootDiskIoBus",
+      "Description": "I/O bus type for the root disk or `null` for default.",
+      "Values": [
+        {
+          "Name": "VirtInstanceRootDiskIoBusNVME",
+          "Value": "NVME"
+        },
+        {
+          "Name": "VirtInstanceRootDiskIoBusVIRTIOBLK",
+          "Value": "VIRTIO-BLK"
+        },
+        {
+          "Name": "VirtInstanceRootDiskIoBusVIRTIOSCSI",
+          "Value": "VIRTIO-SCSI"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceStatus",
+      "SchemaName": "VirtInstanceStatus",
+      "Description": "Current operational status of the virtual instance.",
+      "Values": [
+        {
+          "Name": "VirtInstanceStatusRUNNING",
+          "Value": "RUNNING"
+        },
+        {
+          "Name": "VirtInstanceStatusSTOPPED",
+          "Value": "STOPPED"
+        },
+        {
+          "Name": "VirtInstanceStatusUNKNOWN",
+          "Value": "UNKNOWN"
+        },
+        {
+          "Name": "VirtInstanceStatusERROR",
+          "Value": "ERROR"
+        },
+        {
+          "Name": "VirtInstanceStatusFROZEN",
+          "Value": "FROZEN"
+        },
+        {
+          "Name": "VirtInstanceStatusSTARTING",
+          "Value": "STARTING"
+        },
+        {
+          "Name": "VirtInstanceStatusSTOPPING",
+          "Value": "STOPPING"
+        },
+        {
+          "Name": "VirtInstanceStatusFREEZING",
+          "Value": "FREEZING"
+        },
+        {
+          "Name": "VirtInstanceStatusTHAWED",
+          "Value": "THAWED"
+        },
+        {
+          "Name": "VirtInstanceStatusABORTING",
+          "Value": "ABORTING"
+        }
+      ]
+    },
+    {
+      "Name": "VirtInstanceType",
+      "SchemaName": "VirtInstanceType",
+      "Description": "Type of virtual instance.",
+      "Values": [
+        {
+          "Name": "VirtInstanceTypeCONTAINER",
+          "Value": "CONTAINER"
+        },
+        {
+          "Name": "VirtInstanceTypeVM",
+          "Value": "VM"
+        }
+      ]
+    },
+    {
+      "Name": "VirtRemote",
+      "SchemaName": "VirtRemote",
+      "Description": "Remote image source to use.",
+      "Values": [
+        {
+          "Name": "VirtRemoteLINUXCONTAINERS",
+          "Value": "LINUX_CONTAINERS"
+        }
+      ]
+    }
+  ]
+}

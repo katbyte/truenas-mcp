@@ -1,0 +1,2490 @@
+{
+  "Name": "User",
+  "Tag": "user",
+  "Operations": [
+    {
+      "Name": "UserCreate",
+      "OperationId": "user.create",
+      "Method": "CALL",
+      "Path": "user.create",
+      "Description": "Create a new user.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UserCreateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.create",
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "user_create",
+          "Argument": "userCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserCreate"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new user account."
+        }
+      ]
+    },
+    {
+      "Name": "UserDelete",
+      "OperationId": "user.delete",
+      "Method": "CALL",
+      "Path": "user.delete",
+      "Description": "Delete user `id`.\n\nThe `delete_group` option deletes the user primary group if it is not being used by\nany other user.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.delete",
+        "Item": true,
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the user account to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserDeleteOptions"
+          },
+          "Description": "Options controlling the user deletion process."
+        }
+      ]
+    },
+    {
+      "Name": "UserGetInstance",
+      "OperationId": "user.get_instance",
+      "Method": "CALL",
+      "Path": "user.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UserQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.get_instance",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "UserGetNextUid",
+      "OperationId": "user.get_next_uid",
+      "Method": "CALL",
+      "Path": "user.get_next_uid",
+      "Description": "Get the next available/free uid.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.get_next_uid",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "UserGetUserObj",
+      "OperationId": "user.get_user_obj",
+      "Method": "CALL",
+      "Path": "user.get_user_obj",
+      "Description": "Returns dictionary containing information from struct passwd for the user specified by either\nthe username or uid. Bypasses user cache.\n\nNOTE: results will not include nested groups for Active Directory users.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UserGetUserObjAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.get_user_obj",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "get_user_obj",
+          "Argument": "getUserObj",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GetUserObj"
+          },
+          "Required": true,
+          "Description": "UserGetUserObjArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "UserHasLocalAdministratorSetUp",
+      "OperationId": "user.has_local_administrator_set_up",
+      "Method": "CALL",
+      "Path": "user.has_local_administrator_set_up",
+      "Description": "Return whether a local administrator with a valid password exists.\n\nThis is used when the system is installed without a password and must be set on\nfirst use/login.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.has_local_administrator_set_up",
+        "NoAuth": true
+      }
+    },
+    {
+      "Name": "UserQuery",
+      "OperationId": "user.query",
+      "Method": "CALL",
+      "Path": "user.query",
+      "Description": "Query users with `query-filters` and `query-options`.\n\nIf users provided by Active Directory or LDAP are not desired, then\n\"local\", \"=\", True should be added to filters.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "UserQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "UserQueryCount",
+      "OperationId": "user.query#count",
+      "Method": "CALL",
+      "Path": "user.query#count",
+      "Description": "Query users with `query-filters` and `query-options`.\n\nIf users provided by Active Directory or LDAP are not desired, then\n\"local\", \"=\", True should be added to filters.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "UserQueryOne",
+      "OperationId": "user.query#get",
+      "Method": "CALL",
+      "Path": "user.query#get",
+      "Description": "Query users with `query-filters` and `query-options`.\n\nIf users provided by Active Directory or LDAP are not desired, then\n\"local\", \"=\", True should be added to filters.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UserQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "UserRenew2faSecret",
+      "OperationId": "user.renew_2fa_secret",
+      "Method": "CALL",
+      "Path": "user.renew_2fa_secret",
+      "Description": "Renew `username` user's two-factor authentication secret.\n\nNOTE: This username must match the authenticated username unless authenticated\ncredentials have FULL_ADMIN role.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UserRenew2faSecretAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.renew_2fa_secret"
+      },
+      "Arguments": [
+        {
+          "Name": "username",
+          "Argument": "username",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Username to renew two-factor authentication secret for."
+        },
+        {
+          "Name": "twofactor_options",
+          "Argument": "twofactorOptions",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TwofactorOptions"
+          },
+          "Required": true,
+          "Description": "Configuration options for the new two-factor authentication setup."
+        }
+      ]
+    },
+    {
+      "Name": "UserSetPassword",
+      "OperationId": "user.set_password",
+      "Method": "CALL",
+      "Path": "user.set_password",
+      "Description": "Set the password of the specified `username` to the `new_password`\nspecified in payload.\n\nValidationErrors will be raised in the following situations:\n* username does not exist\n* account is not local to the NAS (Active Directory, LDAP, etc)\n* account has password authentication disabled\n* account is locked\n\nNOTE: when authenticated session has less than FULL_ADMIN role,\npassword changes will be rejected if the payload does not match the\ncurrently-authenticated user.\n\nNOTE: users authenticated with a one-time password will be able\nto change the password without submitting a second time.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.set_password"
+      },
+      "Arguments": [
+        {
+          "Name": "set_password_data",
+          "Argument": "setPasswordData",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SetPasswordData"
+          },
+          "Required": true,
+          "Description": "UserSetPasswordArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "UserSetupLocalAdministrator",
+      "OperationId": "user.setup_local_administrator",
+      "Method": "CALL",
+      "Path": "user.setup_local_administrator",
+      "Description": "Set up local administrator (this method does not require authentication if local administrator is not already\nset up).",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.setup_local_administrator",
+        "NoAuth": true
+      },
+      "Arguments": [
+        {
+          "Name": "username",
+          "Argument": "username",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserSetupLocalAdministratorUsername"
+          },
+          "Required": true,
+          "Description": "Administrator username to configure."
+        },
+        {
+          "Name": "password",
+          "Argument": "password",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Password for the administrator account."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserSetupLocalAdministratorOptions"
+          },
+          "Description": "Additional options for cloud or specialized administrator setup."
+        }
+      ]
+    },
+    {
+      "Name": "UserShellChoices",
+      "OperationId": "user.shell_choices",
+      "Method": "CALL",
+      "Path": "user.shell_choices",
+      "Description": "Return the available shell choices to be used in `user.create` and `user.update`.\n\n:param group_ids: List of local group IDs for the user.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.shell_choices",
+        "Read": true,
+        "Roles": [
+          "ACCOUNT_READ",
+          "ACCOUNT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "group_ids",
+          "Argument": "groupIds",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          },
+          "Description": "Array of group IDs to filter shell choices. Empty array returns all shells."
+        }
+      ]
+    },
+    {
+      "Name": "UserUnset2faSecret",
+      "OperationId": "user.unset_2fa_secret",
+      "Method": "CALL",
+      "Path": "user.unset_2fa_secret",
+      "Description": "Unset two-factor authentication secret for `username`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.unset_2fa_secret",
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "username",
+          "Argument": "username",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Username to disable two-factor authentication for."
+        }
+      ]
+    },
+    {
+      "Name": "UserUpdate",
+      "OperationId": "user.update",
+      "Method": "CALL",
+      "Path": "user.update",
+      "Description": "Update attributes of an existing user.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UserUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "user.update",
+        "Item": true,
+        "Roles": [
+          "ACCOUNT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the user account to update."
+        },
+        {
+          "Name": "user_update",
+          "Argument": "userUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the user account."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "GetUserObj",
+      "SchemaName": "GetUserObj",
+      "Description": "UserGetUserObjArgs parameters.",
+      "Fields": [
+        {
+          "Name": "GetGroups",
+          "JsonName": "get_groups",
+          "Description": "Retrieve group list for the specified user.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SidInfo",
+          "JsonName": "sid_info",
+          "Description": "Retrieve SID and domain information for the user.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "User ID to lookup. Either `username` or `uid` must be specified.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username to lookup. Either `username` or `uid` must be specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SetPasswordData",
+      "SchemaName": "SetPasswordData",
+      "Description": "UserSetPasswordArgs parameters.",
+      "Fields": [
+        {
+          "Name": "NewPassword",
+          "JsonName": "new_password",
+          "Description": "New password to set for the user account.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "OldPassword",
+          "JsonName": "old_password",
+          "Description": "Current password for verification. `null` if changing password as administrator.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username of the account to change password for.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TwofactorOptions",
+      "SchemaName": "TwofactorOptions",
+      "Description": "Configuration options for the new two-factor authentication setup.",
+      "Fields": [
+        {
+          "Name": "Interval",
+          "JsonName": "interval",
+          "Description": "Time duration in seconds specifying OTP expiration time from its creation time.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OtpDigits",
+          "JsonName": "otp_digits",
+          "Description": "Represents number of allowed digits in the OTP.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserCreate",
+      "SchemaName": "UserCreate",
+      "Description": "Configuration for creating a new user account.",
+      "Fields": [
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address of the user. If the user has the `FULL_ADMIN` role, they will receive email alerts and     notifications.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FullName",
+          "JsonName": "full_name",
+          "Description": "Comment field to provide additional information about the user account. Typically, this is     the full name of the user or a short description of a service account. There are no character set restrictions     for this field. This field is for information only.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "The group entry `id` for the user's primary group. This is not the same as the Unix group `gid` value.     This is required if `group_create` is `false`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "GroupCreate",
+          "JsonName": "group_create",
+          "Description": "If set to `true`, the TrueNAS server automatically creates a new local group as the user's primary group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of additional groups to which the user belongs. NOTE: Groups are identified by their group entry `id`,     not their Unix group ID (`gid`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "The local file system path for the user account's home directory.\nTypically, this is required only if the account has shell access (local or SSH) to TrueNAS.\nThis is not required for accounts used only for SMB share access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HomeCreate",
+          "JsonName": "home_create",
+          "Description": "Create a new home directory for the user in the specified `home` path.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HomeMode",
+          "JsonName": "home_mode",
+          "Description": "Filesystem permission to set on the user's home directory.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "If set to `true` the account is locked. The account cannot be used to authenticate to the TrueNAS server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "The password for the user account. This is required if `random_password` is not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordDisabled",
+          "JsonName": "password_disabled",
+          "Description": "If set to `true` password authentication for the user account is disabled.\n\nNOTE: Users with password authentication disabled may still authenticate to the TrueNAS server by other methods,     such as SSH key-based authentication.\n\nNOTE: Password authentication is required for `smb` users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RandomPassword",
+          "JsonName": "random_password",
+          "Description": "Generate a random 20 character password for the user.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Shell",
+          "JsonName": "shell",
+          "Description": "Available choices can be retrieved with `user.shell_choices`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "The user account may be used to access SMB shares. If set to `true` then TrueNAS stores an NT hash of the     user account's password for local accounts. This feature is unavailable for local accounts when General Purpose OS     STIG compatibility mode is enabled. If set to `true` the user is automatically added to the `builtin_users`     group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SshPasswordEnabled",
+          "JsonName": "ssh_password_enabled",
+          "Description": "Allow the user to authenticate to the TrueNAS SSH server using a password.\n\nWARNING: The established best practice is to use only key-based authentication for SSH servers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sshpubkey",
+          "JsonName": "sshpubkey",
+          "Description": "SSH public keys corresponding to private keys that authenticate this user to the TrueNAS SSH server.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "An array of commands the user may execute with elevated privileges. User is prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "An array of commands the user may execute with elevated privileges. User is *not* prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "UNIX UID. If not provided, it is automatically filled with the next one available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "String used to uniquely identify the user on the server. In order to be portable across     systems, local user names must be composed of characters from the POSIX portable filename     character set (IEEE Std 1003.1-2024 section 3.265). This means alphanumeric characters,     hyphens, underscores, and periods. Usernames also may not begin with a hyphen or a period.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subuid mapping for this user. If DIRECT then the UID will be     directly mapped to all containers. Alternatively, the target UID may be     explicitly specified. If `null`, then the UID will not be mapped.\n\nNOTE: This field will be ignored for users that have been assigned TrueNAS roles.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserCreateAnswer",
+      "SchemaName": "UserCreateAnswer",
+      "Description": "The newly created user account with password information.",
+      "Fields": [
+        {
+          "Name": "ApiKeys",
+          "JsonName": "api_keys",
+          "Description": "Array of API key IDs associated with this user account for programmatic access.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "If `true`, the user account is an internal system account for the TrueNAS server. Typically, one should     create dedicated user accounts for access to the TrueNAS server webui and shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address of the user. If the user has the `FULL_ADMIN` role, they will receive email alerts and     notifications.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FullName",
+          "JsonName": "full_name",
+          "Description": "Comment field to provide additional information about the user account. Typically, this is     the full name of the user or a short description of a service account. There are no character set restrictions     for this field. This field is for information only.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "The primary group of the user account.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of additional groups to which the user belongs. NOTE: Groups are identified by their group entry `id`,     not their Unix group ID (`gid`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "The local file system path for the user account's home directory.\nTypically, this is required only if the account has shell access (local or SSH) to TrueNAS.\nThis is not required for accounts used only for SMB share access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "This is the API identifier for the user. Use this ID for `user.update` and `user.delete` API calls. This ID     also appears in the `users` array for each group entry in `group.query` results.\n\nNOTE: For users from a directory service, the `id` is calculated by adding 100000000 to the `uid`. This ensures     consistent API results. You cannot change directory service accounts through TrueNAS.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "If `true`, the account is system-provided and most fields related to it may not be changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastPasswordChange",
+          "JsonName": "last_password_change",
+          "Description": "The date of the last password change for local user accounts.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "If `true`, the account is local to the TrueNAS server. If `false`, the account is provided by a directory     service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "If set to `true` the account is locked. The account cannot be used to authenticate to the TrueNAS server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password if it was specified in create or update payload. If random_password     was specified then this will be a 20 character random string.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordAge",
+          "JsonName": "password_age",
+          "Description": "The age in days of the password for local user accounts.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordChangeRequired",
+          "JsonName": "password_change_required",
+          "Description": "Password change for local user account is required on next login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordDisabled",
+          "JsonName": "password_disabled",
+          "Description": "If set to `true` password authentication for the user account is disabled.\n\nNOTE: Users with password authentication disabled may still authenticate to the TrueNAS server by other methods,     such as SSH key-based authentication.\n\nNOTE: Password authentication is required for `smb` users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordHistory",
+          "JsonName": "password_history",
+          "Description": "This contains hashes of the ten most recent passwords used by local user accounts, and is     for enforcing password history requirements as defined in system.security.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[[]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of roles assigned to this user's groups. Roles control administrative access to TrueNAS through     the web UI and API.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Shell",
+          "JsonName": "shell",
+          "Description": "Available choices can be retrieved with `user.shell_choices`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "The Security Identifier (SID) of the user if the account an `smb` account. The SMB server uses     this value to check share access and for other purposes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "The user account may be used to access SMB shares. If set to `true` then TrueNAS stores an NT hash of the     user account's password for local accounts. This feature is unavailable for local accounts when General Purpose OS     STIG compatibility mode is enabled. If set to `true` the user is automatically added to the `builtin_users`     group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Smbhash",
+          "JsonName": "smbhash",
+          "Description": "NT hash of the local account password for `smb` users. This value is `null` for accounts provided by directory     services or non-SMB accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SshPasswordEnabled",
+          "JsonName": "ssh_password_enabled",
+          "Description": "Allow the user to authenticate to the TrueNAS SSH server using a password.\n\nWARNING: The established best practice is to use only key-based authentication for SSH servers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sshpubkey",
+          "JsonName": "sshpubkey",
+          "Description": "SSH public keys corresponding to private keys that authenticate this user to the TrueNAS SSH server.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "An array of commands the user may execute with elevated privileges. User is prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "An array of commands the user may execute with elevated privileges. User is *not* prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "TwofactorAuthConfigured",
+          "JsonName": "twofactor_auth_configured",
+          "Description": "If `true`, the account has been configured for two-factor authentication. Users are prompted for a     second factor when authenticating to the TrueNAS web UI and API. They may also be prompted when signing     in to the TrueNAS SSH server using a password (depending on global two-factor authentication settings).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "A non-negative integer used to identify a system user. TrueNAS uses this value for permission     checks and many other system purposes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Unixhash",
+          "JsonName": "unixhash",
+          "Description": "Hashed password for local accounts. This value is `null` for accounts provided by directory services.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "A string used to identify a user. Local accounts must use characters from the POSIX portable filename     character set.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subuid mapping for this user. If DIRECT then the UID will be     directly mapped to all containers. Alternatively, the target UID may be     explicitly specified. If `null`, then the UID will not be mapped.\n\nNOTE: This field will be ignored for users that have been assigned TrueNAS roles.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserDeleteOptions",
+      "SchemaName": "UserDeleteOptions",
+      "Description": "Options controlling the user deletion process.",
+      "Fields": [
+        {
+          "Name": "DeleteGroup",
+          "JsonName": "delete_group",
+          "Description": "Delete the user primary group if it is not being used by any other user.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserGetInstanceOptions",
+      "SchemaName": "UserGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserGetUserObjAnswer",
+      "SchemaName": "UserGetUserObjAnswer",
+      "Description": "User account information in Unix passwd format.",
+      "Fields": [
+        {
+          "Name": "Grouplist",
+          "JsonName": "grouplist",
+          "Description": "Optional array of group IDs for groups of which this account is a member. If `get_groups` is not specified,     this value will be `null`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "The account is local to TrueNAS or provided by a directory service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PwDir",
+          "JsonName": "pw_dir",
+          "Description": "User home directory.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PwGecos",
+          "JsonName": "pw_gecos",
+          "Description": "Full username or comment field.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PwGid",
+          "JsonName": "pw_gid",
+          "Description": "Numerical group id for the user's primary group.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "PwName",
+          "JsonName": "pw_name",
+          "Description": "Name of the user.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PwShell",
+          "JsonName": "pw_shell",
+          "Description": "User command line interpreter.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PwUid",
+          "JsonName": "pw_uid",
+          "Description": "Numerical user ID of the user.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "Optional SID value for the account that is present if `sid_info` is specified in payload.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "The source for the user account.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserGetUserObjAnswerSource"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserQueryOptions",
+      "SchemaName": "UserQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserQueryResultItem",
+      "SchemaName": "UserQueryResultItem",
+      "Fields": [
+        {
+          "Name": "ApiKeys",
+          "JsonName": "api_keys",
+          "Description": "Array of API key IDs associated with this user account for programmatic access.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "If `true`, the user account is an internal system account for the TrueNAS server. Typically, one should     create dedicated user accounts for access to the TrueNAS server webui and shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address of the user. If the user has the `FULL_ADMIN` role, they will receive email alerts and     notifications.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FullName",
+          "JsonName": "full_name",
+          "Description": "Comment field to provide additional information about the user account. Typically, this is     the full name of the user or a short description of a service account. There are no character set restrictions     for this field. This field is for information only.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "The primary group of the user account.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of additional groups to which the user belongs. NOTE: Groups are identified by their group entry `id`,     not their Unix group ID (`gid`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "The local file system path for the user account's home directory.\nTypically, this is required only if the account has shell access (local or SSH) to TrueNAS.\nThis is not required for accounts used only for SMB share access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "This is the API identifier for the user. Use this ID for `user.update` and `user.delete` API calls. This ID     also appears in the `users` array for each group entry in `group.query` results.\n\nNOTE: For users from a directory service, the `id` is calculated by adding 100000000 to the `uid`. This ensures     consistent API results. You cannot change directory service accounts through TrueNAS.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "If `true`, the account is system-provided and most fields related to it may not be changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastPasswordChange",
+          "JsonName": "last_password_change",
+          "Description": "The date of the last password change for local user accounts.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "If `true`, the account is local to the TrueNAS server. If `false`, the account is provided by a directory     service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "If set to `true` the account is locked. The account cannot be used to authenticate to the TrueNAS server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordAge",
+          "JsonName": "password_age",
+          "Description": "The age in days of the password for local user accounts.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordChangeRequired",
+          "JsonName": "password_change_required",
+          "Description": "Password change for local user account is required on next login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordDisabled",
+          "JsonName": "password_disabled",
+          "Description": "If set to `true` password authentication for the user account is disabled.\n\nNOTE: Users with password authentication disabled may still authenticate to the TrueNAS server by other methods,     such as SSH key-based authentication.\n\nNOTE: Password authentication is required for `smb` users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordHistory",
+          "JsonName": "password_history",
+          "Description": "This contains hashes of the ten most recent passwords used by local user accounts, and is     for enforcing password history requirements as defined in system.security.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[[]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of roles assigned to this user's groups. Roles control administrative access to TrueNAS through     the web UI and API.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Shell",
+          "JsonName": "shell",
+          "Description": "Available choices can be retrieved with `user.shell_choices`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "The Security Identifier (SID) of the user if the account an `smb` account. The SMB server uses     this value to check share access and for other purposes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "The user account may be used to access SMB shares. If set to `true` then TrueNAS stores an NT hash of the     user account's password for local accounts. This feature is unavailable for local accounts when General Purpose OS     STIG compatibility mode is enabled. If set to `true` the user is automatically added to the `builtin_users`     group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Smbhash",
+          "JsonName": "smbhash",
+          "Description": "NT hash of the local account password for `smb` users. This value is `null` for accounts provided by directory     services or non-SMB accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SshPasswordEnabled",
+          "JsonName": "ssh_password_enabled",
+          "Description": "Allow the user to authenticate to the TrueNAS SSH server using a password.\n\nWARNING: The established best practice is to use only key-based authentication for SSH servers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sshpubkey",
+          "JsonName": "sshpubkey",
+          "Description": "SSH public keys corresponding to private keys that authenticate this user to the TrueNAS SSH server.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "An array of commands the user may execute with elevated privileges. User is prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "An array of commands the user may execute with elevated privileges. User is *not* prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "TwofactorAuthConfigured",
+          "JsonName": "twofactor_auth_configured",
+          "Description": "If `true`, the account has been configured for two-factor authentication. Users are prompted for a     second factor when authenticating to the TrueNAS web UI and API. They may also be prompted when signing     in to the TrueNAS SSH server using a password (depending on global two-factor authentication settings).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "A non-negative integer used to identify a system user. TrueNAS uses this value for permission     checks and many other system purposes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Unixhash",
+          "JsonName": "unixhash",
+          "Description": "Hashed password for local accounts. This value is `null` for accounts provided by directory services.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "A string used to identify a user. Local accounts must use characters from the POSIX portable filename     character set.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subuid mapping for this user. If DIRECT then the UID will be     directly mapped to all containers. Alternatively, the target UID may be     explicitly specified. If `null`, then the UID will not be mapped.\n\nNOTE: This field will be ignored for users that have been assigned TrueNAS roles.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserRenew2faSecretAnswer",
+      "SchemaName": "UserRenew2faSecretAnswer",
+      "Description": "UserRenew2faSecretResult return fields.",
+      "Fields": [
+        {
+          "Name": "ApiKeys",
+          "JsonName": "api_keys",
+          "Description": "Array of API key IDs associated with this user account for programmatic access.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "If `true`, the user account is an internal system account for the TrueNAS server. Typically, one should     create dedicated user accounts for access to the TrueNAS server webui and shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address of the user. If the user has the `FULL_ADMIN` role, they will receive email alerts and     notifications.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FullName",
+          "JsonName": "full_name",
+          "Description": "Comment field to provide additional information about the user account. Typically, this is     the full name of the user or a short description of a service account. There are no character set restrictions     for this field. This field is for information only.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "The primary group of the user account.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of additional groups to which the user belongs. NOTE: Groups are identified by their group entry `id`,     not their Unix group ID (`gid`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "The local file system path for the user account's home directory.\nTypically, this is required only if the account has shell access (local or SSH) to TrueNAS.\nThis is not required for accounts used only for SMB share access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "This is the API identifier for the user. Use this ID for `user.update` and `user.delete` API calls. This ID     also appears in the `users` array for each group entry in `group.query` results.\n\nNOTE: For users from a directory service, the `id` is calculated by adding 100000000 to the `uid`. This ensures     consistent API results. You cannot change directory service accounts through TrueNAS.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "If `true`, the account is system-provided and most fields related to it may not be changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastPasswordChange",
+          "JsonName": "last_password_change",
+          "Description": "The date of the last password change for local user accounts.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "If `true`, the account is local to the TrueNAS server. If `false`, the account is provided by a directory     service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "If set to `true` the account is locked. The account cannot be used to authenticate to the TrueNAS server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordAge",
+          "JsonName": "password_age",
+          "Description": "The age in days of the password for local user accounts.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordChangeRequired",
+          "JsonName": "password_change_required",
+          "Description": "Password change for local user account is required on next login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordDisabled",
+          "JsonName": "password_disabled",
+          "Description": "If set to `true` password authentication for the user account is disabled.\n\nNOTE: Users with password authentication disabled may still authenticate to the TrueNAS server by other methods,     such as SSH key-based authentication.\n\nNOTE: Password authentication is required for `smb` users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordHistory",
+          "JsonName": "password_history",
+          "Description": "This contains hashes of the ten most recent passwords used by local user accounts, and is     for enforcing password history requirements as defined in system.security.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[[]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of roles assigned to this user's groups. Roles control administrative access to TrueNAS through     the web UI and API.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Shell",
+          "JsonName": "shell",
+          "Description": "Available choices can be retrieved with `user.shell_choices`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "The Security Identifier (SID) of the user if the account an `smb` account. The SMB server uses     this value to check share access and for other purposes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "The user account may be used to access SMB shares. If set to `true` then TrueNAS stores an NT hash of the     user account's password for local accounts. This feature is unavailable for local accounts when General Purpose OS     STIG compatibility mode is enabled. If set to `true` the user is automatically added to the `builtin_users`     group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Smbhash",
+          "JsonName": "smbhash",
+          "Description": "NT hash of the local account password for `smb` users. This value is `null` for accounts provided by directory     services or non-SMB accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SshPasswordEnabled",
+          "JsonName": "ssh_password_enabled",
+          "Description": "Allow the user to authenticate to the TrueNAS SSH server using a password.\n\nWARNING: The established best practice is to use only key-based authentication for SSH servers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sshpubkey",
+          "JsonName": "sshpubkey",
+          "Description": "SSH public keys corresponding to private keys that authenticate this user to the TrueNAS SSH server.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "An array of commands the user may execute with elevated privileges. User is prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "An array of commands the user may execute with elevated privileges. User is *not* prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "TwofactorAuthConfigured",
+          "JsonName": "twofactor_auth_configured",
+          "Description": "If `true`, the account has been configured for two-factor authentication. Users are prompted for a     second factor when authenticating to the TrueNAS web UI and API. They may also be prompted when signing     in to the TrueNAS SSH server using a password (depending on global two-factor authentication settings).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TwofactorConfig",
+          "JsonName": "twofactor_config",
+          "Description": "New two-factor authentication configuration with provisioning details.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserRenew2faSecretAnswerTwofactorConfig"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "A non-negative integer used to identify a system user. TrueNAS uses this value for permission     checks and many other system purposes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Unixhash",
+          "JsonName": "unixhash",
+          "Description": "Hashed password for local accounts. This value is `null` for accounts provided by directory services.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "A string used to identify a user. Local accounts must use characters from the POSIX portable filename     character set.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subuid mapping for this user. If DIRECT then the UID will be     directly mapped to all containers. Alternatively, the target UID may be     explicitly specified. If `null`, then the UID will not be mapped.\n\nNOTE: This field will be ignored for users that have been assigned TrueNAS roles.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserRenew2faSecretAnswerTwofactorConfig",
+      "SchemaName": "UserRenew2faSecretAnswerTwofactorConfig",
+      "Description": "New two-factor authentication configuration with provisioning details.",
+      "Fields": [
+        {
+          "Name": "Interval",
+          "JsonName": "interval",
+          "Description": "Time interval in seconds for OTP validity period.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OtpDigits",
+          "JsonName": "otp_digits",
+          "Description": "Number of digits in the generated one-time password codes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ProvisioningUri",
+          "JsonName": "provisioning_uri",
+          "Description": "QR code URI for setting up two-factor authentication in authenticator apps. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SecretConfigured",
+          "JsonName": "secret_configured",
+          "Description": "Whether a two-factor authentication secret has been configured for this user.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserSetupLocalAdministratorEC2Options",
+      "SchemaName": "UserSetupLocalAdministratorEC2Options",
+      "Fields": [
+        {
+          "Name": "InstanceId",
+          "JsonName": "instance_id",
+          "Description": "EC2 instance identifier for cloud-specific administrator setup.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserSetupLocalAdministratorOptions",
+      "SchemaName": "UserSetupLocalAdministratorOptions",
+      "Description": "Additional options for cloud or specialized administrator setup.",
+      "Fields": [
+        {
+          "Name": "Ec2",
+          "JsonName": "ec2",
+          "Description": "Cloud platform-specific options for administrator setup. `null` for standard setup.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UserSetupLocalAdministratorEC2Options"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "UserUpdate",
+      "SchemaName": "UserUpdate",
+      "Description": "Updated configuration for the user account.",
+      "Fields": [
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address of the user. If the user has the `FULL_ADMIN` role, they will receive email alerts and     notifications.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FullName",
+          "JsonName": "full_name",
+          "Description": "Comment field to provide additional information about the user account. Typically, this is     the full name of the user or a short description of a service account. There are no character set restrictions     for this field. This field is for information only.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "The group entry `id` for the user's primary group. This is not the same as the Unix group `gid` value.     This is required if `group_create` is `false`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of additional groups to which the user belongs. NOTE: Groups are identified by their group entry `id`,     not their Unix group ID (`gid`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "The local file system path for the user account's home directory.\nTypically, this is required only if the account has shell access (local or SSH) to TrueNAS.\nThis is not required for accounts used only for SMB share access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HomeCreate",
+          "JsonName": "home_create",
+          "Description": "Create a new home directory for the user in the specified `home` path.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HomeMode",
+          "JsonName": "home_mode",
+          "Description": "Filesystem permission to set on the user's home directory.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "If set to `true` the account is locked. The account cannot be used to authenticate to the TrueNAS server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "The password for the user account. This is required if `random_password` is not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordDisabled",
+          "JsonName": "password_disabled",
+          "Description": "If set to `true` password authentication for the user account is disabled.\n\nNOTE: Users with password authentication disabled may still authenticate to the TrueNAS server by other methods,     such as SSH key-based authentication.\n\nNOTE: Password authentication is required for `smb` users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RandomPassword",
+          "JsonName": "random_password",
+          "Description": "Generate a random 20 character password for the user.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Shell",
+          "JsonName": "shell",
+          "Description": "Available choices can be retrieved with `user.shell_choices`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "The user account may be used to access SMB shares. If set to `true` then TrueNAS stores an NT hash of the     user account's password for local accounts. This feature is unavailable for local accounts when General Purpose OS     STIG compatibility mode is enabled. If set to `true` the user is automatically added to the `builtin_users`     group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SshPasswordEnabled",
+          "JsonName": "ssh_password_enabled",
+          "Description": "Allow the user to authenticate to the TrueNAS SSH server using a password.\n\nWARNING: The established best practice is to use only key-based authentication for SSH servers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sshpubkey",
+          "JsonName": "sshpubkey",
+          "Description": "SSH public keys corresponding to private keys that authenticate this user to the TrueNAS SSH server.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "An array of commands the user may execute with elevated privileges. User is prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "An array of commands the user may execute with elevated privileges. User is *not* prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "String used to uniquely identify the user on the server. In order to be portable across     systems, local user names must be composed of characters from the POSIX portable filename     character set (IEEE Std 1003.1-2024 section 3.265). This means alphanumeric characters,     hyphens, underscores, and periods. Usernames also may not begin with a hyphen or a period.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subuid mapping for this user. If DIRECT then the UID will be     directly mapped to all containers. Alternatively, the target UID may be     explicitly specified. If `null`, then the UID will not be mapped.\n\nNOTE: This field will be ignored for users that have been assigned TrueNAS roles.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UserUpdateAnswer",
+      "SchemaName": "UserUpdateAnswer",
+      "Description": "The updated user account with password information.",
+      "Fields": [
+        {
+          "Name": "ApiKeys",
+          "JsonName": "api_keys",
+          "Description": "Array of API key IDs associated with this user account for programmatic access.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Builtin",
+          "JsonName": "builtin",
+          "Description": "If `true`, the user account is an internal system account for the TrueNAS server. Typically, one should     create dedicated user accounts for access to the TrueNAS server webui and shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address of the user. If the user has the `FULL_ADMIN` role, they will receive email alerts and     notifications.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FullName",
+          "JsonName": "full_name",
+          "Description": "Comment field to provide additional information about the user account. Typically, this is     the full name of the user or a short description of a service account. There are no character set restrictions     for this field. This field is for information only.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "The primary group of the user account.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of additional groups to which the user belongs. NOTE: Groups are identified by their group entry `id`,     not their Unix group ID (`gid`).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "The local file system path for the user account's home directory.\nTypically, this is required only if the account has shell access (local or SSH) to TrueNAS.\nThis is not required for accounts used only for SMB share access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "This is the API identifier for the user. Use this ID for `user.update` and `user.delete` API calls. This ID     also appears in the `users` array for each group entry in `group.query` results.\n\nNOTE: For users from a directory service, the `id` is calculated by adding 100000000 to the `uid`. This ensures     consistent API results. You cannot change directory service accounts through TrueNAS.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "If `true`, the account is system-provided and most fields related to it may not be changed.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastPasswordChange",
+          "JsonName": "last_password_change",
+          "Description": "The date of the last password change for local user accounts.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Local",
+          "JsonName": "local",
+          "Description": "If `true`, the account is local to the TrueNAS server. If `false`, the account is provided by a directory     service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "If set to `true` the account is locked. The account cannot be used to authenticate to the TrueNAS server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password if it was specified in create or update payload. If random_password     was specified then this will be a 20 character random string.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordAge",
+          "JsonName": "password_age",
+          "Description": "The age in days of the password for local user accounts.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordChangeRequired",
+          "JsonName": "password_change_required",
+          "Description": "Password change for local user account is required on next login.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordDisabled",
+          "JsonName": "password_disabled",
+          "Description": "If set to `true` password authentication for the user account is disabled.\n\nNOTE: Users with password authentication disabled may still authenticate to the TrueNAS server by other methods,     such as SSH key-based authentication.\n\nNOTE: Password authentication is required for `smb` users.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PasswordHistory",
+          "JsonName": "password_history",
+          "Description": "This contains hashes of the ten most recent passwords used by local user accounts, and is     for enforcing password history requirements as defined in system.security.",
+          "Type": {
+            "Type": "Named",
+            "GoType": "client.Secret[[]any]",
+            "Import": "github.com/katbyte/pandorest/client"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Roles",
+          "JsonName": "roles",
+          "Description": "Array of roles assigned to this user's groups. Roles control administrative access to TrueNAS through     the web UI and API.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Shell",
+          "JsonName": "shell",
+          "Description": "Available choices can be retrieved with `user.shell_choices`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Sid",
+          "JsonName": "sid",
+          "Description": "The Security Identifier (SID) of the user if the account an `smb` account. The SMB server uses     this value to check share access and for other purposes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Smb",
+          "JsonName": "smb",
+          "Description": "The user account may be used to access SMB shares. If set to `true` then TrueNAS stores an NT hash of the     user account's password for local accounts. This feature is unavailable for local accounts when General Purpose OS     STIG compatibility mode is enabled. If set to `true` the user is automatically added to the `builtin_users`     group.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Smbhash",
+          "JsonName": "smbhash",
+          "Description": "NT hash of the local account password for `smb` users. This value is `null` for accounts provided by directory     services or non-SMB accounts.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SshPasswordEnabled",
+          "JsonName": "ssh_password_enabled",
+          "Description": "Allow the user to authenticate to the TrueNAS SSH server using a password.\n\nWARNING: The established best practice is to use only key-based authentication for SSH servers.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Sshpubkey",
+          "JsonName": "sshpubkey",
+          "Description": "SSH public keys corresponding to private keys that authenticate this user to the TrueNAS SSH server.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SudoCommands",
+          "JsonName": "sudo_commands",
+          "Description": "An array of commands the user may execute with elevated privileges. User is prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "SudoCommandsNopasswd",
+          "JsonName": "sudo_commands_nopasswd",
+          "Description": "An array of commands the user may execute with elevated privileges. User is *not* prompted for password     when executing any command from the array.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "TwofactorAuthConfigured",
+          "JsonName": "twofactor_auth_configured",
+          "Description": "If `true`, the account has been configured for two-factor authentication. Users are prompted for a     second factor when authenticating to the TrueNAS web UI and API. They may also be prompted when signing     in to the TrueNAS SSH server using a password (depending on global two-factor authentication settings).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "A non-negative integer used to identify a system user. TrueNAS uses this value for permission     checks and many other system purposes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Unixhash",
+          "JsonName": "unixhash",
+          "Description": "Hashed password for local accounts. This value is `null` for accounts provided by directory services.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "A string used to identify a user. Local accounts must use characters from the POSIX portable filename     character set.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsernsIdmap",
+          "JsonName": "userns_idmap",
+          "Description": "Specifies the subuid mapping for this user. If DIRECT then the UID will be     directly mapped to all containers. Alternatively, the target UID may be     explicitly specified. If `null`, then the UID will not be mapped.\n\nNOTE: This field will be ignored for users that have been assigned TrueNAS roles.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "UserGetUserObjAnswerSource",
+      "SchemaName": "UserGetUserObjAnswerSource",
+      "Description": "The source for the user account.",
+      "Values": [
+        {
+          "Name": "UserGetUserObjAnswerSourceLOCAL",
+          "Value": "LOCAL"
+        },
+        {
+          "Name": "UserGetUserObjAnswerSourceACTIVEDIRECTORY",
+          "Value": "ACTIVEDIRECTORY"
+        },
+        {
+          "Name": "UserGetUserObjAnswerSourceLDAP",
+          "Value": "LDAP"
+        }
+      ]
+    },
+    {
+      "Name": "UserSetupLocalAdministratorUsername",
+      "SchemaName": "UserSetupLocalAdministratorUsername",
+      "Description": "Administrator username to configure.",
+      "Values": [
+        {
+          "Name": "UserSetupLocalAdministratorUsernameRoot",
+          "Value": "root"
+        },
+        {
+          "Name": "UserSetupLocalAdministratorUsernameTruenasAdmin",
+          "Value": "truenas_admin"
+        }
+      ]
+    }
+  ]
+}

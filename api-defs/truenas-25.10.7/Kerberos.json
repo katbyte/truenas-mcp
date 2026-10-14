@@ -1,0 +1,149 @@
+{
+  "Name": "Kerberos",
+  "Tag": "kerberos",
+  "Operations": [
+    {
+      "Name": "KerberosConfig",
+      "OperationId": "kerberos.config",
+      "Method": "CALL",
+      "Path": "kerberos.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.config",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "KerberosUpdate",
+      "OperationId": "kerberos.update",
+      "Method": "CALL",
+      "Path": "kerberos.update",
+      "Description": "`appdefaults_aux` add parameters to \"appdefaults\" section of the krb5.conf file.\n\n`libdefaults_aux` add parameters to \"libdefaults\" section of the krb5.conf file.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.update",
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "kerberos_update",
+          "Argument": "kerberosUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosUpdate"
+          },
+          "Required": true,
+          "Description": "KerberosUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "KerberosConfigAnswer",
+      "SchemaName": "KerberosConfigAnswer",
+      "Fields": [
+        {
+          "Name": "AppdefaultsAux",
+          "JsonName": "appdefaults_aux",
+          "Description": "Advanced field for manually setting additional parameters inside the     appdefaults section of the krb5.conf file. These are generally not required     as the required krb5.conf settings are automatically detected and set     for the environment. See manpage for MIT krb5.conf.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the Kerberos configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "LibdefaultsAux",
+          "JsonName": "libdefaults_aux",
+          "Description": "Advanced field for manually setting additional parameters inside the     libdefaults section of the krb5.conf file. These are generally not required     as the required krb5.conf settings are automatically detected and set     for the environment. See manpage for MIT krb5.conf.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosUpdate",
+      "SchemaName": "KerberosUpdate",
+      "Description": "KerberosUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "AppdefaultsAux",
+          "JsonName": "appdefaults_aux",
+          "Description": "Advanced field for manually setting additional parameters inside the     appdefaults section of the krb5.conf file. These are generally not required     as the required krb5.conf settings are automatically detected and set     for the environment. See manpage for MIT krb5.conf.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LibdefaultsAux",
+          "JsonName": "libdefaults_aux",
+          "Description": "Advanced field for manually setting additional parameters inside the     libdefaults section of the krb5.conf file. These are generally not required     as the required krb5.conf settings are automatically detected and set     for the environment. See manpage for MIT krb5.conf.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosUpdateAnswer",
+      "SchemaName": "KerberosUpdateAnswer",
+      "Description": "The updated Kerberos configuration.",
+      "Fields": [
+        {
+          "Name": "AppdefaultsAux",
+          "JsonName": "appdefaults_aux",
+          "Description": "Advanced field for manually setting additional parameters inside the     appdefaults section of the krb5.conf file. These are generally not required     as the required krb5.conf settings are automatically detected and set     for the environment. See manpage for MIT krb5.conf.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the Kerberos configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "LibdefaultsAux",
+          "JsonName": "libdefaults_aux",
+          "Description": "Advanced field for manually setting additional parameters inside the     libdefaults section of the krb5.conf file. These are generally not required     as the required krb5.conf settings are automatically detected and set     for the environment. See manpage for MIT krb5.conf.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

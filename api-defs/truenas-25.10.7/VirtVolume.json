@@ -1,0 +1,733 @@
+{
+  "Name": "VirtVolume",
+  "Tag": "virt.volume",
+  "Operations": [
+    {
+      "Name": "VirtVolumeCreate",
+      "OperationId": "virt.volume.create",
+      "Method": "CALL",
+      "Path": "virt.volume.create",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtVolumeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.create",
+        "Roles": [
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_volume_create",
+          "Argument": "virtVolumeCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeCreate"
+          },
+          "Required": true,
+          "Description": "VirtVolumeCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeDelete",
+      "OperationId": "virt.volume.delete",
+      "Method": "CALL",
+      "Path": "virt.volume.delete",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.delete",
+        "Item": true,
+        "Roles": [
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Identifier of the virtualization volume to delete."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeGetInstance",
+      "OperationId": "virt.volume.get_instance",
+      "Method": "CALL",
+      "Path": "virt.volume.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtVolumeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_IMAGE_READ",
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeImportIso",
+      "OperationId": "virt.volume.import_iso",
+      "Method": "CALL",
+      "Path": "virt.volume.import_iso",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtVolumeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.import_iso",
+        "Job": true,
+        "Roles": [
+          "VIRT_IMAGE_WRITE"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "virt_volume_import_iso",
+          "Argument": "virtVolumeImportIso",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeImportIso"
+          },
+          "Required": true,
+          "Description": "VirtVolumeImportIsoArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeImportZvol",
+      "OperationId": "virt.volume.import_zvol",
+      "Method": "CALL",
+      "Path": "virt.volume.import_zvol",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtVolumeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.import_zvol",
+        "Job": true,
+        "Roles": [
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_volume_import_iso",
+          "Argument": "virtVolumeImportIso",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeImportIso2"
+          },
+          "Required": true,
+          "Description": "VirtVolumeImportZvolArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeQuery",
+      "OperationId": "virt.volume.query",
+      "Method": "CALL",
+      "Path": "virt.volume.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_IMAGE_READ",
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeQueryCount",
+      "OperationId": "virt.volume.query#count",
+      "Method": "CALL",
+      "Path": "virt.volume.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_IMAGE_READ",
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeQueryOne",
+      "OperationId": "virt.volume.query#get",
+      "Method": "CALL",
+      "Path": "virt.volume.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtVolumeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_IMAGE_READ",
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeUpdate",
+      "OperationId": "virt.volume.update",
+      "Method": "CALL",
+      "Path": "virt.volume.update",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtVolumeQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.volume.update",
+        "Item": true,
+        "Roles": [
+          "VIRT_IMAGE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Identifier of the virtualization volume to update."
+        },
+        {
+          "Name": "virt_volume_update",
+          "Argument": "virtVolumeUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the virtualization volume."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "VirtVolumeCreate",
+      "SchemaName": "VirtVolumeCreate",
+      "Description": "VirtVolumeCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "ContentType",
+          "JsonName": "content_type",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtVolumeCreateContentType"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name for the new virtualization volume (alphanumeric, dashes, dots, underscores).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Size of volume in MB and it should at least be 512 MB.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool in which to create the volume. This must be one of pools listed     in virt.global.config output under `storage_pools`. If the value is None, then     the pool defined as `pool` in virt.global.config will be used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeGetInstanceOptions",
+      "SchemaName": "VirtVolumeGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeImportIso",
+      "SchemaName": "VirtVolumeImportIso",
+      "Description": "VirtVolumeImportIsoArgs parameters.",
+      "Fields": [
+        {
+          "Name": "IsoLocation",
+          "JsonName": "iso_location",
+          "Description": "Path to the ISO file to import. `null` if uploading via `upload_iso`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Specify name of the newly created volume from the ISO specified.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Storage pool in which to create the volume. This must be one of pools listed     in virt.global.config output under `storage_pools`. If the value is None, then     the pool defined as `pool` in virt.global.config will be used.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "UploadIso",
+          "JsonName": "upload_iso",
+          "Description": "Whether to upload an ISO file instead of using a local file path.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeImportIso2",
+      "SchemaName": "VirtVolumeImportIso2",
+      "Description": "VirtVolumeImportZvolArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Clone",
+          "JsonName": "clone",
+          "Description": "Whether to clone and promote the ZFS volume instead of importing directly.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ToImport",
+          "JsonName": "to_import",
+          "Description": "Array of ZFS volumes to import as virtualization volumes.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "ZvolImportEntry"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeQueryOptions",
+      "SchemaName": "VirtVolumeQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeQueryResultItem",
+      "SchemaName": "VirtVolumeQueryResultItem",
+      "Description": "The newly created virtualization volume configuration.",
+      "Fields": [
+        {
+          "Name": "Config",
+          "JsonName": "config",
+          "Description": "Object containing detailed configuration parameters for this volume.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ContentType",
+          "JsonName": "content_type",
+          "Description": "Type of content stored in this volume (e.g., 'BLOCK', 'ISO').",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "CreatedAt",
+          "JsonName": "created_at",
+          "Description": "Timestamp when this volume was created.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtualization volume.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name of the virtualization volume.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "StoragePool",
+          "JsonName": "storage_pool",
+          "Description": "Name of the storage pool containing this volume.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Volume type indicating its storage backend and characteristics.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsedBy",
+          "JsonName": "used_by",
+          "Description": "Array of virtual instance names currently using this volume.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtVolumeUpdate",
+      "SchemaName": "VirtVolumeUpdate",
+      "Description": "Updated configuration for the virtualization volume.",
+      "Fields": [
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "New size for the volume in MB (minimum 512MB).",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ZvolImportEntry",
+      "SchemaName": "ZvolImportEntry",
+      "Fields": [
+        {
+          "Name": "VirtVolumeName",
+          "JsonName": "virt_volume_name",
+          "Description": "Name for the new virtualization volume created from the imported ZFS volume.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ZvolPath",
+          "JsonName": "zvol_path",
+          "Description": "Full path to the ZFS volume device in /dev/zvol/.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "VirtVolumeCreateContentType",
+      "SchemaName": "VirtVolumeCreateContentType",
+      "Values": [
+        {
+          "Name": "VirtVolumeCreateContentTypeBLOCK",
+          "Value": "BLOCK"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+{
+  "Name": "Systemdataset",
+  "Tag": "systemdataset",
+  "Operations": [
+    {
+      "Name": "SystemdatasetConfig",
+      "OperationId": "systemdataset.config",
+      "Method": "CALL",
+      "Path": "systemdataset.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemdatasetConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "systemdataset.config",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "SystemdatasetPoolChoices",
+      "OperationId": "systemdataset.pool_choices",
+      "Method": "CALL",
+      "Path": "systemdataset.pool_choices",
+      "Description": "Retrieve pool choices which can be used for configuring system dataset.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "systemdataset.pool_choices",
+        "Read": true,
+        "Roles": [
+          "DATASET_READ",
+          "DATASET_WRITE",
+          "POOL_READ",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "include_current_pool",
+          "Argument": "includeCurrentPool",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Include the currently set pool in the result."
+        }
+      ]
+    },
+    {
+      "Name": "SystemdatasetUpdate",
+      "OperationId": "systemdataset.update",
+      "Method": "CALL",
+      "Path": "systemdataset.update",
+      "Description": "Update System Dataset Service Configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemdatasetUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "systemdataset.update",
+        "Job": true,
+        "Roles": [
+          "DATASET_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SystemdatasetUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the system dataset."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SystemdatasetConfigAnswer",
+      "SchemaName": "SystemdatasetConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Basename",
+          "JsonName": "basename",
+          "Description": "Base name of the system dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the system dataset configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path to the system dataset. `null` if not mounted.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the pool hosting the system dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PoolSet",
+          "JsonName": "pool_set",
+          "Description": "Whether a pool has been explicitly set for the system dataset.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uuid",
+          "JsonName": "uuid",
+          "Description": "UUID of the system dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemdatasetUpdateAnswer",
+      "SchemaName": "SystemdatasetUpdateAnswer",
+      "Description": "The updated system dataset configuration.",
+      "Fields": [
+        {
+          "Name": "Basename",
+          "JsonName": "basename",
+          "Description": "Base name of the system dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the system dataset configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path to the system dataset. `null` if not mounted.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Name of the pool hosting the system dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PoolSet",
+          "JsonName": "pool_set",
+          "Description": "Whether a pool has been explicitly set for the system dataset.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uuid",
+          "JsonName": "uuid",
+          "Description": "UUID of the system dataset.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SystemdatasetUpdateData",
+      "SchemaName": "SystemdatasetUpdateData",
+      "Description": "Updated configuration for the system dataset.",
+      "Fields": [
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "The name of a valid pool configured in the system to host the system dataset.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PoolExclude",
+          "JsonName": "pool_exclude",
+          "Description": "The name of a pool to not place the system dataset on if `pool` is not provided.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ]
+}

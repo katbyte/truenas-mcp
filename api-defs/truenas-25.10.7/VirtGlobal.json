@@ -1,0 +1,463 @@
+{
+  "Name": "VirtGlobal",
+  "Tag": "virt.global",
+  "Operations": [
+    {
+      "Name": "VirtGlobalBridgeChoices",
+      "OperationId": "virt.global.bridge_choices",
+      "Method": "CALL",
+      "Path": "virt.global.bridge_choices",
+      "Description": "Bridge choices for virtualization purposes.\n\nEmpty means it will be managed/created automatically.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.global.bridge_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_GLOBAL_READ",
+          "VIRT_GLOBAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VirtGlobalConfig",
+      "OperationId": "virt.global.config",
+      "Method": "CALL",
+      "Path": "virt.global.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtGlobalConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.global.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_GLOBAL_READ",
+          "VIRT_GLOBAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VirtGlobalGetNetwork",
+      "OperationId": "virt.global.get_network",
+      "Method": "CALL",
+      "Path": "virt.global.get_network",
+      "Description": "Details for the given network.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtGlobalGetNetworkAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.global.get_network",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_GLOBAL_READ",
+          "VIRT_GLOBAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the network configuration to retrieve."
+        }
+      ]
+    },
+    {
+      "Name": "VirtGlobalPoolChoices",
+      "OperationId": "virt.global.pool_choices",
+      "Method": "CALL",
+      "Path": "virt.global.pool_choices",
+      "Description": "Pool choices for virtualization purposes.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.global.pool_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VIRT_GLOBAL_READ",
+          "VIRT_GLOBAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VirtGlobalUpdate",
+      "OperationId": "virt.global.update",
+      "Method": "CALL",
+      "Path": "virt.global.update",
+      "Description": "Update global virtualization settings.\n\n`pool` which pool to use to store instances.\nNone will disable the service.\n\n`bridge` which bridge interface to use by default.\nNone means it will automatically create one.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VirtGlobalUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "virt.global.update",
+        "Job": true,
+        "Roles": [
+          "VIRT_GLOBAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "virt_global_update",
+          "Argument": "virtGlobalUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtGlobalUpdate"
+          },
+          "Required": true,
+          "Description": "VirtGlobalUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "VirtGlobalConfigAnswer",
+      "SchemaName": "VirtGlobalConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Bridge",
+          "JsonName": "bridge",
+          "Description": "Network bridge interface for virtualized instance networking. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "ZFS dataset path used for virtualization data storage. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtualization global configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Default storage pool when creating new instances and volumes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current operational state of the virtualization subsystem. `null` during initial setup.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtGlobalAnswerState"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StoragePools",
+          "JsonName": "storage_pools",
+          "Description": "ZFS pools to use as storage pools.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V4Network",
+          "JsonName": "v4_network",
+          "Description": "IPv4 network CIDR for the virtualization bridge network. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V6Network",
+          "JsonName": "v6_network",
+          "Description": "IPv6 network CIDR for the virtualization bridge network. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtGlobalGetNetworkAnswer",
+      "SchemaName": "VirtGlobalGetNetworkAnswer",
+      "Description": "VirtGlobalGetNetworkResult return fields.",
+      "Fields": [
+        {
+          "Name": "Ipv4Address",
+          "JsonName": "ipv4_address",
+          "Description": "IPv4 address and CIDR of the bridge network.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4Nat",
+          "JsonName": "ipv4_nat",
+          "Description": "Whether IPv4 Network Address Translation is enabled for this bridge.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ipv6Address",
+          "JsonName": "ipv6_address",
+          "Description": "IPv6 address and CIDR of the bridge network.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv6Nat",
+          "JsonName": "ipv6_nat",
+          "Description": "Whether IPv6 Network Address Translation is enabled for this bridge.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Managed",
+          "JsonName": "managed",
+          "Description": "Whether this network is managed by the virtualization system.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of network configuration (currently only bridge networks are supported).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtGlobalGetNetworkAnswerType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VirtGlobalUpdate",
+      "SchemaName": "VirtGlobalUpdate",
+      "Description": "VirtGlobalUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Bridge",
+          "JsonName": "bridge",
+          "Description": "Network bridge interface for virtualized instance networking. `null` to disable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Default storage pool when creating new instances and volumes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StoragePools",
+          "JsonName": "storage_pools",
+          "Description": "ZFS pools to use as storage pools.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V4Network",
+          "JsonName": "v4_network",
+          "Description": "IPv4 network CIDR for the virtualization bridge network. `null` to use default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V6Network",
+          "JsonName": "v6_network",
+          "Description": "IPv6 network CIDR for the virtualization bridge network. `null` to use default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VirtGlobalUpdateAnswer",
+      "SchemaName": "VirtGlobalUpdateAnswer",
+      "Description": "The updated virtualization global configuration.",
+      "Fields": [
+        {
+          "Name": "Bridge",
+          "JsonName": "bridge",
+          "Description": "Network bridge interface for virtualized instance networking. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "ZFS dataset path used for virtualization data storage. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtualization global configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "Default storage pool when creating new instances and volumes.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current operational state of the virtualization subsystem. `null` during initial setup.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VirtGlobalAnswerState"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StoragePools",
+          "JsonName": "storage_pools",
+          "Description": "ZFS pools to use as storage pools.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V4Network",
+          "JsonName": "v4_network",
+          "Description": "IPv4 network CIDR for the virtualization bridge network. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V6Network",
+          "JsonName": "v6_network",
+          "Description": "IPv6 network CIDR for the virtualization bridge network. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "VirtGlobalAnswerState",
+      "SchemaName": "VirtGlobalAnswerState",
+      "Values": [
+        {
+          "Name": "VirtGlobalAnswerStateINITIALIZING",
+          "Value": "INITIALIZING"
+        },
+        {
+          "Name": "VirtGlobalAnswerStateINITIALIZED",
+          "Value": "INITIALIZED"
+        },
+        {
+          "Name": "VirtGlobalAnswerStateNOPOOL",
+          "Value": "NO_POOL"
+        },
+        {
+          "Name": "VirtGlobalAnswerStateERROR",
+          "Value": "ERROR"
+        },
+        {
+          "Name": "VirtGlobalAnswerStateLOCKED",
+          "Value": "LOCKED"
+        }
+      ]
+    },
+    {
+      "Name": "VirtGlobalGetNetworkAnswerType",
+      "SchemaName": "VirtGlobalGetNetworkAnswerType",
+      "Description": "Type of network configuration (currently only bridge networks are supported).",
+      "Values": [
+        {
+          "Name": "VirtGlobalGetNetworkAnswerTypeBRIDGE",
+          "Value": "BRIDGE"
+        }
+      ]
+    }
+  ]
+}

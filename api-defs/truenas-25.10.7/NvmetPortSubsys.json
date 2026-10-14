@@ -1,0 +1,528 @@
+{
+  "Name": "NvmetPortSubsys",
+  "Tag": "nvmet.port_subsys",
+  "Operations": [
+    {
+      "Name": "NvmetPortSubsysCreate",
+      "OperationId": "nvmet.port_subsys.create",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.create",
+      "Description": "Create an association between a `port` and a subsystem (`subsys`).\n\nThis will make the subsystem accessible on that port (subject to access\ncontrol by either the  `allow_any_host` subsystem attribute, or `hosts`\nassociated with the subsystem).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nvmet_port_subsys_create",
+          "Argument": "nvmetPortSubsysCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortSubsysCreate"
+          },
+          "Required": true,
+          "Description": "Port-subsystem association configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysDelete",
+      "OperationId": "nvmet.port_subsys.delete",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.delete",
+      "Description": "Delete `port`/`subsys` association of `id`.\n\nThe specified subsystem will no longer be accessible on the `port`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the port-subsystem association to delete."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysGetInstance",
+      "OperationId": "nvmet.port_subsys.get_instance",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortSubsysGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysQuery",
+      "OperationId": "nvmet.port_subsys.query",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetPortSubsysQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortSubsysQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysQueryCount",
+      "OperationId": "nvmet.port_subsys.query#count",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortSubsysQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysQueryOne",
+      "OperationId": "nvmet.port_subsys.query#get",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortSubsysQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysUpdate",
+      "OperationId": "nvmet.port_subsys.update",
+      "Method": "CALL",
+      "Path": "nvmet.port_subsys.update",
+      "Description": "Update `port`/`subsys` association of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetPortSubsysQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.port_subsys.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the port-subsystem association to update."
+        },
+        {
+          "Name": "nvmet_port_subsys_update",
+          "Argument": "nvmetPortSubsysUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetPortSubsysUpdate"
+          },
+          "Required": true,
+          "Description": "Updated port-subsystem association configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NVMetPortSubsysQueryResultItem",
+      "SchemaName": "NVMetPortSubsysQueryResultItem",
+      "Description": "The created port-subsystem association.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the port-subsystem association.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "NVMe-oF port that provides access to the subsystem.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetPortQueryResultItem"
+          }
+        },
+        {
+          "Name": "Subsys",
+          "JsonName": "subsys",
+          "Description": "NVMe-oF subsystem that is accessible through the port.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetSubsysQueryResultItem"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysCreate",
+      "SchemaName": "NvmetPortSubsysCreate",
+      "Description": "Port-subsystem association configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "PortId",
+          "JsonName": "port_id",
+          "Description": "ID of the NVMe-oF port to associate.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SubsysId",
+          "JsonName": "subsys_id",
+          "Description": "ID of the NVMe-oF subsystem to make accessible.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysGetInstanceOptions",
+      "SchemaName": "NvmetPortSubsysGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysQueryOptions",
+      "SchemaName": "NvmetPortSubsysQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetPortSubsysUpdate",
+      "SchemaName": "NvmetPortSubsysUpdate",
+      "Description": "Updated port-subsystem association configuration data.",
+      "Fields": [
+        {
+          "Name": "PortId",
+          "JsonName": "port_id",
+          "Description": "ID of the NVMe-oF port to associate.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SubsysId",
+          "JsonName": "subsys_id",
+          "Description": "ID of the NVMe-oF subsystem to make accessible.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ]
+}

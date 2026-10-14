@@ -1,0 +1,933 @@
+{
+  "Name": "Service",
+  "Tag": "service",
+  "Operations": [
+    {
+      "Name": "ServiceControl",
+      "OperationId": "service.control",
+      "Method": "CALL",
+      "Path": "service.control",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.control",
+        "Job": true,
+        "Roles": [
+          "SERVICE_WRITE",
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_NFS_WRITE",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "verb",
+          "Argument": "verb",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceControlVerb"
+          },
+          "Required": true,
+          "Description": "The service operation to perform."
+        },
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to control."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceControlOptions"
+          },
+          "Description": "Options for controlling the service operation behavior."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceGetInstance",
+      "OperationId": "service.get_instance",
+      "Method": "CALL",
+      "Path": "service.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ServiceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SERVICE_READ",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceQuery",
+      "OperationId": "service.query",
+      "Method": "CALL",
+      "Path": "service.query",
+      "Description": "Query all system services with `query-filters` and `query-options`.\n\nSupports the following extra options:\n`include_state` - performance optimization to avoid getting service state.\ndefaults to True.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SERVICE_READ",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceQueryCount",
+      "OperationId": "service.query#count",
+      "Method": "CALL",
+      "Path": "service.query#count",
+      "Description": "Query all system services with `query-filters` and `query-options`.\n\nSupports the following extra options:\n`include_state` - performance optimization to avoid getting service state.\ndefaults to True.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SERVICE_READ",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceQueryOne",
+      "OperationId": "service.query#get",
+      "Method": "CALL",
+      "Path": "service.query#get",
+      "Description": "Query all system services with `query-filters` and `query-options`.\n\nSupports the following extra options:\n`include_state` - performance optimization to avoid getting service state.\ndefaults to True.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ServiceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SERVICE_READ",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceReload",
+      "OperationId": "service.reload",
+      "Method": "CALL",
+      "Path": "service.reload",
+      "Description": "Reload the service specified by `service`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.reload",
+        "Roles": [
+          "SERVICE_WRITE",
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_NFS_WRITE",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to reload."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceReloadOptions"
+          },
+          "Description": "Options for controlling the reload operation behavior."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceRestart",
+      "OperationId": "service.restart",
+      "Method": "CALL",
+      "Path": "service.restart",
+      "Description": "Restart the service specified by `service`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.restart",
+        "Roles": [
+          "SERVICE_WRITE",
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_NFS_WRITE",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to restart."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceRestartOptions"
+          },
+          "Description": "Options for controlling the restart operation behavior."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceStart",
+      "OperationId": "service.start",
+      "Method": "CALL",
+      "Path": "service.start",
+      "Description": "Start the service specified by `service`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.start",
+        "Roles": [
+          "SERVICE_WRITE",
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_NFS_WRITE",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to start."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceStartOptions"
+          },
+          "Description": "Options for controlling the start operation behavior."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceStarted",
+      "OperationId": "service.started",
+      "Method": "CALL",
+      "Path": "service.started",
+      "Description": "Test if service specified by `service` has been started.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.started",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SERVICE_READ",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to check if running."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceStartedOrEnabled",
+      "OperationId": "service.started_or_enabled",
+      "Method": "CALL",
+      "Path": "service.started_or_enabled",
+      "Description": "Test if service specified by `service` is started or enabled to start automatically.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.started_or_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SERVICE_READ",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to check if running or enabled."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceStop",
+      "OperationId": "service.stop",
+      "Method": "CALL",
+      "Path": "service.stop",
+      "Description": "Stop the service specified by `service`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.stop",
+        "Roles": [
+          "SERVICE_WRITE",
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_NFS_WRITE",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the service to stop."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceStopOptions"
+          },
+          "Description": "Options for controlling the stop operation behavior."
+        }
+      ]
+    },
+    {
+      "Name": "ServiceUpdate",
+      "OperationId": "service.update",
+      "Method": "CALL",
+      "Path": "service.update",
+      "Description": "Update service entry of `id_or_name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "service.update",
+        "Item": true,
+        "Roles": [
+          "SERVICE_WRITE",
+          "SHARING_ADMIN",
+          "SHARING_FTP_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_NFS_WRITE",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_SMB_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id_or_name",
+          "Argument": "idOrName",
+          "Type": {
+            "Type": "Any"
+          },
+          "Required": true,
+          "Description": "ID or name of the service to update."
+        },
+        {
+          "Name": "service_update",
+          "Argument": "serviceUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the service."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "ServiceControlOptions",
+      "SchemaName": "ServiceControlOptions",
+      "Description": "Options for controlling the service operation behavior.",
+      "Fields": [
+        {
+          "Name": "HaPropagate",
+          "JsonName": "ha_propagate",
+          "Description": "Whether to propagate the service operation to the HA peer in a high-availability setup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Silent",
+          "JsonName": "silent",
+          "Description": "Return `false` instead of an error if the operation fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Maximum time in seconds to wait for the service operation to complete. `null` for no timeout.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ServiceGetInstanceOptions",
+      "SchemaName": "ServiceGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ServiceQueryOptions",
+      "SchemaName": "ServiceQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ServiceQueryResultItem",
+      "SchemaName": "ServiceQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Enable",
+          "JsonName": "enable",
+          "Description": "Whether the service is enabled to start on boot.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the service.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Pids",
+          "JsonName": "pids",
+          "Description": "Array of process IDs associated with this service.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "Service",
+          "JsonName": "service",
+          "Description": "Name of the system service.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current state of the service (e.g., 'RUNNING', 'STOPPED').",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ServiceReloadOptions",
+      "SchemaName": "ServiceReloadOptions",
+      "Description": "Options for controlling the reload operation behavior.",
+      "Fields": [
+        {
+          "Name": "HaPropagate",
+          "JsonName": "ha_propagate",
+          "Description": "Whether to propagate the service operation to the HA peer in a high-availability setup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Silent",
+          "JsonName": "silent",
+          "Description": "Return `false` instead of an error if the operation fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Maximum time in seconds to wait for the service operation to complete. `null` for no timeout.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ServiceRestartOptions",
+      "SchemaName": "ServiceRestartOptions",
+      "Description": "Options for controlling the restart operation behavior.",
+      "Fields": [
+        {
+          "Name": "HaPropagate",
+          "JsonName": "ha_propagate",
+          "Description": "Whether to propagate the service operation to the HA peer in a high-availability setup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Silent",
+          "JsonName": "silent",
+          "Description": "Return `false` instead of an error if the operation fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Maximum time in seconds to wait for the service operation to complete. `null` for no timeout.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ServiceStartOptions",
+      "SchemaName": "ServiceStartOptions",
+      "Description": "Options for controlling the start operation behavior.",
+      "Fields": [
+        {
+          "Name": "HaPropagate",
+          "JsonName": "ha_propagate",
+          "Description": "Whether to propagate the service operation to the HA peer in a high-availability setup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Silent",
+          "JsonName": "silent",
+          "Description": "Return `false` instead of an error if the operation fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Maximum time in seconds to wait for the service operation to complete. `null` for no timeout.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ServiceStopOptions",
+      "SchemaName": "ServiceStopOptions",
+      "Description": "Options for controlling the stop operation behavior.",
+      "Fields": [
+        {
+          "Name": "HaPropagate",
+          "JsonName": "ha_propagate",
+          "Description": "Whether to propagate the service operation to the HA peer in a high-availability setup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Silent",
+          "JsonName": "silent",
+          "Description": "Return `false` instead of an error if the operation fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Maximum time in seconds to wait for the service operation to complete. `null` for no timeout.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ServiceUpdate",
+      "SchemaName": "ServiceUpdate",
+      "Description": "Updated configuration for the service.",
+      "Fields": [
+        {
+          "Name": "Enable",
+          "JsonName": "enable",
+          "Description": "Whether the service should start on boot.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "ServiceControlVerb",
+      "SchemaName": "ServiceControlVerb",
+      "Description": "The service operation to perform.",
+      "Values": [
+        {
+          "Name": "ServiceControlVerbSTART",
+          "Value": "START"
+        },
+        {
+          "Name": "ServiceControlVerbSTOP",
+          "Value": "STOP"
+        },
+        {
+          "Name": "ServiceControlVerbRESTART",
+          "Value": "RESTART"
+        },
+        {
+          "Name": "ServiceControlVerbRELOAD",
+          "Value": "RELOAD"
+        }
+      ]
+    }
+  ]
+}

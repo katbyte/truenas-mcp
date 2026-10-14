@@ -1,0 +1,59 @@
+{
+  "Name": "SystemReboot",
+  "Tag": "system.reboot",
+  "Operations": [
+    {
+      "Name": "SystemRebootInfo",
+      "OperationId": "system.reboot.info",
+      "Method": "CALL",
+      "Path": "system.reboot.info",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SystemRebootInfoAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.reboot.info",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SystemRebootInfoAnswer",
+      "SchemaName": "SystemRebootInfoAnswer",
+      "Description": "Information about the current boot session and reboot requirements.",
+      "Fields": [
+        {
+          "Name": "BootId",
+          "JsonName": "boot_id",
+          "Description": "Unique identifier for the current boot session.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RebootRequiredReasons",
+          "JsonName": "reboot_required_reasons",
+          "Description": "Array of reasons why a system reboot is required.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "RebootRequiredReason"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

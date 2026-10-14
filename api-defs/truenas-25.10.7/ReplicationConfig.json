@@ -1,0 +1,129 @@
+{
+  "Name": "ReplicationConfig",
+  "Tag": "replication.config",
+  "Operations": [
+    {
+      "Name": "ReplicationConfigConfig",
+      "OperationId": "replication.config.config",
+      "Method": "CALL",
+      "Path": "replication.config.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReplicationConfigConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "replication.config.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPLICATION_ADMIN",
+          "REPLICATION_TASK_CONFIG_READ",
+          "REPLICATION_TASK_CONFIG_WRITE",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "ReplicationConfigUpdate",
+      "OperationId": "replication.config.update",
+      "Method": "CALL",
+      "Path": "replication.config.update",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReplicationConfigUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "replication.config.update",
+        "Roles": [
+          "REPLICATION_ADMIN",
+          "REPLICATION_TASK_CONFIG_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "replication_config_update",
+          "Argument": "replicationConfigUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReplicationConfigUpdate"
+          },
+          "Required": true,
+          "Description": "ReplicationConfigUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "ReplicationConfigConfigAnswer",
+      "SchemaName": "ReplicationConfigConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the replication configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MaxParallelReplicationTasks",
+          "JsonName": "max_parallel_replication_tasks",
+          "Description": "A maximum number of parallel replication tasks running.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ReplicationConfigUpdate",
+      "SchemaName": "ReplicationConfigUpdate",
+      "Description": "ReplicationConfigUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "MaxParallelReplicationTasks",
+          "JsonName": "max_parallel_replication_tasks",
+          "Description": "A maximum number of parallel replication tasks running.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ReplicationConfigUpdateAnswer",
+      "SchemaName": "ReplicationConfigUpdateAnswer",
+      "Description": "The updated replication configuration.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the replication configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MaxParallelReplicationTasks",
+          "JsonName": "max_parallel_replication_tasks",
+          "Description": "A maximum number of parallel replication tasks running.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ]
+}

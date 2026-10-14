@@ -1,0 +1,460 @@
+{
+  "Name": "Snmp",
+  "Tag": "snmp",
+  "Operations": [
+    {
+      "Name": "SnmpConfig",
+      "OperationId": "snmp.config",
+      "Method": "CALL",
+      "Path": "snmp.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SnmpConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "snmp.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SnmpUpdate",
+      "OperationId": "snmp.update",
+      "Method": "CALL",
+      "Path": "snmp.update",
+      "Description": "Update SNMP Service Configuration.\n\n--- Rules ---\nEnabling v3:\n    requires v3_username, v3_authtype and v3_password\nDisabling v3:\n    By itself will retain the v3 user settings and config in the 'private' config,\n    but remove the entry in the public config to block v3 access by that user.\nDisabling v3 and clearing the v3_username:\n    This will do the actions described in 'Disabling v3' and take the extra step to\n    remove the user from the 'private' config.\n\nThe 'v3_*' settings are valid and enforced only when 'v3' is enabled",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SnmpUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "snmp.update",
+        "Roles": [
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "snmp_update",
+          "Argument": "snmpUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpUpdate"
+          },
+          "Required": true,
+          "Description": "SNMPUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SnmpConfigAnswer",
+      "SchemaName": "SnmpConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Community",
+          "JsonName": "community",
+          "Description": "SNMP community string for v1/v2c access. Allows         letters and numbers: a-zA-Z0-9          special characters: !$%&()+-_={}[]<>,.?          and spaces. Notable excluded characters: # / \\ @",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Contact",
+          "JsonName": "contact",
+          "Description": "Contact information for the system administrator (email or name).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "A comment describing the physical location of the server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Loglevel",
+          "JsonName": "loglevel",
+          "Description": "Logging level for SNMP daemon (0=emergency to 7=debug).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional SNMP daemon configuration options.     Manual settings should be used with caution as they may render the SNMP service non-functional.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Traps",
+          "JsonName": "traps",
+          "Description": "Whether SNMP traps are enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V3",
+          "JsonName": "v3",
+          "Description": "Whether SNMP version 3 is enabled.  Enabling version 3 also requires username, authtype and password.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V3Authtype",
+          "JsonName": "v3_authtype",
+          "Description": "Authentication type for SNMP version 3 (empty string means no authentication).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpV3Authtype"
+          }
+        },
+        {
+          "Name": "V3Password",
+          "JsonName": "v3_password",
+          "Description": "Password for SNMP version 3 authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "V3Privpassphrase",
+          "JsonName": "v3_privpassphrase",
+          "Description": "Privacy passphrase for SNMP version 3 encryption. This field is required when `privproto` is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V3Privproto",
+          "JsonName": "v3_privproto",
+          "Description": "Privacy protocol for SNMP version 3 encryption. `null` means no encryption.      If set, ['AES'|'DES'], a `privpassphrase` must be supplied.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpV3Privproto"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V3Username",
+          "JsonName": "v3_username",
+          "Description": "Username for SNMP version 3 authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Zilstat",
+          "JsonName": "zilstat",
+          "Description": "Whether to enable ZFS dataset statistics collection for SNMP.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SnmpUpdate",
+      "SchemaName": "SnmpUpdate",
+      "Description": "SNMPUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Community",
+          "JsonName": "community",
+          "Description": "SNMP community string for v1/v2c access. Allows         letters and numbers: a-zA-Z0-9          special characters: !$%&()+-_={}[]<>,.?          and spaces. Notable excluded characters: # / \\ @",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Contact",
+          "JsonName": "contact",
+          "Description": "Contact information for the system administrator (email or name).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "A comment describing the physical location of the server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Loglevel",
+          "JsonName": "loglevel",
+          "Description": "Logging level for SNMP daemon (0=emergency to 7=debug).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional SNMP daemon configuration options.     Manual settings should be used with caution as they may render the SNMP service non-functional.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Traps",
+          "JsonName": "traps",
+          "Description": "Whether SNMP traps are enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V3",
+          "JsonName": "v3",
+          "Description": "Whether SNMP version 3 is enabled.  Enabling version 3 also requires username, authtype and password.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V3Authtype",
+          "JsonName": "v3_authtype",
+          "Description": "Authentication type for SNMP version 3 (empty string means no authentication).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpV3Authtype"
+          }
+        },
+        {
+          "Name": "V3Password",
+          "JsonName": "v3_password",
+          "Description": "Password for SNMP version 3 authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "V3Privpassphrase",
+          "JsonName": "v3_privpassphrase",
+          "Description": "Privacy passphrase for SNMP version 3 encryption. This field is required when `privproto` is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V3Privproto",
+          "JsonName": "v3_privproto",
+          "Description": "Privacy protocol for SNMP version 3 encryption. `null` means no encryption.      If set, ['AES'|'DES'], a `privpassphrase` must be supplied.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpV3Privproto"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V3Username",
+          "JsonName": "v3_username",
+          "Description": "Username for SNMP version 3 authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Zilstat",
+          "JsonName": "zilstat",
+          "Description": "Whether to enable ZFS dataset statistics collection for SNMP.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SnmpUpdateAnswer",
+      "SchemaName": "SnmpUpdateAnswer",
+      "Description": "The updated SNMP service configuration.",
+      "Fields": [
+        {
+          "Name": "Community",
+          "JsonName": "community",
+          "Description": "SNMP community string for v1/v2c access. Allows         letters and numbers: a-zA-Z0-9          special characters: !$%&()+-_={}[]<>,.?          and spaces. Notable excluded characters: # / \\ @",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Contact",
+          "JsonName": "contact",
+          "Description": "Contact information for the system administrator (email or name).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "A comment describing the physical location of the server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Loglevel",
+          "JsonName": "loglevel",
+          "Description": "Logging level for SNMP daemon (0=emergency to 7=debug).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional SNMP daemon configuration options.     Manual settings should be used with caution as they may render the SNMP service non-functional.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Traps",
+          "JsonName": "traps",
+          "Description": "Whether SNMP traps are enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V3",
+          "JsonName": "v3",
+          "Description": "Whether SNMP version 3 is enabled.  Enabling version 3 also requires username, authtype and password.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V3Authtype",
+          "JsonName": "v3_authtype",
+          "Description": "Authentication type for SNMP version 3 (empty string means no authentication).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpV3Authtype"
+          }
+        },
+        {
+          "Name": "V3Password",
+          "JsonName": "v3_password",
+          "Description": "Password for SNMP version 3 authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "V3Privpassphrase",
+          "JsonName": "v3_privpassphrase",
+          "Description": "Privacy passphrase for SNMP version 3 encryption. This field is required when `privproto` is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V3Privproto",
+          "JsonName": "v3_privproto",
+          "Description": "Privacy protocol for SNMP version 3 encryption. `null` means no encryption.      If set, ['AES'|'DES'], a `privpassphrase` must be supplied.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SnmpV3Privproto"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "V3Username",
+          "JsonName": "v3_username",
+          "Description": "Username for SNMP version 3 authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Zilstat",
+          "JsonName": "zilstat",
+          "Description": "Whether to enable ZFS dataset statistics collection for SNMP.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SnmpV3Authtype",
+      "SchemaName": "SnmpV3Authtype",
+      "Description": "Authentication type for SNMP version 3 (empty string means no authentication).",
+      "Values": [
+        {
+          "Name": "SnmpV3AuthtypeEmpty",
+          "Value": ""
+        },
+        {
+          "Name": "SnmpV3AuthtypeMD5",
+          "Value": "MD5"
+        },
+        {
+          "Name": "SnmpV3AuthtypeSHA",
+          "Value": "SHA"
+        }
+      ]
+    },
+    {
+      "Name": "SnmpV3Privproto",
+      "SchemaName": "SnmpV3Privproto",
+      "Values": [
+        {
+          "Name": "SnmpV3PrivprotoAES",
+          "Value": "AES"
+        },
+        {
+          "Name": "SnmpV3PrivprotoDES",
+          "Value": "DES"
+        }
+      ]
+    }
+  ]
+}

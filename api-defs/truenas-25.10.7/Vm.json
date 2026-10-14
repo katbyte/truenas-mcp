@@ -1,0 +1,3000 @@
+{
+  "Name": "Vm",
+  "Tag": "vm",
+  "Operations": [
+    {
+      "Name": "VmBootloaderOptions",
+      "OperationId": "vm.bootloader_options",
+      "Method": "CALL",
+      "Path": "vm.bootloader_options",
+      "Description": "Supported motherboard firmware options.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmBootloaderOptionsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.bootloader_options",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmBootloaderOvmfChoices",
+      "OperationId": "vm.bootloader_ovmf_choices",
+      "Method": "CALL",
+      "Path": "vm.bootloader_ovmf_choices",
+      "Description": "Retrieve bootloader ovmf choices",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.bootloader_ovmf_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmClone",
+      "OperationId": "vm.clone",
+      "Method": "CALL",
+      "Path": "vm.clone",
+      "Description": "Clone the VM `id`.\n\n`name` is an optional parameter for the cloned VM.\nIf not provided it will append the next number available to the VM name.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.clone",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to clone."
+        },
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Name for the cloned virtual machine. `null` to auto-generate."
+        }
+      ]
+    },
+    {
+      "Name": "VmCpuModelChoices",
+      "OperationId": "vm.cpu_model_choices",
+      "Method": "CALL",
+      "Path": "vm.cpu_model_choices",
+      "Description": "Retrieve CPU Model choices which can be used with a VM guest to emulate the CPU in the guest.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.cpu_model_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmCreate",
+      "OperationId": "vm.create",
+      "Method": "CALL",
+      "Path": "vm.create",
+      "Description": "Create a Virtual Machine (VM).\n\nMaximum of 16 guest virtual CPUs are allowed. By default, every virtual CPU is configured as a\nseparate package. Multiple cores can be configured per CPU by specifying `cores` attributes.\n`vcpus` specifies total number of CPU sockets. `cores` specifies number of cores per socket. `threads`\nspecifies number of threads per core.\n\n`ensure_display_device` when set ( the default ) will ensure that the guest always has access to a video device.\nFor headless installations like ubuntu server this is required for the guest to operate properly. However\nfor cases where consumer would like to use GPU passthrough and does not want a display device added should set\nthis to `false`.\n\n`arch_type` refers to architecture type and can be specified for the guest. By default the value is `null` and\nsystem in this case will choose a reasonable default based on host.\n\n`machine_type` refers to machine type of the guest based on the architecture type selected with `arch_type`.\nBy default the value is `null` and system in this case will choose a reasonable default based on `arch_type`\nconfiguration.\n\n`shutdown_timeout` indicates the time in seconds the system waits for the VM to cleanly shutdown. During system\nshutdown, if the VM hasn't exited after a hardware shutdown signal has been sent by the system within\n`shutdown_timeout` seconds, system initiates poweroff for the VM to stop it.\n\n`hide_from_msr` is a boolean which when set will hide the KVM hypervisor from standard MSR based discovery and\nis useful to enable when doing GPU passthrough.\n\n`hyperv_enlightenments` can be used to enable subset of predefined Hyper-V enlightenments for Windows guests.\nThese enlightenments improve performance and enable otherwise missing features.\n\n`suspend_on_snapshot` is a boolean attribute which when enabled will automatically pause/suspend VMs when\na snapshot is being taken for periodic snapshot tasks. For manual snapshots, if user has specified vms to\nbe paused, they will be in that case.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.create",
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vm_create",
+          "Argument": "vmCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmCreate"
+          },
+          "Required": true,
+          "Description": "VMCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmDelete",
+      "OperationId": "vm.delete",
+      "Method": "CALL",
+      "Path": "vm.delete",
+      "Description": "Delete a VM.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.delete",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmDeleteOptions"
+          },
+          "Description": "Options controlling the VM deletion process."
+        }
+      ]
+    },
+    {
+      "Name": "VmExportDiskImage",
+      "OperationId": "vm.export_disk_image",
+      "Method": "CALL",
+      "Path": "vm.export_disk_image",
+      "Description": "Exports a zvol to a formatted VM disk image.\n\nUtilized qemu-img with the conversion functionality to export a zvol to\nany supported disk image format, from RAW -> ${OTHER}. The resulting file\nwill be set to inherit the permissions of the target directory.\n\nAs of this implementation it supports the following {format} options :\n\n- QCOW2\n- QED\n- RAW\n- VDI\n- VPC\n- VMDK\n\n`format` is an required parameter for the exported disk image\n`directory` is an required parameter for the export disk image\n`zvol` is the source for the disk image",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.export_disk_image",
+        "Job": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vm_export_disk_image",
+          "Argument": "vmExportDiskImage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ExportDiskImage"
+          },
+          "Required": true,
+          "Description": "VMExportDiskImageArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmFlags",
+      "OperationId": "vm.flags",
+      "Method": "CALL",
+      "Path": "vm.flags",
+      "Description": "Returns a dictionary with CPU flags for the hypervisor.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmFlagsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.flags",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmGetAvailableMemory",
+      "OperationId": "vm.get_available_memory",
+      "Method": "CALL",
+      "Path": "vm.get_available_memory",
+      "Description": "Get the current maximum amount of available memory to be allocated for VMs.\n\nIn case of `overcommit` being `true`, calculations are done in the following manner:\n1. If a VM has requested 10G but is only consuming 5G, only 5G will be counted\n2. System will consider shrinkable ZFS ARC as free memory ( shrinkable ZFS ARC is current ZFS ARC\n   minus ZFS ARC minimum )\n\nIn case of `overcommit` being `false`, calculations are done in the following manner:\n1. Complete VM requested memory will be taken into account regardless of how much actual physical\n   memory the VM is consuming\n2. System will not consider shrinkable ZFS ARC as free memory\n\nMemory is of course a very \"volatile\" resource, values may change abruptly between a\nsecond but I deem it good enough to give the user a clue about how much memory is\navailable at the current moment and if a VM should be allowed to be launched.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_available_memory",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "overcommit",
+          "Argument": "overcommit",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to include overcommitted memory in available memory calculation."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetConsole",
+      "OperationId": "vm.get_console",
+      "Method": "CALL",
+      "Path": "vm.get_console",
+      "Description": "Get the console device from a given guest.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_console",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get console connection information for."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetDisplayDevices",
+      "OperationId": "vm.get_display_devices",
+      "Method": "CALL",
+      "Path": "vm.get_display_devices",
+      "Description": "Get the display devices from a given guest. If a display device has password configured,\n`attributes.password_configured` will be set to `true`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "DisplayDevice"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_display_devices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get display devices for."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetDisplayWebUri",
+      "OperationId": "vm.get_display_web_uri",
+      "Method": "CALL",
+      "Path": "vm.get_display_web_uri",
+      "Description": "Retrieve Display URI for a given VM or appropriate error if there is no display device available\nor if it is not configured to use web interface",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmGetDisplayWebUriAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_display_web_uri",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get display web URI for."
+        },
+        {
+          "Name": "host",
+          "Argument": "host",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Hostname or IP address to use in the URI. Empty string for automatic detection."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmGetDisplayWebUriOptions"
+          },
+          "Description": "Options for generating the web display URI."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetInstance",
+      "OperationId": "vm.get_instance",
+      "Method": "CALL",
+      "Path": "vm.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetMemoryUsage",
+      "OperationId": "vm.get_memory_usage",
+      "Method": "CALL",
+      "Path": "vm.get_memory_usage",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_memory_usage",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get memory usage for."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetVmMemoryInfo",
+      "OperationId": "vm.get_vm_memory_info",
+      "Method": "CALL",
+      "Path": "vm.get_vm_memory_info",
+      "Description": "Returns memory information for `vm_id` VM if it is going to be started.\n\nAll memory attributes are expressed in bytes.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmGetVmMemoryInfoAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_vm_memory_info",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get memory information for."
+        }
+      ]
+    },
+    {
+      "Name": "VmGetVmemoryInUse",
+      "OperationId": "vm.get_vmemory_in_use",
+      "Method": "CALL",
+      "Path": "vm.get_vmemory_in_use",
+      "Description": "The total amount of virtual memory in MB used by guests\n\n    Returns a dict with the following information:\n        RNP - Running but not provisioned\n        PRD - Provisioned but not running\n        RPRD - Running and provisioned",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmGetVmemoryInUseAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.get_vmemory_in_use",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmGuestArchitectureAndMachineChoices",
+      "OperationId": "vm.guest_architecture_and_machine_choices",
+      "Method": "CALL",
+      "Path": "vm.guest_architecture_and_machine_choices",
+      "Description": "Retrieve choices for supported guest architecture types and machine choices.\n\nKeys in the response would be supported guest architecture(s) on the host and their respective values would\nbe supported machine type(s) for the specific architecture on the host.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.guest_architecture_and_machine_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmImportDiskImage",
+      "OperationId": "vm.import_disk_image",
+      "Method": "CALL",
+      "Path": "vm.import_disk_image",
+      "Description": "Imports a specified disk image.\n\nUtilized qemu-img with the auto-detect functionality to auto-convert\nany supported disk image format to RAW -> ZVOL\n\nAs of this implementation it supports:\n\n- QCOW2\n- QED\n- RAW\n- VDI\n- VPC\n- VMDK\n\n`diskimg` is an required parameter for the incoming disk image\n`zvol` is the required target for the imported disk image",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.import_disk_image",
+        "Job": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "vm_import_disk_image",
+          "Argument": "vmImportDiskImage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ImportDiskImage"
+          },
+          "Required": true,
+          "Description": "VMImportDiskImageArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmLogFileDownload",
+      "OperationId": "vm.log_file_download",
+      "Method": "CALL",
+      "Path": "vm.log_file_download",
+      "Description": "Retrieve log file contents of `id` VM.\n\nIt will download empty file if log file does not exist.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.log_file_download",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to download log file for."
+        }
+      ]
+    },
+    {
+      "Name": "VmLogFilePath",
+      "OperationId": "vm.log_file_path",
+      "Method": "CALL",
+      "Path": "vm.log_file_path",
+      "Description": "Retrieve log file path of `id` VM.\n\nIt will return path of the log file if it exists and `null` otherwise.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.log_file_path",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get log file path for."
+        }
+      ]
+    },
+    {
+      "Name": "VmMaximumSupportedVcpus",
+      "OperationId": "vm.maximum_supported_vcpus",
+      "Method": "CALL",
+      "Path": "vm.maximum_supported_vcpus",
+      "Description": "Returns maximum supported VCPU's",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.maximum_supported_vcpus",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmPortWizard",
+      "OperationId": "vm.port_wizard",
+      "Method": "CALL",
+      "Path": "vm.port_wizard",
+      "Description": "It returns the next available Display Server Port and Web Port.\n\nReturns a dict with two keys `port` and `web`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmPortWizardAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.port_wizard",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmPoweroff",
+      "OperationId": "vm.poweroff",
+      "Method": "CALL",
+      "Path": "vm.poweroff",
+      "Description": "Poweroff a VM.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.poweroff",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to power off forcefully."
+        }
+      ]
+    },
+    {
+      "Name": "VmQuery",
+      "OperationId": "vm.query",
+      "Method": "CALL",
+      "Path": "vm.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "VMQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmQueryCount",
+      "OperationId": "vm.query#count",
+      "Method": "CALL",
+      "Path": "vm.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmQueryOne",
+      "OperationId": "vm.query#get",
+      "Method": "CALL",
+      "Path": "vm.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "VmRandomMac",
+      "OperationId": "vm.random_mac",
+      "Method": "CALL",
+      "Path": "vm.random_mac",
+      "Description": "Create a random mac address.\n\nReturns:\n    str: with six groups of two hexadecimal digits",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.random_mac",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmResolutionChoices",
+      "OperationId": "vm.resolution_choices",
+      "Method": "CALL",
+      "Path": "vm.resolution_choices",
+      "Description": "Retrieve supported resolution choices for VM Display devices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.resolution_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmRestart",
+      "OperationId": "vm.restart",
+      "Method": "CALL",
+      "Path": "vm.restart",
+      "Description": "Restart a VM.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.restart",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to restart."
+        }
+      ]
+    },
+    {
+      "Name": "VmResume",
+      "OperationId": "vm.resume",
+      "Method": "CALL",
+      "Path": "vm.resume",
+      "Description": "Resume suspended `id` VM.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.resume",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to resume from suspended state."
+        }
+      ]
+    },
+    {
+      "Name": "VmStart",
+      "OperationId": "vm.start",
+      "Method": "CALL",
+      "Path": "vm.start",
+      "Description": "Start a VM.\n\noptions.overcommit defaults to false, meaning VMs are not allowed to\nstart if there is not enough available memory to hold all configured VMs.\nIf true, VM starts even if there is not enough memory for all configured VMs.\n\nError codes:\n\n    ENOMEM(12): not enough free memory to run the VM without overcommit",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.start",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to start."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmStartOptions"
+          },
+          "Description": "Options controlling the VM start process."
+        }
+      ]
+    },
+    {
+      "Name": "VmStatus",
+      "OperationId": "vm.status",
+      "Method": "CALL",
+      "Path": "vm.status",
+      "Description": "Get the status of `id` VM.\n\nReturns a dict:\n    - state, RUNNING / STOPPED / SUSPENDED\n    - pid, process id if RUNNING",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmStatusAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.status",
+        "Item": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to get status for."
+        }
+      ]
+    },
+    {
+      "Name": "VmStop",
+      "OperationId": "vm.stop",
+      "Method": "CALL",
+      "Path": "vm.stop",
+      "Description": "Stops a VM.\n\nFor unresponsive guests who have exceeded the `shutdown_timeout` defined by the user and have become\nunresponsive, they required to be powered down using `vm.poweroff`. `vm.stop` is only going to send a\nshutdown signal to the guest and wait the desired `shutdown_timeout` value before tearing down guest vmemory.\n\n`force_after_timeout` when supplied, it will initiate poweroff for the VM forcing it to exit if it has\nnot already stopped within the specified `shutdown_timeout`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.stop",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to stop."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmStopOptions"
+          },
+          "Description": "Options controlling the VM stop process."
+        }
+      ]
+    },
+    {
+      "Name": "VmSupportsVirtualization",
+      "OperationId": "vm.supports_virtualization",
+      "Method": "CALL",
+      "Path": "vm.supports_virtualization",
+      "Description": "Returns \"true\" if system supports virtualization, \"false\" otherwise",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.supports_virtualization",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "VmSuspend",
+      "OperationId": "vm.suspend",
+      "Method": "CALL",
+      "Path": "vm.suspend",
+      "Description": "Suspend `id` VM.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.suspend",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to suspend."
+        }
+      ]
+    },
+    {
+      "Name": "VmUpdate",
+      "OperationId": "vm.update",
+      "Method": "CALL",
+      "Path": "vm.update",
+      "Description": "Update all information of a specific VM.\n\n`devices` is a list of virtualized hardware to attach to the virtual machine. If `devices` is not present,\nno change is made to devices. If either the device list order or data stored by the device changes when the\nattribute is passed, these actions are taken:\n\n1) If there is no device in the `devices` list which was previously attached to the VM, that device is\n   removed from the virtual machine.\n2) Devices are updated in the `devices` list when they contain a valid `id` attribute that corresponds to\n   an existing device.\n3) Devices that do not have an `id` attribute are created and attached to `id` VM.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VMQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.update",
+        "Item": true,
+        "Roles": [
+          "VM_DEVICE_WRITE",
+          "VM_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the virtual machine to update."
+        },
+        {
+          "Name": "vm_update",
+          "Argument": "vmUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmUpdate"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the virtual machine."
+        }
+      ]
+    },
+    {
+      "Name": "VmVirtualizationDetails",
+      "OperationId": "vm.virtualization_details",
+      "Method": "CALL",
+      "Path": "vm.virtualization_details",
+      "Description": "Retrieve details if virtualization is supported on the system and in case why it's not supported if it isn't.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "VmVirtualizationDetailsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "vm.virtualization_details",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "VM_DEVICE_READ",
+          "VM_DEVICE_WRITE",
+          "VM_READ",
+          "VM_WRITE"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "DisplayDevice",
+      "SchemaName": "DisplayDevice",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Display device attributes including password configuration status.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DisplayDeviceAttributes"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VM device.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device (lower numbers boot first).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "DisplayDeviceAttributes",
+      "SchemaName": "DisplayDeviceAttributes",
+      "Description": "Display device attributes including password configuration status.",
+      "Fields": [
+        {
+          "Name": "Bind",
+          "JsonName": "bind",
+          "Description": "IP address to bind the display server to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dtype",
+          "JsonName": "dtype",
+          "Description": "Device type identifier for display/graphics devices.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DisplayDeviceAttributesDtype"
+          }
+        },
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password for display server authentication.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PasswordConfigured",
+          "JsonName": "password_configured",
+          "Description": "Whether a password has been configured for display access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "VNC/SPICE port number for remote display access. `null` for auto-assignment.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Resolution",
+          "JsonName": "resolution",
+          "Description": "Screen resolution for the virtual display.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DisplayDeviceAttributesResolution"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Display protocol type.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DisplayDeviceAttributesType"
+          }
+        },
+        {
+          "Name": "Wait",
+          "JsonName": "wait",
+          "Description": "Whether to wait for a client connection before starting the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Web",
+          "JsonName": "web",
+          "Description": "Whether to enable web-based display access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "WebPort",
+          "JsonName": "web_port",
+          "Description": "Web-based display access port number. `null` for auto-assignment.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VMDeviceEntry",
+      "SchemaName": "VMDeviceEntry",
+      "Fields": [
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Device-specific configuration attributes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMDeviceEntryAttributes"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the VM device.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Order",
+          "JsonName": "order",
+          "Description": "Boot order priority for this device (lower numbers boot first).",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Vm",
+          "JsonName": "vm",
+          "Description": "ID of the virtual machine this device belongs to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMDeviceEntryAttributes",
+      "Description": "Device-specific configuration attributes.",
+      "Union": [
+        "VMCDROMDevice",
+        "VMDisplayDevice",
+        "VMNICDevice",
+        "VMPCIDevice",
+        "VMRAWDevice",
+        "VMDiskDevice",
+        "VMUSBDevice"
+      ],
+      "Discriminator": "dtype",
+      "Members": [
+        {
+          "Model": "VMCDROMDevice",
+          "Kinds": [
+            "CDROM"
+          ]
+        },
+        {
+          "Model": "VMDisplayDevice",
+          "Kinds": [
+            "DISPLAY"
+          ]
+        },
+        {
+          "Model": "VMNICDevice",
+          "Kinds": [
+            "NIC"
+          ]
+        },
+        {
+          "Model": "VMPCIDevice",
+          "Kinds": [
+            "PCI"
+          ]
+        },
+        {
+          "Model": "VMRAWDevice",
+          "Kinds": [
+            "RAW"
+          ]
+        },
+        {
+          "Model": "VMDiskDevice",
+          "Kinds": [
+            "DISK"
+          ]
+        },
+        {
+          "Model": "VMUSBDevice",
+          "Kinds": [
+            "USB"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "VMQueryResultItem",
+      "SchemaName": "VMQueryResultItem",
+      "Description": "The newly created virtual machine configuration.",
+      "Fields": [
+        {
+          "Name": "ArchType",
+          "JsonName": "arch_type",
+          "Description": "Guest architecture type. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether to automatically start the VM when the host system boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Bootloader",
+          "JsonName": "bootloader",
+          "Description": "Boot firmware type. `UEFI` for modern UEFI, `UEFI_CSM` for legacy BIOS compatibility.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMQueryResultItemBootloader"
+          }
+        },
+        {
+          "Name": "BootloaderOvmf",
+          "JsonName": "bootloader_ovmf",
+          "Description": "OVMF firmware file to use for UEFI boot.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "CommandLineArgs",
+          "JsonName": "command_line_args",
+          "Description": "Additional command line arguments passed to the VM hypervisor.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Cores",
+          "JsonName": "cores",
+          "Description": "Number of CPU cores per socket.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "CpuMode",
+          "JsonName": "cpu_mode",
+          "Description": "CPU virtualization mode.\n\n* `CUSTOM`: Use specified model.\n* `HOST-MODEL`: Mirror host CPU.\n* `HOST-PASSTHROUGH`: Provide direct access to host CPU features.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMQueryResultItemCpuMode"
+          }
+        },
+        {
+          "Name": "CpuModel",
+          "JsonName": "cpu_model",
+          "Description": "Specific CPU model to emulate. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Cpuset",
+          "JsonName": "cpuset",
+          "Description": "Set of host CPU cores to pin VM CPUs to. `null` for no pinning.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description or notes about the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Devices",
+          "JsonName": "devices",
+          "Description": "Array of virtual devices attached to this VM.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "VMDeviceEntry"
+            }
+          }
+        },
+        {
+          "Name": "DisplayAvailable",
+          "JsonName": "display_available",
+          "Description": "Whether at least one display device is available for this VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableCpuTopologyExtension",
+          "JsonName": "enable_cpu_topology_extension",
+          "Description": "Whether to expose detailed CPU topology information to the guest OS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableSecureBoot",
+          "JsonName": "enable_secure_boot",
+          "Description": "Whether to enable UEFI Secure Boot for enhanced security.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnsureDisplayDevice",
+          "JsonName": "ensure_display_device",
+          "Description": "Whether to ensure at least one display device is configured for the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HideFromMsr",
+          "JsonName": "hide_from_msr",
+          "Description": "Whether to hide hypervisor signatures from guest OS MSR access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HypervEnlightenments",
+          "JsonName": "hyperv_enlightenments",
+          "Description": "Whether to enable Hyper-V enlightenments for improved Windows guest performance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the virtual machine.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MachineType",
+          "JsonName": "machine_type",
+          "Description": "Virtual machine type/chipset. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Amount of memory allocated to the VM in megabytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MinMemory",
+          "JsonName": "min_memory",
+          "Description": "Minimum memory allocation for dynamic memory ballooning in megabytes. Allows VM memory to shrink     during low usage but guarantees this minimum. `null` to disable ballooning.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nodeset",
+          "JsonName": "nodeset",
+          "Description": "Set of NUMA nodes to constrain VM memory allocation. `null` for no constraints.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PinVcpus",
+          "JsonName": "pin_vcpus",
+          "Description": "Whether to pin virtual CPUs to specific host CPU cores. Improves performance but reduces host flexibility.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ShutdownTimeout",
+          "JsonName": "shutdown_timeout",
+          "Description": "Maximum time in seconds to wait for graceful shutdown before forcing power off. Default 90s balances     allowing sufficient time for clean shutdown while avoiding indefinite hangs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current runtime status information for the VM.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMQueryResultItemStatus"
+          }
+        },
+        {
+          "Name": "SuspendOnSnapshot",
+          "JsonName": "suspend_on_snapshot",
+          "Description": "Whether to suspend the VM when taking snapshots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Threads",
+          "JsonName": "threads",
+          "Description": "Number of threads per CPU core.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Time",
+          "JsonName": "time",
+          "Description": "Guest OS time zone reference. `LOCAL` uses host timezone, `UTC` uses coordinated universal time.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VMQueryResultItemTime"
+          }
+        },
+        {
+          "Name": "TrustedPlatformModule",
+          "JsonName": "trusted_platform_module",
+          "Description": "Whether to enable virtual Trusted Platform Module (TPM) for the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uuid",
+          "JsonName": "uuid",
+          "Description": "Unique UUID for the VM. `null` to auto-generate.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vcpus",
+          "JsonName": "vcpus",
+          "Description": "Number of virtual CPUs allocated to the VM.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VMQueryResultItemStatus",
+      "SchemaName": "VMQueryResultItemStatus",
+      "Description": "Current runtime status information for the VM.",
+      "Fields": [
+        {
+          "Name": "DomainState",
+          "JsonName": "domain_state",
+          "Description": "Hypervisor-specific domain state.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pid",
+          "JsonName": "pid",
+          "Description": "Process ID of the running VM. `null` if not running.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current state of the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmBootloaderOptionsAnswer",
+      "SchemaName": "VmBootloaderOptionsAnswer",
+      "Description": "VMBootloaderOptionsResult return fields.",
+      "Fields": [
+        {
+          "Name": "UEFI",
+          "JsonName": "UEFI",
+          "Description": "Modern UEFI firmware with secure boot support.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmBootloaderOptionsAnswerUEFI"
+          }
+        },
+        {
+          "Name": "UEFICSM",
+          "JsonName": "UEFI_CSM",
+          "Description": "UEFI with Compatibility Support Module for legacy BIOS compatibility.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmBootloaderOptionsAnswerUEFICSM"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmCreate",
+      "SchemaName": "VmCreate",
+      "Description": "VMCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "ArchType",
+          "JsonName": "arch_type",
+          "Description": "Guest architecture type. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether to automatically start the VM when the host system boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Bootloader",
+          "JsonName": "bootloader",
+          "Description": "Boot firmware type. `UEFI` for modern UEFI, `UEFI_CSM` for legacy BIOS compatibility.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmBootloader"
+          }
+        },
+        {
+          "Name": "BootloaderOvmf",
+          "JsonName": "bootloader_ovmf",
+          "Description": "OVMF firmware file to use for UEFI boot.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CommandLineArgs",
+          "JsonName": "command_line_args",
+          "Description": "Additional command line arguments passed to the VM hypervisor.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Cores",
+          "JsonName": "cores",
+          "Description": "Number of CPU cores per socket.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "CpuMode",
+          "JsonName": "cpu_mode",
+          "Description": "CPU virtualization mode.\n\n* `CUSTOM`: Use specified model.\n* `HOST-MODEL`: Mirror host CPU.\n* `HOST-PASSTHROUGH`: Provide direct access to host CPU features.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmCpuMode"
+          }
+        },
+        {
+          "Name": "CpuModel",
+          "JsonName": "cpu_model",
+          "Description": "Specific CPU model to emulate. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Cpuset",
+          "JsonName": "cpuset",
+          "Description": "Set of host CPU cores to pin VM CPUs to. `null` for no pinning.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description or notes about the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableCpuTopologyExtension",
+          "JsonName": "enable_cpu_topology_extension",
+          "Description": "Whether to expose detailed CPU topology information to the guest OS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnableSecureBoot",
+          "JsonName": "enable_secure_boot",
+          "Description": "Whether to enable UEFI Secure Boot for enhanced security.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnsureDisplayDevice",
+          "JsonName": "ensure_display_device",
+          "Description": "Whether to ensure at least one display device is configured for the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HideFromMsr",
+          "JsonName": "hide_from_msr",
+          "Description": "Whether to hide hypervisor signatures from guest OS MSR access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HypervEnlightenments",
+          "JsonName": "hyperv_enlightenments",
+          "Description": "Whether to enable Hyper-V enlightenments for improved Windows guest performance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MachineType",
+          "JsonName": "machine_type",
+          "Description": "Virtual machine type/chipset. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Amount of memory allocated to the VM in megabytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MinMemory",
+          "JsonName": "min_memory",
+          "Description": "Minimum memory allocation for dynamic memory ballooning in megabytes. Allows VM memory to shrink     during low usage but guarantees this minimum. `null` to disable ballooning.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nodeset",
+          "JsonName": "nodeset",
+          "Description": "Set of NUMA nodes to constrain VM memory allocation. `null` for no constraints.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PinVcpus",
+          "JsonName": "pin_vcpus",
+          "Description": "Whether to pin virtual CPUs to specific host CPU cores. Improves performance but reduces host flexibility.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ShutdownTimeout",
+          "JsonName": "shutdown_timeout",
+          "Description": "Maximum time in seconds to wait for graceful shutdown before forcing power off. Default 90s balances     allowing sufficient time for clean shutdown while avoiding indefinite hangs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SuspendOnSnapshot",
+          "JsonName": "suspend_on_snapshot",
+          "Description": "Whether to suspend the VM when taking snapshots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Threads",
+          "JsonName": "threads",
+          "Description": "Number of threads per CPU core.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Time",
+          "JsonName": "time",
+          "Description": "Guest OS time zone reference. `LOCAL` uses host timezone, `UTC` uses coordinated universal time.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmTime"
+          }
+        },
+        {
+          "Name": "TrustedPlatformModule",
+          "JsonName": "trusted_platform_module",
+          "Description": "Whether to enable virtual Trusted Platform Module (TPM) for the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uuid",
+          "JsonName": "uuid",
+          "Description": "Unique UUID for the VM. `null` to auto-generate.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vcpus",
+          "JsonName": "vcpus",
+          "Description": "Number of virtual CPUs allocated to the VM.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmDeleteOptions",
+      "SchemaName": "VmDeleteOptions",
+      "Description": "Options controlling the VM deletion process.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Force deletion even if the VM is currently running.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Zvols",
+          "JsonName": "zvols",
+          "Description": "Delete associated ZFS volumes when deleting the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmFlagsAnswer",
+      "SchemaName": "VmFlagsAnswer",
+      "Description": "VMFlagsResult return fields.",
+      "Fields": [
+        {
+          "Name": "AmdAsids",
+          "JsonName": "amd_asids",
+          "Description": "Whether AMD Address Space Identifiers (ASIDs) are supported.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AmdRvi",
+          "JsonName": "amd_rvi",
+          "Description": "Whether AMD Rapid Virtualization Indexing (RVI/NPT) is available.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IntelVmx",
+          "JsonName": "intel_vmx",
+          "Description": "Whether Intel VT-x (VMX) virtualization is available.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UnrestrictedGuest",
+          "JsonName": "unrestricted_guest",
+          "Description": "Whether Intel unrestricted guest mode is supported.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmGetDisplayWebUriAnswer",
+      "SchemaName": "VmGetDisplayWebUriAnswer",
+      "Description": "VMGetDisplayWebUriResult return fields.",
+      "Fields": [
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if URI generation failed. `null` on success.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Uri",
+          "JsonName": "uri",
+          "Description": "Generated web URI for accessing the VM display. `null` on error.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "VmGetDisplayWebUriOptions",
+      "SchemaName": "VmGetDisplayWebUriOptions",
+      "Description": "Options for generating the web display URI.",
+      "Fields": [
+        {
+          "Name": "Protocol",
+          "JsonName": "protocol",
+          "Description": "Protocol to use for the web display URI (HTTP or HTTPS).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmGetDisplayWebUriOptionsProtocol"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmGetInstanceOptions",
+      "SchemaName": "VmGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmGetVmMemoryInfoAnswer",
+      "SchemaName": "VmGetVmMemoryInfoAnswer",
+      "Description": "VMGetVmMemoryInfoResult return fields.",
+      "Fields": [
+        {
+          "Name": "ActualVmRequestedMemory",
+          "JsonName": "actual_vm_requested_memory",
+          "Description": "VM memory in bytes to consider when making calculations for available/required memory. If VM ballooning is     specified for the VM, the minimum VM memory specified by user will be taken into account otherwise total VM     memory requested will be taken into account.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ArcMaxAfterShrink",
+          "JsonName": "arc_max_after_shrink",
+          "Description": "Size of max ARC in bytes after shrinking",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ArcMin",
+          "JsonName": "arc_min",
+          "Description": "Minimum size of ARC in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "ArcToShrink",
+          "JsonName": "arc_to_shrink",
+          "Description": "Size of ARC to shrink in bytes",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CurrentArcMax",
+          "JsonName": "current_arc_max",
+          "Description": "Current size of max ARC in bytes",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MemoryReqFulfilledAfterOvercommit",
+          "JsonName": "memory_req_fulfilled_after_overcommit",
+          "Description": "Memory requirements of VM are fulfilled if over-committing memory is specified",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MinimumMemoryRequested",
+          "JsonName": "minimum_memory_requested",
+          "Description": "Minimum memory requested by the VM",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "OvercommitRequired",
+          "JsonName": "overcommit_required",
+          "Description": "Overcommit of memory is required to start VM",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TotalMemoryRequested",
+          "JsonName": "total_memory_requested",
+          "Description": "Maximum / total memory requested by the VM",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmGetVmemoryInUseAnswer",
+      "SchemaName": "VmGetVmemoryInUseAnswer",
+      "Description": "VMGetVmemoryInUseResult return fields.",
+      "Fields": [
+        {
+          "Name": "PRD",
+          "JsonName": "PRD",
+          "Description": "Provisioned but not running",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "RNP",
+          "JsonName": "RNP",
+          "Description": "Running but not provisioned",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "RPRD",
+          "JsonName": "RPRD",
+          "Description": "Running and provisioned",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmPortWizardAnswer",
+      "SchemaName": "VmPortWizardAnswer",
+      "Description": "VMPortWizardResult return fields.",
+      "Fields": [
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "Available server port",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Web",
+          "JsonName": "web",
+          "Description": "Web port to be used based on available port",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmQueryOptions",
+      "SchemaName": "VmQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmStartOptions",
+      "SchemaName": "VmStartOptions",
+      "Description": "Options controlling the VM start process.",
+      "Fields": [
+        {
+          "Name": "Overcommit",
+          "JsonName": "overcommit",
+          "Description": "Whether to allow memory overcommitment when starting the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmStatusAnswer",
+      "SchemaName": "VmStatusAnswer",
+      "Description": "Current status and runtime information for the virtual machine.",
+      "Fields": [
+        {
+          "Name": "DomainState",
+          "JsonName": "domain_state",
+          "Description": "Hypervisor-specific domain state.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Pid",
+          "JsonName": "pid",
+          "Description": "Process ID of the running VM. `null` if not running.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current state of the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmStopOptions",
+      "SchemaName": "VmStopOptions",
+      "Description": "Options controlling the VM stop process.",
+      "Fields": [
+        {
+          "Name": "Force",
+          "JsonName": "force",
+          "Description": "Whether to force immediate shutdown without graceful shutdown attempt.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ForceAfterTimeout",
+          "JsonName": "force_after_timeout",
+          "Description": "Whether to force shutdown if graceful shutdown times out.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmUpdate",
+      "SchemaName": "VmUpdate",
+      "Description": "Updated configuration for the virtual machine.",
+      "Fields": [
+        {
+          "Name": "ArchType",
+          "JsonName": "arch_type",
+          "Description": "Guest architecture type. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Autostart",
+          "JsonName": "autostart",
+          "Description": "Whether to automatically start the VM when the host system boots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Bootloader",
+          "JsonName": "bootloader",
+          "Description": "Boot firmware type. `UEFI` for modern UEFI, `UEFI_CSM` for legacy BIOS compatibility.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmBootloader"
+          }
+        },
+        {
+          "Name": "CommandLineArgs",
+          "JsonName": "command_line_args",
+          "Description": "Additional command line arguments passed to the VM hypervisor.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Cores",
+          "JsonName": "cores",
+          "Description": "Number of CPU cores per socket.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "CpuMode",
+          "JsonName": "cpu_mode",
+          "Description": "CPU virtualization mode.\n\n* `CUSTOM`: Use specified model.\n* `HOST-MODEL`: Mirror host CPU.\n* `HOST-PASSTHROUGH`: Provide direct access to host CPU features.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmCpuMode"
+          }
+        },
+        {
+          "Name": "CpuModel",
+          "JsonName": "cpu_model",
+          "Description": "Specific CPU model to emulate. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Cpuset",
+          "JsonName": "cpuset",
+          "Description": "Set of host CPU cores to pin VM CPUs to. `null` for no pinning.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Optional description or notes about the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EnableCpuTopologyExtension",
+          "JsonName": "enable_cpu_topology_extension",
+          "Description": "Whether to expose detailed CPU topology information to the guest OS.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EnsureDisplayDevice",
+          "JsonName": "ensure_display_device",
+          "Description": "Whether to ensure at least one display device is configured for the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HideFromMsr",
+          "JsonName": "hide_from_msr",
+          "Description": "Whether to hide hypervisor signatures from guest OS MSR access.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HypervEnlightenments",
+          "JsonName": "hyperv_enlightenments",
+          "Description": "Whether to enable Hyper-V enlightenments for improved Windows guest performance.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MachineType",
+          "JsonName": "machine_type",
+          "Description": "Virtual machine type/chipset. `null` to use hypervisor default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Memory",
+          "JsonName": "memory",
+          "Description": "Amount of memory allocated to the VM in megabytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MinMemory",
+          "JsonName": "min_memory",
+          "Description": "Minimum memory allocation for dynamic memory ballooning in megabytes. Allows VM memory to shrink     during low usage but guarantees this minimum. `null` to disable ballooning.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the virtual machine.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nodeset",
+          "JsonName": "nodeset",
+          "Description": "Set of NUMA nodes to constrain VM memory allocation. `null` for no constraints.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PinVcpus",
+          "JsonName": "pin_vcpus",
+          "Description": "Whether to pin virtual CPUs to specific host CPU cores. Improves performance but reduces host flexibility.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ShutdownTimeout",
+          "JsonName": "shutdown_timeout",
+          "Description": "Maximum time in seconds to wait for graceful shutdown before forcing power off. Default 90s balances     allowing sufficient time for clean shutdown while avoiding indefinite hangs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "SuspendOnSnapshot",
+          "JsonName": "suspend_on_snapshot",
+          "Description": "Whether to suspend the VM when taking snapshots.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Threads",
+          "JsonName": "threads",
+          "Description": "Number of threads per CPU core.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Time",
+          "JsonName": "time",
+          "Description": "Guest OS time zone reference. `LOCAL` uses host timezone, `UTC` uses coordinated universal time.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "VmTime"
+          }
+        },
+        {
+          "Name": "TrustedPlatformModule",
+          "JsonName": "trusted_platform_module",
+          "Description": "Whether to enable virtual Trusted Platform Module (TPM) for the VM.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Uuid",
+          "JsonName": "uuid",
+          "Description": "Unique UUID for the VM. `null` to auto-generate.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vcpus",
+          "JsonName": "vcpus",
+          "Description": "Number of virtual CPUs allocated to the VM.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "VmVirtualizationDetailsAnswer",
+      "SchemaName": "VmVirtualizationDetailsAnswer",
+      "Description": "VMVirtualizationDetailsResult return fields.",
+      "Fields": [
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if virtualization is not available. `null` if supported.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Supported",
+          "JsonName": "supported",
+          "Description": "Whether hardware virtualization is supported and available.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "DisplayDeviceAttributesDtype",
+      "SchemaName": "DisplayDeviceAttributesDtype",
+      "Description": "Device type identifier for display/graphics devices.",
+      "Values": [
+        {
+          "Name": "DisplayDeviceAttributesDtypeDISPLAY",
+          "Value": "DISPLAY"
+        }
+      ]
+    },
+    {
+      "Name": "DisplayDeviceAttributesResolution",
+      "SchemaName": "DisplayDeviceAttributesResolution",
+      "Description": "Screen resolution for the virtual display.",
+      "Values": [
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1920x1200",
+          "Value": "1920x1200"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1920x1080",
+          "Value": "1920x1080"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1600x1200",
+          "Value": "1600x1200"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1600x900",
+          "Value": "1600x900"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1400x1050",
+          "Value": "1400x1050"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1280x1024",
+          "Value": "1280x1024"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1280x720",
+          "Value": "1280x720"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN1024x768",
+          "Value": "1024x768"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN800x600",
+          "Value": "800x600"
+        },
+        {
+          "Name": "DisplayDeviceAttributesResolutionN640x480",
+          "Value": "640x480"
+        }
+      ]
+    },
+    {
+      "Name": "DisplayDeviceAttributesType",
+      "SchemaName": "DisplayDeviceAttributesType",
+      "Description": "Display protocol type.",
+      "Values": [
+        {
+          "Name": "DisplayDeviceAttributesTypeSPICE",
+          "Value": "SPICE"
+        },
+        {
+          "Name": "DisplayDeviceAttributesTypeVNC",
+          "Value": "VNC"
+        }
+      ]
+    },
+    {
+      "Name": "VMQueryResultItemBootloader",
+      "SchemaName": "VMQueryResultItemBootloader",
+      "Description": "Boot firmware type. `UEFI` for modern UEFI, `UEFI_CSM` for legacy BIOS compatibility.",
+      "Values": [
+        {
+          "Name": "VMQueryResultItemBootloaderUEFICSM",
+          "Value": "UEFI_CSM"
+        },
+        {
+          "Name": "VMQueryResultItemBootloaderUEFI",
+          "Value": "UEFI"
+        }
+      ]
+    },
+    {
+      "Name": "VMQueryResultItemCpuMode",
+      "SchemaName": "VMQueryResultItemCpuMode",
+      "Description": "CPU virtualization mode.\n\n* `CUSTOM`: Use specified model.\n* `HOST-MODEL`: Mirror host CPU.\n* `HOST-PASSTHROUGH`: Provide direct access to host CPU features.",
+      "Values": [
+        {
+          "Name": "VMQueryResultItemCpuModeCUSTOM",
+          "Value": "CUSTOM"
+        },
+        {
+          "Name": "VMQueryResultItemCpuModeHOSTMODEL",
+          "Value": "HOST-MODEL"
+        },
+        {
+          "Name": "VMQueryResultItemCpuModeHOSTPASSTHROUGH",
+          "Value": "HOST-PASSTHROUGH"
+        }
+      ]
+    },
+    {
+      "Name": "VMQueryResultItemTime",
+      "SchemaName": "VMQueryResultItemTime",
+      "Description": "Guest OS time zone reference. `LOCAL` uses host timezone, `UTC` uses coordinated universal time.",
+      "Values": [
+        {
+          "Name": "VMQueryResultItemTimeLOCAL",
+          "Value": "LOCAL"
+        },
+        {
+          "Name": "VMQueryResultItemTimeUTC",
+          "Value": "UTC"
+        }
+      ]
+    },
+    {
+      "Name": "VmBootloader",
+      "SchemaName": "VmBootloader",
+      "Description": "Boot firmware type. `UEFI` for modern UEFI, `UEFI_CSM` for legacy BIOS compatibility.",
+      "Values": [
+        {
+          "Name": "VmBootloaderUEFICSM",
+          "Value": "UEFI_CSM"
+        },
+        {
+          "Name": "VmBootloaderUEFI",
+          "Value": "UEFI"
+        }
+      ]
+    },
+    {
+      "Name": "VmBootloaderOptionsAnswerUEFI",
+      "SchemaName": "VmBootloaderOptionsAnswerUEFI",
+      "Description": "Modern UEFI firmware with secure boot support.",
+      "Values": [
+        {
+          "Name": "VmBootloaderOptionsAnswerUEFIUEFI",
+          "Value": "UEFI"
+        }
+      ]
+    },
+    {
+      "Name": "VmBootloaderOptionsAnswerUEFICSM",
+      "SchemaName": "VmBootloaderOptionsAnswerUEFICSM",
+      "Description": "UEFI with Compatibility Support Module for legacy BIOS compatibility.",
+      "Values": [
+        {
+          "Name": "VmBootloaderOptionsAnswerUEFICSMLegacyBIOS",
+          "Value": "Legacy BIOS"
+        }
+      ]
+    },
+    {
+      "Name": "VmCpuMode",
+      "SchemaName": "VmCpuMode",
+      "Description": "CPU virtualization mode.\n\n* `CUSTOM`: Use specified model.\n* `HOST-MODEL`: Mirror host CPU.\n* `HOST-PASSTHROUGH`: Provide direct access to host CPU features.",
+      "Values": [
+        {
+          "Name": "VmCpuModeCUSTOM",
+          "Value": "CUSTOM"
+        },
+        {
+          "Name": "VmCpuModeHOSTMODEL",
+          "Value": "HOST-MODEL"
+        },
+        {
+          "Name": "VmCpuModeHOSTPASSTHROUGH",
+          "Value": "HOST-PASSTHROUGH"
+        }
+      ]
+    },
+    {
+      "Name": "VmGetDisplayWebUriOptionsProtocol",
+      "SchemaName": "VmGetDisplayWebUriOptionsProtocol",
+      "Description": "Protocol to use for the web display URI (HTTP or HTTPS).",
+      "Values": [
+        {
+          "Name": "VmGetDisplayWebUriOptionsProtocolHTTP",
+          "Value": "HTTP"
+        },
+        {
+          "Name": "VmGetDisplayWebUriOptionsProtocolHTTPS",
+          "Value": "HTTPS"
+        }
+      ]
+    },
+    {
+      "Name": "VmTime",
+      "SchemaName": "VmTime",
+      "Description": "Guest OS time zone reference. `LOCAL` uses host timezone, `UTC` uses coordinated universal time.",
+      "Values": [
+        {
+          "Name": "VmTimeLOCAL",
+          "Value": "LOCAL"
+        },
+        {
+          "Name": "VmTimeUTC",
+          "Value": "UTC"
+        }
+      ]
+    }
+  ]
+}

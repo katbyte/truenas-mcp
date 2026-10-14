@@ -1,0 +1,642 @@
+{
+  "Name": "Audit",
+  "Tag": "audit",
+  "Operations": [
+    {
+      "Name": "AuditConfig",
+      "OperationId": "audit.config",
+      "Method": "CALL",
+      "Path": "audit.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AuditConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "audit.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_AUDIT_READ"
+        ]
+      }
+    },
+    {
+      "Name": "AuditDownloadReport",
+      "OperationId": "audit.download_report",
+      "Method": "CALL",
+      "Path": "audit.download_report",
+      "Description": "Download the audit report with the specified name from the server.\nNote that users will only be able to download reports that they personally\ngenerated.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "audit.download_report",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_AUDIT_READ"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AuditDownloadReportData"
+          },
+          "Required": true,
+          "Description": "AuditDownloadReportArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AuditExport",
+      "OperationId": "audit.export",
+      "Method": "CALL",
+      "Path": "audit.export",
+      "Description": "Generate an audit report based on the specified `query-filters` and\n`query-options` for the specified `services` in the specified `export_format`.\n\nSupported export_formats are CSV, JSON, and YAML. The endpoint returns a\nlocal filesystem path where the resulting audit report is located.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "audit.export",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_AUDIT_READ"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AuditExportData"
+          },
+          "Description": "Audit export configuration specifying services, filters, and format."
+        }
+      ]
+    },
+    {
+      "Name": "AuditQuery",
+      "OperationId": "audit.query",
+      "Method": "CALL",
+      "Path": "audit.query",
+      "Description": "Query contents of audit databases specified by `services`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "audit.query",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_AUDIT_READ"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AuditQueryData"
+          },
+          "Description": "Audit query configuration specifying services, filters, and options."
+        }
+      ]
+    },
+    {
+      "Name": "AuditUpdate",
+      "OperationId": "audit.update",
+      "Method": "CALL",
+      "Path": "audit.update",
+      "Description": "Update default audit settings.\n\nThe following fields contain read-only data and are returned in calls\nto `audit.config` and `audit.update`:\n- `space`\n- `remote_logging_enabled`\n- `enabled_services`",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AuditUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "audit.update",
+        "Roles": [
+          "SYSTEM_AUDIT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AuditUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated audit configuration settings."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AnswerEnabledServices",
+      "SchemaName": "AnswerEnabledServices",
+      "Description": "JSON object with key denoting service, and value containing a JSON array of what aspects of this service are     being audited. In the case of the SMB audit, the list contains share names of shares for which auditing is     enabled.",
+      "Fields": [
+        {
+          "Name": "MIDDLEWARE",
+          "JsonName": "MIDDLEWARE",
+          "Description": "Array of middleware audit event types that are enabled.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "SMB",
+          "JsonName": "SMB",
+          "Description": "Array of SMB share names or audit event types that are enabled.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "SUDO",
+          "JsonName": "SUDO",
+          "Description": "Array of sudo commands or users that are being audited.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AnswerSpace",
+      "SchemaName": "AnswerSpace",
+      "Description": "ZFS dataset properties relating space used and available for the dataset where the audit databases are     written.",
+      "Fields": [
+        {
+          "Name": "Available",
+          "JsonName": "available",
+          "Description": "Available space remaining for the audit dataset in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Used",
+          "JsonName": "used",
+          "Description": "Total space used by the audit dataset in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UsedByDataset",
+          "JsonName": "used_by_dataset",
+          "Description": "Space used by the dataset itself (not including snapshots or reservations) in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UsedByReservation",
+          "JsonName": "used_by_reservation",
+          "Description": "Space reserved for the dataset in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UsedBySnapshots",
+          "JsonName": "used_by_snapshots",
+          "Description": "Space used by snapshots of the audit dataset in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuditConfigAnswer",
+      "SchemaName": "AuditConfigAnswer",
+      "Fields": [
+        {
+          "Name": "EnabledServices",
+          "JsonName": "enabled_services",
+          "Description": "JSON object with key denoting service, and value containing a JSON array of what aspects of this service are     being audited. In the case of the SMB audit, the list contains share names of shares for which auditing is     enabled.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AnswerEnabledServices"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the audit configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Quota",
+          "JsonName": "quota",
+          "Description": "Size in GiB of the maximum amount of space that may be consumed by the dataset where the audit dabases are     stored.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "QuotaFillCritical",
+          "JsonName": "quota_fill_critical",
+          "Description": "Percentage used of dataset quota at which to generate a critical alert.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "QuotaFillWarning",
+          "JsonName": "quota_fill_warning",
+          "Description": "Percentage used of dataset quota at which to generate a warning alert.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "RemoteLoggingEnabled",
+          "JsonName": "remote_logging_enabled",
+          "Description": "Logging to a remote syslog server is enabled on TrueNAS, and audit logs are     included in what is sent remotely.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Reservation",
+          "JsonName": "reservation",
+          "Description": "Size in GiB of refreservation to set on ZFS dataset where the audit databases are stored. The refreservation     specifies the minimum amount of space guaranteed to the dataset, and counts against the space available for other     datasets in the zpool where the audit dataset is located.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Retention",
+          "JsonName": "retention",
+          "Description": "Number of days to retain local audit messages.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Space",
+          "JsonName": "space",
+          "Description": "ZFS dataset properties relating space used and available for the dataset where the audit databases are     written.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AnswerSpace"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuditDownloadReportData",
+      "SchemaName": "AuditDownloadReportData",
+      "Description": "AuditDownloadReportArgs parameters.",
+      "Fields": [
+        {
+          "Name": "ReportName",
+          "JsonName": "report_name",
+          "Description": "Name of the audit report to download.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuditExportData",
+      "SchemaName": "AuditExportData",
+      "Description": "Audit export configuration specifying services, filters, and format.",
+      "Fields": [
+        {
+          "Name": "ExportFormat",
+          "JsonName": "export_format",
+          "Description": "Format for exporting audit data.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AuditExportDataExportFormat"
+          }
+        },
+        {
+          "Name": "QueryFilters",
+          "JsonName": "query-filters",
+          "Description": "Array of filters to apply to the audit query results.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "QueryOptions",
+          "JsonName": "query-options",
+          "Description": "If the query-option `force_sql_filters` is true, then the query will be converted into a more efficient form     for better performance. This will not be possible if filters use keys within `svc_data` and `event_data`.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryOptions"
+          }
+        },
+        {
+          "Name": "RemoteController",
+          "JsonName": "remote_controller",
+          "Description": "HA systems may direct the query to the 'remote' controller by including 'remote_controller=True'. The default     is the 'current' controller.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Services",
+          "JsonName": "services",
+          "Description": "Array of services to include in the audit query.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AuditExportDataServices"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuditQueryData",
+      "SchemaName": "AuditQueryData",
+      "Description": "Audit query configuration specifying services, filters, and options.",
+      "Fields": [
+        {
+          "Name": "QueryFilters",
+          "JsonName": "query-filters",
+          "Description": "Array of filters to apply to the audit query results.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "QueryOptions",
+          "JsonName": "query-options",
+          "Description": "If the query-option `force_sql_filters` is true, then the query will be converted into a more efficient form     for better performance. This will not be possible if filters use keys within `svc_data` and `event_data`.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryOptions"
+          }
+        },
+        {
+          "Name": "RemoteController",
+          "JsonName": "remote_controller",
+          "Description": "HA systems may direct the query to the 'remote' controller by including 'remote_controller=True'. The default     is the 'current' controller.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Services",
+          "JsonName": "services",
+          "Description": "Array of services to include in the audit query.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AuditQueryDataServices"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuditUpdateAnswer",
+      "SchemaName": "AuditUpdateAnswer",
+      "Description": "The updated audit configuration.",
+      "Fields": [
+        {
+          "Name": "EnabledServices",
+          "JsonName": "enabled_services",
+          "Description": "JSON object with key denoting service, and value containing a JSON array of what aspects of this service are     being audited. In the case of the SMB audit, the list contains share names of shares for which auditing is     enabled.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AnswerEnabledServices"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the audit configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Quota",
+          "JsonName": "quota",
+          "Description": "Size in GiB of the maximum amount of space that may be consumed by the dataset where the audit dabases are     stored.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "QuotaFillCritical",
+          "JsonName": "quota_fill_critical",
+          "Description": "Percentage used of dataset quota at which to generate a critical alert.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "QuotaFillWarning",
+          "JsonName": "quota_fill_warning",
+          "Description": "Percentage used of dataset quota at which to generate a warning alert.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "RemoteLoggingEnabled",
+          "JsonName": "remote_logging_enabled",
+          "Description": "Logging to a remote syslog server is enabled on TrueNAS, and audit logs are     included in what is sent remotely.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Reservation",
+          "JsonName": "reservation",
+          "Description": "Size in GiB of refreservation to set on ZFS dataset where the audit databases are stored. The refreservation     specifies the minimum amount of space guaranteed to the dataset, and counts against the space available for other     datasets in the zpool where the audit dataset is located.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Retention",
+          "JsonName": "retention",
+          "Description": "Number of days to retain local audit messages.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Space",
+          "JsonName": "space",
+          "Description": "ZFS dataset properties relating space used and available for the dataset where the audit databases are     written.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AnswerSpace"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuditUpdateData",
+      "SchemaName": "AuditUpdateData",
+      "Description": "Updated audit configuration settings.",
+      "Fields": [
+        {
+          "Name": "Quota",
+          "JsonName": "quota",
+          "Description": "Size in GiB of the maximum amount of space that may be consumed by the dataset where the audit dabases are     stored.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "QuotaFillCritical",
+          "JsonName": "quota_fill_critical",
+          "Description": "Percentage used of dataset quota at which to generate a critical alert.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "QuotaFillWarning",
+          "JsonName": "quota_fill_warning",
+          "Description": "Percentage used of dataset quota at which to generate a warning alert.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Reservation",
+          "JsonName": "reservation",
+          "Description": "Size in GiB of refreservation to set on ZFS dataset where the audit databases are stored. The refreservation     specifies the minimum amount of space guaranteed to the dataset, and counts against the space available for other     datasets in the zpool where the audit dataset is located.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Retention",
+          "JsonName": "retention",
+          "Description": "Number of days to retain local audit messages.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "AuditExportDataExportFormat",
+      "SchemaName": "AuditExportDataExportFormat",
+      "Description": "Format for exporting audit data.",
+      "Values": [
+        {
+          "Name": "AuditExportDataExportFormatCSV",
+          "Value": "CSV"
+        },
+        {
+          "Name": "AuditExportDataExportFormatJSON",
+          "Value": "JSON"
+        },
+        {
+          "Name": "AuditExportDataExportFormatYAML",
+          "Value": "YAML"
+        }
+      ]
+    },
+    {
+      "Name": "AuditExportDataServices",
+      "SchemaName": "AuditExportDataServices",
+      "Values": [
+        {
+          "Name": "AuditExportDataServicesMIDDLEWARE",
+          "Value": "MIDDLEWARE"
+        },
+        {
+          "Name": "AuditExportDataServicesSMB",
+          "Value": "SMB"
+        },
+        {
+          "Name": "AuditExportDataServicesSUDO",
+          "Value": "SUDO"
+        },
+        {
+          "Name": "AuditExportDataServicesSYSTEM",
+          "Value": "SYSTEM"
+        }
+      ]
+    },
+    {
+      "Name": "AuditQueryDataServices",
+      "SchemaName": "AuditQueryDataServices",
+      "Values": [
+        {
+          "Name": "AuditQueryDataServicesMIDDLEWARE",
+          "Value": "MIDDLEWARE"
+        },
+        {
+          "Name": "AuditQueryDataServicesSMB",
+          "Value": "SMB"
+        },
+        {
+          "Name": "AuditQueryDataServicesSUDO",
+          "Value": "SUDO"
+        },
+        {
+          "Name": "AuditQueryDataServicesSYSTEM",
+          "Value": "SYSTEM"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1014 @@
+{
+  "Name": "IscsiExtent",
+  "Tag": "iscsi.extent",
+  "Operations": [
+    {
+      "Name": "IscsiExtentCreate",
+      "OperationId": "iscsi.extent.create",
+      "Method": "CALL",
+      "Path": "iscsi.extent.create",
+      "Description": "Create an iSCSI Extent.\n\nWhen `type` is set to FILE, attribute `filesize` is used and it represents number of bytes. `filesize` if\nnot zero should be a multiple of `blocksize`. `path` is a required attribute with `type` set as FILE.\n\nWith `type` being set to DISK, a valid ZFS volume is required.\n\n`insecure_tpc` when enabled allows an initiator to bypass normal access control and access any scannable\ntarget. This allows xcopy operations otherwise blocked by access control.\n\n`xen` is a boolean value which is set to true if Xen is being used as the iSCSI initiator.\n\n`ro` when set to true prevents the initiator from writing to this LUN.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiExtentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "iscsi_extent_create",
+          "Argument": "iscsiExtentCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentCreate"
+          },
+          "Required": true,
+          "Description": "iSCSI extent configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentDelete",
+      "OperationId": "iscsi.extent.delete",
+      "Method": "CALL",
+      "Path": "iscsi.extent.delete",
+      "Description": "Delete iSCSI Extent of `id`.\n\nIf `id` iSCSI Extent's `type` was configured to FILE, `remove` can be set to remove the configured file.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the iSCSI extent to delete."
+        },
+        {
+          "Name": "remove",
+          "Argument": "remove",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to remove the underlying file for file-based extents."
+        },
+        {
+          "Name": "force",
+          "Argument": "force",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to force deletion even if the extent is in use."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentDiskChoices",
+      "OperationId": "iscsi.extent.disk_choices",
+      "Method": "CALL",
+      "Path": "iscsi.extent.disk_choices",
+      "Description": "Return a dict of available zvols that can be used\nwhen creating an extent.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.disk_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_READ",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "IscsiExtentGetInstance",
+      "OperationId": "iscsi.extent.get_instance",
+      "Method": "CALL",
+      "Path": "iscsi.extent.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiExtentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_READ",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentQuery",
+      "OperationId": "iscsi.extent.query",
+      "Method": "CALL",
+      "Path": "iscsi.extent.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_READ",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentQueryCount",
+      "OperationId": "iscsi.extent.query#count",
+      "Method": "CALL",
+      "Path": "iscsi.extent.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_READ",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentQueryOne",
+      "OperationId": "iscsi.extent.query#get",
+      "Method": "CALL",
+      "Path": "iscsi.extent.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiExtentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_READ",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentUpdate",
+      "OperationId": "iscsi.extent.update",
+      "Method": "CALL",
+      "Path": "iscsi.extent.update",
+      "Description": "Update iSCSI Extent of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiExtentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.extent.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_EXTENT_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the iSCSI extent to update."
+        },
+        {
+          "Name": "iscsi_extent_update",
+          "Argument": "iscsiExtentUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentUpdate"
+          },
+          "Required": true,
+          "Description": "Updated iSCSI extent configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IscsiExtentCreate",
+      "SchemaName": "IscsiExtentCreate",
+      "Description": "iSCSI extent configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "AvailThreshold",
+          "JsonName": "avail_threshold",
+          "Description": "Available space threshold percentage or `null` to disable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Blocksize",
+          "JsonName": "blocksize",
+          "Description": "Block size for the extent in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional comment describing the extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Disk",
+          "JsonName": "disk",
+          "Description": "Disk device to use for the extent or `null` if using a file.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the extent is enabled and available for use.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Filesize",
+          "JsonName": "filesize",
+          "Description": "Size of the file-based extent in bytes.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "InsecureTpc",
+          "JsonName": "insecure_tpc",
+          "Description": "Whether to enable insecure Third Party Copy (TPC) operations.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the iSCSI extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "File path for file-based extents or `null` if using a disk.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pblocksize",
+          "JsonName": "pblocksize",
+          "Description": "Whether to use physical block size reporting.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ProductId",
+          "JsonName": "product_id",
+          "Description": "Product ID string for the extent or `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Ro",
+          "JsonName": "ro",
+          "Description": "Whether the extent is read-only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Rpm",
+          "JsonName": "rpm",
+          "Description": "Reported RPM type for the extent.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentRpm"
+          }
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Serial number for the extent or `null` to auto-generate.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of the extent storage backend.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentType"
+          }
+        },
+        {
+          "Name": "Xen",
+          "JsonName": "xen",
+          "Description": "Whether to enable Xen compatibility mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentGetInstanceOptions",
+      "SchemaName": "IscsiExtentGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentQueryOptions",
+      "SchemaName": "IscsiExtentQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentQueryResultItem",
+      "SchemaName": "IscsiExtentQueryResultItem",
+      "Description": "The created iSCSI extent configuration.",
+      "Fields": [
+        {
+          "Name": "AvailThreshold",
+          "JsonName": "avail_threshold",
+          "Description": "Available space threshold percentage or `null` to disable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Blocksize",
+          "JsonName": "blocksize",
+          "Description": "Block size for the extent in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional comment describing the extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Disk",
+          "JsonName": "disk",
+          "Description": "Disk device to use for the extent or `null` if using a file.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the extent is enabled and available for use.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Filesize",
+          "JsonName": "filesize",
+          "Description": "Size of the file-based extent in bytes.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the iSCSI extent.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "InsecureTpc",
+          "JsonName": "insecure_tpc",
+          "Description": "Whether to enable insecure Third Party Copy (TPC) operations.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "Read-only value indicating whether the iscsi extent is located on a locked dataset.\n\n- `true`: The extent is in a locked dataset.\n- `false`: The extent is not in a locked dataset.\n- `null`: Lock status is not available because path locking information was not requested.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Naa",
+          "JsonName": "naa",
+          "Description": "Network Address Authority (NAA) identifier for the extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the iSCSI extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "File path for file-based extents or `null` if using a disk.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pblocksize",
+          "JsonName": "pblocksize",
+          "Description": "Whether to use physical block size reporting.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ProductId",
+          "JsonName": "product_id",
+          "Description": "Product ID string for the extent or `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Ro",
+          "JsonName": "ro",
+          "Description": "Whether the extent is read-only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Rpm",
+          "JsonName": "rpm",
+          "Description": "Reported RPM type for the extent.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentRpm"
+          }
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Serial number for the extent or `null` to auto-generate.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of the extent storage backend.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentType"
+          }
+        },
+        {
+          "Name": "Vendor",
+          "JsonName": "vendor",
+          "Description": "Vendor string reported by the extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Xen",
+          "JsonName": "xen",
+          "Description": "Whether to enable Xen compatibility mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentUpdate",
+      "SchemaName": "IscsiExtentUpdate",
+      "Description": "Updated iSCSI extent configuration data.",
+      "Fields": [
+        {
+          "Name": "AvailThreshold",
+          "JsonName": "avail_threshold",
+          "Description": "Available space threshold percentage or `null` to disable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Blocksize",
+          "JsonName": "blocksize",
+          "Description": "Block size for the extent in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional comment describing the extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Disk",
+          "JsonName": "disk",
+          "Description": "Disk device to use for the extent or `null` if using a file.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the extent is enabled and available for use.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Filesize",
+          "JsonName": "filesize",
+          "Description": "Size of the file-based extent in bytes.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "InsecureTpc",
+          "JsonName": "insecure_tpc",
+          "Description": "Whether to enable insecure Third Party Copy (TPC) operations.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the iSCSI extent.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "File path for file-based extents or `null` if using a disk.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Pblocksize",
+          "JsonName": "pblocksize",
+          "Description": "Whether to use physical block size reporting.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ProductId",
+          "JsonName": "product_id",
+          "Description": "Product ID string for the extent or `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Ro",
+          "JsonName": "ro",
+          "Description": "Whether the extent is read-only.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Rpm",
+          "JsonName": "rpm",
+          "Description": "Reported RPM type for the extent.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentRpm"
+          }
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Serial number for the extent or `null` to auto-generate.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of the extent storage backend.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiExtentType"
+          }
+        },
+        {
+          "Name": "Xen",
+          "JsonName": "xen",
+          "Description": "Whether to enable Xen compatibility mode.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "IscsiExtentRpm",
+      "SchemaName": "IscsiExtentRpm",
+      "Description": "Reported RPM type for the extent.",
+      "Values": [
+        {
+          "Name": "IscsiExtentRpmUNKNOWN",
+          "Value": "UNKNOWN"
+        },
+        {
+          "Name": "IscsiExtentRpmSSD",
+          "Value": "SSD"
+        },
+        {
+          "Name": "IscsiExtentRpmN5400",
+          "Value": "5400"
+        },
+        {
+          "Name": "IscsiExtentRpmN7200",
+          "Value": "7200"
+        },
+        {
+          "Name": "IscsiExtentRpmN10000",
+          "Value": "10000"
+        },
+        {
+          "Name": "IscsiExtentRpmN15000",
+          "Value": "15000"
+        }
+      ]
+    },
+    {
+      "Name": "IscsiExtentType",
+      "SchemaName": "IscsiExtentType",
+      "Description": "Type of the extent storage backend.",
+      "Values": [
+        {
+          "Name": "IscsiExtentTypeDISK",
+          "Value": "DISK"
+        },
+        {
+          "Name": "IscsiExtentTypeFILE",
+          "Value": "FILE"
+        }
+      ]
+    }
+  ]
+}

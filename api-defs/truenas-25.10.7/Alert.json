@@ -1,0 +1,221 @@
+{
+  "Name": "Alert",
+  "Tag": "alert",
+  "Operations": [
+    {
+      "Name": "AlertDismiss",
+      "OperationId": "alert.dismiss",
+      "Method": "CALL",
+      "Path": "alert.dismiss",
+      "Description": "Dismiss `id` alert.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alert.dismiss",
+        "Roles": [
+          "ALERT_LIST_WRITE",
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "uuid",
+          "Argument": "uuid",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "UUID of the alert to dismiss."
+        }
+      ]
+    },
+    {
+      "Name": "AlertList",
+      "OperationId": "alert.list",
+      "Method": "CALL",
+      "Path": "alert.list",
+      "Description": "List all types of alerts including active/dismissed currently in the system.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "Alert"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alert.list",
+        "Read": true,
+        "Roles": [
+          "ALERT_LIST_READ",
+          "ALERT_LIST_WRITE",
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AlertListCategories",
+      "OperationId": "alert.list_categories",
+      "Method": "CALL",
+      "Path": "alert.list_categories",
+      "Description": "List all types of alerts which the system can issue.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AlertCategory"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alert.list_categories",
+        "Read": true,
+        "Roles": [
+          "ALERT_LIST_READ",
+          "ALERT_LIST_WRITE",
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AlertListPolicies",
+      "OperationId": "alert.list_policies",
+      "Method": "CALL",
+      "Path": "alert.list_policies",
+      "Description": "List all alert policies which indicate the frequency of the alerts.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alert.list_policies",
+        "Read": true,
+        "Roles": [
+          "ALERT_LIST_READ",
+          "ALERT_LIST_WRITE",
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AlertRestore",
+      "OperationId": "alert.restore",
+      "Method": "CALL",
+      "Path": "alert.restore",
+      "Description": "Restore `id` alert which had been dismissed.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alert.restore",
+        "Roles": [
+          "ALERT_LIST_WRITE",
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "uuid",
+          "Argument": "uuid",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "UUID of the dismissed alert to restore."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AlertCategory",
+      "SchemaName": "AlertCategory",
+      "Fields": [
+        {
+          "Name": "Classes",
+          "JsonName": "classes",
+          "Description": "Array of alert classes within this category.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AlertCategoryClass"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the alert category.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Human-readable title for the alert category.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertCategoryClass",
+      "SchemaName": "AlertCategoryClass",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the alert class.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Level",
+          "JsonName": "level",
+          "Description": "Default severity level for alerts in this class.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ProactiveSupport",
+          "JsonName": "proactive_support",
+          "Description": "Whether this alert class is included in proactive support monitoring.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Human-readable title for the alert class.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

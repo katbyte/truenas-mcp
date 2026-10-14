@@ -1,0 +1,194 @@
+{
+  "Name": "Alertclasses",
+  "Tag": "alertclasses",
+  "Operations": [
+    {
+      "Name": "AlertclassesConfig",
+      "OperationId": "alertclasses.config",
+      "Method": "CALL",
+      "Path": "alertclasses.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AlertclassesConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertclasses.config",
+        "Read": true,
+        "Roles": [
+          "ALERT_READ",
+          "ALERT_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AlertclassesUpdate",
+      "OperationId": "alertclasses.update",
+      "Method": "CALL",
+      "Path": "alertclasses.update",
+      "Description": "Update default Alert settings.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AlertclassesUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "alertclasses.update",
+        "Roles": [
+          "ALERT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "alert_class_update",
+          "Argument": "alertClassUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertClassUpdate"
+          },
+          "Required": true,
+          "Description": "Updated alert class configuration settings."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AlertClassConfiguration",
+      "SchemaName": "AlertClassConfiguration",
+      "Fields": [
+        {
+          "Name": "Level",
+          "JsonName": "level",
+          "Description": "Severity level for alerts of this class.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertServiceLevel"
+          }
+        },
+        {
+          "Name": "Policy",
+          "JsonName": "policy",
+          "Description": "Notification policy for alerts of this class.\n\n* `IMMEDIATELY`: Send notifications as soon as alerts occur\n* `HOURLY`: Batch notifications and send hourly\n* `DAILY`: Batch notifications and send daily\n* `NEVER`: Do not send notifications for this alert class",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AlertClassConfigurationPolicy"
+          }
+        },
+        {
+          "Name": "ProactiveSupport",
+          "JsonName": "proactive_support",
+          "Description": "Whether to include alerts of this class in proactive support reporting.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertClassUpdate",
+      "SchemaName": "AlertClassUpdate",
+      "Description": "Updated alert class configuration settings.",
+      "Fields": [
+        {
+          "Name": "Classes",
+          "JsonName": "classes",
+          "Description": "Object mapping alert class names to their configuration settings.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AlertClassConfiguration"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertclassesConfigAnswer",
+      "SchemaName": "AlertclassesConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Classes",
+          "JsonName": "classes",
+          "Description": "Object mapping alert class names to their configuration settings.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AlertClassConfiguration"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the alert classes configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AlertclassesUpdateAnswer",
+      "SchemaName": "AlertclassesUpdateAnswer",
+      "Description": "The updated alert classes configuration.",
+      "Fields": [
+        {
+          "Name": "Classes",
+          "JsonName": "classes",
+          "Description": "Object mapping alert class names to their configuration settings.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AlertClassConfiguration"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the alert classes configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "AlertClassConfigurationPolicy",
+      "SchemaName": "AlertClassConfigurationPolicy",
+      "Description": "Notification policy for alerts of this class.\n\n* `IMMEDIATELY`: Send notifications as soon as alerts occur\n* `HOURLY`: Batch notifications and send hourly\n* `DAILY`: Batch notifications and send daily\n* `NEVER`: Do not send notifications for this alert class",
+      "Values": [
+        {
+          "Name": "AlertClassConfigurationPolicyIMMEDIATELY",
+          "Value": "IMMEDIATELY"
+        },
+        {
+          "Name": "AlertClassConfigurationPolicyHOURLY",
+          "Value": "HOURLY"
+        },
+        {
+          "Name": "AlertClassConfigurationPolicyDAILY",
+          "Value": "DAILY"
+        },
+        {
+          "Name": "AlertClassConfigurationPolicyNEVER",
+          "Value": "NEVER"
+        }
+      ]
+    }
+  ]
+}

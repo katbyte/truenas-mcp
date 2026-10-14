@@ -1,0 +1,674 @@
+{
+  "Name": "PoolScrub",
+  "Tag": "pool.scrub",
+  "Operations": [
+    {
+      "Name": "PoolScrubCreate",
+      "OperationId": "pool.scrub.create",
+      "Method": "CALL",
+      "Path": "pool.scrub.create",
+      "Description": "Create a scrub task for a pool.\n\n`threshold` refers to the minimum amount of time in days has to be passed before\na scrub can run again.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolScrubQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.create",
+        "Roles": [
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration for the new scrub schedule."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubDelete",
+      "OperationId": "pool.scrub.delete",
+      "Method": "CALL",
+      "Path": "pool.scrub.delete",
+      "Description": "Delete scrub task of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.delete",
+        "Item": true,
+        "Roles": [
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id_",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the scrub schedule to delete."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubGetInstance",
+      "OperationId": "pool.scrub.get_instance",
+      "Method": "CALL",
+      "Path": "pool.scrub.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolScrubQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.get_instance",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_SCRUB_READ",
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubQuery",
+      "OperationId": "pool.scrub.query",
+      "Method": "CALL",
+      "Path": "pool.scrub.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_SCRUB_READ",
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubQueryCount",
+      "OperationId": "pool.scrub.query#count",
+      "Method": "CALL",
+      "Path": "pool.scrub.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_SCRUB_READ",
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubQueryOne",
+      "OperationId": "pool.scrub.query#get",
+      "Method": "CALL",
+      "Path": "pool.scrub.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolScrubQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "POOL_READ",
+          "POOL_SCRUB_READ",
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubRun",
+      "OperationId": "pool.scrub.run",
+      "Method": "CALL",
+      "Path": "pool.scrub.run",
+      "Description": "Initiate a scrub of a pool `name` if last scrub was performed more than `threshold` days before.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.run",
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the pool to run scrub on."
+        },
+        {
+          "Name": "threshold",
+          "Argument": "threshold",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Description": "Days before a scrub is due when the scrub should start."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubScrub",
+      "OperationId": "pool.scrub.scrub",
+      "Method": "CALL",
+      "Path": "pool.scrub.scrub",
+      "Description": "Start/Stop/Pause a scrub on pool `name`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.scrub",
+        "Job": true,
+        "Roles": [
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the pool to perform scrub action on."
+        },
+        {
+          "Name": "action",
+          "Argument": "action",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubAction"
+          },
+          "Description": "The scrub action to perform on the pool."
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubUpdate",
+      "OperationId": "pool.scrub.update",
+      "Method": "CALL",
+      "Path": "pool.scrub.update",
+      "Description": "Update scrub task of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "PoolScrubQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "pool.scrub.update",
+        "Item": true,
+        "Roles": [
+          "POOL_SCRUB_WRITE",
+          "POOL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id_",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the scrub schedule to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolScrubUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the scrub schedule."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "PoolScrubCreateData",
+      "SchemaName": "PoolScrubCreateData",
+      "Description": "Configuration for the new scrub schedule.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description or notes for this scrub schedule.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this scrub schedule is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "ID of the pool to scrub.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule for when scrubs should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Threshold",
+          "JsonName": "threshold",
+          "Description": "Days before a scrub is due when a scrub should automatically start.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubGetInstanceOptions",
+      "SchemaName": "PoolScrubGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubQueryOptions",
+      "SchemaName": "PoolScrubQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubQueryResultItem",
+      "SchemaName": "PoolScrubQueryResultItem",
+      "Description": "The newly created scrub schedule configuration.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description or notes for this scrub schedule.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this scrub schedule is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the scrub schedule.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "ID of the pool to scrub.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "PoolName",
+          "JsonName": "pool_name",
+          "Description": "Name of the pool being scrubbed.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule for when scrubs should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Threshold",
+          "JsonName": "threshold",
+          "Description": "Days before a scrub is due when a scrub should automatically start.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PoolScrubUpdateData",
+      "SchemaName": "PoolScrubUpdateData",
+      "Description": "Updated configuration for the scrub schedule.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description or notes for this scrub schedule.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this scrub schedule is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Pool",
+          "JsonName": "pool",
+          "Description": "ID of the pool to scrub.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule for when scrubs should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Threshold",
+          "JsonName": "threshold",
+          "Description": "Days before a scrub is due when a scrub should automatically start.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ]
+}

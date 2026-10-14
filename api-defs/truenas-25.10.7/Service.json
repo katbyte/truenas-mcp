@@ -1,0 +1,16 @@
+{
+  "Name": "truenas",
+  "Package": "truenas",
+  "Title": "truenas",
+  "ApiVersion": "25.10.7",
+  "Source": "api-defs/truenas-methods-25.10.7.json",
+  "Auth": "",
+  "Workarounds": [
+    "truenas-secrets",
+    "truenas-sets"
+  ],
+  "Dates": [
+    "$date",
+    "2006-01-02T15:04:05Z07:00"
+  ]
+}

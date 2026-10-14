@@ -1,0 +1,713 @@
+{
+  "Name": "NvmetNamespace",
+  "Tag": "nvmet.namespace",
+  "Operations": [
+    {
+      "Name": "NvmetNamespaceCreate",
+      "OperationId": "nvmet.namespace.create",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.create",
+      "Description": "Create a NVMe target namespace in a subsystem (`subsys`).\n\nThis will expose the namespace to any hosts permitted to access the subsystem.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetNamespaceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nvmet_namespace_create",
+          "Argument": "nvmetNamespaceCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceCreate"
+          },
+          "Required": true,
+          "Description": "NVMe-oF namespace configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceDelete",
+      "OperationId": "nvmet.namespace.delete",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.delete",
+      "Description": "Delete NVMe target namespace of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NVMe-oF namespace to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceDeleteOptions"
+          },
+          "Description": "Options controlling namespace deletion behavior."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceGetInstance",
+      "OperationId": "nvmet.namespace.get_instance",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetNamespaceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceQuery",
+      "OperationId": "nvmet.namespace.query",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetNamespaceQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceQueryCount",
+      "OperationId": "nvmet.namespace.query#count",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceQueryOne",
+      "OperationId": "nvmet.namespace.query#get",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetNamespaceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_READ",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceUpdate",
+      "OperationId": "nvmet.namespace.update",
+      "Method": "CALL",
+      "Path": "nvmet.namespace.update",
+      "Description": "Update NVMe target namespace of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NVMetNamespaceQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nvmet.namespace.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NVME_TARGET_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the NVMe-oF namespace to update."
+        },
+        {
+          "Name": "nvmet_namespace_update",
+          "Argument": "nvmetNamespaceUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceUpdate"
+          },
+          "Required": true,
+          "Description": "Updated NVMe-oF namespace configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NVMetNamespaceQueryResultItem",
+      "SchemaName": "NVMetNamespaceQueryResultItem",
+      "Description": "The created NVMe-oF namespace configuration.",
+      "Fields": [
+        {
+          "Name": "DeviceNguid",
+          "JsonName": "device_nguid",
+          "Description": "Namespace Globally Unique Identifier for the namespace.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DevicePath",
+          "JsonName": "device_path",
+          "Description": "Path to the device or file being used to implement the namespace.\n\nWhen `device_type` is:\n\n* \"ZVOL\": `device_path` is e.g. \"zvol/poolname/zvolname\"\n* \"FILE\": `device_path` is e.g. \"/mnt/poolmnt/path/to/file\". The file will be created if necessary.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DeviceType",
+          "JsonName": "device_type",
+          "Description": "Type of device (or file) used to implement the namespace.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetNamespaceQueryResultItemDeviceType"
+          }
+        },
+        {
+          "Name": "DeviceUuid",
+          "JsonName": "device_uuid",
+          "Description": "Unique device identifier for the namespace.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "If `enabled` is `False` then the namespace will not be accessible.\n\nSome namespace configuration changes are blocked when that namespace is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Filesize",
+          "JsonName": "filesize",
+          "Description": "When `device_type` is \"FILE\" then this will be the size of the file in bytes.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the NVMe-oF namespace.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "Reflect the locked state of the namespace.\n\nThe underlying `device_path` could be an encrypted ZVOL, or a file on an encrypted dataset. In either case     `locked` will be `True` if the underlying entity is locked.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nsid",
+          "JsonName": "nsid",
+          "Description": "Namespace ID (NSID).\n\nEach namespace within a subsystem has an associated NSID, unique within that subsystem.\n\nIf not supplied during `namespace` creation then the next available NSID will be used.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Subsys",
+          "JsonName": "subsys",
+          "Description": "NVMe-oF subsystem that contains this namespace.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NVMetSubsysQueryResultItem"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceCreate",
+      "SchemaName": "NvmetNamespaceCreate",
+      "Description": "NVMe-oF namespace configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "DevicePath",
+          "JsonName": "device_path",
+          "Description": "Normalized path to the device or file for the namespace.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DeviceType",
+          "JsonName": "device_type",
+          "Description": "Type of device (or file) used to implement the namespace.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceDeviceType"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "If `enabled` is `False` then the namespace will not be accessible.\n\nSome namespace configuration changes are blocked when that namespace is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Filesize",
+          "JsonName": "filesize",
+          "Description": "When `device_type` is \"FILE\" then this will be the size of the file in bytes.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nsid",
+          "JsonName": "nsid",
+          "Description": "Namespace ID (NSID).\n\nEach namespace within a subsystem has an associated NSID, unique within that subsystem.\n\nIf not supplied during `namespace` creation then the next available NSID will be used.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SubsysId",
+          "JsonName": "subsys_id",
+          "Description": "ID of the NVMe-oF subsystem to contain this namespace.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceDeleteOptions",
+      "SchemaName": "NvmetNamespaceDeleteOptions",
+      "Description": "Options controlling namespace deletion behavior.",
+      "Fields": [
+        {
+          "Name": "Remove",
+          "JsonName": "remove",
+          "Description": "Remove file underlying namespace if `device_type` is FILE.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceGetInstanceOptions",
+      "SchemaName": "NvmetNamespaceGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceQueryOptions",
+      "SchemaName": "NvmetNamespaceQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceUpdate",
+      "SchemaName": "NvmetNamespaceUpdate",
+      "Description": "Updated NVMe-oF namespace configuration data.",
+      "Fields": [
+        {
+          "Name": "DevicePath",
+          "JsonName": "device_path",
+          "Description": "Normalized path to the device or file for the namespace.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DeviceType",
+          "JsonName": "device_type",
+          "Description": "Type of device (or file) used to implement the namespace.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NvmetNamespaceDeviceType"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "If `enabled` is `False` then the namespace will not be accessible.\n\nSome namespace configuration changes are blocked when that namespace is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Filesize",
+          "JsonName": "filesize",
+          "Description": "When `device_type` is \"FILE\" then this will be the size of the file in bytes.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nsid",
+          "JsonName": "nsid",
+          "Description": "Namespace ID (NSID).\n\nEach namespace within a subsystem has an associated NSID, unique within that subsystem.\n\nIf not supplied during `namespace` creation then the next available NSID will be used.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SubsysId",
+          "JsonName": "subsys_id",
+          "Description": "ID of the NVMe-oF subsystem to contain this namespace.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "NVMetNamespaceQueryResultItemDeviceType",
+      "SchemaName": "NVMetNamespaceQueryResultItemDeviceType",
+      "Description": "Type of device (or file) used to implement the namespace.",
+      "Values": [
+        {
+          "Name": "NVMetNamespaceQueryResultItemDeviceTypeZVOL",
+          "Value": "ZVOL"
+        },
+        {
+          "Name": "NVMetNamespaceQueryResultItemDeviceTypeFILE",
+          "Value": "FILE"
+        }
+      ]
+    },
+    {
+      "Name": "NvmetNamespaceDeviceType",
+      "SchemaName": "NvmetNamespaceDeviceType",
+      "Description": "Type of device (or file) used to implement the namespace.",
+      "Values": [
+        {
+          "Name": "NvmetNamespaceDeviceTypeZVOL",
+          "Value": "ZVOL"
+        },
+        {
+          "Name": "NvmetNamespaceDeviceTypeFILE",
+          "Value": "FILE"
+        }
+      ]
+    }
+  ]
+}

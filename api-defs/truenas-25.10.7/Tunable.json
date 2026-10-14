@@ -1,0 +1,712 @@
+{
+  "Name": "Tunable",
+  "Tag": "tunable",
+  "Operations": [
+    {
+      "Name": "TunableCreate",
+      "OperationId": "tunable.create",
+      "Method": "CALL",
+      "Path": "tunable.create",
+      "Description": "Create a tunable.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TunableQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.create",
+        "Job": true,
+        "Roles": [
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableCreateData"
+          },
+          "Required": true,
+          "Description": "Configuration for creating a new system tunable."
+        }
+      ]
+    },
+    {
+      "Name": "TunableDelete",
+      "OperationId": "tunable.delete",
+      "Method": "CALL",
+      "Path": "tunable.delete",
+      "Description": "Delete Tunable of `id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.delete",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the tunable to delete."
+        }
+      ]
+    },
+    {
+      "Name": "TunableGetInstance",
+      "OperationId": "tunable.get_instance",
+      "Method": "CALL",
+      "Path": "tunable.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TunableQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_TUNABLE_READ",
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "TunableQuery",
+      "OperationId": "tunable.query",
+      "Method": "CALL",
+      "Path": "tunable.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "TunableQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_TUNABLE_READ",
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "TunableQueryCount",
+      "OperationId": "tunable.query#count",
+      "Method": "CALL",
+      "Path": "tunable.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_TUNABLE_READ",
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "TunableQueryOne",
+      "OperationId": "tunable.query#get",
+      "Method": "CALL",
+      "Path": "tunable.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TunableQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_TUNABLE_READ",
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "TunableTunableTypeChoices",
+      "OperationId": "tunable.tunable_type_choices",
+      "Method": "CALL",
+      "Path": "tunable.tunable_type_choices",
+      "Description": "Retrieve the supported tunable types that can be changed.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TunableTunableTypeChoicesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.tunable_type_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_TUNABLE_READ",
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "TunableUpdate",
+      "OperationId": "tunable.update",
+      "Method": "CALL",
+      "Path": "tunable.update",
+      "Description": "Update Tunable of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TunableQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tunable.update",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "SYSTEM_TUNABLE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the tunable to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated configuration for the tunable."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "TunableCreateData",
+      "SchemaName": "TunableCreateData",
+      "Description": "Configuration for creating a new system tunable.",
+      "Fields": [
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment explaining the purpose of this tunable.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this tunable is active and should be applied.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "* `SYSCTL`: `var` is a sysctl name (e.g. `kernel.watchdog`) and `value` is its corresponding value (e.g. `0`).\n* `UDEV`: `var` is a udev rules file name (e.g. `10-disable-usb`, `.rules` suffix will be appended automatically)     and `value` is its contents (e.g. `BUS==\"usb\", OPTIONS+=\"ignore_device\"`).\n* `ZFS`: `var` is a ZFS kernel module parameter name (e.g. `zfs_dirty_data_max_max`) and `value` is its value     (e.g. `783091712`).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableType"
+          }
+        },
+        {
+          "Name": "UpdateInitramfs",
+          "JsonName": "update_initramfs",
+          "Description": "If `false`, then initramfs will not be updated after creating a ZFS tunable and you will need to run     `system boot update_initramfs` manually.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "Value to assign to the tunable parameter.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Var",
+          "JsonName": "var",
+          "Description": "Name or identifier of the system parameter to tune.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TunableGetInstanceOptions",
+      "SchemaName": "TunableGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TunableQueryOptions",
+      "SchemaName": "TunableQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TunableQueryResultItem",
+      "SchemaName": "TunableQueryResultItem",
+      "Description": "The newly created tunable configuration.",
+      "Fields": [
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment explaining the purpose of this tunable.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this tunable is active and should be applied.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the tunable configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrigValue",
+          "JsonName": "orig_value",
+          "Description": "Original system value of the parameter before this tunable was applied.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "* `SYSCTL`: `var` is a sysctl name (e.g. `kernel.watchdog`) and `value` is its corresponding value (e.g. `0`).\n* `UDEV`: `var` is a udev rules file name (e.g. `10-disable-usb`, `.rules` suffix will be appended automatically)     and `value` is its contents (e.g. `BUS==\"usb\", OPTIONS+=\"ignore_device\"`).\n* `ZFS`: `var` is a ZFS kernel module parameter name (e.g. `zfs_dirty_data_max_max`) and `value` is its value     (e.g. `783091712`).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableType"
+          }
+        },
+        {
+          "Name": "UpdateInitramfs",
+          "JsonName": "update_initramfs",
+          "Description": "If `false`, then initramfs will not be updated after creating a ZFS tunable and you will need to run     `system boot update_initramfs` manually.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "Value to assign to the tunable parameter.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Var",
+          "JsonName": "var",
+          "Description": "Name or identifier of the system parameter to tune.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TunableTunableTypeChoicesAnswer",
+      "SchemaName": "TunableTunableTypeChoicesAnswer",
+      "Description": "Available tunable types with their identifiers.",
+      "Fields": [
+        {
+          "Name": "SYSCTL",
+          "JsonName": "SYSCTL",
+          "Description": "System control parameters that affect kernel behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableTunableTypeChoicesAnswerSYSCTL"
+          }
+        },
+        {
+          "Name": "UDEV",
+          "JsonName": "UDEV",
+          "Description": "Device management rules for hardware detection and configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableTunableTypeChoicesAnswerUDEV"
+          }
+        },
+        {
+          "Name": "ZFS",
+          "JsonName": "ZFS",
+          "Description": "ZFS filesystem kernel module parameters.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TunableTunableTypeChoicesAnswerZFS"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TunableUpdateData",
+      "SchemaName": "TunableUpdateData",
+      "Description": "Updated configuration for the tunable.",
+      "Fields": [
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Optional descriptive comment explaining the purpose of this tunable.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether this tunable is active and should be applied.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UpdateInitramfs",
+          "JsonName": "update_initramfs",
+          "Description": "If `false`, then initramfs will not be updated after creating a ZFS tunable and you will need to run     `system boot update_initramfs` manually.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "Value to assign to the tunable parameter.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "TunableTunableTypeChoicesAnswerSYSCTL",
+      "SchemaName": "TunableTunableTypeChoicesAnswerSYSCTL",
+      "Description": "System control parameters that affect kernel behavior.",
+      "Values": [
+        {
+          "Name": "TunableTunableTypeChoicesAnswerSYSCTLSYSCTL",
+          "Value": "SYSCTL"
+        }
+      ]
+    },
+    {
+      "Name": "TunableTunableTypeChoicesAnswerUDEV",
+      "SchemaName": "TunableTunableTypeChoicesAnswerUDEV",
+      "Description": "Device management rules for hardware detection and configuration.",
+      "Values": [
+        {
+          "Name": "TunableTunableTypeChoicesAnswerUDEVUDEV",
+          "Value": "UDEV"
+        }
+      ]
+    },
+    {
+      "Name": "TunableTunableTypeChoicesAnswerZFS",
+      "SchemaName": "TunableTunableTypeChoicesAnswerZFS",
+      "Description": "ZFS filesystem kernel module parameters.",
+      "Values": [
+        {
+          "Name": "TunableTunableTypeChoicesAnswerZFSZFS",
+          "Value": "ZFS"
+        }
+      ]
+    },
+    {
+      "Name": "TunableType",
+      "SchemaName": "TunableType",
+      "Description": "* `SYSCTL`: `var` is a sysctl name (e.g. `kernel.watchdog`) and `value` is its corresponding value (e.g. `0`).\n* `UDEV`: `var` is a udev rules file name (e.g. `10-disable-usb`, `.rules` suffix will be appended automatically)     and `value` is its contents (e.g. `BUS==\"usb\", OPTIONS+=\"ignore_device\"`).\n* `ZFS`: `var` is a ZFS kernel module parameter name (e.g. `zfs_dirty_data_max_max`) and `value` is its value     (e.g. `783091712`).",
+      "Values": [
+        {
+          "Name": "TunableTypeSYSCTL",
+          "Value": "SYSCTL"
+        },
+        {
+          "Name": "TunableTypeUDEV",
+          "Value": "UDEV"
+        },
+        {
+          "Name": "TunableTypeZFS",
+          "Value": "ZFS"
+        }
+      ]
+    }
+  ]
+}

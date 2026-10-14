@@ -1,0 +1,828 @@
+{
+  "Name": "IscsiTarget",
+  "Tag": "iscsi.target",
+  "Operations": [
+    {
+      "Name": "IscsiTargetCreate",
+      "OperationId": "iscsi.target.create",
+      "Method": "CALL",
+      "Path": "iscsi.target.create",
+      "Description": "Create an iSCSI Target.\n\n`groups` is a list of group dictionaries which provide information related to using a `portal`, `initiator`,\n`authmethod` and `auth` with this target. `auth` represents a valid iSCSI Authorized Access and defaults to\nnull.\n\n`auth_networks` is a list of IP/CIDR addresses which are allowed to use this initiator. If all networks are\nto be allowed, this field should be left empty.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiTargetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.create",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "iscsi_target_create",
+          "Argument": "iscsiTargetCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetCreate"
+          },
+          "Required": true,
+          "Description": "iSCSI target configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetDelete",
+      "OperationId": "iscsi.target.delete",
+      "Method": "CALL",
+      "Path": "iscsi.target.delete",
+      "Description": "Delete iSCSI Target of `id`.\n\nDeleting an iSCSI Target makes sure we delete all Associated Targets which use `id` iSCSI Target.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.delete",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the iSCSI target to delete."
+        },
+        {
+          "Name": "force",
+          "Argument": "force",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to force deletion even if the target is in use."
+        },
+        {
+          "Name": "delete_extents",
+          "Argument": "deleteExtents",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to also delete associated extents."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetGetInstance",
+      "OperationId": "iscsi.target.get_instance",
+      "Method": "CALL",
+      "Path": "iscsi.target.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiTargetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.get_instance",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_TARGET_READ",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetQuery",
+      "OperationId": "iscsi.target.query",
+      "Method": "CALL",
+      "Path": "iscsi.target.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_TARGET_READ",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetQueryCount",
+      "OperationId": "iscsi.target.query#count",
+      "Method": "CALL",
+      "Path": "iscsi.target.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_TARGET_READ",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetQueryOne",
+      "OperationId": "iscsi.target.query#get",
+      "Method": "CALL",
+      "Path": "iscsi.target.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiTargetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_TARGET_READ",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetUpdate",
+      "OperationId": "iscsi.target.update",
+      "Method": "CALL",
+      "Path": "iscsi.target.update",
+      "Description": "Update iSCSI Target of `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiTargetQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.update",
+        "Item": true,
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the iSCSI target to update."
+        },
+        {
+          "Name": "iscsi_target_update",
+          "Argument": "iscsiTargetUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetUpdate"
+          },
+          "Required": true,
+          "Description": "Updated iSCSI target configuration data."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetValidateName",
+      "OperationId": "iscsi.target.validate_name",
+      "Method": "CALL",
+      "Path": "iscsi.target.validate_name",
+      "Description": "Returns validation error for iSCSI target name\n:param name: name to be validated\n:param existing_id: id of an existing iSCSI target that will receive this name (or `None` if a new target\n                    is being created)\n:return: error message (or `None` if there is no error)",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.target.validate_name",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_TARGET_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Target name to validate."
+        },
+        {
+          "Name": "existing_id",
+          "Argument": "existingId",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Description": "ID of existing target to exclude from validation or `null` for new targets."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IscsiGroup",
+      "SchemaName": "IscsiGroup",
+      "Fields": [
+        {
+          "Name": "Auth",
+          "JsonName": "auth",
+          "Description": "ID of the authentication credential or `null` if no authentication.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Authmethod",
+          "JsonName": "authmethod",
+          "Description": "Authentication method for this target group.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiGroupAuthmethod"
+          }
+        },
+        {
+          "Name": "Initiator",
+          "JsonName": "initiator",
+          "Description": "ID of the authorized initiator group or `null` to allow any initiator.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Portal",
+          "JsonName": "portal",
+          "Description": "ID of the iSCSI portal to use for this target group.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetCreate",
+      "SchemaName": "IscsiTargetCreate",
+      "Description": "iSCSI target configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "Alias",
+          "JsonName": "alias",
+          "Description": "Optional alias name for the iSCSI target.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AuthNetworks",
+          "JsonName": "auth_networks",
+          "Description": "Array of network addresses allowed to access this target.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of portal-initiator group associations for this target.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "IscsiGroup"
+            }
+          }
+        },
+        {
+          "Name": "IscsiParameters",
+          "JsonName": "iscsi_parameters",
+          "Description": "Optional iSCSI-specific parameters for this target.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetParameters"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Protocol mode for the target.\n\n* `ISCSI`: iSCSI protocol only\n* `FC`: Fibre Channel protocol only\n* `BOTH`: Both iSCSI and Fibre Channel protocols\n\nFibre Channel may only be selected on TrueNAS Enterprise-licensed systems with a suitable Fibre Channel HBA.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetMode"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the iSCSI target (maximum 120 characters).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetGetInstanceOptions",
+      "SchemaName": "IscsiTargetGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetParameters",
+      "SchemaName": "IscsiTargetParameters",
+      "Fields": [
+        {
+          "Name": "QueuedCommands",
+          "JsonName": "QueuedCommands",
+          "Description": "Maximum number of queued commands per iSCSI session.\n\n* `32`: Standard queue depth for most use cases\n* `128`: Higher queue depth for performance-critical applications",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetQueryOptions",
+      "SchemaName": "IscsiTargetQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetQueryResultItem",
+      "SchemaName": "IscsiTargetQueryResultItem",
+      "Description": "The created iSCSI target configuration.",
+      "Fields": [
+        {
+          "Name": "Alias",
+          "JsonName": "alias",
+          "Description": "Optional alias name for the iSCSI target.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AuthNetworks",
+          "JsonName": "auth_networks",
+          "Description": "Array of network addresses allowed to access this target.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of portal-initiator group associations for this target.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "IscsiGroup"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the iSCSI target.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "IscsiParameters",
+          "JsonName": "iscsi_parameters",
+          "Description": "Optional iSCSI-specific parameters for this target.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetParameters"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Protocol mode for the target.\n\n* `ISCSI`: iSCSI protocol only\n* `FC`: Fibre Channel protocol only\n* `BOTH`: Both iSCSI and Fibre Channel protocols\n\nFibre Channel may only be selected on TrueNAS Enterprise-licensed systems with a suitable Fibre Channel HBA.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetMode"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the iSCSI target (maximum 120 characters).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RelTgtId",
+          "JsonName": "rel_tgt_id",
+          "Description": "Relative target ID number assigned by the system.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetUpdate",
+      "SchemaName": "IscsiTargetUpdate",
+      "Description": "Updated iSCSI target configuration data.",
+      "Fields": [
+        {
+          "Name": "Alias",
+          "JsonName": "alias",
+          "Description": "Optional alias name for the iSCSI target.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AuthNetworks",
+          "JsonName": "auth_networks",
+          "Description": "Array of network addresses allowed to access this target.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Groups",
+          "JsonName": "groups",
+          "Description": "Array of portal-initiator group associations for this target.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "IscsiGroup"
+            }
+          }
+        },
+        {
+          "Name": "IscsiParameters",
+          "JsonName": "iscsi_parameters",
+          "Description": "Optional iSCSI-specific parameters for this target.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetParameters"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Protocol mode for the target.\n\n* `ISCSI`: iSCSI protocol only\n* `FC`: Fibre Channel protocol only\n* `BOTH`: Both iSCSI and Fibre Channel protocols\n\nFibre Channel may only be selected on TrueNAS Enterprise-licensed systems with a suitable Fibre Channel HBA.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiTargetMode"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the iSCSI target (maximum 120 characters).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "IscsiGroupAuthmethod",
+      "SchemaName": "IscsiGroupAuthmethod",
+      "Description": "Authentication method for this target group.",
+      "Values": [
+        {
+          "Name": "IscsiGroupAuthmethodNONE",
+          "Value": "NONE"
+        },
+        {
+          "Name": "IscsiGroupAuthmethodCHAP",
+          "Value": "CHAP"
+        },
+        {
+          "Name": "IscsiGroupAuthmethodCHAPMUTUAL",
+          "Value": "CHAP_MUTUAL"
+        }
+      ]
+    },
+    {
+      "Name": "IscsiTargetMode",
+      "SchemaName": "IscsiTargetMode",
+      "Description": "Protocol mode for the target.\n\n* `ISCSI`: iSCSI protocol only\n* `FC`: Fibre Channel protocol only\n* `BOTH`: Both iSCSI and Fibre Channel protocols\n\nFibre Channel may only be selected on TrueNAS Enterprise-licensed systems with a suitable Fibre Channel HBA.",
+      "Values": [
+        {
+          "Name": "IscsiTargetModeISCSI",
+          "Value": "ISCSI"
+        },
+        {
+          "Name": "IscsiTargetModeFC",
+          "Value": "FC"
+        },
+        {
+          "Name": "IscsiTargetModeBOTH",
+          "Value": "BOTH"
+        }
+      ]
+    }
+  ]
+}

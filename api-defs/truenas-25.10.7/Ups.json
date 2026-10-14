@@ -1,0 +1,670 @@
+{
+  "Name": "Ups",
+  "Tag": "ups",
+  "Operations": [
+    {
+      "Name": "UpsConfig",
+      "OperationId": "ups.config",
+      "Method": "CALL",
+      "Path": "ups.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UpsConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ups.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpsDriverChoices",
+      "OperationId": "ups.driver_choices",
+      "Method": "CALL",
+      "Path": "ups.driver_choices",
+      "Description": "Returns choices of UPS drivers supported by the system.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ups.driver_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpsPortChoices",
+      "OperationId": "ups.port_choices",
+      "Method": "CALL",
+      "Path": "ups.port_choices",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ups.port_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_GENERAL_READ",
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "UpsUpdate",
+      "OperationId": "ups.update",
+      "Method": "CALL",
+      "Path": "ups.update",
+      "Description": "Update UPS Service Configuration.\n\n`powerdown` when enabled, sets UPS to power off after shutting down the system.\n\n`nocommwarntime` is a value in seconds which makes UPS Service wait the specified seconds before alerting that\nthe Service cannot reach configured UPS.\n\n`shutdowntimer` is a value in seconds which tells the Service to wait specified seconds for the UPS before\ninitiating a shutdown. This only applies when `shutdown` is set to \"BATT\".\n\n`shutdowncmd` is the command which is executed to initiate a shutdown. It defaults to \"poweroff\".",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "UpsUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ups.update",
+        "Roles": [
+          "SYSTEM_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "ups_update",
+          "Argument": "upsUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsUpdate"
+          },
+          "Required": true,
+          "Description": "UPSUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "UpsConfigAnswer",
+      "SchemaName": "UpsConfigAnswer",
+      "Fields": [
+        {
+          "Name": "CompleteIdentifier",
+          "JsonName": "complete_identifier",
+          "Description": "Complete UPS identifier including hostname for network monitoring.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of this UPS configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Driver",
+          "JsonName": "driver",
+          "Description": "UPS driver name that handles communication with the specific UPS hardware model.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Extrausers",
+          "JsonName": "extrausers",
+          "Description": "Additional user configurations for UPS monitoring access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostsync",
+          "JsonName": "hostsync",
+          "Description": "Maximum seconds to wait for other systems to shutdown before continuing.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the UPS configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Unique identifier name for this UPS device within the monitoring system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Operating mode.\n* `MASTER` controls the UPS directly\n* `SLAVE` monitors remotely",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsMode"
+          }
+        },
+        {
+          "Name": "Monpwd",
+          "JsonName": "monpwd",
+          "Description": "Password for UPS monitoring authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Monuser",
+          "JsonName": "monuser",
+          "Description": "Username for UPS monitoring authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nocommwarntime",
+          "JsonName": "nocommwarntime",
+          "Description": "Seconds to wait before warning about communication loss with UPS. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional configuration options passed to the UPS driver.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Optionsupsd",
+          "JsonName": "optionsupsd",
+          "Description": "Additional configuration options for the UPS daemon.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "Serial port or device path for UPS communication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Powerdown",
+          "JsonName": "powerdown",
+          "Description": "Whether the UPS should power down after completing the shutdown sequence.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remotehost",
+          "JsonName": "remotehost",
+          "Description": "Hostname or IP address of remote UPS server when operating in SLAVE mode.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remoteport",
+          "JsonName": "remoteport",
+          "Description": "Network port for communicating with remote UPS monitoring systems.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Rmonitor",
+          "JsonName": "rmonitor",
+          "Description": "Whether to enable remote monitoring of the UPS status over the network.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Shutdown",
+          "JsonName": "shutdown",
+          "Description": "Shutdown trigger condition: LOWBATT on low battery, BATT when on battery power.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsShutdown"
+          }
+        },
+        {
+          "Name": "Shutdowncmd",
+          "JsonName": "shutdowncmd",
+          "Description": "Custom command to execute during UPS shutdown sequence. `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Shutdowntimer",
+          "JsonName": "shutdowntimer",
+          "Description": "Seconds to wait after initiating shutdown before forcing power off.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpsUpdate",
+      "SchemaName": "UpsUpdate",
+      "Description": "UPSUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of this UPS configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Driver",
+          "JsonName": "driver",
+          "Description": "UPS driver name that handles communication with the specific UPS hardware model.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Extrausers",
+          "JsonName": "extrausers",
+          "Description": "Additional user configurations for UPS monitoring access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostsync",
+          "JsonName": "hostsync",
+          "Description": "Maximum seconds to wait for other systems to shutdown before continuing.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Unique identifier name for this UPS device within the monitoring system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Operating mode.\n* `MASTER` controls the UPS directly\n* `SLAVE` monitors remotely",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsMode"
+          }
+        },
+        {
+          "Name": "Monpwd",
+          "JsonName": "monpwd",
+          "Description": "Password for UPS monitoring authentication (required for updates).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Monuser",
+          "JsonName": "monuser",
+          "Description": "Username for UPS monitoring authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nocommwarntime",
+          "JsonName": "nocommwarntime",
+          "Description": "Seconds to wait before warning about communication loss with UPS. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional configuration options passed to the UPS driver.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Optionsupsd",
+          "JsonName": "optionsupsd",
+          "Description": "Additional configuration options for the UPS daemon.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "Serial port or device path for UPS communication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Powerdown",
+          "JsonName": "powerdown",
+          "Description": "Whether the UPS should power down after completing the shutdown sequence.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remotehost",
+          "JsonName": "remotehost",
+          "Description": "Hostname or IP address of remote UPS server when operating in SLAVE mode.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remoteport",
+          "JsonName": "remoteport",
+          "Description": "Network port for communicating with remote UPS monitoring systems.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Rmonitor",
+          "JsonName": "rmonitor",
+          "Description": "Whether to enable remote monitoring of the UPS status over the network.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Shutdown",
+          "JsonName": "shutdown",
+          "Description": "Shutdown trigger condition: LOWBATT on low battery, BATT when on battery power.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsShutdown"
+          }
+        },
+        {
+          "Name": "Shutdowncmd",
+          "JsonName": "shutdowncmd",
+          "Description": "Custom command to execute during UPS shutdown sequence. `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Shutdowntimer",
+          "JsonName": "shutdowntimer",
+          "Description": "Seconds to wait after initiating shutdown before forcing power off.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UpsUpdateAnswer",
+      "SchemaName": "UpsUpdateAnswer",
+      "Description": "The updated UPS configuration.",
+      "Fields": [
+        {
+          "Name": "CompleteIdentifier",
+          "JsonName": "complete_identifier",
+          "Description": "Complete UPS identifier including hostname for network monitoring.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of this UPS configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Driver",
+          "JsonName": "driver",
+          "Description": "UPS driver name that handles communication with the specific UPS hardware model.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Extrausers",
+          "JsonName": "extrausers",
+          "Description": "Additional user configurations for UPS monitoring access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Hostsync",
+          "JsonName": "hostsync",
+          "Description": "Maximum seconds to wait for other systems to shutdown before continuing.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the UPS configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Unique identifier name for this UPS device within the monitoring system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Operating mode.\n* `MASTER` controls the UPS directly\n* `SLAVE` monitors remotely",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsMode"
+          }
+        },
+        {
+          "Name": "Monpwd",
+          "JsonName": "monpwd",
+          "Description": "Password for UPS monitoring authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Monuser",
+          "JsonName": "monuser",
+          "Description": "Username for UPS monitoring authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nocommwarntime",
+          "JsonName": "nocommwarntime",
+          "Description": "Seconds to wait before warning about communication loss with UPS. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional configuration options passed to the UPS driver.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Optionsupsd",
+          "JsonName": "optionsupsd",
+          "Description": "Additional configuration options for the UPS daemon.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Port",
+          "JsonName": "port",
+          "Description": "Serial port or device path for UPS communication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Powerdown",
+          "JsonName": "powerdown",
+          "Description": "Whether the UPS should power down after completing the shutdown sequence.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Remotehost",
+          "JsonName": "remotehost",
+          "Description": "Hostname or IP address of remote UPS server when operating in SLAVE mode.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Remoteport",
+          "JsonName": "remoteport",
+          "Description": "Network port for communicating with remote UPS monitoring systems.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Rmonitor",
+          "JsonName": "rmonitor",
+          "Description": "Whether to enable remote monitoring of the UPS status over the network.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Shutdown",
+          "JsonName": "shutdown",
+          "Description": "Shutdown trigger condition: LOWBATT on low battery, BATT when on battery power.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "UpsShutdown"
+          }
+        },
+        {
+          "Name": "Shutdowncmd",
+          "JsonName": "shutdowncmd",
+          "Description": "Custom command to execute during UPS shutdown sequence. `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Shutdowntimer",
+          "JsonName": "shutdowntimer",
+          "Description": "Seconds to wait after initiating shutdown before forcing power off.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "UpsMode",
+      "SchemaName": "UpsMode",
+      "Description": "Operating mode.\n* `MASTER` controls the UPS directly\n* `SLAVE` monitors remotely",
+      "Values": [
+        {
+          "Name": "UpsModeMASTER",
+          "Value": "MASTER"
+        },
+        {
+          "Name": "UpsModeSLAVE",
+          "Value": "SLAVE"
+        }
+      ]
+    },
+    {
+      "Name": "UpsShutdown",
+      "SchemaName": "UpsShutdown",
+      "Description": "Shutdown trigger condition: LOWBATT on low battery, BATT when on battery power.",
+      "Values": [
+        {
+          "Name": "UpsShutdownLOWBATT",
+          "Value": "LOWBATT"
+        },
+        {
+          "Name": "UpsShutdownBATT",
+          "Value": "BATT"
+        }
+      ]
+    }
+  ]
+}

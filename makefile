@@ -107,6 +107,23 @@ docker: ## Build the truenas-mcp container image with version info from git
 tools: $(ACTIONLINT) $(GOFUMPT) $(GOLANGCI_LINT) $(GOLANGCI_LINT_MODULES) $(MARKDOWNLINT) $(SHELLCHECK) $(TYPOS) $(YAMLLINT) $(ZIZMOR) ## Install all pinned dev tools into .tools/bin
 
 ##@ API description
+generate: ## Import api-defs/truenas-methods-<release>.json into api-defs/truenas-<release>/, then generate sdk/truenas from it
+	@echo "==> importing TrueNAS's description of its API into api-defs/truenas-<release>/..."
+	go run ./sdk/pandorest import
+	@echo "==> generating sdk/truenas from api-defs/truenas-<release>/..."
+	go run ./sdk/pandorest generate
+
+# gencheck regenerates and asks git whether anything moved, so it needs a tree with nothing uncommitted: the build workflow runs it after each
+# push, and check-all, which runs before a commit, does not
+gencheck: generate ## Check that api-defs/ and sdk/truenas are what the description makes (regenerate, then diff)
+	@test -z "$$(git status --porcelain -- api-defs sdk/truenas)" || \
+		(git status --short -- api-defs sdk/truenas; echo; \
+		echo "api-defs/ or sdk/truenas is stale. Run 'make generate' and commit."; exit 1)
+
+apicheck: ## Check that the definitions match the description and every method has a call in sdk/truenas
+	@echo "==> Checking that sdk/truenas has every method of the description..."
+	@go run ./sdk/pandorest check -quiet
+
 secrets: ## Write api-defs/truenas-secrets-<release>.json from a checkout of the TrueNAS source: make secrets SOURCE=../middleware RELEASE=25.10.7
 	@[ -n "$(SOURCE)" ] && [ -n "$(RELEASE)" ] || (echo 'name a checkout of truenas/middleware at the release, and the release: make secrets SOURCE=../middleware RELEASE=25.10.7'; exit 1)
 	@.scripts/secrets-from-source.py $(SOURCE) $(RELEASE)
@@ -245,6 +262,6 @@ cover: ## Run the tests with coverage and report the total
 cover-html: cover ## Run the tests with coverage and open the HTML report
 	@go tool cover -html=$(COVERDIR)/coverage.out
 
-check-all: build test lint actionlint yamllint shellcheck typos markdownlint depscheck ## Run build + tests + all linters + depscheck
+check-all: build test lint actionlint yamllint shellcheck typos markdownlint depscheck apicheck ## Run build + tests + all linters + depscheck + apicheck
 
-.PHONY: default all help secrets fmt goimports build docker lint lint-fix actionlint yamllint shellcheck zizmor typos typos-fix markdownlint depscheck check-all install tools test test-live test-live-tools testacc testacc-tools testenv-up testenv-down cover cover-html
+.PHONY: default all help generate gencheck apicheck secrets fmt goimports build docker lint lint-fix actionlint yamllint shellcheck zizmor typos typos-fix markdownlint depscheck check-all install tools test test-live test-live-tools testacc testacc-tools testenv-up testenv-down cover cover-html

@@ -1,0 +1,1801 @@
+{
+  "Name": "Filesystem",
+  "Tag": "filesystem",
+  "Operations": [
+    {
+      "Name": "FilesystemChown",
+      "OperationId": "filesystem.chown",
+      "Method": "CALL",
+      "Path": "filesystem.chown",
+      "Description": "Change owner or group of file at `path`.\n\n`uid` and `gid` specify new owner of the file. If either\nkey is absent or None, then existing value on the file is not\nchanged.\n\n`user` and `group` alternatively allow specifying a uid gid by\nuser name or group name.\n\n`recursive` performs action recursively, but does\nnot traverse filesystem mount points.\n\nIf `traverse` and `recursive` are specified, then the chown\noperation will traverse filesystem mount points.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.chown",
+        "Job": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filesystem_chown",
+          "Argument": "filesystemChown",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemChown"
+          },
+          "Required": true,
+          "Description": "FilesystemChownArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemGet",
+      "OperationId": "filesystem.get",
+      "Method": "CALL",
+      "Path": "filesystem.get",
+      "Description": "Job to get contents of `path`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.get",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ],
+        "Downloadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Path of the file to read."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemGetZfsAttributes",
+      "OperationId": "filesystem.get_zfs_attributes",
+      "Method": "CALL",
+      "Path": "filesystem.get_zfs_attributes",
+      "Description": "Get the current ZFS attributes for the file at the given path",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemGetZfsAttributesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.get_zfs_attributes",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Path to the file to get ZFS attributes for."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemGetacl",
+      "OperationId": "filesystem.getacl",
+      "Method": "CALL",
+      "Path": "filesystem.getacl",
+      "Description": "Return ACL of a given path. This may return a POSIX1e ACL or a NFSv4 ACL. The acl type is indicated\nby the `acltype` key.\n\n`simplified` - effect of this depends on ACL type on underlying filesystem. In the case of\nNFSv4 ACLs simplified permissions and flags are returned for ACL entries where applicable.\nNFSv4 errata below. In the case of POSIX1E ACls, this setting has no impact on returned ACL.\n\n`resolve_ids` - adds additional `who` key to each ACL entry, that converts the numeric id to\na user name or group name. In the case of owner@ and group@ (NFSv4) or USER_OBJ and GROUP_OBJ\n(POSIX1E), st_uid or st_gid will be converted from stat() return for file. In the case of\nMASK (POSIX1E), OTHER (POSIX1E), everyone@ (NFSv4), key `who` will be included, but set to null.\nIn case of failure to resolve the id to a name, `who` will be set to null. This option should\nonly be used if resolving ids to names is required.\n\nErrata about ACLType NFSv4:\n\n`simplified` returns a shortened form of the ACL permset and flags where applicable. If permissions\nhave been simplified, then the `perms` object will contain only a single `BASIC` key with a string\ndescribing the underlying permissions set.\n\n`TRAVERSE` sufficient rights to traverse a directory, but not read contents.\n\n`READ` sufficient rights to traverse a directory, and read file contents.\n\n`MODIFIY` sufficient rights to traverse, read, write, and modify a file.\n\n`FULL_CONTROL` all permissions.\n\nIf the permisssions do not fit within one of the pre-defined simplified permissions types, then\nthe full ACL entry will be returned.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.getacl",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Absolute filesystem path to get ACL information for."
+        },
+        {
+          "Name": "simplified",
+          "Argument": "simplified",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to return simplified/basic permission sets instead of advanced permissions."
+        },
+        {
+          "Name": "resolve_ids",
+          "Argument": "resolveIds",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to resolve numeric user/group IDs to names in the response."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemListdir",
+      "OperationId": "filesystem.listdir",
+      "Method": "CALL",
+      "Path": "filesystem.listdir",
+      "Description": "Get the contents of a directory.\n\nThe select option may be used to optimize listdir performance. Metadata-related\nfields that are not selected will not be retrieved from the filesystem.\n\nFor example {\"select\": [\"path\", \"type\"]} will avoid querying an xattr list and\nZFS attributes for files in a directory.\n\nNOTE: an empty list for select (default) is treated as requesting all information.\n\nEach entry of the list consists of:\n  name(str): name of the file\n  path(str): absolute path of the entry\n  realpath(str): absolute real path of the entry (if SYMLINK)\n  type(str): DIRECTORY | FILE | SYMLINK | OTHER\n  size(int): size of the entry\n  allocation_size(int): on-disk size of entry\n  mode(int): file mode/permission\n  uid(int): user id of entry owner\n  gid(int): group id of entry owner\n  acl(bool): extended ACL is present on file\n  is_mountpoint(bool): path is a mountpoint\n  is_ctldir(bool): path is within special .zfs directory\n  attributes(list): list of statx file attributes that apply to the\n  file. See statx(2) manpage for more details.\n  xattrs(list): list of extended attribute names.\n  zfs_attrs(list): list of ZFS file attributes on file",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.listdir",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Directory path to list contents of."
+        },
+        {
+          "Name": "query_filters",
+          "Argument": "queryFilters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "Query filters to apply to the directory listing."
+        },
+        {
+          "Name": "query_options",
+          "Argument": "queryOptions",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryOptions"
+          },
+          "Description": "Query options for sorting and pagination."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemMkdir",
+      "OperationId": "filesystem.mkdir",
+      "Method": "CALL",
+      "Path": "filesystem.mkdir",
+      "Description": "Create a directory at the specified path.\n\nThe following options are supported:\n\n`mode` - specify the permissions to set on the new directory (0o755 is default).\n`raise_chmod_error` - choose whether to raise an exception if the attempt to set\nmode fails. In this case, the newly created directory will be removed to prevent\nuse with unintended permissions.\n\nNOTE: if chmod error is skipped, the resulting `mode` key in mkdir response will\nindicate the current permissions on the directory and not the permissions specified\nin the mkdir payload",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemDirQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.mkdir",
+        "Roles": [
+          "FILESYSTEM_DATA_WRITE",
+          "FILESYSTEM_FULL_CONTROL"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filesystem_mkdir",
+          "Argument": "filesystemMkdir",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemMkdir"
+          },
+          "Required": true,
+          "Description": "FilesystemMkdirArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemPut",
+      "OperationId": "filesystem.put",
+      "Method": "CALL",
+      "Path": "filesystem.put",
+      "Description": "Job to put contents to `path`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.put",
+        "Job": true,
+        "Roles": [
+          "FULL_ADMIN"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Path where the file should be written."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemPutOptions"
+          },
+          "Description": "Options controlling file writing behavior."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemSetZfsAttributes",
+      "OperationId": "filesystem.set_zfs_attributes",
+      "Method": "CALL",
+      "Path": "filesystem.set_zfs_attributes",
+      "Description": "Set special ZFS-related file flags on the specified path\n\n`readonly` - this maps to READONLY MS-DOS attribute. When set, file may not be\nwritten to (toggling does not impact existing file opens).\n\n`hidden` - this maps to HIDDEN MS-DOS attribute. When set, the SMB HIDDEN flag\nis set and file is \"hidden\" from the perspective of SMB clients.\n\n`system` - this maps to SYSTEM MS-DOS attribute. Is presented to SMB clients, but\nhas no impact on local filesystem.\n\n`archive` - this maps to ARCHIVE MS-DOS attribute. Value is reset to True whenever\nfile is modified.\n\n`immutable` - file may not be altered or deleted. Also appears as IMMUTABLE in\nattributes in `filesystem.stat` output and as STATX_ATTR_IMMUTABLE in statx() response.\n\n`nounlink` - file may be altered but not deleted.\n\n`appendonly` - file may only be opened with O_APPEND flag. Also appears as APPEND in\nattributes in `filesystem.stat` output and as STATX_ATTR_APPEND in statx() response.\n\n`offline` - this maps to OFFLINE MS-DOS attribute. Is presented to SMB clients, but\nhas no impact on local filesystem.\n\n`sparse` - maps to SPARSE MS-DOS attribute. Is presented to SMB clients, but has\nno impact on local filesystem.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemSetZfsAttributesAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.set_zfs_attributes",
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "set_zfs_file_attributes",
+          "Argument": "setZfsFileAttributes",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SetZfsFileAttributes"
+          },
+          "Required": true,
+          "Description": "FilesystemSetZfsAttributesArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemSetacl",
+      "OperationId": "filesystem.setacl",
+      "Method": "CALL",
+      "Path": "filesystem.setacl",
+      "Description": "Set ACL of a given path. Takes the following parameters:\n`path` full path to directory or file.\n\n`dacl` ACL entries. Formatting depends on the underlying `acltype`. NFS4ACL requires\nNFSv4 entries. POSIX1e requires POSIX1e entries.\n\n`uid` the desired UID of the file user. If set to None (the default), then user is not changed.\n\n`user` the desired username for the file user. If set to None, then user is not changed.\n\nNote about interaction between `uid` and `user`:\nOne and only one of these parameters should be set, and _only_ if the API consumer wishes to\nchange the owner on the file / directory.\n\n`gid` the desired GID of the file group. If set to None (the default), then group is not changed.\n\n`group` the desired groupname for the file group. If set to None (the default), then group is not\nchanged.\n\nNote about interaction between `gid` and `group`:\nOne and only one of these parameters should be set, and _only_ if the API consumer wishes to\nchange the owner on the file / directory.\n\nWARNING: if user, uid, group, or gid is specified in a recursive operation then the owning\nuser, group, or both for _all_ files will be changed.\n\n`recursive` apply the ACL recursively\n\n`traverse` traverse filestem boundaries (ZFS datasets)\n\n`strip` convert ACL to trivial. ACL is trivial if it can be expressed as a file mode without\nlosing any access rules.\n\n`canonicalize` reorder ACL entries so that they are in concanical form as described\nin the Microsoft documentation MS-DTYP 2.4.5 (ACL). This only applies to NFSv4 ACLs.\n\nThe following notes about ACL entries are necessarily terse. If more detail is requried\nplease consult relevant TrueNAS documentation.\n\nNotes about NFSv4 ACL entry fields:\n\n`tag` refers to the type of principal to whom the ACL entries applies. USER and GROUP have\nconventional meanings. `owner@` refers to the owning user of the file, `group@` refers to the owning\ngroup of the file, and `everyone@` refers to ALL users (including the owning user and group)..\n\n`id` refers to the numeric user id or group id associatiated with USER or GROUP entries.\n\n`who` a user or group name may be specified in lieu of numeric ID for USER or GROUP entries\n\n`type` may be ALLOW or DENY. Deny entries take precedence over allow when the ACL is evaluated.\n\n`perms` permissions allowed or denied by the entry. May be set as a simlified BASIC type or\nmore complex type detailing specific permissions.\n\n`flags` inheritance flags determine how this entry will be presented (if at all) on newly-created\nfiles or directories within the specified path. Only valid for directories.\n\nNotes about posix1e ACL entry fields:\n\n`default` the ACL entry is in the posix default ACL (will be copied to new files and directories)\ncreated within the directory where it is set. These are _NOT_ evaluated when determining access for\nthe file on which they're set. If default is false then the entry applies to the posix access ACL,\nwhich is used to determine access to the directory, but is not inherited on new files / directories.\n\n`tag` the type of principal to whom the ACL entry apples. USER and GROUP have conventional meanings\nUSER_OBJ refers to the owning user of the file and is also denoted by \"user\" in conventional POSIX\nUGO permissions. GROUP_OBJ refers to the owning group of the file and is denoted by \"group\" in the\nsame. OTHER refers to POSIX other, which applies to all users and groups who are not USER_OBJ or\nGROUP_OBJ. MASK sets maximum permissions granted to all USER and GROUP entries. A valid POSIX1 ACL\nentry contains precisely one USER_OBJ, GROUP_OBJ, OTHER, and MASK entry for the default and access\nlist.\n\n`id` refers to the numeric user id or group id associatiated with USER or GROUP entries.\n\n`who` a user or group name may be specified in lieu of numeric ID for USER or GROUP entries\n\n`perms` - object containing posix permissions.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.setacl",
+        "Job": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filesystem_acl",
+          "Argument": "filesystemAcl",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcl2"
+          },
+          "Required": true,
+          "Description": "FilesystemSetaclArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemSetperm",
+      "OperationId": "filesystem.setperm",
+      "Method": "CALL",
+      "Path": "filesystem.setperm",
+      "Description": "Set unix permissions on given `path`.\n\nIf `mode` is specified then the mode will be applied to the\npath and files and subdirectories depending on which `options` are\nselected. Mode should be formatted as string representation of octal\npermissions bits.\n\n`uid` the desired UID of the file user. If set to None (the default), then user is not changed.\n\n`gid` the desired GID of the file group. If set to None (the default), then group is not changed.\n\n`user` and `group` alternatively allow specifying the owner by name.\n\nWARNING: `uid`, `gid, `user`, and `group` _should_ remain unset _unless_\nthe administrator wishes to change the owner or group of files.\n\n`stripacl` setperm will fail if an extended ACL is present on `path`,\nunless `stripacl` is set to True.\n\n`recursive` remove ACLs recursively, but do not traverse dataset\nboundaries.\n\n`traverse` remove ACLs from child datasets.\n\nIf no `mode` is set, and `stripacl` is True, then non-trivial ACLs\nwill be converted to trivial ACLs. An ACL is trivial if it can be\nexpressed as a file mode without losing any access rules.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.setperm",
+        "Job": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filesystem_setperm",
+          "Argument": "filesystemSetperm",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemSetperm"
+          },
+          "Required": true,
+          "Description": "FilesystemSetpermArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemStat",
+      "OperationId": "filesystem.stat",
+      "Method": "CALL",
+      "Path": "filesystem.stat",
+      "Description": "Return filesystem information for a given path.\n\n`realpath(str)`: absolute real path of the entry (if SYMLINK)\n\n`type(str)`: DIRECTORY | FILE | SYMLINK | OTHER\n\n`size(int)`: size of the entry\n\n`allocation_size(int)`: on-disk size of entry\n\n`mode(int)`: file mode/permission\n\n`uid(int)`: user id of file owner\n\n`gid(int)`: group id of file owner\n\n`atime(float)`: timestamp for when file was last accessed.\nNOTE: this timestamp may be changed from userspace.\n\n`mtime(float)`: timestamp for when file data was last modified\nNOTE: this timestamp may be changed from userspace.\n\n`ctime(float)`: timestamp for when file was last changed.\n\n`btime(float)`: timestamp for when file was initially created.\nNOTE: depending on platform this may be changed from userspace.\n\n`dev(int)`: device id of the device containing the file. In the\ncontext of the TrueNAS API, this is sufficient to uniquely identify\na given dataset.\n\n`mount_id(int)`: the mount id for the filesystem underlying the given path.\nBind mounts will have same device id, but different mount IDs. This value\nis sufficient to uniquely identify the particular mount which can be used\nto identify children of the given mountpoint.\n\n`inode(int)`: inode number of the file. This number uniquely identifies\nthe file on the given device, but once a file is deleted its inode number\nmay be reused.\n\n`nlink(int)`: number of hard lnks to the file.\n\n`acl(bool)`: extended ACL is present on file\n\n`is_mountpoint(bool)`: path is a mountpoint\n\n`is_ctldir(bool)`: path is within special .zfs directory\n\n`attributes(list)`: list of statx file attributes that apply to the\nfile. See statx(2) manpage for more details.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemStatAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.stat",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Absolute filesystem path to get statistics for."
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemStatfs",
+      "OperationId": "filesystem.statfs",
+      "Method": "CALL",
+      "Path": "filesystem.statfs",
+      "Description": "Return stats from the filesystem of a given path.\n\nRaises:\n    CallError(ENOENT) - Path not found",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "FilesystemStatfsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "filesystem.statfs",
+        "Read": true,
+        "Roles": [
+          "FILESYSTEM_ATTRS_READ",
+          "FILESYSTEM_ATTRS_WRITE",
+          "FILESYSTEM_FULL_CONTROL",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "path",
+          "Argument": "path",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Path on the filesystem to get statistics for."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "FilesystemAcl2",
+      "SchemaName": "FilesystemAcl2",
+      "Description": "FilesystemSetaclArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Acltype",
+          "JsonName": "acltype",
+          "Description": "ACL type to use or `null` to auto-detect from filesystem capabilities.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcltype"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Dacl",
+          "JsonName": "dacl",
+          "Description": "Array of Access Control Entries to apply to the filesystem object.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Numeric group ID to set as group or `null` to preserve existing.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "Group name to set as group or `null` to preserve existing.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nfs41Flags",
+          "JsonName": "nfs41_flags",
+          "Description": "NFS4 ACL flags for inheritance and protection behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAcl2Nfs41Flags"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Configuration options for ACL setting behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemAclOptions"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Absolute filesystem path to set ACL on.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "Numeric user ID to set as owner or `null` to preserve existing.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username to set as owner or `null` to preserve existing.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAcl2Nfs41Flags",
+      "SchemaName": "FilesystemAcl2Nfs41Flags",
+      "Description": "NFS4 ACL flags for inheritance and protection behavior.",
+      "Fields": [
+        {
+          "Name": "Autoinherit",
+          "JsonName": "autoinherit",
+          "Description": "Whether inheritance is automatically applied from parent directories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Defaulted",
+          "JsonName": "defaulted",
+          "Description": "Whether this ACL was created by default rules rather than explicit configuration.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Protected",
+          "JsonName": "protected",
+          "Description": "Whether the ACL is protected from inheritance modifications.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemAclOptions",
+      "SchemaName": "FilesystemAclOptions",
+      "Description": "Configuration options for ACL setting behavior.",
+      "Fields": [
+        {
+          "Name": "Canonicalize",
+          "JsonName": "canonicalize",
+          "Description": "Whether to reorder ACL entries in Windows canonical order.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to apply ACL changes recursively to all child files and directories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Stripacl",
+          "JsonName": "stripacl",
+          "Description": "Whether to remove the ACL entirely and revert to basic POSIX permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Traverse",
+          "JsonName": "traverse",
+          "Description": "Whether to traverse filesystem boundaries during recursive operations.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ValidateEffectiveAcl",
+          "JsonName": "validate_effective_acl",
+          "Description": "Whether to validate that the users/groups granted access in the ACL can actually access the path or parent     path.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemChown",
+      "SchemaName": "FilesystemChown",
+      "Description": "FilesystemChownArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Numeric group ID to set as group owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "Group name to set as group owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional options for the ownership change operation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemChownOptions"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path to modify.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "Numeric user ID to set as owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username to set as owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemChownOptions",
+      "SchemaName": "FilesystemChownOptions",
+      "Description": "Additional options for the ownership change operation.",
+      "Fields": [
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to apply the operation recursively to subdirectories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Traverse",
+          "JsonName": "traverse",
+          "Description": "If set do not limit to single dataset / filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemDirQueryResultItem",
+      "SchemaName": "FilesystemDirQueryResultItem",
+      "Description": "Information about the created directory.",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Specifies whether ACL is present on the entry. If this is the case then file permission     bits as reported in `mode` may not be representative of the actual permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AllocationSize",
+          "JsonName": "allocation_size",
+          "Description": "Allocated size of file. Calculated by multiplying stx_blocks by 512.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Extra file attribute indicators for entry as returned by statx. Expanded from stx_attributes.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "FilesystemAttributes"
+            }
+          }
+        },
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Group ID of the entry's owner. This corresponds with stx_gid.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "IsCtldir",
+          "JsonName": "is_ctldir",
+          "Description": "Specifies whether the entry is located within the ZFS ctldir (for example a snapshot).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IsMountpoint",
+          "JsonName": "is_mountpoint",
+          "Description": "Specifies whether the entry is also the mountpoint of a filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Entry's mode including file type information and file permission bits. This corresponds with stx_mode.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MountId",
+          "JsonName": "mount_id",
+          "Description": "The mount ID of the mount containing the entry. This corresponds to the number in first     field of /proc/self/mountinfo and stx_mnt_id.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Entry's base name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Entry's full path.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Realpath",
+          "JsonName": "realpath",
+          "Description": "Canonical path of the entry, eliminating any symbolic links.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Size of the file in bytes. For directories, this may not represent total content size. Corresonds with     stx_size.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of filesystem entry.\n\n* `DIRECTORY`: Directory/folder\n* `FILE`: Regular file\n* `SYMLINK`: Symbolic link\n* `OTHER`: Other file types (device, pipe, socket, etc.)",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemType"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "User ID of the entry's owner. This corresponds with stx_uid.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Xattrs",
+          "JsonName": "xattrs",
+          "Description": "List of xattr names of extended attributes on file.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "ZfsAttrs",
+          "JsonName": "zfs_attrs",
+          "Description": "List of extra ZFS-related file attribute indicators on file. Will be None type if filesystem is not ZFS.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "FilesystemZfsAttrs"
+            }
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemGetZfsAttributesAnswer",
+      "SchemaName": "FilesystemGetZfsAttributesAnswer",
+      "Description": "The current ZFS file attributes.",
+      "Fields": [
+        {
+          "Name": "Appendonly",
+          "JsonName": "appendonly",
+          "Description": "File may only be opened with O_APPEND flag. Also appears as APPEND in     attributes in `filesystem.stat` output and as STATX_ATTR_APPEND in statx() response.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Archive",
+          "JsonName": "archive",
+          "Description": "ARCHIVE MS-DOS attribute. Value is reset to True whenever file is modified.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hidden",
+          "JsonName": "hidden",
+          "Description": "HIDDEN MS-DOS attribute. When set, the SMB HIDDEN flag is set and file     is \"hidden\" from the perspective of SMB clients.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "File may not be altered or deleted. Also appears as IMMUTABLE in attributes in     `filesystem.stat` output and as STATX_ATTR_IMMUTABLE in statx() response.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nounlink",
+          "JsonName": "nounlink",
+          "Description": "File may be altered but not deleted.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Offline",
+          "JsonName": "offline",
+          "Description": "OFFLINE MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Readonly",
+          "JsonName": "readonly",
+          "Description": "READONLY MS-DOS attribute. When set, file may not be written to (toggling     does not impact existing file opens).",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Sparse",
+          "JsonName": "sparse",
+          "Description": "SPARSE MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "System",
+          "JsonName": "system",
+          "Description": "SYSTEM MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemMkdir",
+      "SchemaName": "FilesystemMkdir",
+      "Description": "FilesystemMkdirArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Options controlling directory creation behavior.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemMkdirOptions"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Path where the new directory should be created.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemMkdirOptions",
+      "SchemaName": "FilesystemMkdirOptions",
+      "Description": "Options controlling directory creation behavior.",
+      "Fields": [
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Unix permissions for the new directory.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RaiseChmodError",
+          "JsonName": "raise_chmod_error",
+          "Description": "Whether to raise an error if chmod fails.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemPutOptions",
+      "SchemaName": "FilesystemPutOptions",
+      "Description": "Options controlling file writing behavior.",
+      "Fields": [
+        {
+          "Name": "Append",
+          "JsonName": "append",
+          "Description": "Whether to append to the file instead of overwriting.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Unix permissions to set on the file or `null` to use default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemSetZfsAttributesAnswer",
+      "SchemaName": "FilesystemSetZfsAttributesAnswer",
+      "Description": "The updated ZFS file attributes.",
+      "Fields": [
+        {
+          "Name": "Appendonly",
+          "JsonName": "appendonly",
+          "Description": "File may only be opened with O_APPEND flag. Also appears as APPEND in     attributes in `filesystem.stat` output and as STATX_ATTR_APPEND in statx() response.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Archive",
+          "JsonName": "archive",
+          "Description": "ARCHIVE MS-DOS attribute. Value is reset to True whenever file is modified.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hidden",
+          "JsonName": "hidden",
+          "Description": "HIDDEN MS-DOS attribute. When set, the SMB HIDDEN flag is set and file     is \"hidden\" from the perspective of SMB clients.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "File may not be altered or deleted. Also appears as IMMUTABLE in attributes in     `filesystem.stat` output and as STATX_ATTR_IMMUTABLE in statx() response.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nounlink",
+          "JsonName": "nounlink",
+          "Description": "File may be altered but not deleted.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Offline",
+          "JsonName": "offline",
+          "Description": "OFFLINE MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Readonly",
+          "JsonName": "readonly",
+          "Description": "READONLY MS-DOS attribute. When set, file may not be written to (toggling     does not impact existing file opens).",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Sparse",
+          "JsonName": "sparse",
+          "Description": "SPARSE MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "System",
+          "JsonName": "system",
+          "Description": "SYSTEM MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemSetperm",
+      "SchemaName": "FilesystemSetperm",
+      "Description": "FilesystemSetpermArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Numeric group ID to set as group owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "Group name to set as group owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Unix permissions to set (octal format). `null` to leave unchanged.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional options for the permission change operation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemSetpermOptions"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path to modify.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "Numeric user ID to set as owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username to set as owner. `null` to leave unchanged.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemSetpermOptions",
+      "SchemaName": "FilesystemSetpermOptions",
+      "Description": "Additional options for the permission change operation.",
+      "Fields": [
+        {
+          "Name": "Recursive",
+          "JsonName": "recursive",
+          "Description": "Whether to apply the operation recursively to subdirectories.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Stripacl",
+          "JsonName": "stripacl",
+          "Description": "Whether to remove existing Access Control Lists when setting permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Traverse",
+          "JsonName": "traverse",
+          "Description": "If set do not limit to single dataset / filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemStatAnswer",
+      "SchemaName": "FilesystemStatAnswer",
+      "Description": "File or directory statistics information.",
+      "Fields": [
+        {
+          "Name": "Acl",
+          "JsonName": "acl",
+          "Description": "Specifies whether ACL is present on the entry. If this is the case then file permission     bits as reported in `mode` may not be representative of the actual permissions.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "AllocationSize",
+          "JsonName": "allocation_size",
+          "Description": "Allocated size of file. Calculated by multiplying stx_blocks by 512.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Atime",
+          "JsonName": "atime",
+          "Description": "Time of last access. Corresponds with stx_atime. This is mutable from userspace.",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Extra file attribute indicators for entry as returned by statx. Expanded from stx_attributes.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "FilesystemAttributes"
+            }
+          }
+        },
+        {
+          "Name": "Btime",
+          "JsonName": "btime",
+          "Description": "Time of creation. Corresponds with stx_btime.",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "Ctime",
+          "JsonName": "ctime",
+          "Description": "Time of last status change. Corresponds with stx_ctime.",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "Dev",
+          "JsonName": "dev",
+          "Description": "The ID of the device containing the filesystem where the file resides. This is not sufficient to uniquely     identify a particular filesystem mount. mount_id must be used for that purpose. This corresponds with st_dev.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Gid",
+          "JsonName": "gid",
+          "Description": "Group ID of the entry's owner. This corresponds with stx_gid.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Group",
+          "JsonName": "group",
+          "Description": "Groupname associated with `gid`. Will be None if the Group ID does not map to existing group.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Inode",
+          "JsonName": "inode",
+          "Description": "The inode number of the file. This corresponds with stx_ino.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "IsCtldir",
+          "JsonName": "is_ctldir",
+          "Description": "Specifies whether the entry is located within the ZFS ctldir (for example a snapshot).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IsMountpoint",
+          "JsonName": "is_mountpoint",
+          "Description": "Specifies whether the entry is also the mountpoint of a filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "Entry's mode including file type information and file permission bits. This corresponds with stx_mode.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "MountId",
+          "JsonName": "mount_id",
+          "Description": "The mount ID of the mount containing the entry. This corresponds to the number in first     field of /proc/self/mountinfo and stx_mnt_id.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Mtime",
+          "JsonName": "mtime",
+          "Description": "Time of last modification. Corresponds with stx_mtime. This is mutable from userspace.",
+          "Type": {
+            "Type": "Double"
+          }
+        },
+        {
+          "Name": "Nlink",
+          "JsonName": "nlink",
+          "Description": "Number of hard links. Corresponds with stx_nlinks.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Realpath",
+          "JsonName": "realpath",
+          "Description": "Canonical path of the entry, eliminating any symbolic links.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Size in bytes of a plain file. This corresonds with stx_size.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of filesystem entry.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "FilesystemType"
+          }
+        },
+        {
+          "Name": "Uid",
+          "JsonName": "uid",
+          "Description": "User ID of the entry's owner. This corresponds with stx_uid.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "User",
+          "JsonName": "user",
+          "Description": "Username associated with `uid`. Will be None if the User ID does not map to existing user.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemStatfsAnswer",
+      "SchemaName": "FilesystemStatfsAnswer",
+      "Description": "Filesystem statistics and mount information.",
+      "Fields": [
+        {
+          "Name": "AvailBlocks",
+          "JsonName": "avail_blocks",
+          "Description": "Number of available blocks as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "AvailBlocksStr",
+          "JsonName": "avail_blocks_str",
+          "Description": "Available blocks for unprivileged users as a human-readable string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "AvailBytes",
+          "JsonName": "avail_bytes",
+          "Description": "Available space for unprivileged users in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "AvailBytesStr",
+          "JsonName": "avail_bytes_str",
+          "Description": "Available space for unprivileged users in bytes as a human-readable string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Blocksize",
+          "JsonName": "blocksize",
+          "Description": "Filesystem block size as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Dest",
+          "JsonName": "dest",
+          "Description": "Local path on which filesystem is mounted.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Files",
+          "JsonName": "files",
+          "Description": "Number of inodes in use as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Flags",
+          "JsonName": "flags",
+          "Description": "Combined per-mount options and per-superblock options for mounted filesystem.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "FreeBlocks",
+          "JsonName": "free_blocks",
+          "Description": "Number of free blocks as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "FreeBlocksStr",
+          "JsonName": "free_blocks_str",
+          "Description": "Free blocks available as a human-readable string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "FreeBytes",
+          "JsonName": "free_bytes",
+          "Description": "Free space available in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "FreeBytesStr",
+          "JsonName": "free_bytes_str",
+          "Description": "Free space available in bytes as a human-readable string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "FreeFiles",
+          "JsonName": "free_files",
+          "Description": "Number of free inodes as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Fsid",
+          "JsonName": "fsid",
+          "Description": "Unique filesystem ID as returned by statvfs.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Fstype",
+          "JsonName": "fstype",
+          "Description": "String representation of filesystem type from mountinfo.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "NameMax",
+          "JsonName": "name_max",
+          "Description": "Maximum filename length as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "Source for the mounted filesystem. For ZFS this will be dataset name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TotalBlocks",
+          "JsonName": "total_blocks",
+          "Description": "Filesystem size as reported in blocksize blocks as reported by statvfs.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "TotalBlocksStr",
+          "JsonName": "total_blocks_str",
+          "Description": "Total filesystem size in blocks as a human-readable string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TotalBytes",
+          "JsonName": "total_bytes",
+          "Description": "Total filesystem size in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "TotalBytesStr",
+          "JsonName": "total_bytes_str",
+          "Description": "Total filesystem size in bytes as a human-readable string.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SetZfsFileAttributes",
+      "SchemaName": "SetZfsFileAttributes",
+      "Description": "FilesystemSetZfsAttributesArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Path to the file to set ZFS attributes on.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ZfsFileAttributes",
+          "JsonName": "zfs_file_attributes",
+          "Description": "ZFS file attributes to set.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SetZfsFileAttributesZfsFileAttributes"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SetZfsFileAttributesZfsFileAttributes",
+      "SchemaName": "SetZfsFileAttributesZfsFileAttributes",
+      "Description": "ZFS file attributes to set.",
+      "Fields": [
+        {
+          "Name": "Appendonly",
+          "JsonName": "appendonly",
+          "Description": "File may only be opened with O_APPEND flag. Also appears as APPEND in     attributes in `filesystem.stat` output and as STATX_ATTR_APPEND in statx() response.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Archive",
+          "JsonName": "archive",
+          "Description": "ARCHIVE MS-DOS attribute. Value is reset to True whenever file is modified.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hidden",
+          "JsonName": "hidden",
+          "Description": "HIDDEN MS-DOS attribute. When set, the SMB HIDDEN flag is set and file     is \"hidden\" from the perspective of SMB clients.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Immutable",
+          "JsonName": "immutable",
+          "Description": "File may not be altered or deleted. Also appears as IMMUTABLE in attributes in     `filesystem.stat` output and as STATX_ATTR_IMMUTABLE in statx() response.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Nounlink",
+          "JsonName": "nounlink",
+          "Description": "File may be altered but not deleted.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Offline",
+          "JsonName": "offline",
+          "Description": "OFFLINE MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Readonly",
+          "JsonName": "readonly",
+          "Description": "READONLY MS-DOS attribute. When set, file may not be written to (toggling     does not impact existing file opens).",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Sparse",
+          "JsonName": "sparse",
+          "Description": "SPARSE MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "System",
+          "JsonName": "system",
+          "Description": "SYSTEM MS-DOS attribute. Is presented to SMB clients, but has no impact on local filesystem.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "FilesystemAttributes",
+      "SchemaName": "FilesystemAttributes",
+      "Values": [
+        {
+          "Name": "FilesystemAttributesCOMPRESSED",
+          "Value": "COMPRESSED"
+        },
+        {
+          "Name": "FilesystemAttributesAPPEND",
+          "Value": "APPEND"
+        },
+        {
+          "Name": "FilesystemAttributesNODUMP",
+          "Value": "NODUMP"
+        },
+        {
+          "Name": "FilesystemAttributesIMMUTABLE",
+          "Value": "IMMUTABLE"
+        },
+        {
+          "Name": "FilesystemAttributesAUTOMOUNT",
+          "Value": "AUTOMOUNT"
+        },
+        {
+          "Name": "FilesystemAttributesMOUNTROOT",
+          "Value": "MOUNT_ROOT"
+        },
+        {
+          "Name": "FilesystemAttributesVERIFY",
+          "Value": "VERIFY"
+        },
+        {
+          "Name": "FilesystemAttributesDAX",
+          "Value": "DAX"
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemType",
+      "SchemaName": "FilesystemType",
+      "Description": "Type of filesystem entry.\n\n* `DIRECTORY`: Directory/folder\n* `FILE`: Regular file\n* `SYMLINK`: Symbolic link\n* `OTHER`: Other file types (device, pipe, socket, etc.)",
+      "Values": [
+        {
+          "Name": "FilesystemTypeDIRECTORY",
+          "Value": "DIRECTORY"
+        },
+        {
+          "Name": "FilesystemTypeFILE",
+          "Value": "FILE"
+        },
+        {
+          "Name": "FilesystemTypeSYMLINK",
+          "Value": "SYMLINK"
+        },
+        {
+          "Name": "FilesystemTypeOTHER",
+          "Value": "OTHER"
+        }
+      ]
+    },
+    {
+      "Name": "FilesystemZfsAttrs",
+      "SchemaName": "FilesystemZfsAttrs",
+      "Values": [
+        {
+          "Name": "FilesystemZfsAttrsREADONLY",
+          "Value": "READONLY"
+        },
+        {
+          "Name": "FilesystemZfsAttrsHIDDEN",
+          "Value": "HIDDEN"
+        },
+        {
+          "Name": "FilesystemZfsAttrsSYSTEM",
+          "Value": "SYSTEM"
+        },
+        {
+          "Name": "FilesystemZfsAttrsARCHIVE",
+          "Value": "ARCHIVE"
+        },
+        {
+          "Name": "FilesystemZfsAttrsIMMUTABLE",
+          "Value": "IMMUTABLE"
+        },
+        {
+          "Name": "FilesystemZfsAttrsNOUNLINK",
+          "Value": "NOUNLINK"
+        },
+        {
+          "Name": "FilesystemZfsAttrsAPPENDONLY",
+          "Value": "APPENDONLY"
+        },
+        {
+          "Name": "FilesystemZfsAttrsNODUMP",
+          "Value": "NODUMP"
+        },
+        {
+          "Name": "FilesystemZfsAttrsOPAQUE",
+          "Value": "OPAQUE"
+        },
+        {
+          "Name": "FilesystemZfsAttrsAVQUARANTINED",
+          "Value": "AV_QUARANTINED"
+        },
+        {
+          "Name": "FilesystemZfsAttrsAVMODIFIED",
+          "Value": "AV_MODIFIED"
+        },
+        {
+          "Name": "FilesystemZfsAttrsREPARSE",
+          "Value": "REPARSE"
+        },
+        {
+          "Name": "FilesystemZfsAttrsOFFLINE",
+          "Value": "OFFLINE"
+        },
+        {
+          "Name": "FilesystemZfsAttrsSPARSE",
+          "Value": "SPARSE"
+        }
+      ]
+    }
+  ]
+}

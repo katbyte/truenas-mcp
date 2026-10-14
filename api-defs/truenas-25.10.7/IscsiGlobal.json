@@ -1,0 +1,536 @@
+{
+  "Name": "IscsiGlobal",
+  "Tag": "iscsi.global",
+  "Operations": [
+    {
+      "Name": "IscsiGlobalAluaEnabled",
+      "OperationId": "iscsi.global.alua_enabled",
+      "Method": "CALL",
+      "Path": "iscsi.global.alua_enabled",
+      "Description": "Returns whether iSCSI ALUA is enabled or not.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.global.alua_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_GLOBAL_READ",
+          "SHARING_ISCSI_GLOBAL_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "IscsiGlobalClientCount",
+      "OperationId": "iscsi.global.client_count",
+      "Method": "CALL",
+      "Path": "iscsi.global.client_count",
+      "Description": "Return currently connected clients count.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.global.client_count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_GLOBAL_READ",
+          "SHARING_ISCSI_GLOBAL_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "IscsiGlobalConfig",
+      "OperationId": "iscsi.global.config",
+      "Method": "CALL",
+      "Path": "iscsi.global.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiGlobalConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.global.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_GLOBAL_READ",
+          "SHARING_ISCSI_GLOBAL_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "IscsiGlobalIserEnabled",
+      "OperationId": "iscsi.global.iser_enabled",
+      "Method": "CALL",
+      "Path": "iscsi.global.iser_enabled",
+      "Description": "Returns whether iSER is enabled or not.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.global.iser_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_GLOBAL_READ",
+          "SHARING_ISCSI_GLOBAL_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "IscsiGlobalSessions",
+      "OperationId": "iscsi.global.sessions",
+      "Method": "CALL",
+      "Path": "iscsi.global.sessions",
+      "Description": "Get a list of currently running iSCSI sessions. This includes initiator and target names\nand the unique connection IDs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiSession"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.global.sessions",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_GLOBAL_READ",
+          "SHARING_ISCSI_GLOBAL_WRITE",
+          "SHARING_ISCSI_READ",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "query_filters",
+          "Argument": "queryFilters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "Query filters to apply to the session listing."
+        },
+        {
+          "Name": "query_options",
+          "Argument": "queryOptions",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryOptions"
+          },
+          "Description": "Query options for sorting and pagination."
+        }
+      ]
+    },
+    {
+      "Name": "IscsiGlobalUpdate",
+      "OperationId": "iscsi.global.update",
+      "Method": "CALL",
+      "Path": "iscsi.global.update",
+      "Description": "`alua` is a no-op for FreeNAS.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IscsiGlobalUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "iscsi.global.update",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_ISCSI_GLOBAL_WRITE",
+          "SHARING_ISCSI_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "iscsi_update",
+          "Argument": "iscsiUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IscsiUpdate"
+          },
+          "Required": true,
+          "Description": "ISCSIGlobalUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IscsiGlobalConfigAnswer",
+      "SchemaName": "IscsiGlobalConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Alua",
+          "JsonName": "alua",
+          "Description": "Whether Asymmetric Logical Unit Access (ALUA) is enabled. Enabling is limited to TrueNAS Enterprise-licensed     high availability systems. ALUA only works when configured on both the client and server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Basename",
+          "JsonName": "basename",
+          "Description": "Base name prefix for iSCSI target IQNs.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the global iSCSI configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Iser",
+          "JsonName": "iser",
+          "Description": "Whether iSCSI Extensions for RDMA (iSER) are enabled. Enabling is limited to TrueNAS Enterprise-licensed     systems and requires the system and network environment have Remote Direct Memory Access (RDMA)-capable hardware.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IsnsServers",
+          "JsonName": "isns_servers",
+          "Description": "Array of iSNS (Internet Storage Name Service) server addresses.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "ListenPort",
+          "JsonName": "listen_port",
+          "Description": "TCP port number for iSCSI connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "PoolAvailThreshold",
+          "JsonName": "pool_avail_threshold",
+          "Description": "Pool available space threshold percentage or `null` to disable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "IscsiGlobalUpdateAnswer",
+      "SchemaName": "IscsiGlobalUpdateAnswer",
+      "Description": "The updated global iSCSI configuration.",
+      "Fields": [
+        {
+          "Name": "Alua",
+          "JsonName": "alua",
+          "Description": "Whether Asymmetric Logical Unit Access (ALUA) is enabled. Enabling is limited to TrueNAS Enterprise-licensed     high availability systems. ALUA only works when configured on both the client and server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Basename",
+          "JsonName": "basename",
+          "Description": "Base name prefix for iSCSI target IQNs.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the global iSCSI configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Iser",
+          "JsonName": "iser",
+          "Description": "Whether iSCSI Extensions for RDMA (iSER) are enabled. Enabling is limited to TrueNAS Enterprise-licensed     systems and requires the system and network environment have Remote Direct Memory Access (RDMA)-capable hardware.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IsnsServers",
+          "JsonName": "isns_servers",
+          "Description": "Array of iSNS (Internet Storage Name Service) server addresses.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "ListenPort",
+          "JsonName": "listen_port",
+          "Description": "TCP port number for iSCSI connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "PoolAvailThreshold",
+          "JsonName": "pool_avail_threshold",
+          "Description": "Pool available space threshold percentage or `null` to disable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "IscsiSession",
+      "SchemaName": "IscsiSession",
+      "Fields": [
+        {
+          "Name": "DataDigest",
+          "JsonName": "data_digest",
+          "Description": "Data digest algorithm used for the session or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FirstBurstLength",
+          "JsonName": "first_burst_length",
+          "Description": "First burst length for the session or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HeaderDigest",
+          "JsonName": "header_digest",
+          "Description": "Header digest algorithm used for the session or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ImmediateData",
+          "JsonName": "immediate_data",
+          "Description": "Whether immediate data transfer is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Initiator",
+          "JsonName": "initiator",
+          "Description": "iSCSI Qualified Name (IQN) of the initiator.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "InitiatorAddr",
+          "JsonName": "initiator_addr",
+          "Description": "IP address of the initiator.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "InitiatorAlias",
+          "JsonName": "initiator_alias",
+          "Description": "Alias name of the initiator or `null` if not set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Iser",
+          "JsonName": "iser",
+          "Description": "Whether this session is using iSER (iSCSI Extensions for RDMA).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MaxBurstLength",
+          "JsonName": "max_burst_length",
+          "Description": "Maximum burst length for the session or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MaxDataSegmentLength",
+          "JsonName": "max_data_segment_length",
+          "Description": "Maximum data segment length for the session or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MaxReceiveDataSegmentLength",
+          "JsonName": "max_receive_data_segment_length",
+          "Description": "Maximum receive data segment length or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MaxXmitDataSegmentLength",
+          "JsonName": "max_xmit_data_segment_length",
+          "Description": "Maximum transmit data segment length or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Offload",
+          "JsonName": "offload",
+          "Description": "Whether hardware offload is enabled for this session.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Target",
+          "JsonName": "target",
+          "Description": "iSCSI Qualified Name (IQN) of the target.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TargetAlias",
+          "JsonName": "target_alias",
+          "Description": "Alias name of the target.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IscsiUpdate",
+      "SchemaName": "IscsiUpdate",
+      "Description": "ISCSIGlobalUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Alua",
+          "JsonName": "alua",
+          "Description": "Whether Asymmetric Logical Unit Access (ALUA) is enabled. Enabling is limited to TrueNAS Enterprise-licensed     high availability systems. ALUA only works when configured on both the client and server.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Basename",
+          "JsonName": "basename",
+          "Description": "Base name prefix for iSCSI target IQNs.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Iser",
+          "JsonName": "iser",
+          "Description": "Whether iSCSI Extensions for RDMA (iSER) are enabled. Enabling is limited to TrueNAS Enterprise-licensed     systems and requires the system and network environment have Remote Direct Memory Access (RDMA)-capable hardware.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IsnsServers",
+          "JsonName": "isns_servers",
+          "Description": "Array of iSNS (Internet Storage Name Service) server addresses.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "ListenPort",
+          "JsonName": "listen_port",
+          "Description": "TCP port number for iSCSI connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "PoolAvailThreshold",
+          "JsonName": "pool_avail_threshold",
+          "Description": "Pool available space threshold percentage or `null` to disable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    }
+  ]
+}

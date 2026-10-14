@@ -1,0 +1,191 @@
+{
+  "Name": "AuthTwofactor",
+  "Tag": "auth.twofactor",
+  "Operations": [
+    {
+      "Name": "AuthTwofactorConfig",
+      "OperationId": "auth.twofactor.config",
+      "Method": "CALL",
+      "Path": "auth.twofactor.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AuthTwofactorConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "auth.twofactor.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_SECURITY_READ",
+          "SYSTEM_SECURITY_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "AuthTwofactorUpdate",
+      "OperationId": "auth.twofactor.update",
+      "Method": "CALL",
+      "Path": "auth.twofactor.update",
+      "Description": "`window` extends the validity to `window` many counter ticks before and after the current one.\n\nUpdate Two-Factor Authentication Service Configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AuthTwofactorUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "auth.twofactor.update",
+        "Roles": [
+          "SYSTEM_SECURITY_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "auth_twofactor_update",
+          "Argument": "authTwofactorUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AuthTwofactorUpdate"
+          },
+          "Required": true,
+          "Description": "Updated two-factor authentication configuration settings."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AuthTwofactorConfigAnswer",
+      "SchemaName": "AuthTwofactorConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether two-factor authentication is enabled system-wide.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the two-factor authentication configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Services",
+          "JsonName": "services",
+          "Description": "Configuration for which services require two-factor authentication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Services"
+          }
+        },
+        {
+          "Name": "Window",
+          "JsonName": "window",
+          "Description": "Time window in seconds for TOTP token validation (minimum 0).",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuthTwofactorUpdate",
+      "SchemaName": "AuthTwofactorUpdate",
+      "Description": "Updated two-factor authentication configuration settings.",
+      "Fields": [
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether two-factor authentication is enabled system-wide.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Services",
+          "JsonName": "services",
+          "Description": "Configuration for which services require two-factor authentication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Services"
+          }
+        },
+        {
+          "Name": "Window",
+          "JsonName": "window",
+          "Description": "Time window in seconds for TOTP token validation (minimum 0).",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AuthTwofactorUpdateAnswer",
+      "SchemaName": "AuthTwofactorUpdateAnswer",
+      "Description": "The updated two-factor authentication configuration.",
+      "Fields": [
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether two-factor authentication is enabled system-wide.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the two-factor authentication configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Services",
+          "JsonName": "services",
+          "Description": "Configuration for which services require two-factor authentication.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Services"
+          }
+        },
+        {
+          "Name": "Window",
+          "JsonName": "window",
+          "Description": "Time window in seconds for TOTP token validation (minimum 0).",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Services",
+      "SchemaName": "Services",
+      "Description": "Configuration for which services require two-factor authentication.",
+      "Fields": [
+        {
+          "Name": "Ssh",
+          "JsonName": "ssh",
+          "Description": "Whether two-factor authentication is required for SSH connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,509 @@
+{
+  "Name": "KerberosKeytab",
+  "Tag": "kerberos.keytab",
+  "Operations": [
+    {
+      "Name": "KerberosKeytabCreate",
+      "OperationId": "kerberos.keytab.create",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.create",
+      "Description": "Create a kerberos keytab. Uploaded keytab files will be merged with the system\nkeytab under /etc/krb5.keytab.\n\n`file` b64encoded kerberos keytab\n`name` name for kerberos keytab",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosKeytabQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.create",
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabCreateData"
+          },
+          "Required": true,
+          "Description": "Kerberos keytab configuration data for creation."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabDelete",
+      "OperationId": "kerberos.keytab.delete",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.delete",
+      "Description": "Delete kerberos keytab by id, and force regeneration of\nsystem keytab.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.delete",
+        "Item": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the Kerberos keytab entry to delete."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabGetInstance",
+      "OperationId": "kerberos.keytab.get_instance",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosKeytabQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.get_instance",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabQuery",
+      "OperationId": "kerberos.keytab.query",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabQueryCount",
+      "OperationId": "kerberos.keytab.query#count",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabQueryOne",
+      "OperationId": "kerberos.keytab.query#get",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosKeytabQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_READ",
+          "DIRECTORY_SERVICE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabUpdate",
+      "OperationId": "kerberos.keytab.update",
+      "Method": "CALL",
+      "Path": "kerberos.keytab.update",
+      "Description": "Update kerberos keytab by id.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "KerberosKeytabQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "kerberos.keytab.update",
+        "Item": true,
+        "Roles": [
+          "DIRECTORY_SERVICE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the Kerberos keytab entry to update."
+        },
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KerberosKeytabUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated Kerberos keytab configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "KerberosKeytabCreateData",
+      "SchemaName": "KerberosKeytabCreateData",
+      "Description": "Kerberos keytab configuration data for creation.",
+      "Fields": [
+        {
+          "Name": "File",
+          "JsonName": "file",
+          "Description": "Base64 encoded kerberos keytab entries to append to the system keytab.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the kerberos keytab entry. This is an identifier for the keytab and not     the name of the keytab file. Some names are used for internal purposes such     as AD_MACHINE_ACCOUNT and IPA_MACHINE_ACCOUNT.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabGetInstanceOptions",
+      "SchemaName": "KerberosKeytabGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabQueryOptions",
+      "SchemaName": "KerberosKeytabQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabQueryResultItem",
+      "SchemaName": "KerberosKeytabQueryResultItem",
+      "Description": "The created Kerberos keytab entry.",
+      "Fields": [
+        {
+          "Name": "File",
+          "JsonName": "file",
+          "Description": "Base64 encoded kerberos keytab entries to append to the system keytab.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the Kerberos keytab entry.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the kerberos keytab entry. This is an identifier for the keytab and not     the name of the keytab file. Some names are used for internal purposes such     as AD_MACHINE_ACCOUNT and IPA_MACHINE_ACCOUNT.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KerberosKeytabUpdateData",
+      "SchemaName": "KerberosKeytabUpdateData",
+      "Description": "Updated Kerberos keytab configuration data.",
+      "Fields": [
+        {
+          "Name": "File",
+          "JsonName": "file",
+          "Description": "Base64 encoded kerberos keytab entries to append to the system keytab.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the kerberos keytab entry. This is an identifier for the keytab and not     the name of the keytab file. Some names are used for internal purposes such     as AD_MACHINE_ACCOUNT and IPA_MACHINE_ACCOUNT.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,431 @@
+{
+  "Name": "Boot",
+  "Tag": "boot",
+  "Operations": [
+    {
+      "Name": "BootAttach",
+      "OperationId": "boot.attach",
+      "Method": "CALL",
+      "Path": "boot.attach",
+      "Description": "Attach a disk to the boot pool, turning a stripe into a mirror.\n\n`expand` option will determine whether the new disk partition will be\n         the maximum available or the same size as the current disk.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.attach",
+        "Job": true,
+        "Roles": [
+          "DISK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dev",
+          "Argument": "dev",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Device name or path to attach to the boot pool."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootAttachOptions"
+          },
+          "Description": "Options for the attach operation."
+        }
+      ]
+    },
+    {
+      "Name": "BootDetach",
+      "OperationId": "boot.detach",
+      "Method": "CALL",
+      "Path": "boot.detach",
+      "Description": "Detach given `dev` from boot pool.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.detach",
+        "Roles": [
+          "DISK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "dev",
+          "Argument": "dev",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Device name or path to detach from the boot pool."
+        }
+      ]
+    },
+    {
+      "Name": "BootGetDisks",
+      "OperationId": "boot.get_disks",
+      "Method": "CALL",
+      "Path": "boot.get_disks",
+      "Description": "Returns disks of the boot pool.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.get_disks",
+        "Read": true,
+        "Roles": [
+          "DISK_READ",
+          "DISK_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "BootGetState",
+      "OperationId": "boot.get_state",
+      "Method": "CALL",
+      "Path": "boot.get_state",
+      "Description": "Returns the current state of the boot pool, including all vdevs, properties and datasets.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "BootGetStateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.get_state",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "BootReplace",
+      "OperationId": "boot.replace",
+      "Method": "CALL",
+      "Path": "boot.replace",
+      "Description": "Replace device `label` on boot pool with `dev`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.replace",
+        "Job": true,
+        "Roles": [
+          "DISK_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "label",
+          "Argument": "label",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Label of the disk in the boot pool to replace."
+        },
+        {
+          "Name": "dev",
+          "Argument": "dev",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Device name or path of the replacement disk."
+        }
+      ]
+    },
+    {
+      "Name": "BootScrub",
+      "OperationId": "boot.scrub",
+      "Method": "CALL",
+      "Path": "boot.scrub",
+      "Description": "Scrub on boot pool.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.scrub",
+        "Job": true,
+        "Roles": [
+          "BOOT_ENV_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "BootSetScrubInterval",
+      "OperationId": "boot.set_scrub_interval",
+      "Method": "CALL",
+      "Path": "boot.set_scrub_interval",
+      "Description": "Set Automatic Scrub Interval value in days.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.set_scrub_interval",
+        "Roles": [
+          "BOOT_ENV_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "interval",
+          "Argument": "interval",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "Scrub interval in days (must be a positive integer)."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "BootAttachOptions",
+      "SchemaName": "BootAttachOptions",
+      "Description": "Options for the attach operation.",
+      "Fields": [
+        {
+          "Name": "Expand",
+          "JsonName": "expand",
+          "Description": "Whether to expand the boot pool after attaching the disk.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BootGetStateAnswer",
+      "SchemaName": "BootGetStateAnswer",
+      "Description": "Current state and configuration of the boot pool.",
+      "Fields": [
+        {
+          "Name": "Allocated",
+          "JsonName": "allocated",
+          "Description": "Amount of space currently allocated in the pool in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AllocatedStr",
+          "JsonName": "allocated_str",
+          "Description": "Human-readable string representation of allocated space. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Autotrim",
+          "JsonName": "autotrim",
+          "Description": "Auto-trim configuration for the pool indicating whether automatic TRIM operations are enabled.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "DedupTableQuota",
+          "JsonName": "dedup_table_quota",
+          "Description": "Quota limit for the deduplication table. `null` if no quota is set.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DedupTableSize",
+          "JsonName": "dedup_table_size",
+          "Description": "Size of the deduplication table in bytes. `null` if deduplication is not enabled.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Expand",
+          "JsonName": "expand",
+          "Description": "Information about any active pool expansion operation. `null` if no expansion is running.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Fragmentation",
+          "JsonName": "fragmentation",
+          "Description": "Percentage of pool fragmentation as a string. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Free",
+          "JsonName": "free",
+          "Description": "Amount of free space available in the pool in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FreeStr",
+          "JsonName": "free_str",
+          "Description": "Human-readable string representation of free space. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Freeing",
+          "JsonName": "freeing",
+          "Description": "Amount of space being freed (in bytes) by ongoing operations. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "FreeingStr",
+          "JsonName": "freeing_str",
+          "Description": "Human-readable string representation of space being freed. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Healthy",
+          "JsonName": "healthy",
+          "Description": "Whether the pool is in a healthy state with no errors or warnings.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "IsUpgraded",
+          "JsonName": "is_upgraded",
+          "Description": "Whether this pool has been upgraded to the latest feature flags.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the storage pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Filesystem path where the pool is mounted.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Scan",
+          "JsonName": "scan",
+          "Description": "Information about any active scrub or resilver operation. `null` if no operation is running.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Total size of the pool in bytes. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SizeStr",
+          "JsonName": "size_str",
+          "Description": "Human-readable string representation of the pool size. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current status of the pool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "StatusCode",
+          "JsonName": "status_code",
+          "Description": "Detailed status code for the pool condition. `null` if not applicable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StatusDetail",
+          "JsonName": "status_detail",
+          "Description": "Human-readable description of the pool status. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Topology",
+          "JsonName": "topology",
+          "Description": "Physical topology and structure of the pool including vdevs. `null` if not available.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "PoolTopology"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Warning",
+          "JsonName": "warning",
+          "Description": "Whether the pool has warning conditions that require attention.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

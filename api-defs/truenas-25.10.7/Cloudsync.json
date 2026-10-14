@@ -1,0 +1,1937 @@
+{
+  "Name": "Cloudsync",
+  "Tag": "cloudsync",
+  "Operations": [
+    {
+      "Name": "CloudsyncAbort",
+      "OperationId": "cloudsync.abort",
+      "Method": "CALL",
+      "Path": "cloudsync.abort",
+      "Description": "Aborts cloud sync task.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.abort",
+        "Item": true,
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud sync task to abort."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncCreate",
+      "OperationId": "cloudsync.create",
+      "Method": "CALL",
+      "Path": "cloudsync.create",
+      "Description": "Creates a new cloud_sync entry.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudSyncQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.create",
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "cloud_sync_create",
+          "Argument": "cloudSyncCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncCreate"
+          },
+          "Required": true,
+          "Description": "Cloud sync task configuration data."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncCreateBucket",
+      "OperationId": "cloudsync.create_bucket",
+      "Method": "CALL",
+      "Path": "cloudsync.create_bucket",
+      "Description": "Creates a new bucket `name` using ` credentials_id`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.create_bucket",
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "credentials_id",
+          "Argument": "credentialsId",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud credential to use for bucket creation."
+        },
+        {
+          "Name": "name",
+          "Argument": "name",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name for the new bucket."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncDelete",
+      "OperationId": "cloudsync.delete",
+      "Method": "CALL",
+      "Path": "cloudsync.delete",
+      "Description": "Deletes cloud_sync entry `id`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.delete",
+        "Item": true,
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud sync task to delete."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncGetInstance",
+      "OperationId": "cloudsync.get_instance",
+      "Method": "CALL",
+      "Path": "cloudsync.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudSyncQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.get_instance",
+        "Read": true,
+        "Roles": [
+          "CLOUD_SYNC_READ",
+          "CLOUD_SYNC_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudsyncGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncListBuckets",
+      "OperationId": "cloudsync.list_buckets",
+      "Method": "CALL",
+      "Path": "cloudsync.list_buckets",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.list_buckets",
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "credentials_id",
+          "Argument": "credentialsId",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud credential to use for listing buckets."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncListDirectory",
+      "OperationId": "cloudsync.list_directory",
+      "Method": "CALL",
+      "Path": "cloudsync.list_directory",
+      "Description": "List contents of a remote bucket / directory.\n\nIf remote supports buckets, path is constructed by two keys \"bucket\"/\"folder\" in `attributes`.\nIf remote does not support buckets, path is constructed using \"folder\" key only in `attributes`.\n\"folder\" is directory name and \"bucket\" is bucket name for remote.\n\nPath examples:\n\nS3 Service\n`bucketname/directory/name`\n\nDropbox Service\n`directory/name`\n\n`credentials` is a valid id of a Cloud Sync Credential which will be used to connect to the provider.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.list_directory",
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "cloud_sync_ls",
+          "Argument": "cloudSyncLs",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncLs"
+          },
+          "Required": true,
+          "Description": "CloudSyncListDirectoryArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncOnedriveListDrives",
+      "OperationId": "cloudsync.onedrive_list_drives",
+      "Method": "CALL",
+      "Path": "cloudsync.onedrive_list_drives",
+      "Description": "Lists all available drives and their types for given Microsoft OneDrive credentials.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncOneDriveListDrivesDrive"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.onedrive_list_drives",
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "onedrive_list_drives",
+          "Argument": "onedriveListDrives",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "OnedriveListDrives"
+          },
+          "Required": true,
+          "Description": "CloudSyncOneDriveListDrivesArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncProviders",
+      "OperationId": "cloudsync.providers",
+      "Method": "CALL",
+      "Path": "cloudsync.providers",
+      "Description": "Returns a list of dictionaries of supported providers for Cloud Sync Tasks.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncProvider"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.providers",
+        "Read": true,
+        "Roles": [
+          "CLOUD_SYNC_READ",
+          "CLOUD_SYNC_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CloudsyncQuery",
+      "OperationId": "cloudsync.query",
+      "Method": "CALL",
+      "Path": "cloudsync.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "CLOUD_SYNC_READ",
+          "CLOUD_SYNC_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudsyncQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncQueryCount",
+      "OperationId": "cloudsync.query#count",
+      "Method": "CALL",
+      "Path": "cloudsync.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "CLOUD_SYNC_READ",
+          "CLOUD_SYNC_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudsyncQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncQueryOne",
+      "OperationId": "cloudsync.query#get",
+      "Method": "CALL",
+      "Path": "cloudsync.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudSyncQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "CLOUD_SYNC_READ",
+          "CLOUD_SYNC_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudsyncQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncRestore",
+      "OperationId": "cloudsync.restore",
+      "Method": "CALL",
+      "Path": "cloudsync.restore",
+      "Description": "Create the opposite of cloud sync task `id` (PULL if it was PUSH and vice versa).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudSyncQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.restore",
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud sync task to restore from."
+        },
+        {
+          "Name": "opts",
+          "Argument": "opts",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudsyncRestoreOpts"
+          },
+          "Required": true,
+          "Description": "Restore operation configuration options."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncSync",
+      "OperationId": "cloudsync.sync",
+      "Method": "CALL",
+      "Path": "cloudsync.sync",
+      "Description": "Run the cloud_sync job `id`, syncing the local data to remote.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.sync",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud sync task to run."
+        },
+        {
+          "Name": "cloud_sync_sync_options",
+          "Argument": "cloudSyncSyncOptions",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncSyncOptions"
+          },
+          "Description": "Options for the sync operation."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncSyncOnetime",
+      "OperationId": "cloudsync.sync_onetime",
+      "Method": "CALL",
+      "Path": "cloudsync.sync_onetime",
+      "Description": "Run cloud sync task without creating it.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.sync_onetime",
+        "Job": true,
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "cloud_sync_sync_onetime",
+          "Argument": "cloudSyncSyncOnetime",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncSyncOnetime"
+          },
+          "Required": true,
+          "Description": "Cloud sync task configuration for one-time execution."
+        },
+        {
+          "Name": "cloud_sync_sync_onetime_options",
+          "Argument": "cloudSyncSyncOnetimeOptions",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncSyncOnetimeOptions"
+          },
+          "Description": "Options for the one-time sync operation."
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncUpdate",
+      "OperationId": "cloudsync.update",
+      "Method": "CALL",
+      "Path": "cloudsync.update",
+      "Description": "Updates the cloud_sync entry `id` with `data`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CloudSyncQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "cloudsync.update",
+        "Item": true,
+        "Roles": [
+          "CLOUD_SYNC_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the cloud sync task to update."
+        },
+        {
+          "Name": "cloud_sync_update",
+          "Argument": "cloudSyncUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncUpdate"
+          },
+          "Required": true,
+          "Description": "Updated cloud sync task configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "CloudSyncBwlimit",
+      "SchemaName": "CloudSyncBwlimit",
+      "Fields": [
+        {
+          "Name": "Bandwidth",
+          "JsonName": "bandwidth",
+          "Description": "Bandwidth limit in bytes per second (upload and download).",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Time",
+          "JsonName": "time",
+          "Description": "Time at which the bandwidth limit takes effect in 24-hour format.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncCreate",
+      "SchemaName": "CloudSyncCreate",
+      "Description": "Cloud sync task configuration data.",
+      "Fields": [
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "Bwlimit",
+          "JsonName": "bwlimit",
+          "Description": "Schedule of bandwidth limits.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "CloudSyncBwlimit"
+            }
+          }
+        },
+        {
+          "Name": "CreateEmptySrcDirs",
+          "JsonName": "create_empty_src_dirs",
+          "Description": "Whether to create empty directories in the destination that exist in the source.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "ID of the cloud credential.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Direction of the cloud sync operation.\n\n* `PUSH`: Upload local files to cloud storage\n* `PULL`: Download files from cloud storage to local storage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "Whether to encrypt files before uploading to cloud storage.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionPassword",
+          "JsonName": "encryption_password",
+          "Description": "Password for client-side encryption. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EncryptionSalt",
+          "JsonName": "encryption_salt",
+          "Description": "Salt value for encryption key derivation. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "FilenameEncryption",
+          "JsonName": "filename_encryption",
+          "Description": "Whether to encrypt filenames in addition to file contents.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FollowSymlinks",
+          "JsonName": "follow_symlinks",
+          "Description": "Whether to follow symbolic links and sync the files they point to.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferMode",
+          "JsonName": "transfer_mode",
+          "Description": "How files are transferred between local and cloud storage.\n\n* `SYNC`: Synchronize directories (add new, update changed, remove deleted)\n* `COPY`: Copy files without removing any existing files\n* `MOVE`: Move files (copy then delete from source)",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncTransferMode"
+          }
+        },
+        {
+          "Name": "Transfers",
+          "JsonName": "transfers",
+          "Description": "Maximum number of parallel file transfers. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncLs",
+      "SchemaName": "CloudSyncLs",
+      "Description": "CloudSyncListDirectoryArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "Additional arguments for the directory listing command.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Cloud provider-specific attributes for the listing operation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "ID of the cloud credential to use for directory listing.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "Whether files are encrypted in cloud storage.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionPassword",
+          "JsonName": "encryption_password",
+          "Description": "Password for decrypting files and filenames.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EncryptionSalt",
+          "JsonName": "encryption_salt",
+          "Description": "Salt value for encryption key derivation.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "FilenameEncryption",
+          "JsonName": "filename_encryption",
+          "Description": "Whether filenames are encrypted in cloud storage.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncOneDriveListDrivesDrive",
+      "SchemaName": "CloudSyncOneDriveListDrivesDrive",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description of the OneDrive.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DriveId",
+          "JsonName": "drive_id",
+          "Description": "OneDrive drive identifier.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "DriveType",
+          "JsonName": "drive_type",
+          "Description": "Type of OneDrive.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncOneDriveListDrivesDriveDriveType"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the OneDrive.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncProvider",
+      "SchemaName": "CloudSyncProvider",
+      "Fields": [
+        {
+          "Name": "BucketTitle",
+          "JsonName": "bucket_title",
+          "Description": "Title for bucket concept in this provider or `null` if not applicable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Buckets",
+          "JsonName": "buckets",
+          "Description": "Set to `true` if provider supports buckets.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CredentialsOauth",
+          "JsonName": "credentials_oauth",
+          "Description": "OAuth setup URL for the provider or `null` if not OAuth-based.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Internal name identifier for the cloud provider.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TaskSchema",
+          "JsonName": "task_schema",
+          "Description": "JSON schema for task attributes.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "CloudSyncProviderTaskSchemaItem"
+            }
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Human-readable title for the cloud provider.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncProviderTaskSchemaItem",
+      "SchemaName": "CloudSyncProviderTaskSchemaItem",
+      "Fields": [
+        {
+          "Name": "Property",
+          "JsonName": "property",
+          "Description": "Name of the schema property for task configuration.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncQueryResultItem",
+      "SchemaName": "CloudSyncQueryResultItem",
+      "Description": "The created cloud sync task configuration.",
+      "Fields": [
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "Bwlimit",
+          "JsonName": "bwlimit",
+          "Description": "Schedule of bandwidth limits.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "CloudSyncBwlimit"
+            }
+          }
+        },
+        {
+          "Name": "CreateEmptySrcDirs",
+          "JsonName": "create_empty_src_dirs",
+          "Description": "Whether to create empty directories in the destination that exist in the source.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "Cloud credentials to use for each backup.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudCredentialQueryResultItem"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Direction of the cloud sync operation.\n\n* `PUSH`: Upload local files to cloud storage\n* `PULL`: Download files from cloud storage to local storage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "Whether to encrypt files before uploading to cloud storage.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionPassword",
+          "JsonName": "encryption_password",
+          "Description": "Password for client-side encryption. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EncryptionSalt",
+          "JsonName": "encryption_salt",
+          "Description": "Salt value for encryption key derivation. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "FilenameEncryption",
+          "JsonName": "filename_encryption",
+          "Description": "Whether to encrypt filenames in addition to file contents.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FollowSymlinks",
+          "JsonName": "follow_symlinks",
+          "Description": "Whether to follow symbolic links and sync the files they point to.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this cloud storage configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Job",
+          "JsonName": "job",
+          "Description": "Information regarding the task's job state, e.g. progress.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Locked",
+          "JsonName": "locked",
+          "Description": "A locked task cannot run.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferMode",
+          "JsonName": "transfer_mode",
+          "Description": "How files are transferred between local and cloud storage.\n\n* `SYNC`: Synchronize directories (add new, update changed, remove deleted)\n* `COPY`: Copy files without removing any existing files\n* `MOVE`: Move files (copy then delete from source)",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncTransferMode"
+          }
+        },
+        {
+          "Name": "Transfers",
+          "JsonName": "transfers",
+          "Description": "Maximum number of parallel file transfers. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncSyncOnetime",
+      "SchemaName": "CloudSyncSyncOnetime",
+      "Description": "Cloud sync task configuration for one-time execution.",
+      "Fields": [
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "Bwlimit",
+          "JsonName": "bwlimit",
+          "Description": "Schedule of bandwidth limits.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "CloudSyncBwlimit"
+            }
+          }
+        },
+        {
+          "Name": "CreateEmptySrcDirs",
+          "JsonName": "create_empty_src_dirs",
+          "Description": "Whether to create empty directories in the destination that exist in the source.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "ID of the cloud credential.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Direction of the cloud sync operation.\n\n* `PUSH`: Upload local files to cloud storage\n* `PULL`: Download files from cloud storage to local storage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "Whether to encrypt files before uploading to cloud storage.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionPassword",
+          "JsonName": "encryption_password",
+          "Description": "Password for client-side encryption. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EncryptionSalt",
+          "JsonName": "encryption_salt",
+          "Description": "Salt value for encryption key derivation. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "FilenameEncryption",
+          "JsonName": "filename_encryption",
+          "Description": "Whether to encrypt filenames in addition to file contents.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FollowSymlinks",
+          "JsonName": "follow_symlinks",
+          "Description": "Whether to follow symbolic links and sync the files they point to.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferMode",
+          "JsonName": "transfer_mode",
+          "Description": "How files are transferred between local and cloud storage.\n\n* `SYNC`: Synchronize directories (add new, update changed, remove deleted)\n* `COPY`: Copy files without removing any existing files\n* `MOVE`: Move files (copy then delete from source)",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncTransferMode"
+          }
+        },
+        {
+          "Name": "Transfers",
+          "JsonName": "transfers",
+          "Description": "Maximum number of parallel file transfers. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncSyncOnetimeOptions",
+      "SchemaName": "CloudSyncSyncOnetimeOptions",
+      "Description": "Options for the one-time sync operation.",
+      "Fields": [
+        {
+          "Name": "DryRun",
+          "JsonName": "dry_run",
+          "Description": "Whether to perform a dry run without making actual changes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncSyncOptions",
+      "SchemaName": "CloudSyncSyncOptions",
+      "Description": "Options for the sync operation.",
+      "Fields": [
+        {
+          "Name": "DryRun",
+          "JsonName": "dry_run",
+          "Description": "Whether to perform a dry run without making actual changes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncUpdate",
+      "SchemaName": "CloudSyncUpdate",
+      "Description": "Updated cloud sync task configuration data.",
+      "Fields": [
+        {
+          "Name": "Args",
+          "JsonName": "args",
+          "Description": "(Slated for removal).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Attributes",
+          "JsonName": "attributes",
+          "Description": "Additional information for each backup, e.g. bucket name.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Attributes"
+          }
+        },
+        {
+          "Name": "Bwlimit",
+          "JsonName": "bwlimit",
+          "Description": "Schedule of bandwidth limits.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "CloudSyncBwlimit"
+            }
+          }
+        },
+        {
+          "Name": "CreateEmptySrcDirs",
+          "JsonName": "create_empty_src_dirs",
+          "Description": "Whether to create empty directories in the destination that exist in the source.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "ID of the cloud credential.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "The name of the task to display in the UI.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Direction",
+          "JsonName": "direction",
+          "Description": "Direction of the cloud sync operation.\n\n* `PUSH`: Upload local files to cloud storage\n* `PULL`: Download files from cloud storage to local storage",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncDirection"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Can enable/disable the task.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Encryption",
+          "JsonName": "encryption",
+          "Description": "Whether to encrypt files before uploading to cloud storage.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncryptionPassword",
+          "JsonName": "encryption_password",
+          "Description": "Password for client-side encryption. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EncryptionSalt",
+          "JsonName": "encryption_salt",
+          "Description": "Salt value for encryption key derivation. Empty string if encryption is disabled.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Exclude",
+          "JsonName": "exclude",
+          "Description": "Paths to pass to `restic backup --exclude`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "FilenameEncryption",
+          "JsonName": "filename_encryption",
+          "Description": "Whether to encrypt filenames in addition to file contents.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "FollowSymlinks",
+          "JsonName": "follow_symlinks",
+          "Description": "Whether to follow symbolic links and sync the files they point to.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Include",
+          "JsonName": "include",
+          "Description": "Paths to pass to `restic backup --include`.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "The local path to back up beginning with `/mnt` or `/dev/zvol`.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PostScript",
+          "JsonName": "post_script",
+          "Description": "A Bash script to run immediately after every backup if it succeeds.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreScript",
+          "JsonName": "pre_script",
+          "Description": "A Bash script to run immediately before every backup.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Schedule",
+          "JsonName": "schedule",
+          "Description": "Cron schedule dictating when the task should run.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Schedule"
+          }
+        },
+        {
+          "Name": "Snapshot",
+          "JsonName": "snapshot",
+          "Description": "Whether to create a temporary snapshot of the dataset before every backup.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "TransferMode",
+          "JsonName": "transfer_mode",
+          "Description": "How files are transferred between local and cloud storage.\n\n* `SYNC`: Synchronize directories (add new, update changed, remove deleted)\n* `COPY`: Copy files without removing any existing files\n* `MOVE`: Move files (copy then delete from source)",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudSyncTransferMode"
+          }
+        },
+        {
+          "Name": "Transfers",
+          "JsonName": "transfers",
+          "Description": "Maximum number of parallel file transfers. `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncGetInstanceOptions",
+      "SchemaName": "CloudsyncGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncQueryOptions",
+      "SchemaName": "CloudsyncQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncRestoreOpts",
+      "SchemaName": "CloudsyncRestoreOpts",
+      "Description": "Restore operation configuration options.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Description for the restore operation.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Path",
+          "JsonName": "path",
+          "Description": "Local path where files will be restored.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TransferMode",
+          "JsonName": "transfer_mode",
+          "Description": "Transfer mode for the restore operation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CloudsyncRestoreOptsTransferMode"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "OnedriveListDrives",
+      "SchemaName": "OnedriveListDrives",
+      "Description": "CloudSyncOneDriveListDrivesArgs parameters.",
+      "Fields": [
+        {
+          "Name": "ClientId",
+          "JsonName": "client_id",
+          "Description": "OAuth client ID for OneDrive API access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ClientSecret",
+          "JsonName": "client_secret",
+          "Description": "OAuth client secret for OneDrive API access.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Token",
+          "JsonName": "token",
+          "Description": "OAuth access token for OneDrive authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "CloudSyncDirection",
+      "SchemaName": "CloudSyncDirection",
+      "Description": "Direction of the cloud sync operation.\n\n* `PUSH`: Upload local files to cloud storage\n* `PULL`: Download files from cloud storage to local storage",
+      "Values": [
+        {
+          "Name": "CloudSyncDirectionPUSH",
+          "Value": "PUSH"
+        },
+        {
+          "Name": "CloudSyncDirectionPULL",
+          "Value": "PULL"
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncOneDriveListDrivesDriveDriveType",
+      "SchemaName": "CloudSyncOneDriveListDrivesDriveDriveType",
+      "Description": "Type of OneDrive.",
+      "Values": [
+        {
+          "Name": "CloudSyncOneDriveListDrivesDriveDriveTypePERSONAL",
+          "Value": "PERSONAL"
+        },
+        {
+          "Name": "CloudSyncOneDriveListDrivesDriveDriveTypeBUSINESS",
+          "Value": "BUSINESS"
+        },
+        {
+          "Name": "CloudSyncOneDriveListDrivesDriveDriveTypeDOCUMENTLIBRARY",
+          "Value": "DOCUMENT_LIBRARY"
+        }
+      ]
+    },
+    {
+      "Name": "CloudSyncTransferMode",
+      "SchemaName": "CloudSyncTransferMode",
+      "Description": "How files are transferred between local and cloud storage.\n\n* `SYNC`: Synchronize directories (add new, update changed, remove deleted)\n* `COPY`: Copy files without removing any existing files\n* `MOVE`: Move files (copy then delete from source)",
+      "Values": [
+        {
+          "Name": "CloudSyncTransferModeSYNC",
+          "Value": "SYNC"
+        },
+        {
+          "Name": "CloudSyncTransferModeCOPY",
+          "Value": "COPY"
+        },
+        {
+          "Name": "CloudSyncTransferModeMOVE",
+          "Value": "MOVE"
+        }
+      ]
+    },
+    {
+      "Name": "CloudsyncRestoreOptsTransferMode",
+      "SchemaName": "CloudsyncRestoreOptsTransferMode",
+      "Description": "Transfer mode for the restore operation.",
+      "Values": [
+        {
+          "Name": "CloudsyncRestoreOptsTransferModeSYNC",
+          "Value": "SYNC"
+        },
+        {
+          "Name": "CloudsyncRestoreOptsTransferModeCOPY",
+          "Value": "COPY"
+        }
+      ]
+    }
+  ]
+}

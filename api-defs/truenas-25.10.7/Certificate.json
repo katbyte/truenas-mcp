@@ -1,0 +1,1545 @@
+{
+  "Name": "Certificate",
+  "Tag": "certificate",
+  "Operations": [
+    {
+      "Name": "CertificateAcmeServerChoices",
+      "OperationId": "certificate.acme_server_choices",
+      "Method": "CALL",
+      "Path": "certificate.acme_server_choices",
+      "Description": "Dictionary of popular ACME Servers with their directory URI\nendpoints which we display automatically in the UI",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.acme_server_choices",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CertificateCountryChoices",
+      "OperationId": "certificate.country_choices",
+      "Method": "CALL",
+      "Path": "certificate.country_choices",
+      "Description": "Returns country choices for creating a certificate/csr.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.country_choices",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CertificateCreate",
+      "OperationId": "certificate.create",
+      "Method": "CALL",
+      "Path": "certificate.create",
+      "Description": "Create a new Certificate\n\nCertificates are classified under following types and the necessary keywords to be passed\nfor `create_type` attribute to create the respective type of certificate\n\n1) Imported Certificate                 -  CERTIFICATE_CREATE_IMPORTED\n\n2) Certificate Signing Request          -  CERTIFICATE_CREATE_CSR\n\n3) Imported Certificate Signing Request -  CERTIFICATE_CREATE_IMPORTED_CSR\n\n4) ACME Certificate                     -  CERTIFICATE_CREATE_ACME\n\nBy default, created CSRs use RSA keys. If an Elliptic Curve Key is desired, it can be specified with the\n`key_type` attribute. If the `ec_curve` attribute is not specified for the Elliptic Curve Key, then default to\nusing \"SECP384R1\" curve.\n\nA type is selected by the Certificate Service based on `create_type`. The rest of the values in `data` are\nvalidated accordingly and finally a certificate is made based on the selected type.\n\n`cert_extensions` can be specified to set X509v3 extensions.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CertificateQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.create",
+        "Job": true,
+        "Roles": [
+          "CERTIFICATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "certificate_create",
+          "Argument": "certificateCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateCreate"
+          },
+          "Required": true,
+          "Description": "CertificateCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CertificateDelete",
+      "OperationId": "certificate.delete",
+      "Method": "CALL",
+      "Path": "certificate.delete",
+      "Description": "Delete certificate of `id`.\n\nIf the certificate is an ACME based certificate, certificate service will try to\nrevoke the certificate by updating it's status with the ACME server, if it fails an exception is raised\nand the certificate is not deleted from the system. However, if `force` is set to True, certificate is deleted\nfrom the system even if some error occurred while revoking the certificate with the ACME Server",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.delete",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "CERTIFICATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the certificate to delete."
+        },
+        {
+          "Name": "force",
+          "Argument": "force",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to force deletion even if certificate is in use."
+        }
+      ]
+    },
+    {
+      "Name": "CertificateEcCurveChoices",
+      "OperationId": "certificate.ec_curve_choices",
+      "Method": "CALL",
+      "Path": "certificate.ec_curve_choices",
+      "Description": "Dictionary of supported EC curves.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.ec_curve_choices",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CertificateExtendedKeyUsageChoices",
+      "OperationId": "certificate.extended_key_usage_choices",
+      "Method": "CALL",
+      "Path": "certificate.extended_key_usage_choices",
+      "Description": "Dictionary of names that can be used in the\nExtendedKeyUsage attribute of a certificate request.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.extended_key_usage_choices",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "CertificateGetInstance",
+      "OperationId": "certificate.get_instance",
+      "Method": "CALL",
+      "Path": "certificate.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CertificateQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.get_instance",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "CertificateQuery",
+      "OperationId": "certificate.query",
+      "Method": "CALL",
+      "Path": "certificate.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CertificateQueryCount",
+      "OperationId": "certificate.query#count",
+      "Method": "CALL",
+      "Path": "certificate.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CertificateQueryOne",
+      "OperationId": "certificate.query#get",
+      "Method": "CALL",
+      "Path": "certificate.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CertificateQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "CERTIFICATE_READ",
+          "CERTIFICATE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CertificateUpdate",
+      "OperationId": "certificate.update",
+      "Method": "CALL",
+      "Path": "certificate.update",
+      "Description": "Update certificate of `id`\n\nOnly name attribute can be updated.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CertificateQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "certificate.update",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "CERTIFICATE_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the certificate to update."
+        },
+        {
+          "Name": "certificate_update",
+          "Argument": "certificateUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateUpdate"
+          },
+          "Description": "Updated certificate configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "BasicConstraints",
+      "SchemaName": "BasicConstraints",
+      "Description": "Basic Constraints extension configuration for certificate authority capabilities.",
+      "Fields": [
+        {
+          "Name": "Ca",
+          "JsonName": "ca",
+          "Description": "Whether this certificate is authorized to sign other certificates as a Certificate Authority (CA).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the Basic Constraints X.509 extension is present in the certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ExtensionCritical",
+          "JsonName": "extension_critical",
+          "Description": "Whether the Basic Constraints extension is marked as critical. If `true`, applications that do not understand     this extension must reject the certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PathLength",
+          "JsonName": "path_length",
+          "Description": "Maximum number of intermediate CA certificates that may follow this certificate in a valid certificate chain.     `null` indicates no path length constraint.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CertificateCreate",
+      "SchemaName": "CertificateCreate",
+      "Description": "CertificateCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "CSR",
+          "JsonName": "CSR",
+          "Description": "PEM-encoded certificate signing request to import or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AcmeDirectoryUri",
+          "JsonName": "acme_directory_uri",
+          "Description": "ACME directory URI to be used for ACME certificate creation.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AddToTrustedStore",
+          "JsonName": "add_to_trusted_store",
+          "Description": "Whether to add this certificate to the trusted certificate store.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CertExtensions",
+          "JsonName": "cert_extensions",
+          "Description": "Certificate extensions configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateCreateCertExtensions"
+          }
+        },
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "PEM-encoded certificate to import or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "City",
+          "JsonName": "city",
+          "Description": "City or locality name for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Common",
+          "JsonName": "common",
+          "Description": "Common name for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Country",
+          "JsonName": "country",
+          "Description": "Country name for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CreateType",
+          "JsonName": "create_type",
+          "Description": "Type of certificate creation operation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateCreateCreateType"
+          }
+        },
+        {
+          "Name": "CsrId",
+          "JsonName": "csr_id",
+          "Description": "CSR to be used for ACME certificate creation.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DigestAlgorithm",
+          "JsonName": "digest_algorithm",
+          "Description": "Hash algorithm for certificate signing.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateCreateDigestAlgorithm"
+          }
+        },
+        {
+          "Name": "DnsMapping",
+          "JsonName": "dns_mapping",
+          "Description": "A mapping of domain to ACME DNS Authenticator ID for each domain listed in SAN or common name of the CSR.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Integer"
+            }
+          }
+        },
+        {
+          "Name": "EcCurve",
+          "JsonName": "ec_curve",
+          "Description": "Elliptic curve to use for EC keys.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateCreateEcCurve"
+          }
+        },
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "KeyLength",
+          "JsonName": "key_length",
+          "Description": "RSA key length in bits or `null`.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "KeyType",
+          "JsonName": "key_type",
+          "Description": "Type of cryptographic key to generate.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CertificateCreateKeyType"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Certificate name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Organization",
+          "JsonName": "organization",
+          "Description": "Organization name for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "OrganizationalUnit",
+          "JsonName": "organizational_unit",
+          "Description": "Organizational unit for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Passphrase",
+          "JsonName": "passphrase",
+          "Description": "Passphrase to protect the private key or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Privatekey",
+          "JsonName": "privatekey",
+          "Description": "PEM-encoded private key to import or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RenewDays",
+          "JsonName": "renew_days",
+          "Description": "Number of days before the certificate expiration date to attempt certificate renewal. If certificate renewal     fails, renewal will be reattempted every day until expiration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "San",
+          "JsonName": "san",
+          "Description": "Subject alternative names for the certificate.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "State or province name for certificate subject or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Tos",
+          "JsonName": "tos",
+          "Description": "Set this when creating an ACME certificate to accept terms of service of the ACME service.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CertificateCreateCertExtensions",
+      "SchemaName": "CertificateCreateCertExtensions",
+      "Description": "Certificate extensions configuration.",
+      "Fields": [
+        {
+          "Name": "BasicConstraints",
+          "JsonName": "BasicConstraints",
+          "Description": "Basic Constraints extension configuration for certificate authority capabilities.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BasicConstraints"
+          }
+        },
+        {
+          "Name": "ExtendedKeyUsage",
+          "JsonName": "ExtendedKeyUsage",
+          "Description": "Extended Key Usage extension configuration specifying certificate purposes.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ExtendedKeyUsage"
+          }
+        },
+        {
+          "Name": "KeyUsage",
+          "JsonName": "KeyUsage",
+          "Description": "Key Usage extension configuration defining permitted cryptographic operations.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "KeyUsage"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CertificateGetInstanceOptions",
+      "SchemaName": "CertificateGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CertificateQueryOptions",
+      "SchemaName": "CertificateQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CertificateQueryResultItem",
+      "SchemaName": "CertificateQueryResultItem",
+      "Description": "The created certificate configuration.",
+      "Fields": [
+        {
+          "Name": "CSR",
+          "JsonName": "CSR",
+          "Description": "PEM-encoded Certificate Signing Request (CSR) data. `null` for imported certificates or completed     ACME certificates.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DN",
+          "JsonName": "DN",
+          "Description": "Distinguished Name (DN) of the certificate subject in RFC 2253 format. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Acme",
+          "JsonName": "acme",
+          "Description": "ACME registration and account information used for certificate lifecycle management. `null` for     non-ACME certificates.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AcmeUri",
+          "JsonName": "acme_uri",
+          "Description": "ACME directory server URI used for automated certificate management. `null` for non-ACME certificates.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "AddToTrustedStore",
+          "JsonName": "add_to_trusted_store",
+          "Description": "Whether this certificate should be added to the system's trusted certificate store.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CertType",
+          "JsonName": "cert_type",
+          "Description": "Human-readable certificate type, typically 'CERTIFICATE' for standard certificates.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "CertTypeCA",
+          "JsonName": "cert_type_CA",
+          "Description": "Whether this certificate is a Certificate Authority (CA) certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CertTypeCSR",
+          "JsonName": "cert_type_CSR",
+          "Description": "Whether this entry represents a Certificate Signing Request (CSR) rather than a signed certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CertTypeExisting",
+          "JsonName": "cert_type_existing",
+          "Description": "Whether this is an existing certificate (imported or generated).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "PEM-encoded X.509 certificate data. `null` for certificate signing requests (CSR) that have not yet     been signed.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CertificatePath",
+          "JsonName": "certificate_path",
+          "Description": "Filesystem path to the certificate file (.crt). `null` if no certificate is available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Chain",
+          "JsonName": "chain",
+          "Description": "Whether this certificate has an associated certificate chain. `null` if unavailable.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ChainList",
+          "JsonName": "chain_list",
+          "Description": "Array of PEM-encoded certificates in the certificate chain, starting with the leaf certificate.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "City",
+          "JsonName": "city",
+          "Description": "City or locality name from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Common",
+          "JsonName": "common",
+          "Description": "Common name (CN) from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Country",
+          "JsonName": "country",
+          "Description": "ISO 3166-1 alpha-2 country code from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CsrPath",
+          "JsonName": "csr_path",
+          "Description": "Filesystem path to the certificate signing request file (.csr). `null` if no CSR is available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DigestAlgorithm",
+          "JsonName": "digest_algorithm",
+          "Description": "Cryptographic hash algorithm used for certificate signing (e.g., 'SHA256'). `null` if unavailable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "DomainsAuthenticators",
+          "JsonName": "domains_authenticators",
+          "Description": "Mapping of domain names to ACME DNS authenticator IDs for domain validation. `null` for non-ACME     certificates.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Email address from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Expired",
+          "JsonName": "expired",
+          "Description": "Whether the certificate has expired. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Extensions",
+          "JsonName": "extensions",
+          "Description": "X.509 certificate extensions parsed into a dictionary structure.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Fingerprint",
+          "JsonName": "fingerprint",
+          "Description": "SHA-256 fingerprint of the certificate in hexadecimal format. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "From",
+          "JsonName": "from",
+          "Description": "Certificate validity start date in ISO 8601 format. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this certificate entry.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "KeyLength",
+          "JsonName": "key_length",
+          "Description": "Size of the cryptographic key in bits. `null` if key information is unavailable.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "KeyType",
+          "JsonName": "key_type",
+          "Description": "Type of cryptographic key algorithm (e.g., 'RSA', 'EC', 'DSA'). `null` if key information is unavailable.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Lifetime",
+          "JsonName": "lifetime",
+          "Description": "Certificate validity period in seconds. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Human-readable name for this certificate. Must be unique and contain only alphanumeric characters,     dashes, and underscores.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Organization",
+          "JsonName": "organization",
+          "Description": "Organization name from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "OrganizationalUnit",
+          "JsonName": "organizational_unit",
+          "Description": "Organizational unit from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Parsed",
+          "JsonName": "parsed",
+          "Description": "Whether the certificate data was successfully parsed and validated.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Privatekey",
+          "JsonName": "privatekey",
+          "Description": "PEM-encoded private key corresponding to the certificate. `null` if no private key is available or for     imported certificates without keys.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "PrivatekeyPath",
+          "JsonName": "privatekey_path",
+          "Description": "Filesystem path to the private key file (.key). `null` if no private key is available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RenewDays",
+          "JsonName": "renew_days",
+          "Description": "Number of days before expiration to attempt automatic renewal. Only applicable for ACME certificates.     `null` for non-renewable certificates.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RootPath",
+          "JsonName": "root_path",
+          "Description": "Filesystem path where certificate-related files are stored.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "San",
+          "JsonName": "san",
+          "Description": "Subject Alternative Names (SAN) from the certificate extension. `null` if no SAN extension is present.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Serial",
+          "JsonName": "serial",
+          "Description": "Certificate serial number. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "State or province name from the certificate subject. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "SubjectNameHash",
+          "JsonName": "subject_name_hash",
+          "Description": "Hash of the certificate subject name. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Internal certificate type identifier used to determine certificate capabilities.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Until",
+          "JsonName": "until",
+          "Description": "Certificate validity end date in ISO 8601 format. `null` if certificate parsing failed.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CertificateUpdate",
+      "SchemaName": "CertificateUpdate",
+      "Description": "Updated certificate configuration data.",
+      "Fields": [
+        {
+          "Name": "AddToTrustedStore",
+          "JsonName": "add_to_trusted_store",
+          "Description": "Whether to add this certificate to the trusted certificate store.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Certificate name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RenewDays",
+          "JsonName": "renew_days",
+          "Description": "Days before expiration to attempt renewal.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ExtendedKeyUsage",
+      "SchemaName": "ExtendedKeyUsage",
+      "Description": "Extended Key Usage extension configuration specifying certificate purposes.",
+      "Fields": [
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the Extended Key Usage X.509 extension is present in the certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ExtensionCritical",
+          "JsonName": "extension_critical",
+          "Description": "Whether the Extended Key Usage extension is marked as critical. If `true`, applications that do not understand     this extension must reject the certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Usages",
+          "JsonName": "usages",
+          "Description": "Array of Extended Key Usage (EKU) purposes that define what the certificate may be used for     (e.g., 'SERVER_AUTH', 'CLIENT_AUTH', 'CODE_SIGNING').",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "ExtendedKeyUsageUsages"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "KeyUsage",
+      "SchemaName": "KeyUsage",
+      "Description": "Key Usage extension configuration defining permitted cryptographic operations.",
+      "Fields": [
+        {
+          "Name": "ContentCommitment",
+          "JsonName": "content_commitment",
+          "Description": "Whether the certificate may be used for non-repudiation (proving content commitment).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CrlSign",
+          "JsonName": "crl_sign",
+          "Description": "Whether the certificate may be used to sign Certificate Revocation Lists (CRLs).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "DataEncipherment",
+          "JsonName": "data_encipherment",
+          "Description": "Whether the certificate's public key may be used for directly encrypting raw data.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "DecipherOnly",
+          "JsonName": "decipher_only",
+          "Description": "Whether the public key may only be used for decryption when `key_agreement` is also set.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "DigitalSignature",
+          "JsonName": "digital_signature",
+          "Description": "Whether the certificate may be used for digital signatures to verify identity or integrity.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether the Key Usage X.509 extension is present in the certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "EncipherOnly",
+          "JsonName": "encipher_only",
+          "Description": "Whether the public key may only be used for encryption when `key_agreement` is also set.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ExtensionCritical",
+          "JsonName": "extension_critical",
+          "Description": "Whether the Key Usage extension is marked as critical. If `true`, applications that do not understand     this extension must reject the certificate.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KeyAgreement",
+          "JsonName": "key_agreement",
+          "Description": "Whether the certificate's public key may be used for key agreement protocols (e.g., Diffie-Hellman).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KeyCertSign",
+          "JsonName": "key_cert_sign",
+          "Description": "Whether the certificate may be used to sign other certificates (CA functionality).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "KeyEncipherment",
+          "JsonName": "key_encipherment",
+          "Description": "Whether the certificate's public key may be used for encrypting symmetric keys.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "CertificateCreateCreateType",
+      "SchemaName": "CertificateCreateCreateType",
+      "Description": "Type of certificate creation operation.",
+      "Values": [
+        {
+          "Name": "CertificateCreateCreateTypeCERTIFICATECREATEIMPORTED",
+          "Value": "CERTIFICATE_CREATE_IMPORTED"
+        },
+        {
+          "Name": "CertificateCreateCreateTypeCERTIFICATECREATECSR",
+          "Value": "CERTIFICATE_CREATE_CSR"
+        },
+        {
+          "Name": "CertificateCreateCreateTypeCERTIFICATECREATEIMPORTEDCSR",
+          "Value": "CERTIFICATE_CREATE_IMPORTED_CSR"
+        },
+        {
+          "Name": "CertificateCreateCreateTypeCERTIFICATECREATEACME",
+          "Value": "CERTIFICATE_CREATE_ACME"
+        }
+      ]
+    },
+    {
+      "Name": "CertificateCreateDigestAlgorithm",
+      "SchemaName": "CertificateCreateDigestAlgorithm",
+      "Description": "Hash algorithm for certificate signing.",
+      "Values": [
+        {
+          "Name": "CertificateCreateDigestAlgorithmSHA224",
+          "Value": "SHA224"
+        },
+        {
+          "Name": "CertificateCreateDigestAlgorithmSHA256",
+          "Value": "SHA256"
+        },
+        {
+          "Name": "CertificateCreateDigestAlgorithmSHA384",
+          "Value": "SHA384"
+        },
+        {
+          "Name": "CertificateCreateDigestAlgorithmSHA512",
+          "Value": "SHA512"
+        }
+      ]
+    },
+    {
+      "Name": "CertificateCreateEcCurve",
+      "SchemaName": "CertificateCreateEcCurve",
+      "Description": "Elliptic curve to use for EC keys.",
+      "Values": [
+        {
+          "Name": "CertificateCreateEcCurveSECP256R1",
+          "Value": "SECP256R1"
+        },
+        {
+          "Name": "CertificateCreateEcCurveSECP384R1",
+          "Value": "SECP384R1"
+        },
+        {
+          "Name": "CertificateCreateEcCurveSECP521R1",
+          "Value": "SECP521R1"
+        },
+        {
+          "Name": "CertificateCreateEcCurveEd25519",
+          "Value": "ed25519"
+        }
+      ]
+    },
+    {
+      "Name": "CertificateCreateKeyType",
+      "SchemaName": "CertificateCreateKeyType",
+      "Description": "Type of cryptographic key to generate.",
+      "Values": [
+        {
+          "Name": "CertificateCreateKeyTypeRSA",
+          "Value": "RSA"
+        },
+        {
+          "Name": "CertificateCreateKeyTypeEC",
+          "Value": "EC"
+        }
+      ]
+    },
+    {
+      "Name": "ExtendedKeyUsageUsages",
+      "SchemaName": "ExtendedKeyUsageUsages",
+      "Values": [
+        {
+          "Name": "ExtendedKeyUsageUsagesANYEXTENDEDKEYUSAGE",
+          "Value": "ANY_EXTENDED_KEY_USAGE"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesCERTIFICATETRANSPARENCY",
+          "Value": "CERTIFICATE_TRANSPARENCY"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesCLIENTAUTH",
+          "Value": "CLIENT_AUTH"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesCODESIGNING",
+          "Value": "CODE_SIGNING"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesEMAILPROTECTION",
+          "Value": "EMAIL_PROTECTION"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesIPSECIKE",
+          "Value": "IPSEC_IKE"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesKERBEROSPKINITKDC",
+          "Value": "KERBEROS_PKINIT_KDC"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesOCSPSIGNING",
+          "Value": "OCSP_SIGNING"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesSERVERAUTH",
+          "Value": "SERVER_AUTH"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesSMARTCARDLOGON",
+          "Value": "SMARTCARD_LOGON"
+        },
+        {
+          "Name": "ExtendedKeyUsageUsagesTIMESTAMPING",
+          "Value": "TIME_STAMPING"
+        }
+      ]
+    }
+  ]
+}

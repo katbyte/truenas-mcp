@@ -1,0 +1,444 @@
+{
+  "Name": "TnConnect",
+  "Tag": "tn_connect",
+  "Operations": [
+    {
+      "Name": "TnConnectConfig",
+      "OperationId": "tn_connect.config",
+      "Method": "CALL",
+      "Path": "tn_connect.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TnConnectConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tn_connect.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "TRUENAS_CONNECT_READ",
+          "TRUENAS_CONNECT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "TnConnectGenerateClaimToken",
+      "OperationId": "tn_connect.generate_claim_token",
+      "Method": "CALL",
+      "Path": "tn_connect.generate_claim_token",
+      "Description": "Generate a claim token for TrueNAS Connect.\n\nThis is used to claim the system with TrueNAS Connect. When this endpoint will be called, a token will\nbe generated which will be used to assist with initial setup with truenas connect.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tn_connect.generate_claim_token",
+        "Roles": [
+          "TRUENAS_CONNECT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "TnConnectGetRegistrationUri",
+      "OperationId": "tn_connect.get_registration_uri",
+      "Method": "CALL",
+      "Path": "tn_connect.get_registration_uri",
+      "Description": "Return the registration URI for TrueNAS Connect.\n\nBefore this endpoint is called, tn_connect must be enabled and a claim token must be generated - based\noff which this endpoint will return the registration URI for TrueNAS Connect.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tn_connect.get_registration_uri",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "TRUENAS_CONNECT_READ",
+          "TRUENAS_CONNECT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "TnConnectIpChoices",
+      "OperationId": "tn_connect.ip_choices",
+      "Method": "CALL",
+      "Path": "tn_connect.ip_choices",
+      "Description": "Returns IP choices which can be used with TrueNAS Connect.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tn_connect.ip_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "TRUENAS_CONNECT_READ",
+          "TRUENAS_CONNECT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "TnConnectUpdate",
+      "OperationId": "tn_connect.update",
+      "Method": "CALL",
+      "Path": "tn_connect.update",
+      "Description": "Update TrueNAS Connect configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "TnConnectUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "tn_connect.update",
+        "Roles": [
+          "TRUENAS_CONNECT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "tn_connect_update",
+          "Argument": "tnConnectUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "TnConnectUpdate"
+          },
+          "Required": true,
+          "Description": "TrueNASConnectUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "TnConnectConfigAnswer",
+      "SchemaName": "TnConnectConfigAnswer",
+      "Fields": [
+        {
+          "Name": "AccountServiceBaseUrl",
+          "JsonName": "account_service_base_url",
+          "Description": "Base URL for the TrueNAS Connect account service API.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "ID of the SSL certificate used for TrueNAS Connect communications. `null` if using default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether TrueNAS Connect service is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HeartbeatUrl",
+          "JsonName": "heartbeat_url",
+          "Description": "URL endpoint for sending heartbeat signals to maintain connection status.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the TrueNAS Connect configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Interfaces",
+          "JsonName": "interfaces",
+          "Description": "Array of network interface names that TrueNAS Connect will use.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "InterfacesIps",
+          "JsonName": "interfaces_ips",
+          "Description": "Array of IP addresses associated with the selected interfaces.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Ips",
+          "JsonName": "ips",
+          "Description": "Array of IP addresses that TrueNAS Connect will bind to and advertise.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LecaServiceBaseUrl",
+          "JsonName": "leca_service_base_url",
+          "Description": "Base URL for the Let's Encrypt Certificate Authority service used by TrueNAS Connect.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RegistrationDetails",
+          "JsonName": "registration_details",
+          "Description": "Object containing registration information and credentials for TrueNAS Connect.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current operational status of the TrueNAS Connect service.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "StatusReason",
+          "JsonName": "status_reason",
+          "Description": "Detailed explanation of the current status, including any error conditions.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TncBaseUrl",
+          "JsonName": "tnc_base_url",
+          "Description": "Base URL for the TrueNAS Connect service.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UseAllInterfaces",
+          "JsonName": "use_all_interfaces",
+          "Description": "Whether to automatically use all available network interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TnConnectUpdate",
+      "SchemaName": "TnConnectUpdate",
+      "Description": "TrueNASConnectUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether to enable the TrueNAS Connect service.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Interfaces",
+          "JsonName": "interfaces",
+          "Description": "Array of network interface names that TrueNAS Connect should use.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Ips",
+          "JsonName": "ips",
+          "Description": "Array of IP addresses that TrueNAS Connect should bind to and advertise.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UseAllInterfaces",
+          "JsonName": "use_all_interfaces",
+          "Description": "Whether to automatically use all available network interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "TnConnectUpdateAnswer",
+      "SchemaName": "TnConnectUpdateAnswer",
+      "Description": "The updated TrueNAS Connect configuration.",
+      "Fields": [
+        {
+          "Name": "AccountServiceBaseUrl",
+          "JsonName": "account_service_base_url",
+          "Description": "Base URL for the TrueNAS Connect account service API.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Certificate",
+          "JsonName": "certificate",
+          "Description": "ID of the SSL certificate used for TrueNAS Connect communications. `null` if using default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether TrueNAS Connect service is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HeartbeatUrl",
+          "JsonName": "heartbeat_url",
+          "Description": "URL endpoint for sending heartbeat signals to maintain connection status.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the TrueNAS Connect configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Interfaces",
+          "JsonName": "interfaces",
+          "Description": "Array of network interface names that TrueNAS Connect will use.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "InterfacesIps",
+          "JsonName": "interfaces_ips",
+          "Description": "Array of IP addresses associated with the selected interfaces.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Ips",
+          "JsonName": "ips",
+          "Description": "Array of IP addresses that TrueNAS Connect will bind to and advertise.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "LecaServiceBaseUrl",
+          "JsonName": "leca_service_base_url",
+          "Description": "Base URL for the Let's Encrypt Certificate Authority service used by TrueNAS Connect.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RegistrationDetails",
+          "JsonName": "registration_details",
+          "Description": "Object containing registration information and credentials for TrueNAS Connect.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Status",
+          "JsonName": "status",
+          "Description": "Current operational status of the TrueNAS Connect service.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "StatusReason",
+          "JsonName": "status_reason",
+          "Description": "Detailed explanation of the current status, including any error conditions.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TncBaseUrl",
+          "JsonName": "tnc_base_url",
+          "Description": "Base URL for the TrueNAS Connect service.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UseAllInterfaces",
+          "JsonName": "use_all_interfaces",
+          "Description": "Whether to automatically use all available network interfaces.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ]
+}

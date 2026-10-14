@@ -1,6 +1,6 @@
 # Using the connection from Go
 
-`sdk/truenasrpc` is the connection to a TrueNAS. `sdk/truenastest` is a stand-in NAS for tests, which behaves the way the TrueNAS source says a real one does.
+`sdk/truenasrpc` is the connection to a TrueNAS. `sdk/truenas` is a typed client with a method for each of the API's 769 methods, generated from TrueNAS's own description of its API, which calls through the connection. `sdk/truenastest` is a stand-in NAS for tests, which behaves the way the TrueNAS source says a real one does.
 
 ```go
 nas, err := truenasrpc.New("nas.example.net", truenasrpc.APIKey("metrics", key), truenasrpc.WithCertificateFile("nas.pem"))
@@ -18,6 +18,25 @@ err = nas.Call(ctx, "system.info", nil, &info)
 One connection is shared by any number of calls. It reconnects by itself when the NAS restarts, sends no more calls at once than the NAS will run, and never writes the key to a log.
 
 A person can log in too, with `truenasrpc.Password("admin", password, truenasrpc.WithOTP(ask))`. `ask` is called for a one-time password when the account wants one. `truenasrpc.APIKeyFile` reads the key from a file.
+
+## The typed client
+
+`sdk/truenas/client` groups the methods as the API does, one group per namespace, each named short: `pool.query` is `Pool.Query`, and `pool.dataset.query` is `PoolDataset.Query`. Arguments and answers are types in `sdk/truenas`, named after the whole method (`truenas.PoolQueryResponse`).
+
+```go
+typed, err := client.New(nas) // nas is the connection above
+if err != nil {
+	return err
+}
+
+info, err := typed.System.Info(ctx)
+pools, err := typed.Pool.Query(ctx, nil, truenas.PoolQueryOptions{})
+pool, err := typed.Pool.QueryOne(ctx, []any{[]any{"name", "=", "tank"}}, truenas.PoolQueryOptions{})
+```
+
+A query also has a form that answers its one row (`QueryOne`, `IsNotFound` when nothing matches) and one that answers how many (`QueryCount`). A value that is one of several records says which with `Kind`, and is read as one with `As<Member>`. A method that changes nothing says so in its comment, and one the NAS runs as a job says that. `truenas.Operations` lists every method with the same: whether it only reads, and whether it is a job. A method only reads when the NAS lets a user who may only read call it, less the five that such a user may call and that change something (`api_key.create`, `update` and `delete`, and `support.new_ticket` and `attach_ticket`), and with `directoryservices.status`, which changes nothing and whose description names no role.
+
+The client is generated, never edited: `make generate` makes it again from `api-defs`, and the build workflow fails when what is committed is not what that makes.
 
 ## Long jobs
 

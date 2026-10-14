@@ -1,0 +1,495 @@
+{
+  "Name": "BootEnvironment",
+  "Tag": "boot.environment",
+  "Operations": [
+    {
+      "Name": "BootEnvironmentActivate",
+      "OperationId": "boot.environment.activate",
+      "Method": "CALL",
+      "Path": "boot.environment.activate",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "BootEnvironmentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.activate",
+        "Roles": [
+          "BOOT_ENV_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "boot_environment_activate",
+          "Argument": "bootEnvironmentActivate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentActivate"
+          },
+          "Required": true,
+          "Description": "BootEnvironmentActivateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentClone",
+      "OperationId": "boot.environment.clone",
+      "Method": "CALL",
+      "Path": "boot.environment.clone",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "BootEnvironmentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.clone",
+        "Roles": [
+          "BOOT_ENV_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "boot_environment_clone",
+          "Argument": "bootEnvironmentClone",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentClone"
+          },
+          "Required": true,
+          "Description": "BootEnvironmentCloneArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentDestroy",
+      "OperationId": "boot.environment.destroy",
+      "Method": "CALL",
+      "Path": "boot.environment.destroy",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.destroy",
+        "Roles": [
+          "BOOT_ENV_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "boot_environment_destroy",
+          "Argument": "bootEnvironmentDestroy",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentDestroy"
+          },
+          "Required": true,
+          "Description": "BootEnvironmentDestroyArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentKeep",
+      "OperationId": "boot.environment.keep",
+      "Method": "CALL",
+      "Path": "boot.environment.keep",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "BootEnvironmentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.keep",
+        "Roles": [
+          "BOOT_ENV_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "boot_environment_destroy",
+          "Argument": "bootEnvironmentDestroy",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentDestroy2"
+          },
+          "Required": true,
+          "Description": "BootEnvironmentKeepArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentQuery",
+      "OperationId": "boot.environment.query",
+      "Method": "CALL",
+      "Path": "boot.environment.query",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "BOOT_ENV_READ",
+          "BOOT_ENV_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentQueryCount",
+      "OperationId": "boot.environment.query#count",
+      "Method": "CALL",
+      "Path": "boot.environment.query#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "BOOT_ENV_READ",
+          "BOOT_ENV_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentQueryOne",
+      "OperationId": "boot.environment.query#get",
+      "Method": "CALL",
+      "Path": "boot.environment.query#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "BootEnvironmentQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "boot.environment.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "BOOT_ENV_READ",
+          "BOOT_ENV_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "BootEnvironmentQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "BootEnvironmentActivate",
+      "SchemaName": "BootEnvironmentActivate",
+      "Description": "BootEnvironmentActivateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Name of the boot environment to activate for next boot.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentClone",
+      "SchemaName": "BootEnvironmentClone",
+      "Description": "BootEnvironmentCloneArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Name of the existing boot environment to clone from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Target",
+          "JsonName": "target",
+          "Description": "Name for the new cloned boot environment.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentDestroy",
+      "SchemaName": "BootEnvironmentDestroy",
+      "Description": "BootEnvironmentDestroyArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Name of the boot environment to destroy.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentDestroy2",
+      "SchemaName": "BootEnvironmentDestroy2",
+      "Description": "BootEnvironmentKeepArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Name of the boot environment to modify.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Value",
+          "JsonName": "value",
+          "Description": "Whether to protect this boot environment from automatic deletion.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentQueryOptions",
+      "SchemaName": "BootEnvironmentQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "BootEnvironmentQueryResultItem",
+      "SchemaName": "BootEnvironmentQueryResultItem",
+      "Description": "The activated boot environment configuration.",
+      "Fields": [
+        {
+          "Name": "Activated",
+          "JsonName": "activated",
+          "Description": "Use this boot environment on next boot.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Active",
+          "JsonName": "active",
+          "Description": "This is the currently running boot environment.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CanActivate",
+          "JsonName": "can_activate",
+          "Description": "The given boot environment may be activated.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Created",
+          "JsonName": "created",
+          "Description": "The date when the boot environment was created.",
+          "Type": {
+            "Type": "DateTime"
+          }
+        },
+        {
+          "Name": "Dataset",
+          "JsonName": "dataset",
+          "Description": "The name of the zfs dataset that represents the boot environment.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "The name of the boot environment referenced by the boot environment tool.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Keep",
+          "JsonName": "keep",
+          "Description": "When set to false, this makes the boot environment subject to     automatic deletion if the TrueNAS updater needs space for an update.     Otherwise, the updater will not delete this boot environment if it is     set to true.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Used",
+          "JsonName": "used",
+          "Description": "The boot environment's used space in human readable format.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UsedBytes",
+          "JsonName": "used_bytes",
+          "Description": "The total amount of bytes used by the boot environment.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ]
+}

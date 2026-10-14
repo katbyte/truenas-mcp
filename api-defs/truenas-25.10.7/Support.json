@@ -1,0 +1,636 @@
+{
+  "Name": "Support",
+  "Tag": "support",
+  "Operations": [
+    {
+      "Name": "SupportAttachTicket",
+      "OperationId": "support.attach_ticket",
+      "Method": "CALL",
+      "Path": "support.attach_ticket",
+      "Description": "Method to attach a file to an existing ticket.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.attach_ticket",
+        "Job": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_WRITE"
+        ],
+        "Uploadable": true
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SupportAttachTicketData"
+          },
+          "Required": true,
+          "Description": "SupportAttachTicketArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "SupportAttachTicketMaxSize",
+      "OperationId": "support.attach_ticket_max_size",
+      "Method": "CALL",
+      "Path": "support.attach_ticket_max_size",
+      "Description": "Returns maximum uploaded file size for `support.attach_ticket`",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.attach_ticket_max_size",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_READ",
+          "SUPPORT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SupportConfig",
+      "OperationId": "support.config",
+      "Method": "CALL",
+      "Path": "support.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SupportConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_READ",
+          "SUPPORT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SupportFields",
+      "OperationId": "support.fields",
+      "Method": "CALL",
+      "Path": "support.fields",
+      "Description": "Returns list of pairs of field names and field titles for Proactive Support.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.fields",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_READ",
+          "SUPPORT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SupportIsAvailable",
+      "OperationId": "support.is_available",
+      "Method": "CALL",
+      "Path": "support.is_available",
+      "Description": "Returns whether Proactive Support is available for this product type and current license.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.is_available",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_READ",
+          "SUPPORT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SupportIsAvailableAndEnabled",
+      "OperationId": "support.is_available_and_enabled",
+      "Method": "CALL",
+      "Path": "support.is_available_and_enabled",
+      "Description": "Returns whether Proactive Support is available and enabled.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.is_available_and_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_READ",
+          "SUPPORT_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SupportNewTicket",
+      "OperationId": "support.new_ticket",
+      "Method": "CALL",
+      "Path": "support.new_ticket",
+      "Description": "Creates a new ticket for support.\nThis is done using the support proxy API.\nFor TrueNAS Community Edition it will be created on JIRA and for TrueNAS Enterprise on Salesforce.\n\nFor Community Edition, `criticality`, `environment`, `phone`, `name`, and `email` attributes are not required.\nFor Enterprise, `token` and `type` attributes are not required.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SupportNewTicketAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.new_ticket",
+        "Job": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SupportNewTicketData"
+          },
+          "Required": true,
+          "Description": "Support ticket data for either enterprise or community support."
+        }
+      ]
+    },
+    {
+      "Name": "SupportSimilarIssues",
+      "OperationId": "support.similar_issues",
+      "Method": "CALL",
+      "Path": "support.similar_issues",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "SupportSimilarIssue"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.similar_issues",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SUPPORT_READ",
+          "SUPPORT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "query",
+          "Argument": "query",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Search query to find similar issues or knowledge base articles."
+        }
+      ]
+    },
+    {
+      "Name": "SupportUpdate",
+      "OperationId": "support.update",
+      "Method": "CALL",
+      "Path": "support.update",
+      "Description": "Update Proactive Support settings.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SupportUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "support.update",
+        "Roles": [
+          "SUPPORT_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SupportUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated support configuration data."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SupportAttachTicketData",
+      "SchemaName": "SupportAttachTicketData",
+      "Description": "SupportAttachTicketArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Filename",
+          "JsonName": "filename",
+          "Description": "Path to the file to attach to the ticket.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ticket",
+          "JsonName": "ticket",
+          "Description": "Ticket number to attach the file to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Token",
+          "JsonName": "token",
+          "Description": "Authentication token for attaching files.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SupportConfigAnswer",
+      "SchemaName": "SupportConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Primary contact email address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether support is enabled. `null` if not available.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the support configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Primary contact name for support.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Phone",
+          "JsonName": "phone",
+          "Description": "Primary contact phone number.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryEmail",
+          "JsonName": "secondary_email",
+          "Description": "Secondary contact email address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryName",
+          "JsonName": "secondary_name",
+          "Description": "Secondary contact name for support.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryPhone",
+          "JsonName": "secondary_phone",
+          "Description": "Secondary contact phone number.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryTitle",
+          "JsonName": "secondary_title",
+          "Description": "Secondary contact title or role.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Primary contact title or role.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SupportNewTicketAnswer",
+      "SchemaName": "SupportNewTicketAnswer",
+      "Description": "SupportNewTicketResult return fields.",
+      "Fields": [
+        {
+          "Name": "HasDebug",
+          "JsonName": "has_debug",
+          "Description": "Whether debug information was attached to the ticket.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Ticket",
+          "JsonName": "ticket",
+          "Description": "Ticket number if successfully created. `null` if creation failed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Url",
+          "JsonName": "url",
+          "Description": "URL to view the created ticket. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "SupportNewTicketData",
+      "Description": "Support ticket data for either enterprise or community support.",
+      "Union": [
+        "SupportNewTicketEnterprise",
+        "SupportNewTicketCommunity"
+      ],
+      "Members": [
+        {
+          "Model": "SupportNewTicketEnterprise"
+        },
+        {
+          "Model": "SupportNewTicketCommunity"
+        }
+      ]
+    },
+    {
+      "Name": "SupportSimilarIssue",
+      "SchemaName": "SupportSimilarIssue",
+      "Fields": [
+        {
+          "Name": "Summary",
+          "JsonName": "summary",
+          "Description": "Brief summary of the similar issue.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Url",
+          "JsonName": "url",
+          "Description": "URL link to the similar issue or knowledge base article.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SupportUpdateAnswer",
+      "SchemaName": "SupportUpdateAnswer",
+      "Description": "The updated support configuration.",
+      "Fields": [
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Primary contact email address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether support is enabled. `null` if not available.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the support configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Primary contact name for support.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Phone",
+          "JsonName": "phone",
+          "Description": "Primary contact phone number.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryEmail",
+          "JsonName": "secondary_email",
+          "Description": "Secondary contact email address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryName",
+          "JsonName": "secondary_name",
+          "Description": "Secondary contact name for support.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryPhone",
+          "JsonName": "secondary_phone",
+          "Description": "Secondary contact phone number.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryTitle",
+          "JsonName": "secondary_title",
+          "Description": "Secondary contact title or role.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Primary contact title or role.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SupportUpdateData",
+      "SchemaName": "SupportUpdateData",
+      "Description": "Updated support configuration data.",
+      "Fields": [
+        {
+          "Name": "Email",
+          "JsonName": "email",
+          "Description": "Primary contact email address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Enabled",
+          "JsonName": "enabled",
+          "Description": "Whether support is enabled. `null` if not available.",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the support configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Primary contact name for support.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Phone",
+          "JsonName": "phone",
+          "Description": "Primary contact phone number.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryEmail",
+          "JsonName": "secondary_email",
+          "Description": "Secondary contact email address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryName",
+          "JsonName": "secondary_name",
+          "Description": "Secondary contact name for support.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryPhone",
+          "JsonName": "secondary_phone",
+          "Description": "Secondary contact phone number.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SecondaryTitle",
+          "JsonName": "secondary_title",
+          "Description": "Secondary contact title or role.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Primary contact title or role.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

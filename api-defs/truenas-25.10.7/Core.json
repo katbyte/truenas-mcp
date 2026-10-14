@@ -1,0 +1,1227 @@
+{
+  "Name": "Core",
+  "Tag": "core",
+  "Operations": [
+    {
+      "Name": "CoreArp",
+      "OperationId": "core.arp",
+      "Method": "CALL",
+      "Path": "core.arp",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.arp",
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreArpOptions"
+          },
+          "Required": true,
+          "Description": "CoreArpArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CoreBulk",
+      "OperationId": "core.bulk",
+      "Method": "CALL",
+      "Path": "core.bulk",
+      "Description": "Will sequentially call `method` with arguments from the `params` list. For example, running\n\n    call(\"core.bulk\", \"zfs.snapshot.delete\", [[\"tank@snap-1\", true], [\"tank@snap-2\", false]])\n\nwill call\n\n    call(\"zfs.snapshot.delete\", \"tank@snap-1\", true)\n    call(\"zfs.snapshot.delete\", \"tank@snap-2\", false)\n\nIf the first call fails and the seconds succeeds (returning `true`), the result of the overall call will be:\n\n    [\n        {\"result\": null, \"error\": \"Error deleting snapshot\"},\n        {\"result\": true, \"error\": null}\n    ]\n\nImportant note: the execution status of `core.bulk` will always be a `SUCCESS` (unless an unlikely internal\nerror occurs). Caller must check for individual call results to ensure the absence of any call errors.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CoreBulkResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.bulk",
+        "Job": true
+      },
+      "Arguments": [
+        {
+          "Name": "method",
+          "Argument": "method",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Method name to execute for each parameter set."
+        },
+        {
+          "Name": "params",
+          "Argument": "paramsParam",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "List",
+              "NestedItem": {
+                "Type": "Any"
+              }
+            }
+          },
+          "Required": true,
+          "Description": "Array of parameter arrays, each representing one method call."
+        },
+        {
+          "Name": "description",
+          "Argument": "description",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Format string for job progress (e.g. \"Deleting snapshot {0[dataset]}@{0[name]}\")."
+        }
+      ]
+    },
+    {
+      "Name": "CoreDebug",
+      "OperationId": "core.debug",
+      "Method": "CALL",
+      "Path": "core.debug",
+      "Description": "Setup middlewared for remote debugging.\n\nengine currently used:\n  - REMOTE_PDB: Remote vanilla PDB (over TCP sockets)\n\noptions:\n    - bind_address: local ip address to bind the remote debug session to\n    - bind_port: local port to listen on\n    - threaded: run debugger in a new thread instead of the main event loop",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.debug",
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreDebugOptions"
+          },
+          "Required": true,
+          "Description": "CoreDebugArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CoreDownload",
+      "OperationId": "core.download",
+      "Method": "CALL",
+      "Path": "core.download",
+      "Description": "Call a job that produces downloadable output and get a URL to retrieve the result.\n\nThis method executes jobs that generate files or streaming data for download. The job writes its output\nto a pipe, and this method returns a time-limited, single-use download URL.\n\n1. Call ``core.download`` with the target job method, arguments, and desired filename\n\n2. Receive an array containing the job ID and download URL\n\n3. Make an HTTP GET request to the download URL to retrieve the data\n\n4. The download URL expires after a timeout and can only be used once",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Any"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.download"
+      },
+      "Arguments": [
+        {
+          "Name": "method",
+          "Argument": "method",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the job method to execute."
+        },
+        {
+          "Name": "args",
+          "Argument": "args",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Required": true,
+          "Description": "Arguments to pass to the job method."
+        },
+        {
+          "Name": "filename",
+          "Argument": "filename",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Suggested filename for the downloaded file. Sets the `Content-Disposition` header."
+        },
+        {
+          "Name": "buffered",
+          "Argument": "buffered",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to buffer the job's output.\n\n* `false` (default): Job starts writing immediately to the download stream. The job blocks until the client       downloads the data or 60 seconds elapses. Use for large files or streaming data.\n* `true`: Job output is buffered in RAM until completion, then made available for download. The download       URL remains valid for 3600 seconds. Use for small files when you need to ensure the job completes before       downloading."
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobs",
+      "OperationId": "core.get_jobs",
+      "Method": "CALL",
+      "Path": "core.get_jobs",
+      "Description": "Get information about long-running jobs.\nIf authenticated session does not have the FULL_ADMIN role, only\njobs owned by the current authenticated session will be returned.\n\n`result` key will have sensitive values redacted by default for external\nclients.\n\nRedaction behavior may be explicitly specfied via the `extra`\nquery-option `raw_result`. If `raw_result` is True then unredacted result\nis returned.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.get_jobs",
+        "Filterable": true
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsCount",
+      "OperationId": "core.get_jobs#count",
+      "Method": "CALL",
+      "Path": "core.get_jobs#count",
+      "Description": "Get information about long-running jobs.\nIf authenticated session does not have the FULL_ADMIN role, only\njobs owned by the current authenticated session will be returned.\n\n`result` key will have sensitive values redacted by default for external\nclients.\n\nRedaction behavior may be explicitly specfied via the `extra`\nquery-option `raw_result`. If `raw_result` is True then unredacted result\nis returned.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.get_jobs",
+        "Filterable": true,
+        "Form": "count"
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsOne",
+      "OperationId": "core.get_jobs#get",
+      "Method": "CALL",
+      "Path": "core.get_jobs#get",
+      "Description": "Get information about long-running jobs.\nIf authenticated session does not have the FULL_ADMIN role, only\njobs owned by the current authenticated session will be returned.\n\n`result` key will have sensitive values redacted by default for external\nclients.\n\nRedaction behavior may be explicitly specfied via the `extra`\nquery-option `raw_result`. If `raw_result` is True then unredacted result\nis returned.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CoreGetJobsItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.get_jobs",
+        "Filterable": true,
+        "Form": "get"
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetMethods",
+      "OperationId": "core.get_methods",
+      "Method": "CALL",
+      "Path": "core.get_methods",
+      "Description": "Return methods metadata of every available service.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.get_methods"
+      },
+      "Arguments": [
+        {
+          "Name": "service",
+          "Argument": "service",
+          "Type": {
+            "Type": "String"
+          },
+          "Description": "Filters the result for a single service."
+        },
+        {
+          "Name": "target",
+          "Argument": "target",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetTarget"
+          },
+          "Description": "Target interface to get methods for.\n\n`WS` for WebSocket, `CLI` for command line, `REST` for HTTP API."
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetServices",
+      "OperationId": "core.get_services",
+      "Method": "CALL",
+      "Path": "core.get_services",
+      "Description": "Returns a list of all registered services.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.get_services"
+      },
+      "Arguments": [
+        {
+          "Name": "target",
+          "Argument": "target",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetTarget"
+          },
+          "Description": "Target interface to get services for.\n\n`WS` for WebSocket, `CLI` for command line, `REST` for HTTP API."
+        }
+      ]
+    },
+    {
+      "Name": "CoreJobAbort",
+      "OperationId": "core.job_abort",
+      "Method": "CALL",
+      "Path": "core.job_abort",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.job_abort"
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the job to abort."
+        }
+      ]
+    },
+    {
+      "Name": "CoreJobDownloadLogs",
+      "OperationId": "core.job_download_logs",
+      "Method": "CALL",
+      "Path": "core.job_download_logs",
+      "Description": "Download logs of the job `id`.\n\nPlease see `core.download` method documentation for explanation on `filename` and `buffered` arguments,\nand return value.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.job_download_logs"
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the job to download logs for."
+        },
+        {
+          "Name": "filename",
+          "Argument": "filename",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Filename for the downloaded log file."
+        },
+        {
+          "Name": "buffered",
+          "Argument": "buffered",
+          "Type": {
+            "Type": "Boolean"
+          },
+          "Description": "Whether to buffer the entire log file before download."
+        }
+      ]
+    },
+    {
+      "Name": "CoreJobWait",
+      "OperationId": "core.job_wait",
+      "Method": "CALL",
+      "Path": "core.job_wait",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.job_wait",
+        "Job": true
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "ID of the job to wait for completion."
+        }
+      ]
+    },
+    {
+      "Name": "CorePing",
+      "OperationId": "core.ping",
+      "Method": "CALL",
+      "Path": "core.ping",
+      "Description": "Respond to WebSocket ping frames with \"pong\".\n\nThis endpoint can be used to keep connections alive as outlined         in the WebSocket specification. It does not require authentication         but is rate limited to prevent abuse.\n\nReturns:\n    str: Always returns \"pong\"",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.ping",
+        "NoAuth": true
+      }
+    },
+    {
+      "Name": "CorePingRemote",
+      "OperationId": "core.ping_remote",
+      "Method": "CALL",
+      "Path": "core.ping_remote",
+      "Description": "Method that will send an ICMP echo request to \"hostname\"\nand will wait up to \"timeout\" for a reply.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.ping_remote",
+        "Roles": [
+          "FULL_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CorePingRemoteOptions"
+          },
+          "Required": true,
+          "Description": "CorePingRemoteArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "CoreResizeShell",
+      "OperationId": "core.resize_shell",
+      "Method": "CALL",
+      "Path": "core.resize_shell",
+      "Description": "Resize terminal session (/websocket/shell) to cols x rows",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.resize_shell"
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Shell session identifier."
+        },
+        {
+          "Name": "cols",
+          "Argument": "cols",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "New terminal width in columns."
+        },
+        {
+          "Name": "rows",
+          "Argument": "rows",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Required": true,
+          "Description": "New terminal height in rows."
+        }
+      ]
+    },
+    {
+      "Name": "CoreSetOptions",
+      "OperationId": "core.set_options",
+      "Method": "CALL",
+      "Path": "core.set_options",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "CoreSetOptionsAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.set_options",
+        "NoAuth": true
+      },
+      "Arguments": [
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreSetOptionsOptions"
+          },
+          "Required": true,
+          "Description": "Core system options to update."
+        }
+      ]
+    },
+    {
+      "Name": "CoreSubscribe",
+      "OperationId": "core.subscribe",
+      "Method": "CALL",
+      "Path": "core.subscribe",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "String"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.subscribe"
+      },
+      "Arguments": [
+        {
+          "Name": "event",
+          "Argument": "event",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Event name to subscribe to for real-time updates."
+        }
+      ]
+    },
+    {
+      "Name": "CoreUnsubscribe",
+      "OperationId": "core.unsubscribe",
+      "Method": "CALL",
+      "Path": "core.unsubscribe",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "core.unsubscribe"
+      },
+      "Arguments": [
+        {
+          "Name": "id_",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Subscription ID to cancel."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "CoreArpOptions",
+      "SchemaName": "CoreArpOptions",
+      "Description": "CoreArpArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Interface",
+          "JsonName": "interface",
+          "Description": "Network interface to query or `null` for all interfaces.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Ip",
+          "JsonName": "ip",
+          "Description": "IP address to look up in ARP table or `null` for all entries.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CoreBulkResultItem",
+      "SchemaName": "CoreBulkResultItem",
+      "Fields": [
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if this item failed or `null` on success.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "JobId",
+          "JsonName": "job_id",
+          "Description": "Job ID for this bulk operation item or `null` if it failed to start.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Result",
+          "JsonName": "result",
+          "Description": "Result data returned by this bulk operation item.",
+          "Type": {
+            "Type": "Any"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreDebugOptions",
+      "SchemaName": "CoreDebugOptions",
+      "Description": "CoreDebugArgs parameters.",
+      "Fields": [
+        {
+          "Name": "BindAddress",
+          "JsonName": "bind_address",
+          "Description": "IP address to bind the debug server to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "BindPort",
+          "JsonName": "bind_port",
+          "Description": "Port number to bind the debug server to.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Threaded",
+          "JsonName": "threaded",
+          "Description": "Whether to enable threaded debugging support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemCredentials",
+      "SchemaName": "CoreGetJobsItemCredentials",
+      "Fields": [
+        {
+          "Name": "Data",
+          "JsonName": "data",
+          "Description": "Authentication data and credentials for the job.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Authentication type used for the job.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemExcInfo",
+      "SchemaName": "CoreGetJobsItemExcInfo",
+      "Fields": [
+        {
+          "Name": "Errno",
+          "JsonName": "errno",
+          "Description": "System error number if applicable. `null` otherwise.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Additional exception information.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Repr",
+          "JsonName": "repr",
+          "Description": "String representation of the exception. `null` if no exception occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Exception type name. `null` if no exception occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemQueryResultItem",
+      "SchemaName": "CoreGetJobsItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Abortable",
+          "JsonName": "abortable",
+          "Description": "Whether this job can be cancelled/aborted.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Arguments",
+          "JsonName": "arguments",
+          "Description": "Array of arguments passed to the job method.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Credentials",
+          "JsonName": "credentials",
+          "Description": "Authentication credentials used for this job. `null` if no authentication required.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemCredentials"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of what this job does. `null` if not provided.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if the job failed. `null` if no error occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "ExcInfo",
+          "JsonName": "exc_info",
+          "Description": "Detailed exception information. `null` if no exception occurred.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemExcInfo"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Exception",
+          "JsonName": "exception",
+          "Description": "Exception details if the job encountered an exception. `null` if no exception occurred.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for this job.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "LogsExcerpt",
+          "JsonName": "logs_excerpt",
+          "Description": "Brief excerpt from job logs for quick preview. `null` if no logs available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LogsPath",
+          "JsonName": "logs_path",
+          "Description": "File system path to detailed job logs. `null` if no logs available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "MessageIds",
+          "JsonName": "message_ids",
+          "Description": "Array of message IDs associated with this job.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Method",
+          "JsonName": "method",
+          "Description": "Name of the method/service being executed by this job.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Progress",
+          "JsonName": "progress",
+          "Description": "Current progress information for the job.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CoreGetJobsItemQueryResultItemProgress"
+          }
+        },
+        {
+          "Name": "Result",
+          "JsonName": "result",
+          "Description": "The result data returned by the job upon successful completion.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "ResultEncodingError",
+          "JsonName": "result_encoding_error",
+          "Description": "Encoding error information if result serialization failed.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current execution state of the job.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "TimeFinished",
+          "JsonName": "time_finished",
+          "Description": "Timestamp when the job completed execution. `null` if still running or not started.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "TimeStarted",
+          "JsonName": "time_started",
+          "Description": "Timestamp when the job started execution. `null` if not yet started.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Transient",
+          "JsonName": "transient",
+          "Description": "Whether this is a temporary job that will be automatically cleaned up.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsItemQueryResultItemProgress",
+      "SchemaName": "CoreGetJobsItemQueryResultItemProgress",
+      "Description": "Current progress information for the job.",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the current progress. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Additional progress information specific to the job type.",
+          "Type": {
+            "Type": "Any"
+          }
+        },
+        {
+          "Name": "Percent",
+          "JsonName": "percent",
+          "Description": "Completion percentage of the job. `null` if not available.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "CoreGetJobsOptions",
+      "SchemaName": "CoreGetJobsOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CorePingRemoteOptions",
+      "SchemaName": "CorePingRemoteOptions",
+      "Description": "CorePingRemoteArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Count",
+          "JsonName": "count",
+          "Description": "Number of ping packets to send or `null` for default.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "Target hostname or IP address to ping.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Interface",
+          "JsonName": "interface",
+          "Description": "Network interface to use for pinging or `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Interval",
+          "JsonName": "interval",
+          "Description": "Interval between ping packets or `null` for default.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Timeout",
+          "JsonName": "timeout",
+          "Description": "Timeout in seconds for each ping attempt.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Ping protocol type to use.\n\n* `ICMP`: Auto-detect IPv4 or IPv6 based on hostname\n* `ICMPV4`: Force IPv4 ping\n* `ICMPV6`: Force IPv6 ping",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "CorePingRemoteOptionsType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreSetOptionsAnswer",
+      "SchemaName": "CoreSetOptionsAnswer",
+      "Description": "The updated core system options.",
+      "Fields": [
+        {
+          "Name": "LegacyJobs",
+          "JsonName": "legacy_jobs",
+          "Description": "Whether to enable legacy job behavior for backward compatibility.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PrivateMethods",
+          "JsonName": "private_methods",
+          "Description": "Whether to expose private methods in API introspection.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PyExceptions",
+          "JsonName": "py_exceptions",
+          "Description": "Whether to include Python exception details in error responses.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CoreSetOptionsOptions",
+      "SchemaName": "CoreSetOptionsOptions",
+      "Description": "Core system options to update.",
+      "Fields": [
+        {
+          "Name": "LegacyJobs",
+          "JsonName": "legacy_jobs",
+          "Description": "Whether to enable legacy job behavior for backward compatibility.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PrivateMethods",
+          "JsonName": "private_methods",
+          "Description": "Whether to expose private methods in API introspection.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "PyExceptions",
+          "JsonName": "py_exceptions",
+          "Description": "Whether to include Python exception details in error responses.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "CoreGetTarget",
+      "SchemaName": "CoreGetTarget",
+      "Description": "Target interface to get methods for.\n\n`WS` for WebSocket, `CLI` for command line, `REST` for HTTP API.",
+      "Values": [
+        {
+          "Name": "CoreGetTargetWS",
+          "Value": "WS"
+        },
+        {
+          "Name": "CoreGetTargetCLI",
+          "Value": "CLI"
+        },
+        {
+          "Name": "CoreGetTargetREST",
+          "Value": "REST"
+        }
+      ]
+    },
+    {
+      "Name": "CorePingRemoteOptionsType",
+      "SchemaName": "CorePingRemoteOptionsType",
+      "Description": "Ping protocol type to use.\n\n* `ICMP`: Auto-detect IPv4 or IPv6 based on hostname\n* `ICMPV4`: Force IPv4 ping\n* `ICMPV6`: Force IPv6 ping",
+      "Values": [
+        {
+          "Name": "CorePingRemoteOptionsTypeICMP",
+          "Value": "ICMP"
+        },
+        {
+          "Name": "CorePingRemoteOptionsTypeICMPV4",
+          "Value": "ICMPV4"
+        },
+        {
+          "Name": "CorePingRemoteOptionsTypeICMPV6",
+          "Value": "ICMPV6"
+        }
+      ]
+    }
+  ]
+}

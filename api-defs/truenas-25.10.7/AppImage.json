@@ -1,0 +1,682 @@
+{
+  "Name": "AppImage",
+  "Tag": "app.image",
+  "Operations": [
+    {
+      "Name": "AppImageDelete",
+      "OperationId": "app.image.delete",
+      "Method": "CALL",
+      "Path": "app.image.delete",
+      "Description": "Delete docker image `image_id`.\n\n`options.force` when set will force delete the image regardless of the state of containers and should\nbe used cautiously.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.delete",
+        "Item": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "image_id",
+          "Argument": "imageId",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Container image ID or reference to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "DeleteOptions"
+          },
+          "Description": "Deletion options controlling force removal behavior."
+        }
+      ]
+    },
+    {
+      "Name": "AppImageDockerhubRateLimit",
+      "OperationId": "app.image.dockerhub_rate_limit",
+      "Method": "CALL",
+      "Path": "app.image.dockerhub_rate_limit",
+      "Description": "Returns the current rate limit information for Docker Hub registry.\n\nPlease refer to https://docs.docker.com/docker-hub/download-rate-limit/ for more information.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppImageDockerhubRateLimitAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.dockerhub_rate_limit",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppImageGetInstance",
+      "OperationId": "app.image.get_instance",
+      "Method": "CALL",
+      "Path": "app.image.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppImageQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.get_instance",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppImageGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "AppImagePull",
+      "OperationId": "app.image.pull",
+      "Method": "CALL",
+      "Path": "app.image.pull",
+      "Description": "`image` is the name of the image to pull. Format for the name is \"registry/repo/image:v1.2.3\" where\nregistry may be omitted and it will default to docker registry in this case. It can or cannot contain\nthe tag - this will be passed as is to docker so this should be analogous to what `docker pull` expects.\n\n`auth_config` should be specified if image to be retrieved is under a private repository.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.pull",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "image_pull",
+          "Argument": "imagePull",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ImagePull"
+          },
+          "Required": true,
+          "Description": "AppImagePullArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppImageQuery",
+      "OperationId": "app.image.query",
+      "Method": "CALL",
+      "Path": "app.image.query",
+      "Description": "Query all docker images with `query-filters` and `query-options`.\n\n`query-options.extra.parse_tags` is a boolean which when set will have normalized tags to be retrieved.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppImageQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppImageQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppImageQueryCount",
+      "OperationId": "app.image.query#count",
+      "Method": "CALL",
+      "Path": "app.image.query#count",
+      "Description": "Query all docker images with `query-filters` and `query-options`.\n\n`query-options.extra.parse_tags` is a boolean which when set will have normalized tags to be retrieved.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppImageQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppImageQueryOne",
+      "OperationId": "app.image.query#get",
+      "Method": "CALL",
+      "Path": "app.image.query#get",
+      "Description": "Query all docker images with `query-filters` and `query-options`.\n\n`query-options.extra.parse_tags` is a boolean which when set will have normalized tags to be retrieved.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppImageQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.image.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppImageQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "AppImageAuthConfig",
+      "SchemaName": "AppImageAuthConfig",
+      "Fields": [
+        {
+          "Name": "Password",
+          "JsonName": "password",
+          "Description": "Password or access token for container registry authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RegistryUri",
+          "JsonName": "registry_uri",
+          "Description": "Container registry URI or `null` to use default registry.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Username",
+          "JsonName": "username",
+          "Description": "Username for container registry authentication.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppImageDockerhubRateLimitAnswer",
+      "SchemaName": "AppImageDockerhubRateLimitAnswer",
+      "Description": "ContainerImagesDockerhubRateLimitResult return fields.",
+      "Fields": [
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if rate limit information could not be retrieved or `null` on success.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RemainingPullLimit",
+          "JsonName": "remaining_pull_limit",
+          "Description": "Remaining pull limit for Docker Hub registry.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RemainingTimeLimitInSecs",
+          "JsonName": "remaining_time_limit_in_secs",
+          "Description": "Remaining time limit in seconds for Docker Hub registry for the current pull limit to be renewed.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "TotalPullLimit",
+          "JsonName": "total_pull_limit",
+          "Description": "Total pull limit for Docker Hub registry.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "TotalTimeLimitInSecs",
+          "JsonName": "total_time_limit_in_secs",
+          "Description": "Total time limit in seconds for Docker Hub registry before the limit renews.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "AppImageGetInstanceOptions",
+      "SchemaName": "AppImageGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppImageParsedRepoTags",
+      "SchemaName": "AppImageParsedRepoTags",
+      "Fields": [
+        {
+          "Name": "CompleteTag",
+          "JsonName": "complete_tag",
+          "Description": "Complete image reference including registry, image name, and tag.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Container image name without registry or tag.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Reference",
+          "JsonName": "reference",
+          "Description": "Full reference to the container image (registry/repository:tag).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ReferenceIsDigest",
+          "JsonName": "reference_is_digest",
+          "Description": "Whether the reference uses a digest hash instead of a tag name.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Registry",
+          "JsonName": "registry",
+          "Description": "Container registry hostname (e.g., docker.io, quay.io).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Tag",
+          "JsonName": "tag",
+          "Description": "Image tag (version) or digest identifier.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppImageQueryOptions",
+      "SchemaName": "AppImageQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppImageQueryResultItem",
+      "SchemaName": "AppImageQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Author",
+          "JsonName": "author",
+          "Description": "Author or maintainer of the container image.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Comment",
+          "JsonName": "comment",
+          "Description": "Comment or description provided by the image author.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Created",
+          "JsonName": "created",
+          "Description": "Timestamp when the container image was created (ISO format).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Dangling",
+          "JsonName": "dangling",
+          "Description": "Whether this is a dangling image (no tags or references).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the container image (usually SHA256 hash).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ParsedRepoTags",
+          "JsonName": "parsed_repo_tags",
+          "Description": "Parsed repository tag information or `null` if not available.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppImageParsedRepoTags"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RepoDigests",
+          "JsonName": "repo_digests",
+          "Description": "Array of repository digests (content-addressable identifiers) for this image.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "RepoTags",
+          "JsonName": "repo_tags",
+          "Description": "Array of repository tags associated with this image.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Size",
+          "JsonName": "size",
+          "Description": "Size of the container image in bytes.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "UpdateAvailable",
+          "JsonName": "update_available",
+          "Description": "Whether a newer version of this image is available for download.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ImagePull",
+      "SchemaName": "ImagePull",
+      "Description": "AppImagePullArgs parameters.",
+      "Fields": [
+        {
+          "Name": "AuthConfig",
+          "JsonName": "auth_config",
+          "Description": "Authentication configuration for private registries or `null` for public images.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppImageAuthConfig"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Container image reference to pull (registry/repository:tag).",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

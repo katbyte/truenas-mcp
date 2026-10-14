@@ -4,7 +4,7 @@ An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking aft
 
 **It was made mainly to get a Go SDK for [truenas-metrics](https://github.com/katbyte/truenas-metrics).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
 
-**This is being built.** What works today is the Go connection to a TrueNAS, a stand-in NAS to test against, and an MCP server with its first tool, `server_info`. The rest of the tools come once the typed Go client is in.
+**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server with its first tool, `server_info`. The rest of the tools are being built on the typed client.
 
 **Detection is code, correction is judgment.** The checks that are coming only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
 
@@ -41,13 +41,14 @@ claude mcp add truenas -e TRUENAS_SERVER=nas.example.net -e TRUENAS_USERNAME=mcp
 | | |
 |---|---|
 | `sdk/truenasrpc` | the connection to a TrueNAS |
+| `sdk/truenas` | a typed client with a method for every API call, generated from TrueNAS's own description |
 | `sdk/truenastest` | a stand-in TrueNAS for tests |
 | `tools` | the MCP tools, and which of them a session gets |
 | `truenas-mcp serve` | the MCP server, over stdio or HTTP |
 | `truenas-mcp tools` | lists the tools the flags would load, with no NAS |
 | `truenas-mcp info` | checks an address, a certificate and a key |
 
-What is coming: a Go client with a method for every TrueNAS API call, then the rest of the tools built on it.
+What is coming: the rest of the tools, built on the typed client.
 
 ## Settings
 
@@ -87,7 +88,7 @@ var info struct {
 err = nas.Call(ctx, "system.info", nil, &info)
 ```
 
-One connection is shared by any number of calls. It reconnects by itself, and it never writes the key to a log. [Using the connection from Go](docs/sdk.md) covers long jobs, events, files, and how it compares with TrueNAS's own Go client.
+One connection is shared by any number of calls. It reconnects by itself, and it never writes the key to a log. The typed client calls through it: `client.New(nas)`, then `typed.System.Info(ctx)`. [Using the connection from Go](docs/sdk.md) covers the typed client, long jobs, events, files, and how it compares with TrueNAS's own Go client.
 
 ## How this is built
 

@@ -1,0 +1,54 @@
+{
+  "Name": "SystemSecurityInfo",
+  "Tag": "system.security.info",
+  "Operations": [
+    {
+      "Name": "SystemSecurityInfoFipsAvailable",
+      "OperationId": "system.security.info.fips_available",
+      "Method": "CALL",
+      "Path": "system.security.info.fips_available",
+      "Description": "Returns a boolean identifying whether FIPS mode may be toggled on this system",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.security.info.fips_available",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_SECURITY_READ",
+          "SYSTEM_SECURITY_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SystemSecurityInfoFipsEnabled",
+      "OperationId": "system.security.info.fips_enabled",
+      "Method": "CALL",
+      "Path": "system.security.info.fips_enabled",
+      "Description": "Returns a boolean identifying whether FIPS mode has been enabled on this system",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "system.security.info.fips_enabled",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SYSTEM_SECURITY_READ",
+          "SYSTEM_SECURITY_WRITE"
+        ]
+      }
+    }
+  ]
+}

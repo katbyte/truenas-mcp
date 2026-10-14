@@ -1,0 +1,3250 @@
+{
+  "Name": "App",
+  "Tag": "app",
+  "Operations": [
+    {
+      "Name": "AppAvailable",
+      "OperationId": "app.available",
+      "Method": "CALL",
+      "Path": "app.available",
+      "Description": "Retrieve all available applications from all configured catalogs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppAvailableItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.available",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppAvailableOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppAvailableCount",
+      "OperationId": "app.available#count",
+      "Method": "CALL",
+      "Path": "app.available#count",
+      "Description": "Retrieve all available applications from all configured catalogs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.available",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppAvailableOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppAvailableOne",
+      "OperationId": "app.available#get",
+      "Method": "CALL",
+      "Path": "app.available#get",
+      "Description": "Retrieve all available applications from all configured catalogs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppAvailableItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.available",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppAvailableOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppAvailableSpace",
+      "OperationId": "app.available_space",
+      "Method": "CALL",
+      "Path": "app.available_space",
+      "Description": "Returns space available in bytes in the configured apps pool which apps can consume",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.available_space",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppCategories",
+      "OperationId": "app.categories",
+      "Method": "CALL",
+      "Path": "app.categories",
+      "Description": "Retrieve list of valid categories which have associated applications.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.categories",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppCertificateChoices",
+      "OperationId": "app.certificate_choices",
+      "Method": "CALL",
+      "Path": "app.certificate_choices",
+      "Description": "Returns certificates which can be used by applications.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppCertificate"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.certificate_choices",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppConfig",
+      "OperationId": "app.config",
+      "Method": "CALL",
+      "Path": "app.config",
+      "Description": "Retrieve user specified configuration of `app_name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.config",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to retrieve configuration for."
+        }
+      ]
+    },
+    {
+      "Name": "AppContainerConsoleChoices",
+      "OperationId": "app.container_console_choices",
+      "Method": "CALL",
+      "Path": "app.container_console_choices",
+      "Description": "Returns container console choices for `app_name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ContainerDetails"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.container_console_choices",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to get console choices for."
+        }
+      ]
+    },
+    {
+      "Name": "AppContainerIds",
+      "OperationId": "app.container_ids",
+      "Method": "CALL",
+      "Path": "app.container_ids",
+      "Description": "Returns container IDs for `app_name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ContainerDetails"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.container_ids",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to get container IDs for."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppContainerIdsOptions"
+          },
+          "Description": "Options for filtering the returned container list."
+        }
+      ]
+    },
+    {
+      "Name": "AppConvertToCustom",
+      "OperationId": "app.convert_to_custom",
+      "Method": "CALL",
+      "Path": "app.convert_to_custom",
+      "Description": "Convert `app_name` to a custom app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.convert_to_custom",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the catalog application to convert to a custom application."
+        }
+      ]
+    },
+    {
+      "Name": "AppCreate",
+      "OperationId": "app.create",
+      "Method": "CALL",
+      "Path": "app.create",
+      "Description": "Create an app with `app_name` using `catalog_app` with `train` and `version`.\n\nTODO: Add support for advanced mode which will enable users to use their own compose files",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.create",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_create",
+          "Argument": "appCreate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppCreate"
+          },
+          "Required": true,
+          "Description": "AppCreateArgs parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppDelete",
+      "OperationId": "app.delete",
+      "Method": "CALL",
+      "Path": "app.delete",
+      "Description": "Delete `app_name` app.\n\n`force_remove_ix_volumes` should be set when the ix-volumes were created by the system for apps which were\nmigrated from k8s to docker and the user wants to remove them. This is to prevent accidental deletion of\nthe original ix-volumes which were created in dragonfish and before for kubernetes based apps. When this\nis set, it will result in the deletion of ix-volumes from both docker based apps and k8s based apps and should\nbe carefully set.\n\n`force_remove_custom_app` should be set when the app being deleted is a custom app and the user wants to\nforcefully remove the app. A use-case for this attribute is that user had an invalid yaml in his custom\napp and there are no actual docker resources (network/containers/volumes) in place for the custom app, then\ndocker compose down will fail as the yaml itself is invalid. In this case this flag can be set to proceed\nwith the deletion of the custom app. However if this app had any docker resources in place, then this flag\nwill have no effect.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.delete",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to delete."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppDeleteOptions"
+          },
+          "Description": "Options controlling what gets removed along with the application."
+        }
+      ]
+    },
+    {
+      "Name": "AppGetInstance",
+      "OperationId": "app.get_instance",
+      "Method": "CALL",
+      "Path": "app.get_instance",
+      "Description": "Returns instance matching `id`. If `id` is not found, Validation error is raised.\n\nPlease see `query` method documentation for `options`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.get_instance",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "id",
+          "Argument": "id",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppGetInstanceOptions"
+          },
+          "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation."
+        }
+      ]
+    },
+    {
+      "Name": "AppGpuChoices",
+      "OperationId": "app.gpu_choices",
+      "Method": "CALL",
+      "Path": "app.gpu_choices",
+      "Description": "Returns GPU choices which can be used by applications.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "GPU"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.gpu_choices",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppIpChoices",
+      "OperationId": "app.ip_choices",
+      "Method": "CALL",
+      "Path": "app.ip_choices",
+      "Description": "Returns IP choices which can be used by applications.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.ip_choices",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppLatest",
+      "OperationId": "app.latest",
+      "Method": "CALL",
+      "Path": "app.latest",
+      "Description": "Retrieve latest updated apps.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppLatestItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.latest",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppLatestOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppLatestCount",
+      "OperationId": "app.latest#count",
+      "Method": "CALL",
+      "Path": "app.latest#count",
+      "Description": "Retrieve latest updated apps.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.latest",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppLatestOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppLatestOne",
+      "OperationId": "app.latest#get",
+      "Method": "CALL",
+      "Path": "app.latest#get",
+      "Description": "Retrieve latest updated apps.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppLatestItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.latest",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppLatestOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppOutdatedDockerImages",
+      "OperationId": "app.outdated_docker_images",
+      "Method": "CALL",
+      "Path": "app.outdated_docker_images",
+      "Description": "Returns a list of outdated docker images for the specified app `name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.outdated_docker_images",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to check for outdated Docker images."
+        }
+      ]
+    },
+    {
+      "Name": "AppPullImages",
+      "OperationId": "app.pull_images",
+      "Method": "CALL",
+      "Path": "app.pull_images",
+      "Description": "Pulls docker images for the specified app `name`.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.pull_images",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to pull images for."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppPullImagesOptions"
+          },
+          "Description": "Options for pulling images including whether to redeploy."
+        }
+      ]
+    },
+    {
+      "Name": "AppQuery",
+      "OperationId": "app.query",
+      "Method": "CALL",
+      "Path": "app.query",
+      "Description": "Query all apps with `query-filters` and `query-options`.\n\n`query-options.extra.host_ip` is a string which can be provided to override portal IP address\nif it is a wildcard.\n\n`query-options.extra.include_app_schema` is a boolean which can be set to include app schema in the response.\n\n`query-options.extra.retrieve_config` is a boolean which can be set to retrieve app configuration\nused to install/manage app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.query",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppQueryOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppQueryCount",
+      "OperationId": "app.query#count",
+      "Method": "CALL",
+      "Path": "app.query#count",
+      "Description": "Query all apps with `query-filters` and `query-options`.\n\n`query-options.extra.host_ip` is a string which can be provided to override portal IP address\nif it is a wildcard.\n\n`query-options.extra.include_app_schema` is a boolean which can be set to include app schema in the response.\n\n`query-options.extra.retrieve_config` is a boolean which can be set to retrieve app configuration\nused to install/manage app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.query",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppQueryOne",
+      "OperationId": "app.query#get",
+      "Method": "CALL",
+      "Path": "app.query#get",
+      "Description": "Query all apps with `query-filters` and `query-options`.\n\n`query-options.extra.host_ip` is a string which can be provided to override portal IP address\nif it is a wildcard.\n\n`query-options.extra.include_app_schema` is a boolean which can be set to include app schema in the response.\n\n`query-options.extra.retrieve_config` is a boolean which can be set to retrieve app configuration\nused to install/manage app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.query",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppQueryOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "AppRedeploy",
+      "OperationId": "app.redeploy",
+      "Method": "CALL",
+      "Path": "app.redeploy",
+      "Description": "Redeploy `app_name` app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.redeploy",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to redeploy (stop, pull latest images, and restart)."
+        }
+      ]
+    },
+    {
+      "Name": "AppRollback",
+      "OperationId": "app.rollback",
+      "Method": "CALL",
+      "Path": "app.rollback",
+      "Description": "Rollback `app_name` app to previous version.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.rollback",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to rollback."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppRollbackOptions"
+          },
+          "Required": true,
+          "Description": "Rollback options."
+        }
+      ]
+    },
+    {
+      "Name": "AppRollbackVersions",
+      "OperationId": "app.rollback_versions",
+      "Method": "CALL",
+      "Path": "app.rollback_versions",
+      "Description": "Retrieve versions available for rollback for `app_name` app.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.rollback_versions",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to get rollback versions for."
+        }
+      ]
+    },
+    {
+      "Name": "AppSimilar",
+      "OperationId": "app.similar",
+      "Method": "CALL",
+      "Path": "app.similar",
+      "Description": "Retrieve applications which are similar to `app_name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "AppAvailableItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.similar",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "CATALOG_READ",
+          "CATALOG_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        },
+        {
+          "Name": "train",
+          "Argument": "train",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true
+        }
+      ]
+    },
+    {
+      "Name": "AppStart",
+      "OperationId": "app.start",
+      "Method": "CALL",
+      "Path": "app.start",
+      "Description": "Start `app_name` app.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.start",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to start."
+        }
+      ]
+    },
+    {
+      "Name": "AppStop",
+      "OperationId": "app.stop",
+      "Method": "CALL",
+      "Path": "app.stop",
+      "Description": "Stop `app_name` app.",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.stop",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to stop."
+        }
+      ]
+    },
+    {
+      "Name": "AppUpdate",
+      "OperationId": "app.update",
+      "Method": "CALL",
+      "Path": "app.update",
+      "Description": "Update `app_name` app with new configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.update",
+        "Job": true,
+        "Item": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to update."
+        },
+        {
+          "Name": "update",
+          "Argument": "update",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppUpdateUpdate"
+          },
+          "Description": "Updated configuration and settings for the application."
+        }
+      ]
+    },
+    {
+      "Name": "AppUpgrade",
+      "OperationId": "app.upgrade",
+      "Method": "CALL",
+      "Path": "app.upgrade",
+      "Description": "Upgrade `app_name` app to `app_version`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.upgrade",
+        "Job": true,
+        "Roles": [
+          "APPS_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to upgrade."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppUpgradeOptions"
+          },
+          "Description": "Options controlling the upgrade process including target version and snapshot behavior."
+        }
+      ]
+    },
+    {
+      "Name": "AppUpgradeSummary",
+      "OperationId": "app.upgrade_summary",
+      "Method": "CALL",
+      "Path": "app.upgrade_summary",
+      "Description": "Retrieve upgrade summary for `app_name`.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "AppUpgradeSummaryAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.upgrade_summary",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "app_name",
+          "Argument": "appName",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "Name of the application to get upgrade summary for."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppUpgradeSummaryOptions"
+          },
+          "Description": "Options specifying the target version for the summary."
+        }
+      ]
+    },
+    {
+      "Name": "AppUsedHostIps",
+      "OperationId": "app.used_host_ips",
+      "Method": "CALL",
+      "Path": "app.used_host_ips",
+      "Description": "Returns host IPs in use by applications.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.used_host_ips",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "AppUsedPorts",
+      "OperationId": "app.used_ports",
+      "Method": "CALL",
+      "Path": "app.used_ports",
+      "Description": "Returns ports in use by applications.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Integer"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "app.used_ports",
+        "Read": true,
+        "Roles": [
+          "APPS_READ",
+          "APPS_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "ActiveWorkloads",
+      "SchemaName": "ActiveWorkloads",
+      "Description": "Information about the running containers, ports, and resources used by this application.",
+      "Fields": [
+        {
+          "Name": "ContainerDetails",
+          "JsonName": "container_details",
+          "Description": "Detailed information about each container in the application.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppContainerDetails"
+            }
+          }
+        },
+        {
+          "Name": "Containers",
+          "JsonName": "containers",
+          "Description": "Total number of containers currently running for this application.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Images",
+          "JsonName": "images",
+          "Description": "Array of Docker image names used by the application.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Networks",
+          "JsonName": "networks",
+          "Description": "Array of Docker networks associated with the application.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppNetworks"
+            }
+          }
+        },
+        {
+          "Name": "UsedHostIps",
+          "JsonName": "used_host_ips",
+          "Description": "Array of host IP addresses in use by the application.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "UsedPorts",
+          "JsonName": "used_ports",
+          "Description": "Array of all port mappings used by the application.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "UsedPorts2"
+            }
+          }
+        },
+        {
+          "Name": "Volumes",
+          "JsonName": "volumes",
+          "Description": "Array of all volume mounts used by the application.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppVolumes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppAvailableItem",
+      "SchemaName": "AppAvailableItem",
+      "Fields": [
+        {
+          "Name": "AppReadme",
+          "JsonName": "app_readme",
+          "Description": "HTML content of the app README.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Catalog",
+          "JsonName": "catalog",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Categories",
+          "JsonName": "categories",
+          "Description": "List of categories for the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Short description of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Healthy",
+          "JsonName": "healthy",
+          "Description": "Health status of the app.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HealthyError",
+          "JsonName": "healthy_error",
+          "Description": "Error if app is not healthy.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "Homepage URL of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "IconUrl",
+          "JsonName": "icon_url",
+          "Description": "URL of the app icon",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Installed",
+          "JsonName": "installed",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastUpdate",
+          "JsonName": "last_update",
+          "Description": "Timestamp of the last update in ISO format.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestAppVersion",
+          "JsonName": "latest_app_version",
+          "Description": "Latest available app version in repository.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestHumanVersion",
+          "JsonName": "latest_human_version",
+          "Description": "Human-readable version of the app.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestVersion",
+          "JsonName": "latest_version",
+          "Description": "Latest available app version.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "Local path to the app's location.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Maintainers",
+          "JsonName": "maintainers",
+          "Description": "List of app maintainers.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "Maintainer"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Recommended",
+          "JsonName": "recommended",
+          "Description": "Indicates if the app is recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Screenshots",
+          "JsonName": "screenshots",
+          "Description": "List of screenshot URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Sources",
+          "JsonName": "sources",
+          "Description": "List of source URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Tags",
+          "JsonName": "tags",
+          "Description": "Tags associated with the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Title of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppAvailableItemQueryResultItem",
+      "SchemaName": "AppAvailableItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "AppReadme",
+          "JsonName": "app_readme",
+          "Description": "HTML content of the app README.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Catalog",
+          "JsonName": "catalog",
+          "Description": "Name of the catalog this application comes from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Categories",
+          "JsonName": "categories",
+          "Description": "List of categories for the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Short description of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Healthy",
+          "JsonName": "healthy",
+          "Description": "Health status of the app.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HealthyError",
+          "JsonName": "healthy_error",
+          "Description": "Error if app is not healthy.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "Homepage URL of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "IconUrl",
+          "JsonName": "icon_url",
+          "Description": "URL of the app icon.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Installed",
+          "JsonName": "installed",
+          "Description": "Whether this application is currently installed on the system.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastUpdate",
+          "JsonName": "last_update",
+          "Description": "Timestamp of the last update in ISO format.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestAppVersion",
+          "JsonName": "latest_app_version",
+          "Description": "Latest available app version in repository.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestHumanVersion",
+          "JsonName": "latest_human_version",
+          "Description": "Human-readable version of the app.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestVersion",
+          "JsonName": "latest_version",
+          "Description": "Latest available app version.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "Local path to the app's location.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Maintainers",
+          "JsonName": "maintainers",
+          "Description": "List of app maintainers.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "Maintainer"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PopularityRank",
+          "JsonName": "popularity_rank",
+          "Description": "Popularity ranking of this application. Lower numbers indicate higher popularity. `null` if not ranked.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Recommended",
+          "JsonName": "recommended",
+          "Description": "Indicates if the app is recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Screenshots",
+          "JsonName": "screenshots",
+          "Description": "List of screenshot URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Sources",
+          "JsonName": "sources",
+          "Description": "List of source URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Tags",
+          "JsonName": "tags",
+          "Description": "Tags associated with the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Title of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "The catalog train this application version belongs to.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppAvailableOptions",
+      "SchemaName": "AppAvailableOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppCertificate",
+      "SchemaName": "AppCertificate",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the certificate.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Display name of the certificate.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppContainerDetails",
+      "SchemaName": "AppContainerDetails",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the container.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Docker image name and tag used by this container.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PortConfig",
+          "JsonName": "port_config",
+          "Description": "Array of port mappings for this container.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "UsedPorts"
+            }
+          }
+        },
+        {
+          "Name": "ServiceName",
+          "JsonName": "service_name",
+          "Description": "Name of the service this container provides.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current state of the container.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppContainerDetailsState"
+          }
+        },
+        {
+          "Name": "VolumeMounts",
+          "JsonName": "volume_mounts",
+          "Description": "Array of volume mounts configured for this container.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppVolumes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppContainerIdsOptions",
+      "SchemaName": "AppContainerIdsOptions",
+      "Description": "Options for filtering the returned container list.",
+      "Fields": [
+        {
+          "Name": "AliveOnly",
+          "JsonName": "alive_only",
+          "Description": "Whether to return only running/active containers (`true`) or include all containers (`false`).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppCreate",
+      "SchemaName": "AppCreate",
+      "Description": "AppCreateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "AppName",
+          "JsonName": "app_name",
+          "Description": "Application name must have the following:\n\n* Lowercase alphanumeric characters can be specified.\n* Name must start with an alphabetic character and can end with alphanumeric character.\n* Hyphen '-' is allowed but not as the first or last character.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "CatalogApp",
+          "JsonName": "catalog_app",
+          "Description": "Name of the catalog application to install. Required when `custom_app` is `false`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CustomApp",
+          "JsonName": "custom_app",
+          "Description": "Whether to create a custom application (`true`) or install from catalog (`false`).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "CustomComposeConfig",
+          "JsonName": "custom_compose_config",
+          "Description": "Docker Compose configuration as a structured object for custom applications.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "CustomComposeConfigString",
+          "JsonName": "custom_compose_config_string",
+          "Description": "Docker Compose configuration as a YAML string for custom applications.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "The catalog train to install from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Values",
+          "JsonName": "values",
+          "Description": "Configuration values for the application installation.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "The version of the application to install.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppDeleteOptions",
+      "SchemaName": "AppDeleteOptions",
+      "Description": "Options controlling what gets removed along with the application.",
+      "Fields": [
+        {
+          "Name": "ForceRemoveCustomApp",
+          "JsonName": "force_remove_custom_app",
+          "Description": "Force removal of custom applications that might have important data or configurations.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ForceRemoveIxVolumes",
+          "JsonName": "force_remove_ix_volumes",
+          "Description": "Force removal of TrueNAS-managed volumes even if they contain data.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RemoveImages",
+          "JsonName": "remove_images",
+          "Description": "Whether to remove Docker images associated with the application.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RemoveIxVolumes",
+          "JsonName": "remove_ix_volumes",
+          "Description": "Whether to remove TrueNAS-managed storage volumes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppGetInstanceOptions",
+      "SchemaName": "AppGetInstanceOptions",
+      "Description": "Query options customize the results returned by a query method. More complete documentation with examples     are covered in the \"Query methods\" section of the TrueNAS API documentation.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppLatestItemQueryResultItem",
+      "SchemaName": "AppLatestItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "AppReadme",
+          "JsonName": "app_readme",
+          "Description": "HTML content of the app README.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Catalog",
+          "JsonName": "catalog",
+          "Description": "Name of the catalog this application comes from.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Categories",
+          "JsonName": "categories",
+          "Description": "List of categories for the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Short description of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Healthy",
+          "JsonName": "healthy",
+          "Description": "Health status of the app.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HealthyError",
+          "JsonName": "healthy_error",
+          "Description": "Error if app is not healthy.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Home",
+          "JsonName": "home",
+          "Description": "Homepage URL of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "IconUrl",
+          "JsonName": "icon_url",
+          "Description": "URL of the app icon.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Installed",
+          "JsonName": "installed",
+          "Description": "Whether this application is currently installed on the system.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LastUpdate",
+          "JsonName": "last_update",
+          "Description": "Timestamp of the last update in ISO format.",
+          "Type": {
+            "Type": "DateTime"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestAppVersion",
+          "JsonName": "latest_app_version",
+          "Description": "Latest available app version in repository.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestHumanVersion",
+          "JsonName": "latest_human_version",
+          "Description": "Human-readable version of the app.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestVersion",
+          "JsonName": "latest_version",
+          "Description": "Latest available app version.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Location",
+          "JsonName": "location",
+          "Description": "Local path to the app's location.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Maintainers",
+          "JsonName": "maintainers",
+          "Description": "List of app maintainers.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "Maintainer"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PopularityRank",
+          "JsonName": "popularity_rank",
+          "Description": "Popularity ranking of this application. Lower numbers indicate higher popularity. `null` if not ranked.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Recommended",
+          "JsonName": "recommended",
+          "Description": "Indicates if the app is recommended.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Screenshots",
+          "JsonName": "screenshots",
+          "Description": "List of screenshot URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Sources",
+          "JsonName": "sources",
+          "Description": "List of source URLs.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Tags",
+          "JsonName": "tags",
+          "Description": "Tags associated with the app.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Title of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Train",
+          "JsonName": "train",
+          "Description": "The catalog train this application version belongs to.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppLatestOptions",
+      "SchemaName": "AppLatestOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppNetworks",
+      "SchemaName": "AppNetworks",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "Id",
+          "Description": "Unique identifier for the Docker network.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Labels",
+          "JsonName": "Labels",
+          "Description": "Key-value pairs of labels associated with the network.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "Name",
+          "Description": "The name of the Docker network.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppPullImagesOptions",
+      "SchemaName": "AppPullImagesOptions",
+      "Description": "Options for pulling images including whether to redeploy.",
+      "Fields": [
+        {
+          "Name": "Redeploy",
+          "JsonName": "redeploy",
+          "Description": "Whether to redeploy the application after pulling new images.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppQueryOptions",
+      "SchemaName": "AppQueryOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppQueryResultItem",
+      "SchemaName": "AppQueryResultItem",
+      "Description": "The application entry after conversion to a custom application.",
+      "Fields": [
+        {
+          "Name": "ActiveWorkloads",
+          "JsonName": "active_workloads",
+          "Description": "Information about the running containers, ports, and resources used by this application.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ActiveWorkloads"
+          }
+        },
+        {
+          "Name": "Config",
+          "JsonName": "config",
+          "Description": "Current configuration values for the application. `null` if configuration is not requested.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "CustomApp",
+          "JsonName": "custom_app",
+          "Description": "Whether this is a custom application (`true`) or from a catalog (`false`).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HumanVersion",
+          "JsonName": "human_version",
+          "Description": "Human-readable version string for display purposes.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the application instance.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ImageUpdatesAvailable",
+          "JsonName": "image_updates_available",
+          "Description": "Whether newer Docker images are available for the containers in this application.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "LatestVersion",
+          "JsonName": "latest_version",
+          "Description": "The latest available version string, or `null` if no updates are available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Metadata",
+          "JsonName": "metadata",
+          "Description": "Application metadata including description, category, and other catalog information.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Migrated",
+          "JsonName": "migrated",
+          "Description": "Whether this application has been migrated from kubernetes.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "The display name of the application.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Notes",
+          "JsonName": "notes",
+          "Description": "User-provided notes or comments about this application instance.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Portals",
+          "JsonName": "portals",
+          "Description": "Web portals and access points provided by the application (URLs, ports, etc.).",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current operational state of the application.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AppState"
+          }
+        },
+        {
+          "Name": "UpgradeAvailable",
+          "JsonName": "upgrade_available",
+          "Description": "Whether a newer version of the application is available for upgrade.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "Technical version identifier of the currently installed application.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VersionDetails",
+          "JsonName": "version_details",
+          "Description": "Detailed version information including changelog and upgrade notes. `null` if not available.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "AppRollbackOptions",
+      "SchemaName": "AppRollbackOptions",
+      "Description": "Rollback options.",
+      "Fields": [
+        {
+          "Name": "AppVersion",
+          "JsonName": "app_version",
+          "Description": "Target version to rollback to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "RollbackSnapshot",
+          "JsonName": "rollback_snapshot",
+          "Description": "Whether to create a snapshot before performing the rollback.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppUpdateUpdate",
+      "SchemaName": "AppUpdateUpdate",
+      "Description": "Updated configuration and settings for the application.",
+      "Fields": [
+        {
+          "Name": "CustomComposeConfig",
+          "JsonName": "custom_compose_config",
+          "Description": "Updated Docker Compose configuration as a structured object.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "CustomComposeConfigString",
+          "JsonName": "custom_compose_config_string",
+          "Description": "Updated Docker Compose configuration as a YAML string.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Values",
+          "JsonName": "values",
+          "Description": "Updated configuration values for the application.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppUpgradeOptions",
+      "SchemaName": "AppUpgradeOptions",
+      "Description": "Options controlling the upgrade process including target version and snapshot behavior.",
+      "Fields": [
+        {
+          "Name": "AppVersion",
+          "JsonName": "app_version",
+          "Description": "Target version to upgrade to. Use 'latest' for the newest available version.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SnapshotHostpaths",
+          "JsonName": "snapshot_hostpaths",
+          "Description": "Whether to create snapshots of host path volumes before upgrade.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Values",
+          "JsonName": "values",
+          "Description": "Configuration values to apply during the upgrade.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppUpgradeSummaryAnswer",
+      "SchemaName": "AppUpgradeSummaryAnswer",
+      "Description": "AppUpgradeSummaryResult return fields.",
+      "Fields": [
+        {
+          "Name": "AvailableVersionsForUpgrade",
+          "JsonName": "available_versions_for_upgrade",
+          "Description": "List of available versions for upgrade.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "AppVersionInfo"
+            }
+          }
+        },
+        {
+          "Name": "Changelog",
+          "JsonName": "changelog",
+          "Description": "Changelog or release notes for the upgrade version. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "LatestHumanVersion",
+          "JsonName": "latest_human_version",
+          "Description": "Latest human readable version available for the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "LatestVersion",
+          "JsonName": "latest_version",
+          "Description": "Latest version available for the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UpgradeHumanVersion",
+          "JsonName": "upgrade_human_version",
+          "Description": "Human-readable version user has requested to be upgraded at.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "UpgradeVersion",
+          "JsonName": "upgrade_version",
+          "Description": "Version user has requested to be upgraded at.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppUpgradeSummaryOptions",
+      "SchemaName": "AppUpgradeSummaryOptions",
+      "Description": "Options specifying the target version for the summary.",
+      "Fields": [
+        {
+          "Name": "AppVersion",
+          "JsonName": "app_version",
+          "Description": "Target version to generate upgrade summary for. Use 'latest' for the newest available version.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppVersionInfo",
+      "SchemaName": "AppVersionInfo",
+      "Fields": [
+        {
+          "Name": "HumanVersion",
+          "JsonName": "human_version",
+          "Description": "Human-readable version of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Version",
+          "JsonName": "version",
+          "Description": "Version of the app.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AppVolumes",
+      "SchemaName": "AppVolumes",
+      "Fields": [
+        {
+          "Name": "Destination",
+          "JsonName": "destination",
+          "Description": "The mount path inside the container.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Mode",
+          "JsonName": "mode",
+          "Description": "The mount mode (e.g., 'rw' for read-write, 'ro' for read-only).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Source",
+          "JsonName": "source",
+          "Description": "The source path or volume name on the host system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "The volume type.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ContainerDetails",
+      "SchemaName": "ContainerDetails",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the container.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Image",
+          "JsonName": "image",
+          "Description": "Docker image name and tag used by this container.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ServiceName",
+          "JsonName": "service_name",
+          "Description": "Name of the service this container provides.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current state of the container.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ContainerDetailsState"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GPU",
+      "SchemaName": "GPU",
+      "Fields": [
+        {
+          "Name": "Description",
+          "JsonName": "description",
+          "Description": "Human-readable description of the GPU device. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Error",
+          "JsonName": "error",
+          "Description": "Error message if the GPU cannot be accessed or configured. `null` if no errors.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "GpuDetails",
+          "JsonName": "gpu_details",
+          "Description": "Detailed information about the GPU hardware and capabilities.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "PciSlot",
+          "JsonName": "pci_slot",
+          "Description": "PCI slot identifier where the GPU is installed. `null` if not available.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Vendor",
+          "JsonName": "vendor",
+          "Description": "GPU vendor name. `null` if not detected.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "VendorSpecificConfig",
+          "JsonName": "vendor_specific_config",
+          "Description": "Configuration options specific to the GPU vendor.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "HostPorts",
+      "SchemaName": "HostPorts",
+      "Fields": [
+        {
+          "Name": "HostIp",
+          "JsonName": "host_ip",
+          "Description": "The IP address on the host system that the port is bound to.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HostPort",
+          "JsonName": "host_port",
+          "Description": "The port number on the host system.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UsedPorts",
+      "SchemaName": "UsedPorts",
+      "Fields": [
+        {
+          "Name": "ContainerPort",
+          "JsonName": "container_port",
+          "Description": "The port number inside the container.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "HostPorts",
+          "JsonName": "host_ports",
+          "Description": "Array of host port mappings for this container port.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Protocol",
+          "JsonName": "protocol",
+          "Description": "The network protocol used.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "UsedPorts2",
+      "SchemaName": "UsedPorts2",
+      "Fields": [
+        {
+          "Name": "ContainerPort",
+          "JsonName": "container_port",
+          "Description": "The port number inside the container.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "HostPorts",
+          "JsonName": "host_ports",
+          "Description": "Array of host port mappings for this container port.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "HostPorts"
+            }
+          }
+        },
+        {
+          "Name": "Protocol",
+          "JsonName": "protocol",
+          "Description": "The network protocol used.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "AppContainerDetailsState",
+      "SchemaName": "AppContainerDetailsState",
+      "Description": "Current state of the container.",
+      "Values": [
+        {
+          "Name": "AppContainerDetailsStateCrashed",
+          "Value": "crashed"
+        },
+        {
+          "Name": "AppContainerDetailsStateCreated",
+          "Value": "created"
+        },
+        {
+          "Name": "AppContainerDetailsStateExited",
+          "Value": "exited"
+        },
+        {
+          "Name": "AppContainerDetailsStateRunning",
+          "Value": "running"
+        },
+        {
+          "Name": "AppContainerDetailsStateStarting",
+          "Value": "starting"
+        }
+      ]
+    },
+    {
+      "Name": "AppState",
+      "SchemaName": "AppState",
+      "Description": "Current operational state of the application.",
+      "Values": [
+        {
+          "Name": "AppStateCRASHED",
+          "Value": "CRASHED"
+        },
+        {
+          "Name": "AppStateDEPLOYING",
+          "Value": "DEPLOYING"
+        },
+        {
+          "Name": "AppStateRUNNING",
+          "Value": "RUNNING"
+        },
+        {
+          "Name": "AppStateSTOPPED",
+          "Value": "STOPPED"
+        },
+        {
+          "Name": "AppStateSTOPPING",
+          "Value": "STOPPING"
+        }
+      ]
+    },
+    {
+      "Name": "ContainerDetailsState",
+      "SchemaName": "ContainerDetailsState",
+      "Description": "Current state of the container.",
+      "Values": [
+        {
+          "Name": "ContainerDetailsStateCrashed",
+          "Value": "crashed"
+        },
+        {
+          "Name": "ContainerDetailsStateCreated",
+          "Value": "created"
+        },
+        {
+          "Name": "ContainerDetailsStateExited",
+          "Value": "exited"
+        },
+        {
+          "Name": "ContainerDetailsStateRunning",
+          "Value": "running"
+        },
+        {
+          "Name": "ContainerDetailsStateStarting",
+          "Value": "starting"
+        }
+      ]
+    }
+  ]
+}

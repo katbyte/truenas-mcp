@@ -1,0 +1,812 @@
+{
+  "Name": "Ssh",
+  "Tag": "ssh",
+  "Operations": [
+    {
+      "Name": "SshBindifaceChoices",
+      "OperationId": "ssh.bindiface_choices",
+      "Method": "CALL",
+      "Path": "ssh.bindiface_choices",
+      "Description": "Available choices for the bindiface attribute of SSH service.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ssh.bindiface_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SSH_READ",
+          "SSH_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SshConfig",
+      "OperationId": "ssh.config",
+      "Method": "CALL",
+      "Path": "ssh.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SshConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ssh.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SSH_READ",
+          "SSH_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "SshUpdate",
+      "OperationId": "ssh.update",
+      "Method": "CALL",
+      "Path": "ssh.update",
+      "Description": "Update settings of SSH daemon service.\n\nIf `bindiface` is empty it will listen for all available addresses.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "SshUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ssh.update",
+        "Roles": [
+          "SSH_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshUpdateData"
+          },
+          "Required": true,
+          "Description": "Updated SSH service configuration."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "SshConfigAnswer",
+      "SchemaName": "SshConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Bindiface",
+          "JsonName": "bindiface",
+          "Description": "Array of network interface names to bind the SSH service to.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Compression",
+          "JsonName": "compression",
+          "Description": "Whether compression is enabled for SSH connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HostDsaKey",
+          "JsonName": "host_dsa_key",
+          "Description": "DSA host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostDsaKeyCertPub",
+          "JsonName": "host_dsa_key_cert_pub",
+          "Description": "DSA host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostDsaKeyPub",
+          "JsonName": "host_dsa_key_pub",
+          "Description": "DSA host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEcdsaKey",
+          "JsonName": "host_ecdsa_key",
+          "Description": "ECDSA host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEcdsaKeyCertPub",
+          "JsonName": "host_ecdsa_key_cert_pub",
+          "Description": "ECDSA host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEcdsaKeyPub",
+          "JsonName": "host_ecdsa_key_pub",
+          "Description": "ECDSA host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEd25519Key",
+          "JsonName": "host_ed25519_key",
+          "Description": "Ed25519 host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEd25519KeyCertPub",
+          "JsonName": "host_ed25519_key_cert_pub",
+          "Description": "Ed25519 host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEd25519KeyPub",
+          "JsonName": "host_ed25519_key_pub",
+          "Description": "Ed25519 host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostKey",
+          "JsonName": "host_key",
+          "Description": "Legacy SSH host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostKeyPub",
+          "JsonName": "host_key_pub",
+          "Description": "Legacy SSH host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostRsaKey",
+          "JsonName": "host_rsa_key",
+          "Description": "RSA host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostRsaKeyCertPub",
+          "JsonName": "host_rsa_key_cert_pub",
+          "Description": "RSA host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostRsaKeyPub",
+          "JsonName": "host_rsa_key_pub",
+          "Description": "RSA host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the SSH service configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kerberosauth",
+          "JsonName": "kerberosauth",
+          "Description": "Whether Kerberos authentication is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional SSH daemon configuration options.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PasswordLoginGroups",
+          "JsonName": "password_login_groups",
+          "Description": "Array of group names allowed to authenticate with passwords.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Passwordauth",
+          "JsonName": "passwordauth",
+          "Description": "Whether password authentication is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Privatekey",
+          "JsonName": "privatekey",
+          "Description": "SSH host private key data.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SftpLogFacility",
+          "JsonName": "sftp_log_facility",
+          "Description": "Syslog facility for SFTP logging (empty string means default).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshSftpLogFacility"
+          }
+        },
+        {
+          "Name": "SftpLogLevel",
+          "JsonName": "sftp_log_level",
+          "Description": "Logging level for SFTP subsystem (empty string means default).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshSftpLogLevel"
+          }
+        },
+        {
+          "Name": "Tcpfwd",
+          "JsonName": "tcpfwd",
+          "Description": "Whether TCP forwarding is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Tcpport",
+          "JsonName": "tcpport",
+          "Description": "TCP port number for SSH connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "WeakCiphers",
+          "JsonName": "weak_ciphers",
+          "Description": "Array of weak ciphers to enable for compatibility with legacy clients.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SshWeakCiphers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SshUpdateAnswer",
+      "SchemaName": "SshUpdateAnswer",
+      "Description": "The updated SSH service configuration.",
+      "Fields": [
+        {
+          "Name": "Bindiface",
+          "JsonName": "bindiface",
+          "Description": "Array of network interface names to bind the SSH service to.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Compression",
+          "JsonName": "compression",
+          "Description": "Whether compression is enabled for SSH connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "HostDsaKey",
+          "JsonName": "host_dsa_key",
+          "Description": "DSA host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostDsaKeyCertPub",
+          "JsonName": "host_dsa_key_cert_pub",
+          "Description": "DSA host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostDsaKeyPub",
+          "JsonName": "host_dsa_key_pub",
+          "Description": "DSA host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEcdsaKey",
+          "JsonName": "host_ecdsa_key",
+          "Description": "ECDSA host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEcdsaKeyCertPub",
+          "JsonName": "host_ecdsa_key_cert_pub",
+          "Description": "ECDSA host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEcdsaKeyPub",
+          "JsonName": "host_ecdsa_key_pub",
+          "Description": "ECDSA host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEd25519Key",
+          "JsonName": "host_ed25519_key",
+          "Description": "Ed25519 host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEd25519KeyCertPub",
+          "JsonName": "host_ed25519_key_cert_pub",
+          "Description": "Ed25519 host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostEd25519KeyPub",
+          "JsonName": "host_ed25519_key_pub",
+          "Description": "Ed25519 host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostKey",
+          "JsonName": "host_key",
+          "Description": "Legacy SSH host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostKeyPub",
+          "JsonName": "host_key_pub",
+          "Description": "Legacy SSH host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostRsaKey",
+          "JsonName": "host_rsa_key",
+          "Description": "RSA host private key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostRsaKeyCertPub",
+          "JsonName": "host_rsa_key_cert_pub",
+          "Description": "RSA host certificate public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostRsaKeyPub",
+          "JsonName": "host_rsa_key_pub",
+          "Description": "RSA host public key. `null` if not configured.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the SSH service configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Kerberosauth",
+          "JsonName": "kerberosauth",
+          "Description": "Whether Kerberos authentication is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional SSH daemon configuration options.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PasswordLoginGroups",
+          "JsonName": "password_login_groups",
+          "Description": "Array of group names allowed to authenticate with passwords.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Passwordauth",
+          "JsonName": "passwordauth",
+          "Description": "Whether password authentication is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Privatekey",
+          "JsonName": "privatekey",
+          "Description": "SSH host private key data.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "SftpLogFacility",
+          "JsonName": "sftp_log_facility",
+          "Description": "Syslog facility for SFTP logging (empty string means default).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshSftpLogFacility"
+          }
+        },
+        {
+          "Name": "SftpLogLevel",
+          "JsonName": "sftp_log_level",
+          "Description": "Logging level for SFTP subsystem (empty string means default).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshSftpLogLevel"
+          }
+        },
+        {
+          "Name": "Tcpfwd",
+          "JsonName": "tcpfwd",
+          "Description": "Whether TCP forwarding is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Tcpport",
+          "JsonName": "tcpport",
+          "Description": "TCP port number for SSH connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "WeakCiphers",
+          "JsonName": "weak_ciphers",
+          "Description": "Array of weak ciphers to enable for compatibility with legacy clients.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SshWeakCiphers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "SshUpdateData",
+      "SchemaName": "SshUpdateData",
+      "Description": "Updated SSH service configuration.",
+      "Fields": [
+        {
+          "Name": "Bindiface",
+          "JsonName": "bindiface",
+          "Description": "Array of network interface names to bind the SSH service to.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Compression",
+          "JsonName": "compression",
+          "Description": "Whether compression is enabled for SSH connections.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Kerberosauth",
+          "JsonName": "kerberosauth",
+          "Description": "Whether Kerberos authentication is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Options",
+          "JsonName": "options",
+          "Description": "Additional SSH daemon configuration options.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PasswordLoginGroups",
+          "JsonName": "password_login_groups",
+          "Description": "Array of group names allowed to authenticate with passwords.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Passwordauth",
+          "JsonName": "passwordauth",
+          "Description": "Whether password authentication is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "SftpLogFacility",
+          "JsonName": "sftp_log_facility",
+          "Description": "Syslog facility for SFTP logging (empty string means default).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshSftpLogFacility"
+          }
+        },
+        {
+          "Name": "SftpLogLevel",
+          "JsonName": "sftp_log_level",
+          "Description": "Logging level for SFTP subsystem (empty string means default).",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "SshSftpLogLevel"
+          }
+        },
+        {
+          "Name": "Tcpfwd",
+          "JsonName": "tcpfwd",
+          "Description": "Whether TCP forwarding is enabled.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Tcpport",
+          "JsonName": "tcpport",
+          "Description": "TCP port number for SSH connections.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "WeakCiphers",
+          "JsonName": "weak_ciphers",
+          "Description": "Array of weak ciphers to enable for compatibility with legacy clients.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "SshWeakCiphers"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "SshSftpLogFacility",
+      "SchemaName": "SshSftpLogFacility",
+      "Description": "Syslog facility for SFTP logging (empty string means default).",
+      "Values": [
+        {
+          "Name": "SshSftpLogFacilityEmpty",
+          "Value": ""
+        },
+        {
+          "Name": "SshSftpLogFacilityDAEMON",
+          "Value": "DAEMON"
+        },
+        {
+          "Name": "SshSftpLogFacilityUSER",
+          "Value": "USER"
+        },
+        {
+          "Name": "SshSftpLogFacilityAUTH",
+          "Value": "AUTH"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL0",
+          "Value": "LOCAL0"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL1",
+          "Value": "LOCAL1"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL2",
+          "Value": "LOCAL2"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL3",
+          "Value": "LOCAL3"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL4",
+          "Value": "LOCAL4"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL5",
+          "Value": "LOCAL5"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL6",
+          "Value": "LOCAL6"
+        },
+        {
+          "Name": "SshSftpLogFacilityLOCAL7",
+          "Value": "LOCAL7"
+        }
+      ]
+    },
+    {
+      "Name": "SshSftpLogLevel",
+      "SchemaName": "SshSftpLogLevel",
+      "Description": "Logging level for SFTP subsystem (empty string means default).",
+      "Values": [
+        {
+          "Name": "SshSftpLogLevelEmpty",
+          "Value": ""
+        },
+        {
+          "Name": "SshSftpLogLevelQUIET",
+          "Value": "QUIET"
+        },
+        {
+          "Name": "SshSftpLogLevelFATAL",
+          "Value": "FATAL"
+        },
+        {
+          "Name": "SshSftpLogLevelERROR",
+          "Value": "ERROR"
+        },
+        {
+          "Name": "SshSftpLogLevelINFO",
+          "Value": "INFO"
+        },
+        {
+          "Name": "SshSftpLogLevelVERBOSE",
+          "Value": "VERBOSE"
+        },
+        {
+          "Name": "SshSftpLogLevelDEBUG",
+          "Value": "DEBUG"
+        },
+        {
+          "Name": "SshSftpLogLevelDEBUG2",
+          "Value": "DEBUG2"
+        },
+        {
+          "Name": "SshSftpLogLevelDEBUG3",
+          "Value": "DEBUG3"
+        }
+      ]
+    },
+    {
+      "Name": "SshWeakCiphers",
+      "SchemaName": "SshWeakCiphers",
+      "Values": [
+        {
+          "Name": "SshWeakCiphersAES128CBC",
+          "Value": "AES128-CBC"
+        },
+        {
+          "Name": "SshWeakCiphersNONE",
+          "Value": "NONE"
+        }
+      ]
+    }
+  ]
+}

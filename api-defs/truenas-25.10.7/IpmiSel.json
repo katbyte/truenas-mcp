@@ -1,0 +1,326 @@
+{
+  "Name": "IpmiSel",
+  "Tag": "ipmi.sel",
+  "Operations": [
+    {
+      "Name": "IpmiSelClear",
+      "OperationId": "ipmi.sel.clear",
+      "Method": "CALL",
+      "Path": "ipmi.sel.clear",
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.sel.clear",
+        "Job": true,
+        "Roles": [
+          "IPMI_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "IpmiSelElist",
+      "OperationId": "ipmi.sel.elist",
+      "Method": "CALL",
+      "Path": "ipmi.sel.elist",
+      "Description": "Query IPMI System Event Log (SEL) extended list",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiSelElistQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.sel.elist",
+        "Job": true,
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiSelElistOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IpmiSelElistCount",
+      "OperationId": "ipmi.sel.elist#count",
+      "Method": "CALL",
+      "Path": "ipmi.sel.elist#count",
+      "Description": "Query IPMI System Event Log (SEL) extended list",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.sel.elist",
+        "Job": true,
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiSelElistOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IpmiSelElistOne",
+      "OperationId": "ipmi.sel.elist#get",
+      "Method": "CALL",
+      "Path": "ipmi.sel.elist#get",
+      "Description": "Query IPMI System Event Log (SEL) extended list",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "IpmiSelElistQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.sel.elist",
+        "Job": true,
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "IpmiSelElistOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "IpmiSelInfo",
+      "OperationId": "ipmi.sel.info",
+      "Method": "CALL",
+      "Path": "ipmi.sel.info",
+      "Description": "Query General information about the IPMI System Event Log",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "RawObject"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "ipmi.sel.info",
+        "Job": true,
+        "Read": true,
+        "Roles": [
+          "IPMI_READ",
+          "IPMI_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    }
+  ],
+  "Models": [
+    {
+      "Name": "IpmiSelElistOptions",
+      "SchemaName": "IpmiSelElistOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "IpmiSelElistQueryResultItem",
+      "SchemaName": "IpmiSelElistQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Date",
+          "JsonName": "date",
+          "Description": "Date when the event occurred.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Event",
+          "JsonName": "event",
+          "Description": "Detailed description of the event that occurred.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "EventDirection",
+          "JsonName": "event_direction",
+          "Description": "Direction of the event (e.g., \"Assertion\", \"Deassertion\").",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the SEL (System Event Log) entry.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name or description of the sensor that generated the event.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Time",
+          "JsonName": "time",
+          "Description": "Time when the event occurred.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Type of the event (e.g., \"Temperature\", \"Voltage\").",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -32,9 +32,18 @@ github.com/katbyte/go-kt/mcp/registry
 github.com/katbyte/go-kt/mcp/server
 github.com/katbyte/go-kt/outside
 github.com/katbyte/go-kt/version
-# github.com/katbyte/pandorest v0.9.0
+# github.com/katbyte/pandorest v0.9.1
 ## explicit; go 1.27.0
+github.com/katbyte/pandorest
 github.com/katbyte/pandorest/client
+github.com/katbyte/pandorest/config
+github.com/katbyte/pandorest/definitions
+github.com/katbyte/pandorest/differ
+github.com/katbyte/pandorest/generator
+github.com/katbyte/pandorest/importer
+github.com/katbyte/pandorest/importer/workarounds
+github.com/katbyte/pandorest/jsonrpc
+github.com/katbyte/pandorest/openapi
 # github.com/modelcontextprotocol/go-sdk v1.8.0
 ## explicit; go 1.25.0
 github.com/modelcontextprotocol/go-sdk/auth

@@ -1,0 +1,333 @@
+{
+  "Name": "Route",
+  "Tag": "route",
+  "Operations": [
+    {
+      "Name": "RouteIpv4gwReachable",
+      "OperationId": "route.ipv4gw_reachable",
+      "Method": "CALL",
+      "Path": "route.ipv4gw_reachable",
+      "Description": "Get the IPv4 gateway and verify if it is reachable by any interface.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Boolean"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "route.ipv4gw_reachable",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "ipv4_gateway",
+          "Argument": "ipv4Gateway",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "IPv4 gateway address to test for reachability."
+        }
+      ]
+    },
+    {
+      "Name": "RouteSystemRoutes",
+      "OperationId": "route.system_routes",
+      "Method": "CALL",
+      "Path": "route.system_routes",
+      "Description": "Get current/applied network routes.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "RouteSystemRoutesItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "route.system_routes",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RouteSystemRoutesOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "RouteSystemRoutesCount",
+      "OperationId": "route.system_routes#count",
+      "Method": "CALL",
+      "Path": "route.system_routes#count",
+      "Description": "Get current/applied network routes.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "route.system_routes",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RouteSystemRoutesOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "RouteSystemRoutesOne",
+      "OperationId": "route.system_routes#get",
+      "Method": "CALL",
+      "Path": "route.system_routes#get",
+      "Description": "Get current/applied network routes.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "RouteSystemRoutesItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "route.system_routes",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "NETWORK_INTERFACE_READ",
+          "NETWORK_INTERFACE_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "RouteSystemRoutesOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "RouteSystemRoutesItemQueryResultItem",
+      "SchemaName": "RouteSystemRoutesItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Flags",
+          "JsonName": "flags",
+          "Description": "Array of routing flags for this route.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Gateway",
+          "JsonName": "gateway",
+          "Description": "Gateway IP address for this route. `null` if directly connected.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Interface",
+          "JsonName": "interface",
+          "Description": "Network interface name for this route. `null` if not bound to specific interface.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Netmask",
+          "JsonName": "netmask",
+          "Description": "Network mask for this route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Network",
+          "JsonName": "network",
+          "Description": "Network address for this route.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "PreferredSource",
+          "JsonName": "preferred_source",
+          "Description": "Preferred source IP address for outgoing packets. `null` if not specified.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Scope",
+          "JsonName": "scope",
+          "Description": "Routing scope indicating the distance to the destination.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "TableId",
+          "JsonName": "table_id",
+          "Description": "Routing table ID where this route is stored.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "RouteSystemRoutesOptions",
+      "SchemaName": "RouteSystemRoutesOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

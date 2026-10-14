@@ -1,0 +1,1058 @@
+{
+  "Name": "Nfs",
+  "Tag": "nfs",
+  "Operations": [
+    {
+      "Name": "NfsBindipChoices",
+      "OperationId": "nfs.bindip_choices",
+      "Method": "CALL",
+      "Path": "nfs.bindip_choices",
+      "Description": "Returns ip choices for NFS service to use",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Dictionary",
+          "NestedItem": {
+            "Type": "String"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.bindip_choices",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_READ",
+          "SHARING_NFS_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "NfsClientCount",
+      "OperationId": "nfs.client_count",
+      "Method": "CALL",
+      "Path": "nfs.client_count",
+      "Description": "Return currently connected clients count.\nCount may not be accurate if NFSv3 protocol is in use\ndue to potentially stale rmtab entries.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.client_count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_READ",
+          "SHARING_NFS_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "NfsConfig",
+      "OperationId": "nfs.config",
+      "Method": "CALL",
+      "Path": "nfs.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NfsConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_READ",
+          "SHARING_NFS_WRITE",
+          "SHARING_READ",
+          "SHARING_WRITE"
+        ]
+      }
+    },
+    {
+      "Name": "NfsGetNfs3Clients",
+      "OperationId": "nfs.get_nfs3_clients",
+      "Method": "CALL",
+      "Path": "nfs.get_nfs3_clients",
+      "Description": "Read contents of rmtab. This information may not\nbe accurate due to stale entries. This is ultimately\na limitation of the NFSv3 protocol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NFSGetNfs3ClientsQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.get_nfs3_clients",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsGetNfs3ClientsOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs3ClientsCount",
+      "OperationId": "nfs.get_nfs3_clients#count",
+      "Method": "CALL",
+      "Path": "nfs.get_nfs3_clients#count",
+      "Description": "Read contents of rmtab. This information may not\nbe accurate due to stale entries. This is ultimately\na limitation of the NFSv3 protocol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.get_nfs3_clients",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsGetNfs3ClientsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs3ClientsOne",
+      "OperationId": "nfs.get_nfs3_clients#get",
+      "Method": "CALL",
+      "Path": "nfs.get_nfs3_clients#get",
+      "Description": "Read contents of rmtab. This information may not\nbe accurate due to stale entries. This is ultimately\na limitation of the NFSv3 protocol.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NFSGetNfs3ClientsQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.get_nfs3_clients",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsGetNfs3ClientsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs4Clients",
+      "OperationId": "nfs.get_nfs4_clients",
+      "Method": "CALL",
+      "Path": "nfs.get_nfs4_clients",
+      "Description": "Read information about NFSv4 clients from /proc/fs/nfsd/clients\nSample output:\n[{\n    \"id\": \"4\",\n    \"info\": {\n        \"clientid\": 6273260596088110000,\n        \"address\": \"192.168.40.247:790\",\n        \"status\": \"confirmed\",\n        \"seconds from last renew\": 45,\n        \"name\": \"Linux NFSv4.2 debian12-hv\",\n        \"minor version\": 2,\n        \"Implementation domain\": \"kernel.org\",\n        \"Implementation name\": \"Linux 6.1.0-12-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.52-1 (2023-09-07) x86_64\",\n        \"Implementation time\": [0, 0],\n        \"callback state\": \"UP\",\n        \"callback address\": \"192.168.40.247:0\"\n    },\n    \"states\": [\n        {\n            \"94850248556250062041657638912\": {\n                \"type\": \"deleg\",\n                \"access\": \"r\",\n                \"superblock\": \"00:39:5\",\n                \"filename\": \"/debian12-hv\"\n            }\n        },\n        {\n            \"94850248556250062041741524992\": {\n                \"type\": \"open\",\n                \"access\": \"rw\",\n                \"deny\": \"--\",\n                \"superblock\": \"00:39:137\",\n                \"filename\": \"/.debian12-hv.swp\",\n                \"owner\": \"open id:\u0000\u0000\u00008\u0000\u0000\u0000\u0000\u0000\u0000\u0014þÀ²3\"\n            }\n        }\n    ]\n}]\n---- Description of the fields (all per NFS client) ----\n'clientid': Hash generated for this client connection\n'address':  The client IP and port. e.g. 10.20.30.40:768\n\n'status':   The current client status:\n    'confirmed' An active connection.\n                The status will convert to 'courtesy' in 90 seconds if not 'confirmed' by the client.\n    'courtesy'  A stalled connection from an inactive client.\n                The status will convert to 'expirable' in 24hr.\n    'expirable' Waiting to be cleaned up.\n\n'seconds from last renew':  The session timeout counter.  See 'status' field.\n                            Gets reset by confirmation update from the client\n\n'name': Supplied by the client.\n        Linux clients might offer something like 'Linux NFS4.2 clnt_name'.\n        FreeBSD clients might supply a UUID like name\n\n'minor version':    The NFS4.x minor version.  E.G. '2' for NFSv4.2\n\n'Implementation domain': NFSv4.1 info - e.g. 'kernel.org' or 'freebsd.org'.\n'Implementation name':   NFSv4.1 info - e.g. equivalent to 'uname -a' on the client\n'Implementation time':   NFSv4.1 info - Timestamp (time nfstime4) of client version (maybe unused?)\n\n'callback state':   Current callback 'service' status for this client: 'UP', 'DOWN', 'FAULT' or 'UNKNOWN'\n                    Linux clients usually indicate 'UP'\n                    FreeBSD clients may indicate 'DOWN' but are still functional",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "NFSGetNfs4ClientsQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.get_nfs4_clients",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsGetNfs4ClientsOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs4ClientsCount",
+      "OperationId": "nfs.get_nfs4_clients#count",
+      "Method": "CALL",
+      "Path": "nfs.get_nfs4_clients#count",
+      "Description": "Read information about NFSv4 clients from /proc/fs/nfsd/clients\nSample output:\n[{\n    \"id\": \"4\",\n    \"info\": {\n        \"clientid\": 6273260596088110000,\n        \"address\": \"192.168.40.247:790\",\n        \"status\": \"confirmed\",\n        \"seconds from last renew\": 45,\n        \"name\": \"Linux NFSv4.2 debian12-hv\",\n        \"minor version\": 2,\n        \"Implementation domain\": \"kernel.org\",\n        \"Implementation name\": \"Linux 6.1.0-12-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.52-1 (2023-09-07) x86_64\",\n        \"Implementation time\": [0, 0],\n        \"callback state\": \"UP\",\n        \"callback address\": \"192.168.40.247:0\"\n    },\n    \"states\": [\n        {\n            \"94850248556250062041657638912\": {\n                \"type\": \"deleg\",\n                \"access\": \"r\",\n                \"superblock\": \"00:39:5\",\n                \"filename\": \"/debian12-hv\"\n            }\n        },\n        {\n            \"94850248556250062041741524992\": {\n                \"type\": \"open\",\n                \"access\": \"rw\",\n                \"deny\": \"--\",\n                \"superblock\": \"00:39:137\",\n                \"filename\": \"/.debian12-hv.swp\",\n                \"owner\": \"open id:\u0000\u0000\u00008\u0000\u0000\u0000\u0000\u0000\u0000\u0014þÀ²3\"\n            }\n        }\n    ]\n}]\n---- Description of the fields (all per NFS client) ----\n'clientid': Hash generated for this client connection\n'address':  The client IP and port. e.g. 10.20.30.40:768\n\n'status':   The current client status:\n    'confirmed' An active connection.\n                The status will convert to 'courtesy' in 90 seconds if not 'confirmed' by the client.\n    'courtesy'  A stalled connection from an inactive client.\n                The status will convert to 'expirable' in 24hr.\n    'expirable' Waiting to be cleaned up.\n\n'seconds from last renew':  The session timeout counter.  See 'status' field.\n                            Gets reset by confirmation update from the client\n\n'name': Supplied by the client.\n        Linux clients might offer something like 'Linux NFS4.2 clnt_name'.\n        FreeBSD clients might supply a UUID like name\n\n'minor version':    The NFS4.x minor version.  E.G. '2' for NFSv4.2\n\n'Implementation domain': NFSv4.1 info - e.g. 'kernel.org' or 'freebsd.org'.\n'Implementation name':   NFSv4.1 info - e.g. equivalent to 'uname -a' on the client\n'Implementation time':   NFSv4.1 info - Timestamp (time nfstime4) of client version (maybe unused?)\n\n'callback state':   Current callback 'service' status for this client: 'UP', 'DOWN', 'FAULT' or 'UNKNOWN'\n                    Linux clients usually indicate 'UP'\n                    FreeBSD clients may indicate 'DOWN' but are still functional",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.get_nfs4_clients",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsGetNfs4ClientsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs4ClientsOne",
+      "OperationId": "nfs.get_nfs4_clients#get",
+      "Method": "CALL",
+      "Path": "nfs.get_nfs4_clients#get",
+      "Description": "Read information about NFSv4 clients from /proc/fs/nfsd/clients\nSample output:\n[{\n    \"id\": \"4\",\n    \"info\": {\n        \"clientid\": 6273260596088110000,\n        \"address\": \"192.168.40.247:790\",\n        \"status\": \"confirmed\",\n        \"seconds from last renew\": 45,\n        \"name\": \"Linux NFSv4.2 debian12-hv\",\n        \"minor version\": 2,\n        \"Implementation domain\": \"kernel.org\",\n        \"Implementation name\": \"Linux 6.1.0-12-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.52-1 (2023-09-07) x86_64\",\n        \"Implementation time\": [0, 0],\n        \"callback state\": \"UP\",\n        \"callback address\": \"192.168.40.247:0\"\n    },\n    \"states\": [\n        {\n            \"94850248556250062041657638912\": {\n                \"type\": \"deleg\",\n                \"access\": \"r\",\n                \"superblock\": \"00:39:5\",\n                \"filename\": \"/debian12-hv\"\n            }\n        },\n        {\n            \"94850248556250062041741524992\": {\n                \"type\": \"open\",\n                \"access\": \"rw\",\n                \"deny\": \"--\",\n                \"superblock\": \"00:39:137\",\n                \"filename\": \"/.debian12-hv.swp\",\n                \"owner\": \"open id:\u0000\u0000\u00008\u0000\u0000\u0000\u0000\u0000\u0000\u0014þÀ²3\"\n            }\n        }\n    ]\n}]\n---- Description of the fields (all per NFS client) ----\n'clientid': Hash generated for this client connection\n'address':  The client IP and port. e.g. 10.20.30.40:768\n\n'status':   The current client status:\n    'confirmed' An active connection.\n                The status will convert to 'courtesy' in 90 seconds if not 'confirmed' by the client.\n    'courtesy'  A stalled connection from an inactive client.\n                The status will convert to 'expirable' in 24hr.\n    'expirable' Waiting to be cleaned up.\n\n'seconds from last renew':  The session timeout counter.  See 'status' field.\n                            Gets reset by confirmation update from the client\n\n'name': Supplied by the client.\n        Linux clients might offer something like 'Linux NFS4.2 clnt_name'.\n        FreeBSD clients might supply a UUID like name\n\n'minor version':    The NFS4.x minor version.  E.G. '2' for NFSv4.2\n\n'Implementation domain': NFSv4.1 info - e.g. 'kernel.org' or 'freebsd.org'.\n'Implementation name':   NFSv4.1 info - e.g. equivalent to 'uname -a' on the client\n'Implementation time':   NFSv4.1 info - Timestamp (time nfstime4) of client version (maybe unused?)\n\n'callback state':   Current callback 'service' status for this client: 'UP', 'DOWN', 'FAULT' or 'UNKNOWN'\n                    Linux clients usually indicate 'UP'\n                    FreeBSD clients may indicate 'DOWN' but are still functional",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NFSGetNfs4ClientsQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.get_nfs4_clients",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsGetNfs4ClientsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "NfsUpdate",
+      "OperationId": "nfs.update",
+      "Method": "CALL",
+      "Path": "nfs.update",
+      "Description": "Update NFS Service Configuration.\n\n`servers` - Represents number of servers to create.\n            By default, the number of nfsd is determined by the capabilities of the system.\n            To specify the number of nfsd, set a value between 1 and 256.\n            'Unset' the field to return to default.\n            This field will always report the number of nfsd to start.\n\n            INPUT: 1 .. 256 or 'unset'\n                where unset will enable the automatic determination\n                and 1 ..256 will set the number of nfsd\n            Default: Number of nfsd is automatically determined and will be no less\n                than 1 and no more than 32\n\n            The number of mountd will be 1/4 the number of reported nfsd.\n\n`allow_nonroot` - If 'enabled' it allows non-root mount requests to be served.\n\n                INPUT: enable/disable (True/False)\n                Default: disabled\n\n`bindip` -  Limit the server IP addresses available for NFS\n            By default, NFS will listen on all IP addresses that are active on the server.\n            To specify the server interface or a set of interfaces provide a list of IP's.\n            If the field is unset/empty, NFS listens on all available server addresses.\n\n            INPUT: list of IP addresses available configured on the server\n            Default: Use all available addresses (empty list)\n\n`protocols` - enable/disable NFSv3, NFSv4\n            Both can be enabled or NFSv4 or NFSv4 by themselves.  At least one must be enabled.\n            Note:  The 'showmount' command is available only if NFSv3 is enabled.\n\n            INPUT: Select NFSv3 or NFSv4 or NFSv3,NFSv4\n            Default: NFSv3,NFSv4\n\n`v4_krb` -  Force Kerberos authentication on NFS shares\n            If enabled, NFS shares will fail if the Kerberos ticket is unavilable\n\n            INPUT: enable/disable\n            Default: disabled\n\n`v4_domain` -   Specify a DNS domain (NFSv4 only)\n            If set, the value will be used to override the default DNS domain name for NFSv4.\n            Specifies the 'Domain' idmapd.conf setting.\n\n            INPUT: a string\n            Default: unset, i.e. an empty string.\n\n`mountd_port` - mountd port binding\n            The value set specifies the port mountd(8) binds to.\n\n            INPUT: unset or an integer between 1 .. 65535\n            Default: unset\n\n`rpcstatd_port` - statd port binding\n            The value set specifies the port rpc.statd(8) binds to.\n\n            INPUT: unset or an integer between 1 .. 65535\n            Default: unset\n\n`rpclockd_port` - lockd port binding\n            The value set specifies the port rpclockd_port(8) binds to.\n\n            INPUT: unset or an integer between 1 .. 65535\n            Default: unset\n\n`rdma` -    Enable/Disable NFS over RDMA support\n            Available on supported platforms and requires an installed and RDMA capable NIC.\n            NFS over RDMA uses port 20040.\n\n            INPUT: Enable/Disable\n            Default: Disable",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NfsUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "nfs.update",
+        "Roles": [
+          "SHARING_ADMIN",
+          "SHARING_NFS_WRITE",
+          "SHARING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "nfs_update",
+          "Argument": "nfsUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NfsUpdate"
+          },
+          "Required": true,
+          "Description": "NFSUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "NFSGetNfs3ClientsQueryResultItem",
+      "SchemaName": "NFSGetNfs3ClientsQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Export",
+          "JsonName": "export",
+          "Description": "NFS export path being accessed by the client.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ip",
+          "JsonName": "ip",
+          "Description": "IP address of the NFSv3 client.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NFSGetNfs4ClientsQueryResultItem",
+      "SchemaName": "NFSGetNfs4ClientsQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the NFSv4 client.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Info",
+          "JsonName": "info",
+          "Description": "Client information including connection details and capabilities.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "States",
+          "JsonName": "states",
+          "Description": "Array of client state information including open files and locks.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Dictionary",
+              "NestedItem": {
+                "Type": "Any"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NfsConfigAnswer",
+      "SchemaName": "NfsConfigAnswer",
+      "Fields": [
+        {
+          "Name": "AllowNonroot",
+          "JsonName": "allow_nonroot",
+          "Description": "Allow non-root mount requests.  This equates to 'insecure' share option.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Bindip",
+          "JsonName": "bindip",
+          "Description": "Limit the server IP addresses available for NFS.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "KeytabHasNfsSpn",
+          "JsonName": "keytab_has_nfs_spn",
+          "Description": "Report status of NFS Principal Name in keytab (status only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ManagedNfsd",
+          "JsonName": "managed_nfsd",
+          "Description": "Report status of 'servers' field.\nIf true, the number of nfsd is managed by the server (status only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MountdLog",
+          "JsonName": "mountd_log",
+          "Description": "Enable or disable mountd logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MountdPort",
+          "JsonName": "mountd_port",
+          "Description": "Specify the mountd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Protocols",
+          "JsonName": "protocols",
+          "Description": "Specify supported NFS protocols:  NFSv3, NFSv4 or both can be listed.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "NfsProtocols"
+            }
+          }
+        },
+        {
+          "Name": "Rdma",
+          "JsonName": "rdma",
+          "Description": "Enable or disable NFS over RDMA.  Requires RDMA capable NIC.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RpclockdPort",
+          "JsonName": "rpclockd_port",
+          "Description": "Specify the rpc.lockd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RpcstatdPort",
+          "JsonName": "rpcstatd_port",
+          "Description": "Specify the rpc.statd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Servers",
+          "JsonName": "servers",
+          "Description": "Specify the number of nfsd. Default: Number of nfsd is equal number of CPU.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StatdLockdLog",
+          "JsonName": "statd_lockd_log",
+          "Description": "Enable or disable statd and lockd logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UserdManageGids",
+          "JsonName": "userd_manage_gids",
+          "Description": "Enable to allow server to manage gids.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V4Domain",
+          "JsonName": "v4_domain",
+          "Description": "Specify a DNS domain (NFSv4 only).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "V4Krb",
+          "JsonName": "v4_krb",
+          "Description": "Force Kerberos authentication on NFS shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V4KrbEnabled",
+          "JsonName": "v4_krb_enabled",
+          "Description": "Status of NFSv4 authentication requirement (status only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs3ClientsOptions",
+      "SchemaName": "NfsGetNfs3ClientsOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NfsGetNfs4ClientsOptions",
+      "SchemaName": "NfsGetNfs4ClientsOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NfsUpdate",
+      "SchemaName": "NfsUpdate",
+      "Description": "NFSUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "AllowNonroot",
+          "JsonName": "allow_nonroot",
+          "Description": "Allow non-root mount requests.  This equates to 'insecure' share option.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Bindip",
+          "JsonName": "bindip",
+          "Description": "Limit the server IP addresses available for NFS.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "MountdLog",
+          "JsonName": "mountd_log",
+          "Description": "Enable or disable mountd logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MountdPort",
+          "JsonName": "mountd_port",
+          "Description": "Specify the mountd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Protocols",
+          "JsonName": "protocols",
+          "Description": "Specify supported NFS protocols:  NFSv3, NFSv4 or both can be listed.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "NfsProtocols"
+            }
+          }
+        },
+        {
+          "Name": "Rdma",
+          "JsonName": "rdma",
+          "Description": "Enable or disable NFS over RDMA.  Requires RDMA capable NIC.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RpclockdPort",
+          "JsonName": "rpclockd_port",
+          "Description": "Specify the rpc.lockd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RpcstatdPort",
+          "JsonName": "rpcstatd_port",
+          "Description": "Specify the rpc.statd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Servers",
+          "JsonName": "servers",
+          "Description": "Specify the number of nfsd. Default: Number of nfsd is equal number of CPU.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StatdLockdLog",
+          "JsonName": "statd_lockd_log",
+          "Description": "Enable or disable statd and lockd logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UserdManageGids",
+          "JsonName": "userd_manage_gids",
+          "Description": "Enable to allow server to manage gids.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V4Domain",
+          "JsonName": "v4_domain",
+          "Description": "Specify a DNS domain (NFSv4 only).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "V4Krb",
+          "JsonName": "v4_krb",
+          "Description": "Force Kerberos authentication on NFS shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NfsUpdateAnswer",
+      "SchemaName": "NfsUpdateAnswer",
+      "Description": "The updated NFS service configuration.",
+      "Fields": [
+        {
+          "Name": "AllowNonroot",
+          "JsonName": "allow_nonroot",
+          "Description": "Allow non-root mount requests.  This equates to 'insecure' share option.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Bindip",
+          "JsonName": "bindip",
+          "Description": "Limit the server IP addresses available for NFS.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Placeholder identifier.  Not used as there is only one.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "KeytabHasNfsSpn",
+          "JsonName": "keytab_has_nfs_spn",
+          "Description": "Report status of NFS Principal Name in keytab (status only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "ManagedNfsd",
+          "JsonName": "managed_nfsd",
+          "Description": "Report status of 'servers' field.\nIf true, the number of nfsd is managed by the server (status only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MountdLog",
+          "JsonName": "mountd_log",
+          "Description": "Enable or disable mountd logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "MountdPort",
+          "JsonName": "mountd_port",
+          "Description": "Specify the mountd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Protocols",
+          "JsonName": "protocols",
+          "Description": "Specify supported NFS protocols:  NFSv3, NFSv4 or both can be listed.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "NfsProtocols"
+            }
+          }
+        },
+        {
+          "Name": "Rdma",
+          "JsonName": "rdma",
+          "Description": "Enable or disable NFS over RDMA.  Requires RDMA capable NIC.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "RpclockdPort",
+          "JsonName": "rpclockd_port",
+          "Description": "Specify the rpc.lockd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "RpcstatdPort",
+          "JsonName": "rpcstatd_port",
+          "Description": "Specify the rpc.statd port binding.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Servers",
+          "JsonName": "servers",
+          "Description": "Specify the number of nfsd. Default: Number of nfsd is equal number of CPU.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "StatdLockdLog",
+          "JsonName": "statd_lockd_log",
+          "Description": "Enable or disable statd and lockd logging.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "UserdManageGids",
+          "JsonName": "userd_manage_gids",
+          "Description": "Enable to allow server to manage gids.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V4Domain",
+          "JsonName": "v4_domain",
+          "Description": "Specify a DNS domain (NFSv4 only).",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "V4Krb",
+          "JsonName": "v4_krb",
+          "Description": "Force Kerberos authentication on NFS shares.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "V4KrbEnabled",
+          "JsonName": "v4_krb_enabled",
+          "Description": "Status of NFSv4 authentication requirement (status only).",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "NfsProtocols",
+      "SchemaName": "NfsProtocols",
+      "Values": [
+        {
+          "Name": "NfsProtocolsNFSV3",
+          "Value": "NFSV3"
+        },
+        {
+          "Name": "NfsProtocolsNFSV4",
+          "Value": "NFSV4"
+        }
+      ]
+    }
+  ]
+}

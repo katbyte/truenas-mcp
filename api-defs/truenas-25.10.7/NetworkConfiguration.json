@@ -1,0 +1,664 @@
+{
+  "Name": "NetworkConfiguration",
+  "Tag": "network.configuration",
+  "Operations": [
+    {
+      "Name": "NetworkConfigurationActivityChoices",
+      "OperationId": "network.configuration.activity_choices",
+      "Method": "CALL",
+      "Path": "network.configuration.activity_choices",
+      "Description": "Returns allowed/forbidden network activity choices.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "network.configuration.activity_choices",
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "NetworkConfigurationConfig",
+      "OperationId": "network.configuration.config",
+      "Method": "CALL",
+      "Path": "network.configuration.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NetworkConfigurationConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "network.configuration.config",
+        "Read": true,
+        "Roles": [
+          "NETWORK_GENERAL_READ",
+          "NETWORK_GENERAL_WRITE",
+          "READONLY_ADMIN",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "NetworkConfigurationUpdate",
+      "OperationId": "network.configuration.update",
+      "Method": "CALL",
+      "Path": "network.configuration.update",
+      "Description": "Update Network Configuration Service configuration.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "NetworkConfigurationUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "network.configuration.update",
+        "Roles": [
+          "NETWORK_GENERAL_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "data",
+          "Argument": "data",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "NetworkConfigurationUpdateData"
+          },
+          "Required": true,
+          "Description": "Network configuration data to update."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "Activity",
+      "SchemaName": "Activity",
+      "Description": "Network activity filtering configuration.",
+      "Fields": [
+        {
+          "Name": "Activities",
+          "JsonName": "activities",
+          "Description": "Array of network activity types to allow or deny.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Type",
+          "JsonName": "type",
+          "Description": "Whether to allow or deny the specified network activities.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ActivityType"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "AnswerState",
+      "SchemaName": "AnswerState",
+      "Description": "Current network configuration state.",
+      "Fields": [
+        {
+          "Name": "Hosts",
+          "JsonName": "hosts",
+          "Description": "Current hosts file entries.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Ipv4gateway",
+          "JsonName": "ipv4gateway",
+          "Description": "Current IPv4 default gateway address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv6gateway",
+          "JsonName": "ipv6gateway",
+          "Description": "Current IPv6 default gateway address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver1",
+          "JsonName": "nameserver1",
+          "Description": "Current primary DNS server address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver2",
+          "JsonName": "nameserver2",
+          "Description": "Current secondary DNS server address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver3",
+          "JsonName": "nameserver3",
+          "Description": "Current tertiary DNS server address.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NetworkConfigurationConfigAnswer",
+      "SchemaName": "NetworkConfigurationConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Activity",
+          "JsonName": "activity",
+          "Description": "Network activity filtering configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Activity"
+          }
+        },
+        {
+          "Name": "Domain",
+          "JsonName": "domain",
+          "Description": "System domain name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Domains",
+          "JsonName": "domains",
+          "Description": "Additional domain names for DNS search.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "System hostname.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HostnameB",
+          "JsonName": "hostname_b",
+          "Description": "Hostname for the second controller in HA configurations or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostnameLocal",
+          "JsonName": "hostname_local",
+          "Description": "Local hostname for this system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HostnameVirtual",
+          "JsonName": "hostname_virtual",
+          "Description": "Virtual hostname for HA configurations or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hosts",
+          "JsonName": "hosts",
+          "Description": "Static host entries to add to the hosts file.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Httpproxy",
+          "JsonName": "httpproxy",
+          "Description": "Must be provided if a proxy is to be used for network operations.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Ipv4gateway",
+          "JsonName": "ipv4gateway",
+          "Description": "Used instead of the default gateway provided by DHCP.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv6gateway",
+          "JsonName": "ipv6gateway",
+          "Description": "IPv6 default gateway address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver1",
+          "JsonName": "nameserver1",
+          "Description": "Primary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver2",
+          "JsonName": "nameserver2",
+          "Description": "Secondary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver3",
+          "JsonName": "nameserver3",
+          "Description": "Tertiary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ServiceAnnouncement",
+          "JsonName": "service_announcement",
+          "Description": "Determines the broadcast protocols that will be used to advertise the server.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceAnnouncement"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current network configuration state.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AnswerState"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NetworkConfigurationUpdateAnswer",
+      "SchemaName": "NetworkConfigurationUpdateAnswer",
+      "Description": "The updated network configuration.",
+      "Fields": [
+        {
+          "Name": "Activity",
+          "JsonName": "activity",
+          "Description": "Network activity filtering configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Activity"
+          }
+        },
+        {
+          "Name": "Domain",
+          "JsonName": "domain",
+          "Description": "System domain name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Domains",
+          "JsonName": "domains",
+          "Description": "Additional domain names for DNS search.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "System hostname.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HostnameB",
+          "JsonName": "hostname_b",
+          "Description": "Hostname for the second controller in HA configurations or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostnameLocal",
+          "JsonName": "hostname_local",
+          "Description": "Local hostname for this system.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HostnameVirtual",
+          "JsonName": "hostname_virtual",
+          "Description": "Virtual hostname for HA configurations or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hosts",
+          "JsonName": "hosts",
+          "Description": "Static host entries to add to the hosts file.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Httpproxy",
+          "JsonName": "httpproxy",
+          "Description": "Must be provided if a proxy is to be used for network operations.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the network configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Ipv4gateway",
+          "JsonName": "ipv4gateway",
+          "Description": "Used instead of the default gateway provided by DHCP.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv6gateway",
+          "JsonName": "ipv6gateway",
+          "Description": "IPv6 default gateway address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver1",
+          "JsonName": "nameserver1",
+          "Description": "Primary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver2",
+          "JsonName": "nameserver2",
+          "Description": "Secondary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver3",
+          "JsonName": "nameserver3",
+          "Description": "Tertiary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ServiceAnnouncement",
+          "JsonName": "service_announcement",
+          "Description": "Determines the broadcast protocols that will be used to advertise the server.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceAnnouncement"
+          }
+        },
+        {
+          "Name": "State",
+          "JsonName": "state",
+          "Description": "Current network configuration state.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "AnswerState"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "NetworkConfigurationUpdateData",
+      "SchemaName": "NetworkConfigurationUpdateData",
+      "Description": "Network configuration data to update.",
+      "Fields": [
+        {
+          "Name": "Activity",
+          "JsonName": "activity",
+          "Description": "Network activity filtering configuration.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Activity"
+          }
+        },
+        {
+          "Name": "Domain",
+          "JsonName": "domain",
+          "Description": "System domain name.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Domains",
+          "JsonName": "domains",
+          "Description": "Additional domain names for DNS search.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Hostname",
+          "JsonName": "hostname",
+          "Description": "System hostname.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "HostnameB",
+          "JsonName": "hostname_b",
+          "Description": "Hostname for the second controller in HA configurations or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "HostnameVirtual",
+          "JsonName": "hostname_virtual",
+          "Description": "Virtual hostname for HA configurations or `null`.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Hosts",
+          "JsonName": "hosts",
+          "Description": "Static host entries to add to the hosts file.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Httpproxy",
+          "JsonName": "httpproxy",
+          "Description": "Must be provided if a proxy is to be used for network operations.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv4gateway",
+          "JsonName": "ipv4gateway",
+          "Description": "Used instead of the default gateway provided by DHCP.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Ipv6gateway",
+          "JsonName": "ipv6gateway",
+          "Description": "IPv6 default gateway address.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver1",
+          "JsonName": "nameserver1",
+          "Description": "Primary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver2",
+          "JsonName": "nameserver2",
+          "Description": "Secondary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Nameserver3",
+          "JsonName": "nameserver3",
+          "Description": "Tertiary DNS server.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "ServiceAnnouncement",
+          "JsonName": "service_announcement",
+          "Description": "Determines the broadcast protocols that will be used to advertise the server.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ServiceAnnouncement"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ServiceAnnouncement",
+      "SchemaName": "ServiceAnnouncement",
+      "Description": "Determines the broadcast protocols that will be used to advertise the server.",
+      "Fields": [
+        {
+          "Name": "Mdns",
+          "JsonName": "mdns",
+          "Description": "Enable multicast DNS service announcements for enabled services.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Netbios",
+          "JsonName": "netbios",
+          "Description": "Enable the NetBIOS name server (NBNS) which starts concurrently with the SMB service. SMB clients will only     perform NBNS lookups if SMB1 is enabled. NBNS may be required for legacy SMB clients.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Wsd",
+          "JsonName": "wsd",
+          "Description": "Enable Web Service Discovery support.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "ActivityType",
+      "SchemaName": "ActivityType",
+      "Description": "Whether to allow or deny the specified network activities.",
+      "Values": [
+        {
+          "Name": "ActivityTypeALLOW",
+          "Value": "ALLOW"
+        },
+        {
+          "Name": "ActivityTypeDENY",
+          "Value": "DENY"
+        }
+      ]
+    }
+  ]
+}

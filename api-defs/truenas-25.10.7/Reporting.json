@@ -1,0 +1,1182 @@
+{
+  "Name": "Reporting",
+  "Tag": "reporting",
+  "Operations": [
+    {
+      "Name": "ReportingConfig",
+      "OperationId": "reporting.config",
+      "Method": "CALL",
+      "Path": "reporting.config",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingConfigAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.config",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      }
+    },
+    {
+      "Name": "ReportingGetData",
+      "OperationId": "reporting.get_data",
+      "Method": "CALL",
+      "Path": "reporting.get_data",
+      "Description": "Get reporting data for given graphs.\n\nList of possible graphs can be retrieved using `reporting.graphs` call.\n\nFor the time period of the graph either `unit` and `page` OR `start` and `end` should be\nused, not both.\n\n`aggregate` will return aggregate available data for each graph (e.g. min, max, mean).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGetDataResponseModel"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.get_data",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "graphs",
+          "Argument": "graphs",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "GraphIdentifier"
+            }
+          },
+          "Required": true,
+          "Description": "Array of graph identifiers specifying which metrics to retrieve."
+        },
+        {
+          "Name": "query",
+          "Argument": "query",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Query"
+          },
+          "Description": "Query parameters for filtering and formatting the returned data."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGraph",
+      "OperationId": "reporting.graph",
+      "Method": "CALL",
+      "Path": "reporting.graph",
+      "Description": "Get reporting data for `name` graph.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGetDataResponseModel"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.graph",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "str",
+          "Argument": "str",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "String identifier for the specific graph to retrieve."
+        },
+        {
+          "Name": "query",
+          "Argument": "query",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Query"
+          },
+          "Description": "Query parameters for filtering and formatting the returned data."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGraphs",
+      "OperationId": "reporting.graphs",
+      "Method": "CALL",
+      "Path": "reporting.graphs",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGraphsItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.graphs",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGraphsOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGraphsCount",
+      "OperationId": "reporting.graphs#count",
+      "Method": "CALL",
+      "Path": "reporting.graphs#count",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.graphs",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGraphsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGraphsOne",
+      "OperationId": "reporting.graphs#get",
+      "Method": "CALL",
+      "Path": "reporting.graphs#get",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingGraphsItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.graphs",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGraphsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGetData",
+      "OperationId": "reporting.netdata_get_data",
+      "Method": "CALL",
+      "Path": "reporting.netdata_get_data",
+      "Description": "Get reporting data for given graphs.\n\nList of possible graphs can be retrieved using `reporting.netdata_graphs` call.\n\nFor the time period of the graph either `unit` and `page` OR `start` and `end` should be\nused, not both.\n\n`aggregate` will return aggregate available data for each graph (e.g. min, max, mean).",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGetDataResponseModel"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.netdata_get_data",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "graphs",
+          "Argument": "graphs",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Reference",
+              "ReferenceName": "GraphIdentifier"
+            }
+          },
+          "Required": true,
+          "Description": "Array of graph identifiers specifying which metrics to retrieve."
+        },
+        {
+          "Name": "query",
+          "Argument": "query",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Query"
+          },
+          "Description": "Query parameters for filtering and formatting the returned data."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGraph",
+      "OperationId": "reporting.netdata_graph",
+      "Method": "CALL",
+      "Path": "reporting.netdata_graph",
+      "Description": "Get reporting data for `name` graph.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingGetDataResponseModel"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.netdata_graph",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "str",
+          "Argument": "str",
+          "Type": {
+            "Type": "String"
+          },
+          "Required": true,
+          "Description": "String identifier for the specific graph to retrieve."
+        },
+        {
+          "Name": "query",
+          "Argument": "query",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Query"
+          },
+          "Description": "Query parameters for filtering and formatting the returned data."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGraphs",
+      "OperationId": "reporting.netdata_graphs",
+      "Method": "CALL",
+      "Path": "reporting.netdata_graphs",
+      "Description": "Get reporting netdata graphs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "List",
+          "NestedItem": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingNetdataGraphsItemQueryResultItem"
+          }
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.netdata_graphs",
+        "Filterable": true,
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingNetdataGraphsOptions"
+          },
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGraphsCount",
+      "OperationId": "reporting.netdata_graphs#count",
+      "Method": "CALL",
+      "Path": "reporting.netdata_graphs#count",
+      "Description": "Get reporting netdata graphs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Integer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.netdata_graphs",
+        "Filterable": true,
+        "Form": "count",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingNetdataGraphsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGraphsOne",
+      "OperationId": "reporting.netdata_graphs#get",
+      "Method": "CALL",
+      "Path": "reporting.netdata_graphs#get",
+      "Description": "Get reporting netdata graphs.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingNetdataGraphsItemQueryResultItem"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.netdata_graphs",
+        "Filterable": true,
+        "Form": "get",
+        "Read": true,
+        "Roles": [
+          "READONLY_ADMIN",
+          "REPORTING_READ",
+          "REPORTING_WRITE",
+          "SHARING_ADMIN"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "filters",
+          "Argument": "filters",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          },
+          "Description": "List of filters for query results. See API documentation for \"Query Methods\" for more guidance."
+        },
+        {
+          "Name": "options",
+          "Argument": "options",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingNetdataGraphsOptions"
+          },
+          "Required": true,
+          "Description": "Query options including pagination, ordering, and additional parameters."
+        }
+      ]
+    },
+    {
+      "Name": "ReportingUpdate",
+      "OperationId": "reporting.update",
+      "Method": "CALL",
+      "Path": "reporting.update",
+      "Description": "`tier1_days` can be set to specify for how many days we want to store reporting history which in netdata\nterms specifies the number of days netdata should be storing data in tier1 storage.",
+      "Response": {
+        "ContentType": "application/json",
+        "Type": {
+          "Type": "Reference",
+          "ReferenceName": "ReportingUpdateAnswer"
+        }
+      },
+      "ExpectedStatusCodes": null,
+      "Call": {
+        "Method": "reporting.update",
+        "Roles": [
+          "REPORTING_WRITE"
+        ]
+      },
+      "Arguments": [
+        {
+          "Name": "reporting_update",
+          "Argument": "reportingUpdate",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "ReportingUpdate"
+          },
+          "Required": true,
+          "Description": "ReportingUpdateArgs parameters."
+        }
+      ]
+    }
+  ],
+  "Models": [
+    {
+      "Name": "Aggregations",
+      "SchemaName": "Aggregations",
+      "Fields": [
+        {
+          "Name": "Max",
+          "JsonName": "max",
+          "Description": "Maximum values for each data series over the time period.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Mean",
+          "JsonName": "mean",
+          "Description": "Average values for each data series over the time period.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "Min",
+          "JsonName": "min",
+          "Description": "Minimum values for each data series over the time period.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GraphIdentifier",
+      "SchemaName": "GraphIdentifier",
+      "Fields": [
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Specific instance identifier for the metric (e.g., device name, interface name). `null` for system-wide     metrics.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Type of performance metric to retrieve.\n\n* `cpu`: CPU usage statistics\n* `cputemp`: CPU temperature readings\n* `disk`: Disk I/O statistics\n* `interface`: Network interface statistics\n* `load`: System load averages\n* `processes`: Process count and statistics\n* `memory`: Memory usage statistics\n* `uptime`: System uptime\n* `arcactualrate`: ZFS ARC actual hit rate\n* `arcrate`: ZFS ARC hit rate\n* `arcsize`: ZFS ARC cache size\n* `arcresult`: ZFS ARC operation results\n* `disktemp`: Disk temperature readings\n* `upscharge`: UPS battery charge level\n* `upsruntime`: UPS estimated runtime\n* `upsvoltage`: UPS voltage readings\n* `upscurrent`: UPS current readings\n* `upsfrequency`: UPS frequency readings\n* `upsload`: UPS load percentage\n* `upstemperature`: UPS temperature readings",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "GraphIdentifierName"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Query",
+      "SchemaName": "Query",
+      "Description": "Query parameters for filtering and formatting the returned data.",
+      "Fields": [
+        {
+          "Name": "Aggregate",
+          "JsonName": "aggregate",
+          "Description": "Whether to return aggregated data or raw data points.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "End",
+          "JsonName": "end",
+          "Description": "End timestamp for the data range. `null` for current time.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Page",
+          "JsonName": "page",
+          "Description": "Page number for paginated results.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Start",
+          "JsonName": "start",
+          "Description": "Start timestamp for the data range. `null` for default start time.",
+          "Type": {
+            "Type": "Integer"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Unit",
+          "JsonName": "unit",
+          "Description": "Time unit for data aggregation. `null` for default aggregation.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "QueryUnit"
+          },
+          "Nullable": true
+        }
+      ]
+    },
+    {
+      "Name": "ReportingConfigAnswer",
+      "SchemaName": "ReportingConfigAnswer",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the reporting configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier0Days",
+          "JsonName": "tier0_days",
+          "Description": "Number of days to keep high-resolution reporting data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier1Days",
+          "JsonName": "tier1_days",
+          "Description": "Number of days to keep lower-resolution aggregated reporting data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier1UpdateInterval",
+          "JsonName": "tier1_update_interval",
+          "Description": "Interval in seconds for updating aggregated tier1 data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGetDataResponseModel",
+      "SchemaName": "ReportingGetDataResponseModel",
+      "Fields": [
+        {
+          "Name": "Aggregations",
+          "JsonName": "aggregations",
+          "Description": "Statistical aggregations of the data over the time period. `null` when `aggregate` was not requested.",
+          "Type": {
+            "Type": "Reference",
+            "ReferenceName": "Aggregations"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Data",
+          "JsonName": "data",
+          "Description": "Array of time-series data points for the requested time period.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "End",
+          "JsonName": "end",
+          "Description": "Actual end timestamp of the returned data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Identifier",
+          "JsonName": "identifier",
+          "Description": "Specific instance identifier for the metric. `null` for system-wide metrics.",
+          "Type": {
+            "Type": "String"
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Legend",
+          "JsonName": "legend",
+          "Description": "Array of labels describing each data series in the results.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Name of the performance metric.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Start",
+          "JsonName": "start",
+          "Description": "Actual start timestamp of the returned data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGraphsItemQueryResultItem",
+      "SchemaName": "ReportingGraphsItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Identifiers",
+          "JsonName": "identifiers",
+          "Description": "Array of available instance identifiers for this graph type. `null` if not applicable.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Unique name identifier for the graph type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Human-readable title for display purposes.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VerticalLabel",
+          "JsonName": "vertical_label",
+          "Description": "Label for the vertical (Y) axis of the graph.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingGraphsOptions",
+      "SchemaName": "ReportingGraphsOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGraphsItemQueryResultItem",
+      "SchemaName": "ReportingNetdataGraphsItemQueryResultItem",
+      "Fields": [
+        {
+          "Name": "Identifiers",
+          "JsonName": "identifiers",
+          "Description": "Array of available instance identifiers for this graph type. `null` if not applicable.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          },
+          "Nullable": true
+        },
+        {
+          "Name": "Name",
+          "JsonName": "name",
+          "Description": "Unique name identifier for the netdata graph type.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "Title",
+          "JsonName": "title",
+          "Description": "Human-readable title for display purposes.",
+          "Type": {
+            "Type": "String"
+          }
+        },
+        {
+          "Name": "VerticalLabel",
+          "JsonName": "vertical_label",
+          "Description": "Label for the vertical (Y) axis of the graph.",
+          "Type": {
+            "Type": "String"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingNetdataGraphsOptions",
+      "SchemaName": "ReportingNetdataGraphsOptions",
+      "Description": "Query options including pagination, ordering, and additional parameters.",
+      "Fields": [
+        {
+          "Name": "Extra",
+          "JsonName": "extra",
+          "Description": "Extra options are defined on a per-endpoint basis and are described in the documentation for the associated     query method.",
+          "Type": {
+            "Type": "Dictionary",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        },
+        {
+          "Name": "ForceSqlFilters",
+          "JsonName": "force_sql_filters",
+          "Description": "Force use of SQL for result filtering to reduce response time. May not work for all methods.",
+          "Type": {
+            "Type": "Boolean"
+          }
+        },
+        {
+          "Name": "Limit",
+          "JsonName": "limit",
+          "Description": "This specifies the maximum number of results matching the specified `query-filters` to return. When     combined wtih the `offset` query-option it may be used to implement pagination of large results arrays.\n\nWARNING: Some query methods provide volatile results and the onus is on the developer to understand whether     pagination is appropriate for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Offset",
+          "JsonName": "offset",
+          "Description": "This specifies the beginning offset of the results array. When combined with the `limit` query-option     it may be used to implement pagination of large results arrays. WARNING: some query methods provide     volatile results and the onus is on the developer to understand whether pagination is appropriate     for a particular query API method.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "OrderBy",
+          "JsonName": "order_by",
+          "Description": "An array of field names describing the manner in which query results should be ordered. The field names may     also have one of more of the following special prefixes: `-` (reverse sort direction), `nulls_first:` (place     any null values at the head of the results list), `nulls_last:` (place any null values at the tail of the     results list).",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "String"
+            }
+          }
+        },
+        {
+          "Name": "Select",
+          "JsonName": "select",
+          "Description": "An array of field names specifying the exact fields to include in the query return. The dot character `.`     may be used to explicitly select only subkeys of the query result.",
+          "Type": {
+            "Type": "List",
+            "NestedItem": {
+              "Type": "Any"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingUpdate",
+      "SchemaName": "ReportingUpdate",
+      "Description": "ReportingUpdateArgs parameters.",
+      "Fields": [
+        {
+          "Name": "Tier0Days",
+          "JsonName": "tier0_days",
+          "Description": "Number of days to keep high-resolution reporting data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier1Days",
+          "JsonName": "tier1_days",
+          "Description": "Number of days to keep lower-resolution aggregated reporting data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier1UpdateInterval",
+          "JsonName": "tier1_update_interval",
+          "Description": "Interval in seconds for updating aggregated tier1 data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    },
+    {
+      "Name": "ReportingUpdateAnswer",
+      "SchemaName": "ReportingUpdateAnswer",
+      "Description": "The updated reporting configuration.",
+      "Fields": [
+        {
+          "Name": "Id",
+          "JsonName": "id",
+          "Description": "Unique identifier for the reporting configuration.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier0Days",
+          "JsonName": "tier0_days",
+          "Description": "Number of days to keep high-resolution reporting data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier1Days",
+          "JsonName": "tier1_days",
+          "Description": "Number of days to keep lower-resolution aggregated reporting data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        },
+        {
+          "Name": "Tier1UpdateInterval",
+          "JsonName": "tier1_update_interval",
+          "Description": "Interval in seconds for updating aggregated tier1 data.",
+          "Type": {
+            "Type": "Integer"
+          }
+        }
+      ]
+    }
+  ],
+  "Constants": [
+    {
+      "Name": "GraphIdentifierName",
+      "SchemaName": "GraphIdentifierName",
+      "Description": "Type of performance metric to retrieve.\n\n* `cpu`: CPU usage statistics\n* `cputemp`: CPU temperature readings\n* `disk`: Disk I/O statistics\n* `interface`: Network interface statistics\n* `load`: System load averages\n* `processes`: Process count and statistics\n* `memory`: Memory usage statistics\n* `uptime`: System uptime\n* `arcactualrate`: ZFS ARC actual hit rate\n* `arcrate`: ZFS ARC hit rate\n* `arcsize`: ZFS ARC cache size\n* `arcresult`: ZFS ARC operation results\n* `disktemp`: Disk temperature readings\n* `upscharge`: UPS battery charge level\n* `upsruntime`: UPS estimated runtime\n* `upsvoltage`: UPS voltage readings\n* `upscurrent`: UPS current readings\n* `upsfrequency`: UPS frequency readings\n* `upsload`: UPS load percentage\n* `upstemperature`: UPS temperature readings",
+      "Values": [
+        {
+          "Name": "GraphIdentifierNameCpu",
+          "Value": "cpu"
+        },
+        {
+          "Name": "GraphIdentifierNameCputemp",
+          "Value": "cputemp"
+        },
+        {
+          "Name": "GraphIdentifierNameDisk",
+          "Value": "disk"
+        },
+        {
+          "Name": "GraphIdentifierNameInterface",
+          "Value": "interface"
+        },
+        {
+          "Name": "GraphIdentifierNameLoad",
+          "Value": "load"
+        },
+        {
+          "Name": "GraphIdentifierNameProcesses",
+          "Value": "processes"
+        },
+        {
+          "Name": "GraphIdentifierNameMemory",
+          "Value": "memory"
+        },
+        {
+          "Name": "GraphIdentifierNameUptime",
+          "Value": "uptime"
+        },
+        {
+          "Name": "GraphIdentifierNameArcactualrate",
+          "Value": "arcactualrate"
+        },
+        {
+          "Name": "GraphIdentifierNameArcrate",
+          "Value": "arcrate"
+        },
+        {
+          "Name": "GraphIdentifierNameArcsize",
+          "Value": "arcsize"
+        },
+        {
+          "Name": "GraphIdentifierNameArcresult",
+          "Value": "arcresult"
+        },
+        {
+          "Name": "GraphIdentifierNameDisktemp",
+          "Value": "disktemp"
+        },
+        {
+          "Name": "GraphIdentifierNameUpscharge",
+          "Value": "upscharge"
+        },
+        {
+          "Name": "GraphIdentifierNameUpsruntime",
+          "Value": "upsruntime"
+        },
+        {
+          "Name": "GraphIdentifierNameUpsvoltage",
+          "Value": "upsvoltage"
+        },
+        {
+          "Name": "GraphIdentifierNameUpscurrent",
+          "Value": "upscurrent"
+        },
+        {
+          "Name": "GraphIdentifierNameUpsfrequency",
+          "Value": "upsfrequency"
+        },
+        {
+          "Name": "GraphIdentifierNameUpsload",
+          "Value": "upsload"
+        },
+        {
+          "Name": "GraphIdentifierNameUpstemperature",
+          "Value": "upstemperature"
+        }
+      ]
+    },
+    {
+      "Name": "QueryUnit",
+      "SchemaName": "QueryUnit",
+      "Values": [
+        {
+          "Name": "QueryUnitHOUR",
+          "Value": "HOUR"
+        },
+        {
+          "Name": "QueryUnitDAY",
+          "Value": "DAY"
+        },
+        {
+          "Name": "QueryUnitWEEK",
+          "Value": "WEEK"
+        },
+        {
+          "Name": "QueryUnitMONTH",
+          "Value": "MONTH"
+        },
+        {
+          "Name": "QueryUnitYEAR",
+          "Value": "YEAR"
+        }
+      ]
+    }
+  ]
+}
