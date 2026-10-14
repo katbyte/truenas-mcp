@@ -50,7 +50,7 @@ The NAS is not called at start: one that is down is something the tools report, 
 				Name:    "truenas",
 				Title:   "TrueNAS",
 				Version: version.Version,
-			}, &mcp.ServerOptions{Instructions: server.Instructions()})
+			}, &mcp.ServerOptions{Instructions: server.Instructions(tools.Instructions...)})
 
 			registered, err := tools.RegisterAll(srv, nas, opts)
 			if err != nil {

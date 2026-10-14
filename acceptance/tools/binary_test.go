@@ -246,6 +246,9 @@ func TestTheBinarySpeaksOnlyTheProtocolOnStdout(t *testing.T) {
 	}
 }
 
+// core is the tools a session gets with nothing asked for, sorted.
+var core = []string{"alert_list", "dataset_get", "dataset_list", "pool_get", "pool_list", "server_info"}
+
 // The flags and the environment have to reach the running server, not just parse: what a client lists is what was asked for.
 //
 //nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
@@ -256,15 +259,16 @@ func TestTheBinaryRegistersWhatTheFlagsAsk(t *testing.T) {
 		args []string
 		want []string
 	}{
-		{name: "the default set is core", want: []string{"server_info"}},
-		{name: "a toolset from the environment", env: []string{"TRUENAS_TOOLSETS=server"}, want: []string{"server_info"}},
+		{name: "the default set is core", want: core},
+		{name: "a toolset from the environment, with core beside it", env: []string{"TRUENAS_TOOLSETS=disks"}, want: append([]string{"disk_list"}, core...)},
 		{name: "--allow-tools alone is only the tools it names", args: []string{"--allow-tools", "server_*"}, want: []string{"server_info"}},
-		{name: "--deny-tools takes away", args: []string{"--toolsets", "all", "--deny-tools", "server_*"}, want: []string{}},
-		{name: "--deny-tools from the environment", env: []string{"TRUENAS_DENY_TOOLS=*_info"}, want: []string{}},
+		{name: "--deny-tools takes away", args: []string{"--toolsets", "all", "--deny-tools", "server_*,*_get"}, want: []string{"alert_list", "dataset_list", "disk_list", "pool_list"}},
+		{name: "--deny-tools from the environment", env: []string{"TRUENAS_DENY_TOOLS=*_info,*_get"}, want: []string{"alert_list", "dataset_list", "pool_list"}},
 	} {
 		t.Run(c.name, func(t *testing.T) { //nolint:paralleltest // as the test
 			// an empty working directory: only the flags and the environment under test decide what is registered
 			session, _, _ := stdio(t, t.TempDir(), serverEnv(t, c.env...), c.args...)
+			slices.Sort(c.want)
 			if listed := toolNamesOf(t, session); !slices.Equal(listed, c.want) {
 				t.Errorf("registered %v, want %v", listed, c.want)
 			}
@@ -278,14 +282,14 @@ func TestTheBinaryRegistersWhatTheFlagsAsk(t *testing.T) {
 //nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
 func TestTheBinaryReadsTheConfigFileInTheWorkingDirectory(t *testing.T) {
 	dir := t.TempDir()
-	config := "SERVER=" + nas.server + "\nUSERNAME=" + nas.username + "\nTOKEN=" + nas.made.Key + "\nCERTIFICATE_FILE=" + nas.certificate + "\nTRUENAS_TOOLSETS=server\n"
+	config := "SERVER=" + nas.server + "\nUSERNAME=" + nas.username + "\nTOKEN=" + nas.made.Key + "\nCERTIFICATE_FILE=" + nas.certificate + "\nTRUENAS_TOOLSETS=disks\n"
 	if err := os.WriteFile(filepath.Join(dir, ".truenas-mcp"), []byte(config), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
 	// nothing in the environment: the file is all it has
 	session, _, _ := stdio(t, dir, bareEnv(t))
-	if listed := toolNamesOf(t, session); !slices.Equal(listed, []string{"server_info"}) {
+	if listed := toolNamesOf(t, session); !slices.Contains(listed, "disk_list") || len(listed) != len(core)+1 {
 		t.Errorf("the toolset in the config file was not used: %v", listed)
 	}
 	if !reachedThrough(t, session) {

@@ -85,7 +85,8 @@ func TestASessionReadsUntilItIsToldItMayChangeOrDelete(t *testing.T) {
 	}
 }
 
-// The surface is 1 tool, which reads. A tool added, merged, removed or moved between kinds changes these on purpose, and this is where that is said.
+// The surface is 7 tools, all of which read. A tool added, merged, removed or moved between kinds changes these on purpose, and this is where that is
+// said.
 func TestTheSurfaceIsTheSizeItIsSaidToBe(t *testing.T) {
 	t.Parallel()
 
@@ -94,8 +95,8 @@ func TestTheSurfaceIsTheSizeItIsSaidToBe(t *testing.T) {
 	for _, kind := range kinds {
 		counts[kind]++
 	}
-	if len(kinds) != 1 || counts["read"] != 1 || counts["write"] != 0 || counts["delete"] != 0 {
-		t.Errorf("surface = %d tools: %v, want 1 with 1 read, 0 write, 0 delete", len(kinds), counts)
+	if len(kinds) != 7 || counts["read"] != 7 || counts["write"] != 0 || counts["delete"] != 0 {
+		t.Errorf("surface = %d tools: %v, want 7 with 7 read, 0 write, 0 delete", len(kinds), counts)
 	}
 }
 
@@ -165,8 +166,12 @@ func TestToolsAreAskedForAndTakenAwayByName(t *testing.T) {
 	if got = register(t, Options{Allow: []string{"server_*"}}); !slices.Equal(got, []string{"server_info"}) {
 		t.Errorf("server_* = %v", got)
 	}
-	if got = register(t, Options{Toolsets: []string{mcpregistry.All}, Deny: []string{"*_info"}}); len(got) != 0 {
-		t.Errorf("everything but *_info = %v", got)
+	if got = register(t, Options{Toolsets: []string{mcpregistry.All}, Deny: []string{"*_info", "*_list"}}); !slices.Equal(got, []string{"dataset_get", "pool_get"}) {
+		t.Errorf("everything but *_info and *_list = %v", got)
+	}
+	// beside a toolset an allow list adds its tools to it, and core comes with the set
+	if got = register(t, Options{Toolsets: []string{"disks"}, Allow: []string{"server_info"}, Deny: []string{"*_get"}}); !slices.Contains(got, "disk_list") || !slices.Contains(got, "pool_list") || slices.Contains(got, "pool_get") {
+		t.Errorf("the disks set with server_info and without *_get = %v", got)
 	}
 
 	if msg := refused(t, Options{Allow: []string{"bogus_*"}}); !strings.Contains(msg, `"bogus_*" matches no tool`) {
@@ -334,5 +339,65 @@ func TestAPanicInAToolIsAnErrorNotACrash(t *testing.T) {
 	defer mu.Unlock()
 	if !strings.Contains(logged.String(), "internal error in zzyzx_panic") || !strings.Contains(logged.String(), "goroutine") {
 		t.Errorf("the panic was logged as %q, want the tool and the stack", logged.String())
+	}
+}
+
+// propertiesOf is the names a tool's input or answer schema says it has.
+func propertiesOf(t *testing.T, schema any) map[string]any {
+	t.Helper()
+
+	raw, err := json.Marshal(schema)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var s struct {
+		Properties map[string]any `json:"properties"`
+	}
+	if err := json.Unmarshal(raw, &s); err != nil {
+		t.Fatal(err)
+	}
+
+	return s.Properties
+}
+
+// Every list pages the same way, so a client that has paged one can page them all: it takes limit and offset, and answers total, offset and
+// next_offset.
+func TestEveryListPagesTheSameWay(t *testing.T) {
+	t.Parallel()
+
+	lists := 0
+	for _, tool := range listed(t, session(t, truenastest.New(t), everything)) {
+		if !strings.HasSuffix(tool.Name, "_list") {
+			continue
+		}
+		lists++
+		takes, answers := propertiesOf(t, tool.InputSchema), propertiesOf(t, tool.OutputSchema)
+		for _, name := range []string{"limit", "offset"} {
+			if takes[name] == nil {
+				t.Errorf("%s does not take %s", tool.Name, name)
+			}
+		}
+		for _, name := range []string{"total", "offset", "next_offset"} {
+			if answers[name] == nil {
+				t.Errorf("%s does not answer %s", tool.Name, name)
+			}
+		}
+	}
+	if lists == 0 {
+		t.Error("no list was found to hold to the rule")
+	}
+}
+
+// What the registry leaves uncleaned, and where it blanks what an address carries, is named by the fields the tools answer: a name no tool answers is
+// left from a rename, and protects nothing.
+func TestEveryAnswerNameTheCleaningIsToldOfIsOneAToolAnswers(t *testing.T) {
+	t.Parallel()
+
+	reg := described(everything)
+	if unused := reg.LeaveAsIsUnused(); len(unused) > 0 {
+		t.Errorf("handles names %v, which no tool answers", unused)
+	}
+	if unused := reg.BlankAddressesUnused(); len(unused) > 0 {
+		t.Errorf("serverSaid names %v, which no tool answers", unused)
 	}
 }

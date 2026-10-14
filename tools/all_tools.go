@@ -41,18 +41,22 @@ type Options struct {
 //
 // Every tool belongs to exactly one set (TestEveryToolIsInExactlyOneToolset proves it), and core comes along with whatever else is asked for.
 var Toolsets = map[string][]string{
-	// enough to know which NAS this is and that it answers: the base every other set assumes
+	// enough to know which NAS this is, find its pools and datasets, and see what it says is wrong: the base every other set assumes
 	mcpregistry.Core: {
-		"server_info",
+		"server_info", "pool_list", "pool_get", "dataset_list", "dataset_get", "alert_list",
+	},
+	// the machine's disks, whatever pool they are in
+	"disks": {
+		"disk_list",
 	},
 }
 
 // ToolsetOrder is the order a listing shows the sets in: the base first.
-var ToolsetOrder = []string{mcpregistry.Core}
+var ToolsetOrder = []string{mcpregistry.Core, "disks"}
 
-// EssentialTools is the preset --allow-tools essential asks for: enough to know which NAS this is.
+// EssentialTools is the preset --allow-tools essential asks for: enough to know which NAS this is, what it holds and what it says is wrong.
 var EssentialTools = []string{
-	"server_info",
+	"server_info", "pool_list", "dataset_list", "alert_list",
 }
 
 // The kinds a tool is added with, in go-kt's registry's terms: a read tool never changes what the NAS holds, a write tool does, and a delete tool
@@ -83,10 +87,13 @@ var toolHints = map[string]mcpregistry.Hints{}
 func (r *registry) queued() *mcpregistry.Registry {
 	if r.tools == nil {
 		r.tools = mcpregistry.New(mcpregistry.Config{
-			Toolsets:  Toolsets,
-			Essential: EssentialTools,
-			Hints:     toolHints,
-			LogError:  r.errorLog,
+			Toolsets:       Toolsets,
+			Essential:      EssentialTools,
+			Hints:          toolHints,
+			LogError:       r.errorLog,
+			CleanAnswers:   answerLength,
+			LeaveAsIs:      handles,
+			BlankAddresses: serverSaid,
 		})
 	}
 
@@ -102,6 +109,10 @@ func add[In, Out any](r *registry, kind mcpregistry.Kind, t *mcp.Tool, h mcp.Too
 // queueTools queues every tool there is; which of them a session gets is decided after.
 func queueTools(r *registry) {
 	registerServerTools(r)
+	registerPoolTools(r)
+	registerDatasetTools(r)
+	registerDiskTools(r)
+	registerAlertTools(r)
 }
 
 // check refuses options that contradict each other.
