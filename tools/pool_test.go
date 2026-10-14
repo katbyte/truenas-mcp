@@ -20,10 +20,17 @@ const pools = `[
 func standInWithPools(t *testing.T) *truenastest.NAS {
 	t.Helper()
 
+	return standInWith(t, pools)
+}
+
+// standInWith is standInWithPools with the pools given, as a NAS writes them.
+func standInWith(t *testing.T, written string) *truenastest.NAS {
+	t.Helper()
+
 	nas := truenastest.New(t)
 	nas.Handle("pool.query", func(params []json.RawMessage) (any, error) {
 		var all []map[string]any
-		if err := json.Unmarshal([]byte(pools), &all); err != nil {
+		if err := json.Unmarshal([]byte(written), &all); err != nil {
 			return nil, err
 		}
 		if len(params) < 2 || !strings.Contains(string(params[1]), `"get":true`) {

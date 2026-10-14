@@ -2,9 +2,11 @@ package tools
 
 import (
 	"encoding/json"
+	"fmt"
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/katbyte/go-kt/mcp/acctest"
 	"github.com/katbyte/truenas-mcp/sdk/truenastest"
@@ -138,5 +140,118 @@ func TestAuditDisksFindsADiskTooHotAndOneFailingItsSMARTChecks(t *testing.T) {
 	// told the NVMe disk's kind should run under 50, it is warm
 	if got := strings.Join(checksOf(t, session(t, nas, Options{}).Call(t, "audit_disks", map[string]any{"ssd_celsius": 50})), " "); !strings.Contains(got, "disk_hot:nvme0n1") {
 		t.Errorf("at 50°C for a solid state disk, audit_disks found %s", got)
+	}
+}
+
+// The NAS's own alerts at warning or graver are told of, its SMART ones and dismissed ones left to others; a certificate run out is critical and one
+// running out soon a warning, read in the NAS's own time zone; a service set to start that is stopped is a warning, and an update waiting a notice.
+func TestAuditSystemFindsAlertsCertificatesStoppedServicesAndUpdates(t *testing.T) {
+	t.Parallel()
+
+	zone, err := time.LoadLocation("America/Los_Angeles")
+	if err != nil {
+		t.Fatal(err)
+	}
+	soon := time.Now().In(zone).Add(10 * 24 * time.Hour).Format(certificateTime)
+	later := time.Now().In(zone).Add(200 * 24 * time.Hour).Format(certificateTime)
+
+	nas := truenastest.New(t)
+	nas.Answer("system.state", "READY")
+	nas.Answer("alert.list", json.RawMessage(`[
+		{"uuid": "c", "level": "CRITICAL", "klass": "VolumeStatus", "formatted": "Pool backup state is DEGRADED", "dismissed": false},
+		{"uuid": "w", "level": "WARNING", "klass": "NTPHealthCheck", "formatted": "NTP is not synchronised", "dismissed": false},
+		{"uuid": "s", "level": "WARNING", "klass": "SMARTFailedSelfTest", "formatted": "sdc failed a SMART selftest.", "dismissed": false},
+		{"uuid": "d", "level": "CRITICAL", "klass": "CertificateExpired", "formatted": "gone", "dismissed": true},
+		{"uuid": "i", "level": "INFO", "klass": "Update", "formatted": "nothing", "dismissed": false}
+	]`))
+	nas.Answer("system.general.config", map[string]any{"timezone": "America/Los_Angeles"})
+	nas.Answer("certificate.query", []any{
+		map[string]any{"id": 1, "name": "old", "until": "Mon Jan  1 00:00:00 2024"},
+		map[string]any{"id": 2, "name": "soon", "until": soon},
+		map[string]any{"id": 3, "name": "fine", "until": later},
+		map[string]any{"id": 4, "name": "unread", "until": "whenever"},
+	})
+	nas.Answer("service.query", json.RawMessage(`[{"service": "ssh", "enable": true, "state": "STOPPED"}, {"service": "nfs", "enable": false, "state": "STOPPED"}, {"service": "cifs", "enable": true, "state": "RUNNING"}]`))
+	nas.Answer("update.status", json.RawMessage(`{"code": "NORMAL", "status": {"current_version": {"train": "TrueNAS-25.10"}, "new_version": {"version": "25.10.8"}}}`))
+
+	out := session(t, nas, Options{}).Call(t, "audit_system", nil)
+	if got := strings.Join(checksOf(t, out), " "); got != "alert:VolumeStatus certificate_expired:old alert:NTPHealthCheck certificate_expiring:soon service_stopped:ssh update_available:updates" {
+		t.Errorf("audit_system found %s", got)
+	}
+}
+
+// standInForEveryAudit is a NAS with something for each audit to find: a damaged pool, one filling up, a failed task, a hot disk and an alert.
+func standInForEveryAudit(t *testing.T) *truenastest.NAS {
+	t.Helper()
+
+	// tank was scrubbed in 2100, so that however late this runs no scrub is overdue
+	nas := standInWith(t, strings.Replace(pools, `"end_time": {"$date": 1790848802000}`, `"end_time": {"$date": 4102444800000}`, 1))
+	nas.Answer("boot.get_state", json.RawMessage(`{"name": "boot-pool", "status": "ONLINE", "healthy": true, "scan": {"function": "SCRUB", "state": "FINISHED", "end_time": {"$date": 4102444800000}, "errors": 0}}`))
+	nas.Answer("pool.scrub.query", json.RawMessage(`[{"pool_name": "tank", "enabled": true}, {"pool_name": "backup", "enabled": true}]`))
+	nas.Answer("pool.dataset.query", []any{})
+	nas.Answer("pool.snapshottask.query", json.RawMessage(`[]`))
+	nas.Answer("replication.query", json.RawMessage(`[]`))
+	nas.Answer("rsynctask.query", json.RawMessage(`[{"id": 1, "desc": "a copy to nowhere", "path": "/mnt/tank/a", "enabled": true, "job": {"state": "FAILED", "error": "no route"}}]`))
+	nas.Answer("cloudsync.query", json.RawMessage(`[]`))
+	nas.Answer("cloud_backup.query", json.RawMessage(`[]`))
+	nas.Answer("disk.query", json.RawMessage(`[{"name": "sda", "serial": "A1", "type": "HDD", "pool": "tank"}]`))
+	nas.Answer("disk.temperatures", json.RawMessage(`{"sda": [55.0, 60.0]}`))
+	nas.Answer("alert.list", json.RawMessage(`[{"uuid": "w", "level": "WARNING", "klass": "NTPHealthCheck", "formatted": "NTP is not synchronised", "dismissed": false}]`))
+	nas.Answer("system.state", "READY")
+	nas.Answer("system.general.config", map[string]any{"timezone": "UTC"})
+	nas.Answer("certificate.query", []any{})
+	nas.Answer("service.query", []any{})
+	nas.Answer("update.status", json.RawMessage(`{"code": "NORMAL", "status": {"new_version": null}}`))
+
+	return nas
+}
+
+// audit_all runs every audit at its usual limits, names the audit of each finding, and counts each audit by severity. One that cannot run fails the
+// call, saying which.
+func TestAuditAllRunsEveryAuditAndCountsEach(t *testing.T) {
+	t.Parallel()
+
+	nas := standInForEveryAudit(t)
+	out := session(t, nas, Options{}).Call(t, "audit_all", map[string]any{"limit": 1000})
+
+	counts := map[string]string{}
+	for _, row := range acctest.Rows(t, out["audits"], "audits") {
+		counts[acctest.Str(row["audit"])] = fmt.Sprintf("%d/%d/%d", acctest.NumOr0(row["critical"]), acctest.NumOr0(row["warning"]), acctest.NumOr0(row["notice"]))
+	}
+	// backup is unhealthy, its mirror and a disk are not ONLINE, its other disk counts errors, and it was never scrubbed
+	want := map[string]string{"audit_pools": "3/2/0", "audit_space": "0/1/0", "audit_tasks": "1/0/0", "audit_disks": "0/1/0", "audit_system": "0/1/0"}
+	for audit, count := range want {
+		if counts[audit] != count {
+			t.Errorf("%s counted %s, want %s (all: %v)", audit, counts[audit], count, counts)
+		}
+	}
+	if acctest.NumOr0(out["critical"]) != 4 || acctest.NumOr0(out["warning"]) != 5 || acctest.NumOr0(out["total"]) != 9 {
+		t.Errorf("in all, %v critical, %v warnings, %v findings", out["critical"], out["warning"], out["total"])
+	}
+	for _, row := range acctest.Rows(t, out["findings"], "findings") {
+		if acctest.Str(row["audit"]) == "" {
+			t.Errorf("a finding names no audit: %v", row)
+		}
+	}
+
+	nas.Refuse("disk.query", &truenastest.Error{Errno: 13, ErrName: "EACCES", Reason: "Not authorized"})
+	if msg := session(t, nas, Options{}).CallErr(t, "audit_all", nil); !strings.Contains(msg, "audit_disks") || !strings.Contains(msg, "Not authorized") {
+		t.Errorf("with one audit refused, audit_all says %q", msg)
+	}
+}
+
+// audit_all runs every audit there is: an audit added to the set and left out of it would be missed by whoever starts there.
+func TestAuditAllRunsEveryAuditThereIs(t *testing.T) {
+	t.Parallel()
+
+	every := audits(time.Now())
+	ran := make([]string, 0, len(every))
+	for _, audit := range every {
+		ran = append(ran, audit.name)
+	}
+	for _, name := range Toolsets["audit"] {
+		if name != "audit_all" && !slices.Contains(ran, name) {
+			t.Errorf("audit_all does not run %s", name)
+		}
 	}
 }

@@ -224,3 +224,35 @@ func TestAuditDisksFindsTheDiskThatIsWarm(t *testing.T) {
 		t.Errorf("told its kind should run under %.0f°C, the NVMe disk at %.0f°C is not found warm: %v", celsius-5, celsius, rows)
 	}
 }
+
+// The NAS's own certificate is read in its time zone: told to warn of any certificate running out within a hundred years, audit_system finds it.
+// audit_all runs every audit on the NAS and counts each.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestAuditSystemReadsTheNASsCertificateAndAuditAllRunsEveryAudit(t *testing.T) {
+	rows := acctest.Rows(t, suite.Call(t, "audit_system", map[string]any{"certificate_days": 36500})["findings"], "findings")
+	if !slices.ContainsFunc(rows, func(row map[string]any) bool { return row["check"] == "certificate_expiring" }) {
+		t.Errorf("told to warn of any certificate running out within a hundred years, audit_system finds %v", rows)
+	}
+	for _, row := range rows {
+		if row["check"] == "certificate_expired" {
+			t.Errorf("a certificate of a NAS installed today is found run out: %v", row)
+		}
+	}
+
+	all := suite.Call(t, "audit_all", map[string]any{"limit": 1000})
+	counted := acctest.Rows(t, all["audits"], "audits")
+	ran := make([]string, 0, len(counted))
+	for _, row := range counted {
+		ran = append(ran, acctest.Str(row["audit"]))
+		if acctest.NumOr0(row["checked"]) == 0 {
+			t.Errorf("%s checked nothing on the NAS", row["audit"])
+		}
+	}
+	for _, want := range []string{"audit_pools", "audit_space", "audit_tasks", "audit_disks", "audit_system"} {
+		if !slices.Contains(ran, want) {
+			t.Errorf("audit_all ran %v, and not %s", ran, want)
+		}
+	}
+	t.Logf("audit_all finds %v critical, %v warnings and %v notices on the NAS", all["critical"], all["warning"], all["notice"])
+}

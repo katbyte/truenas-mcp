@@ -18,12 +18,13 @@ var severities = []string{critical, warning, notice}
 
 // auditFinding is one thing an audit found wrong.
 type auditFinding struct {
-	Severity string `json:"severity"       jsonschema:"critical: data is at risk or lost; warning: it will be if left; notice: worth knowing, harming nothing yet"`
-	Check    string `json:"check"          jsonschema:"what was found wrong, as one word that by_check counts"`
-	Kind     string `json:"kind"           jsonschema:"what it is about: pool, vdev, disk, dataset, task, alert"`
-	Name     string `json:"name"           jsonschema:"which one, as the tool that describes it takes it"`
-	Pool     string `json:"pool,omitempty" jsonschema:"the pool it is in"`
-	Detail   string `json:"detail"         jsonschema:"the same in a sentence, with what it means and what to look at next"`
+	Audit    string `json:"audit,omitempty" jsonschema:"the audit that found it, in audit_all's answer"`
+	Severity string `json:"severity"        jsonschema:"critical: data is at risk or lost; warning: it will be if left; notice: worth knowing, harming nothing yet"`
+	Check    string `json:"check"           jsonschema:"what was found wrong, as one word that by_check counts"`
+	Kind     string `json:"kind"            jsonschema:"what it is about: pool, vdev, disk, dataset, task, alert"`
+	Name     string `json:"name"            jsonschema:"which one, as the tool that describes it takes it"`
+	Pool     string `json:"pool,omitempty"  jsonschema:"the pool it is in"`
+	Detail   string `json:"detail"          jsonschema:"the same in a sentence, with what it means and what to look at next"`
 }
 
 // auditIn is what every audit takes beside its own thresholds: how many findings to list, and from where.

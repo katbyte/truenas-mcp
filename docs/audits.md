@@ -8,6 +8,10 @@ Each audit only reports. Nothing on the NAS is changed by one. Every finding has
 
 `checked` says how many things an audit looked at. No findings beside nothing checked means there was nothing to look at, not that all is well.
 
+## audit_all
+
+Runs every audit below at its usual limits and answers one list, the gravest first. Each finding names the audit that found it, and each audit is counted by severity. An audit that cannot run fails the call, saying which. Start here, then run an audit with a count above none for its own limits.
+
 ## audit_pools
 
 Looks at every pool, the boot pool among them. A damaged pool can still read ONLINE, so it goes by the pool's health and by each vdev and disk.
@@ -69,3 +73,20 @@ Looks at every disk's temperature, and at what the disks' own SMART checks have 
 | `smart_erasecyclecount` | warning | a solid state disk has been written over many times |
 
 The SMART checks come from the alerts the NAS raises from them; a dismissed one is not told of. TrueNAS 25.10 has no other way to read a disk's SMART state. Tested on a real NAS with the test machine's NVMe disk, which reports its temperature.
+
+## audit_system
+
+Looks at the NAS itself. A disk's SMART alerts are left to `audit_disks`.
+
+| check | severity | found when |
+|---|---|---|
+| `alert` | critical | the NAS raised an alert at CRITICAL, ALERT or EMERGENCY that is not dismissed. The finding is named by the alert's kind |
+| `alert` | warning | the same, at WARNING or ERROR |
+| `certificate_expired` | critical | a certificate has run out |
+| `certificate_expiring` | warning | a certificate runs out within `certificate_days`, 30 unless given |
+| `service_stopped` | warning | a service set to start with the NAS is not running |
+| `not_ready` | warning | the NAS is still starting, or stopping |
+| `update_available` | notice | a newer TrueNAS is available |
+| `update_check_failed` | notice | the NAS could not find out whether there is one |
+
+A certificate's dates are written in the NAS's own time zone with no zone given, so they are read in the zone the NAS is set to. Tested on a real NAS by reading its own certificate.
