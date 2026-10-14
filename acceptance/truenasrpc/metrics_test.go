@@ -388,7 +388,7 @@ func TestEverythingTheExporterAsksReadsIntoTheTypedClient(t *testing.T) {
 	// and so is the count of a dataset's snapshots the exporter asks for, which the description leaves out of a dataset's row: the furnished snapshot
 	// task has made some
 	counted, err := typed.PoolDataset.Query(within(t, readWait), []any{[]any{"name", "=", layout.TaskDataset}}, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"flat": true, "retrieve_children": false, "snapshots_count": true}})
-	if err != nil || len(counted.Answer) != 1 || counted.Answer[0].SnapshotCount == 0 {
+	if err != nil || len(counted.Answer) != 1 || counted.Answer[0].SnapshotCount == nil || *counted.Answer[0].SnapshotCount == 0 {
 		t.Errorf("the furnished task's dataset reads as having %+v snapshots (%v)", counted.Answer, err)
 	}
 	copies, err := typed.Rsynctask.Query(within(t, readWait), []any{[]any{"desc", "=", layout.CopyTask}}, truenas.RsynctaskQueryOptions{})

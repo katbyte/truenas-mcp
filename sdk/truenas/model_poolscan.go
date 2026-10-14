@@ -37,5 +37,5 @@ type PoolScan struct {
 	State string `json:"state,omitempty"`
 
 	// how long it expects to go on, in seconds; none when it cannot tell
-	TotalSecsLeft int `json:"total_secs_left,omitempty"`
+	TotalSecsLeft *int `json:"total_secs_left,omitzero"`
 }

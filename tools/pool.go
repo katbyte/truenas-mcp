@@ -175,7 +175,7 @@ func registerPoolTools(r *registry) {
 		Ended       string  `json:"ended,omitempty"        jsonschema:"when it ended; none while it runs"`
 		Percent     float64 `json:"percent"                jsonschema:"how far it got, in per cent"`
 		Errors      int     `json:"errors"                 jsonschema:"how many errors it found"`
-		SecondsLeft int     `json:"seconds_left,omitempty" jsonschema:"how long it expects to go on, while it runs"`
+		SecondsLeft *int    `json:"seconds_left,omitempty" jsonschema:"how long it expects to go on, while it runs and can tell"`
 	}
 	type poolGetIn struct {
 		Pool string `json:"pool" jsonschema:"the pool, by name or by number"`

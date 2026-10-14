@@ -2130,9 +2130,10 @@
         {
           "Name": "SnapshotCount",
           "JsonName": "snapshot_count",
-          "Description": "how many snapshots it has, when the query's extra asks for snapshots_count",
+          "Description": "how many snapshots it has; none unless the query's extra asks for snapshots_count",
           "Type": {
-            "Type": "Integer"
+            "Type": "Named",
+            "GoType": "*int"
           }
         },
         {

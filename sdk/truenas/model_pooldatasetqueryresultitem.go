@@ -123,8 +123,8 @@ type PoolDatasetQueryResultItem struct {
 	// Visibility of the .zfs/snapshot directory (visible/hidden).
 	Snapdir *PoolDatasetQueryResultItemSnapdir `json:"snapdir,omitempty"`
 
-	// how many snapshots it has, when the query's extra asks for snapshots_count
-	SnapshotCount int `json:"snapshot_count,omitempty"`
+	// how many snapshots it has; none unless the query's extra asks for snapshots_count
+	SnapshotCount *int `json:"snapshot_count,omitzero"`
 
 	// For volumes, whether to use sparse (thin) provisioning.
 	Sparse *PoolDatasetQueryResultItemSparse `json:"sparse,omitempty"`

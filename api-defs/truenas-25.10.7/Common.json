@@ -6618,9 +6618,10 @@
         {
           "Name": "TotalSecsLeft",
           "JsonName": "total_secs_left",
-          "Description": "how long it expects to go on, in seconds",
+          "Description": "how long it expects to go on, in seconds; none when it cannot tell",
           "Type": {
-            "Type": "Integer"
+            "Type": "Named",
+            "GoType": "*int"
           }
         },
         {
@@ -6765,7 +6766,8 @@
           "JsonName": "total_secs_left",
           "Description": "how long it expects to go on, in seconds; none when it cannot tell",
           "Type": {
-            "Type": "Integer"
+            "Type": "Named",
+            "GoType": "*int"
           }
         }
       ]

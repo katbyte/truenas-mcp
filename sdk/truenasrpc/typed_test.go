@@ -59,7 +59,7 @@ func TestTheGeneratedClientCallsThroughTheConnection(t *testing.T) {
 }
 
 // A pool's scrub and disk layout, which the description leaves shapeless, read into the records sdk/pandorest gives them: a vdev with its disks
-// under it and their counts, and a scrub with its times.
+// under it and their counts, and a scrub with its times and no guess at how long is left, which reads apart from none left.
 func TestAPoolsScrubAndLayoutReadIntoTypes(t *testing.T) {
 	t.Parallel()
 
@@ -76,7 +76,7 @@ func TestAPoolsScrubAndLayoutReadIntoTypes(t *testing.T) {
 	}
 
 	pool := pools.Answer[0]
-	if s := pool.Scan; s == nil || s.Function != "SCRUB" || s.Errors != 2 || !s.EndTime.Equal(time.UnixMilli(1790848802000)) || pool.Autotrim == nil || pool.Autotrim.Value != "off" {
+	if s := pool.Scan; s == nil || s.Function != "SCRUB" || s.Errors != 2 || !s.EndTime.Equal(time.UnixMilli(1790848802000)) || s.TotalSecsLeft != nil || pool.Autotrim == nil || pool.Autotrim.Value != "off" {
 		t.Errorf("the scrub and trim read as %+v, %+v", pool.Scan, pool.Autotrim)
 	}
 	mirror := pool.Topology.Data[0]
@@ -148,19 +148,20 @@ func TestAZFSGUIDLargerThanASignedNumberReads(t *testing.T) {
 	}
 }
 
-// The count of a dataset's snapshots, which a NAS adds to its row when asked and the description leaves out, reads.
+// The count of a dataset's snapshots, which a NAS adds to its row when asked and the description leaves out, reads, and a row not asked for one
+// reads apart from a dataset with none.
 func TestADatasetsSnapshotCountReads(t *testing.T) {
 	t.Parallel()
 
 	nas := truenastest.New(t)
-	nas.Answer("pool.dataset.query", json.RawMessage(`[{"id": "tank/a", "name": "tank/a", "pool": "tank", "type": "FILESYSTEM", "snapshot_count": 12}]`))
+	nas.Answer("pool.dataset.query", json.RawMessage(`[{"id": "tank/a", "name": "tank/a", "pool": "tank", "type": "FILESYSTEM", "snapshot_count": 12}, {"id": "tank/b", "name": "tank/b", "pool": "tank", "type": "FILESYSTEM", "snapshot_count": 0}, {"id": "tank/c", "name": "tank/c", "pool": "tank", "type": "FILESYSTEM"}]`))
 
 	typed, err := nasclient.New(connect(t, nas))
 	if err != nil {
 		t.Fatal(err)
 	}
 	found, err := typed.PoolDataset.Query(t.Context(), nil, truenas.PoolDatasetQueryOptions{Extra: map[string]any{"snapshots_count": true}})
-	if err != nil || len(found.Answer) != 1 || found.Answer[0].SnapshotCount != 12 {
+	if err != nil || len(found.Answer) != 3 || found.Answer[0].SnapshotCount == nil || *found.Answer[0].SnapshotCount != 12 || found.Answer[1].SnapshotCount == nil || *found.Answer[1].SnapshotCount != 0 || found.Answer[2].SnapshotCount != nil {
 		t.Errorf("the dataset reads as %+v (%v)", found.Answer, err)
 	}
 }

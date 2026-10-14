@@ -34,7 +34,7 @@ var poolShapes = map[string]*openapi.Schema{
 		"bytes_to_reflow":      said(integer(), "how much has to be moved, in bytes"),
 		"bytes_reflowed":       said(integer(), "how much has been moved, in bytes"),
 		"waiting_for_resilver": said(integer(), "1 while it waits for a resilver to finish"),
-		"total_secs_left":      said(integer(), "how long it expects to go on, in seconds"),
+		"total_secs_left":      said(integer(), "how long it expects to go on, in seconds; none when it cannot tell"),
 		"percentage":           said(number(), "how far it has got"),
 	}),
 	"PoolAutotrim": record("Whether the pool trims its disks as space is freed, as a ZFS property.", map[string]*openapi.Schema{
@@ -153,7 +153,7 @@ func (datasetExtras) Apply(spec *openapi.Spec) error {
 	if row.Properties["snapshot_count"] != nil {
 		return errors.New("PoolDatasetQueryResultItem has snapshot_count now")
 	}
-	row.Properties["snapshot_count"] = said(integer(), "how many snapshots it has, when the query's extra asks for snapshots_count")
+	row.Properties["snapshot_count"] = said(integer(), "how many snapshots it has; none unless the query's extra asks for snapshots_count")
 
 	return nil
 }

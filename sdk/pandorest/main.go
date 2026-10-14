@@ -54,6 +54,11 @@ var fixes = []workarounds.Workaround{
 	workarounds.NamedTypes(workarounds.About{Name: "truenas-guids", Service: "truenas", Bug: "zfs.resource.query writes a dataset's guid as a bare number, which is often larger than a signed 64-bit integer holds"}, "", map[string]string{
 		"ZFSResourceEntry.guid": "uint64",
 	}),
+	workarounds.NamedTypes(workarounds.About{Name: "truenas-maybe-numbers", Service: "truenas", Bug: "a number the NAS leaves out or writes as null when it has none would read as 0, which is a real answer for these"}, "", map[string]string{
+		"PoolScan.total_secs_left":                  "*int",
+		"PoolExpand.total_secs_left":                "*int",
+		"PoolDatasetQueryResultItem.snapshot_count": "*int",
+	}),
 	workarounds.NamedTypes(workarounds.About{Name: "truenas-sets", Service: "truenas", Bug: "a list marked as holding no repeats is written as a plain list in one answer and wrapped as a set in another"}, "github.com/katbyte/truenas-mcp/sdk/truenasrpc", map[string]string{ //nolint:gosec // G101: a rule for passwords is named here, and no password
 		"SystemGeneralConfigAnswer.ui_httpsprotocols":            "truenasrpc.Set[$item]",
 		"SystemGeneralUpdateAnswer.ui_httpsprotocols":            "truenasrpc.Set[$item]",

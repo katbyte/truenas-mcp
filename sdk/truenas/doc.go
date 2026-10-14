@@ -44,5 +44,6 @@
 //   - truenas-task-shapes
 //   - truenas-secrets
 //   - truenas-guids
+//   - truenas-maybe-numbers
 //   - truenas-sets
 package truenas
