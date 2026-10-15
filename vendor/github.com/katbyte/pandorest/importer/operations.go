@@ -576,6 +576,7 @@ func (im *importer) pageable(o *definitions.Operation, paging *config.Paging) (p
 		StartIndexOption: start,
 		LimitOption:      limit,
 		ByPage:           paging.ByPage,
+		FirstPage:        paging.FirstPage,
 		ItemsField:       items.Name,
 		TotalField:       total.Name,
 		ItemType:         *items.Type.NestedItem,

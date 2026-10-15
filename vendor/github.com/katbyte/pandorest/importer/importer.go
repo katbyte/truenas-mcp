@@ -62,6 +62,15 @@ func FromSpec(cfg config.Service, spec *openapi.Spec, applied []string, log func
 	if log == nil {
 		log = func(string) {}
 	}
+	pagings := cfg.Pagings
+	if cfg.Paging != nil {
+		pagings = append([]config.Paging{*cfg.Paging}, pagings...)
+	}
+	for _, paging := range pagings {
+		if paging.FirstPage != nil && (!paging.ByPage || *paging.FirstPage < 0) {
+			return nil, fmt.Errorf("%s: Paging %s has FirstPage %d, which is 0 or more and needs ByPage", cfg.Name, paging.Start, *paging.FirstPage)
+		}
+	}
 	im := &importer{
 		cfg:       cfg,
 		spec:      spec,

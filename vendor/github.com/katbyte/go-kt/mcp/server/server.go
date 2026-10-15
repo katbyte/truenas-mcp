@@ -5,7 +5,6 @@ package server
 import (
 	"context"
 	"crypto/subtle"
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -17,16 +16,15 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	"github.com/katbyte/go-kt/clog"
+	"github.com/katbyte/go-kt/httpd"
 )
 
 const (
 	// Path is where the MCP endpoint is served over HTTP.
 	Path = "/mcp"
 	// HealthPath answers "ok" to a GET with no token, or a container with a token would never be healthy.
-	HealthPath = "/healthz"
+	HealthPath = httpd.HealthPath
 
-	readHeaderTimeout = 10 * time.Second
-	shutdownTimeout   = 10 * time.Second
 	// sessionTimeout closes a session its client abandoned, so a server does not keep every one it ever served
 	sessionTimeout = 30 * time.Minute
 )
@@ -75,9 +73,9 @@ func Run(ctx context.Context, srv *mcp.Server, o Options) error {
 	if err := CheckAuth(o); err != nil {
 		return err
 	}
-	ln, err := (&net.ListenConfig{}).Listen(ctx, "tcp", o.Listen)
+	ln, err := httpd.Listen(ctx, o.Listen)
 	if err != nil {
-		return fmt.Errorf("listening on %s: %w", o.Listen, err)
+		return err
 	}
 
 	return serve(ctx, srv, ln, o)
@@ -100,10 +98,7 @@ func Handler(srv *mcp.Server, o Options) http.Handler {
 
 	mux := http.NewServeMux()
 	mux.Handle(Path, requireBearer(o.AuthToken, o.Name, mcpHandler))
-	mux.HandleFunc("GET "+HealthPath, func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("ok\n"))
-	})
+	httpd.Health(mux)
 
 	return mux
 }
@@ -113,45 +108,17 @@ func serve(ctx context.Context, srv *mcp.Server, ln net.Listener, o Options) err
 	ctx, stop := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	httpSrv := &http.Server{
-		Handler:           Handler(srv, o),
-		ReadHeaderTimeout: readHeaderTimeout,
-	}
-	// a client holds its event stream open and Shutdown waits for it; the sessions must be closed or a stop takes the whole timeout
-	httpSrv.RegisterOnShutdown(func() {
-		for ss := range srv.Sessions() {
-			_ = ss.Close()
-		}
-	})
-
 	if o.AuthToken == "" {
 		clog.Log.Warnf("no auth token set (%s_AUTH_TOKEN): anyone who can reach %s can use every tool", o.EnvPrefix, ln.Addr())
 	}
 	clog.Log.Infof("serving MCP over HTTP on %s%s", ln.Addr(), Path)
 
-	failed := make(chan error, 1)
-	go func() { failed <- httpSrv.Serve(ln) }()
-
-	select {
-	case err := <-failed:
-		if errors.Is(err, http.ErrServerClosed) {
-			return nil
+	// a client holds its event stream open and a stop waits for it; the sessions must be closed or a stop takes the whole timeout
+	return httpd.Serve(ctx, ln, Handler(srv, o), func() {
+		for ss := range srv.Sessions() {
+			_ = ss.Close()
 		}
-
-		return fmt.Errorf("serving on %s: %w", ln.Addr(), err)
-	case <-ctx.Done():
-	}
-
-	clog.Log.Info("shutting down")
-
-	shutdownCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), shutdownTimeout)
-	defer cancel()
-
-	if err := httpSrv.Shutdown(shutdownCtx); err != nil {
-		return fmt.Errorf("shutting down: %w", err)
-	}
-
-	return nil
+	})
 }
 
 // requireBearer refuses a request without the matching bearer token; an empty token asks for none.

@@ -1,6 +1,6 @@
 // Package client is the base client every SDK pandorest generates sends its
 // requests through, after go-azure-sdk's sdk/client: one copy in place of the
-// one each repository used to keep. It is built on go-kt's chttp, so a read
+// one each repository used to keep. It is built on go-kt's httpc, so a read
 // is asked again for a dropped connection or a gateway's answer and a write
 // is sent once, an answer is read whole or not at all, and what is sent is
 // traced to a logger when one is handed in, with the credentials hidden.
@@ -55,7 +55,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 const (
@@ -139,7 +139,7 @@ type Service struct {
 	SecretHeaders []string
 	// SecretNames are names whose values a trace must not show wherever
 	// they appear - a query parameter, a form field, a JSON field - beside
-	// the ones chttp hides unasked (see chttp.Options).
+	// the ones httpc hides unasked (see httpc.Options).
 	SecretNames []string
 	// Outcome is where a server that answers 200 to everything says whether
 	// the call worked, for a service that does; nil for one whose status
@@ -177,10 +177,10 @@ type Service struct {
 	// MaxResponse is the most of an answer the client holds, in bytes; 0 is
 	// DefaultMaxResponse.
 	MaxResponse int64
-	// Retry is when a request is sent again; the zero value is chttp's own
+	// Retry is when a request is sent again; the zero value is httpc's own
 	// rule (a read, three times, for a dropped connection or a gateway's
 	// answer).
-	Retry chttp.Retry
+	Retry httpc.Retry
 
 	// Messages reads what the server said went wrong out of the body of an
 	// answer with an undocumented status, each thing it said as one entry,
@@ -228,12 +228,12 @@ func (s Service) secretHeaders() []string {
 	return append([]string{apiKeyHeader}, s.SecretHeaders...)
 }
 
-// Logger is what WithLog takes: chttp's, named here so a generated package
-// can offer the option under its own name without importing chttp.
-type Logger = chttp.Logger
+// Logger is what WithLog takes: httpc's, named here so a generated package
+// can offer the option under its own name without importing httpc.
+type Logger = httpc.Logger
 
-// Retry is what WithRetry takes: chttp's, named here for the same reason.
-type Retry = chttp.Retry
+// Retry is what WithRetry takes: httpc's, named here for the same reason.
+type Retry = httpc.Retry
 
 // Option is something a client is made with beside its address, its
 // credentials and its Service: what the application using the SDK decides,
@@ -241,7 +241,7 @@ type Retry = chttp.Retry
 type Option func(c *settings)
 
 type settings struct {
-	http    chttp.Options
+	http    httpc.Options
 	cookies http.CookieJar
 	calls   *Calls
 	secrets []string
@@ -250,7 +250,7 @@ type settings struct {
 // WithLog has the client say what it sends and is sent to a logger, each
 // exchange at trace and each request tried again at debug, with what is
 // secret in them hidden. A client given none logs nothing.
-func WithLog(log chttp.Logger) Option {
+func WithLog(log httpc.Logger) Option {
 	return func(c *settings) { c.http.Log = log }
 }
 
@@ -263,7 +263,7 @@ func WithTransport(base http.RoundTripper) Option {
 
 // WithRetry sets what is asked again, how often and how long after, in place
 // of the Service's rule: a test's, so a request tried again does not wait.
-func WithRetry(retry chttp.Retry) Option {
+func WithRetry(retry httpc.Retry) Option {
 	return func(c *settings) { c.http.Retry = retry }
 }
 
@@ -293,7 +293,7 @@ type Client struct {
 	secrets []string
 	// retries is how HTTPClient was made, kept so an answer read whole is
 	// asked again for the same failures a request is
-	retries *chttp.Client
+	retries *httpc.Client
 	// redirects is the service's redirect rule, for an HTTPClient put in
 	// its place that has none, and follow the rule for an operation that
 	// documents a redirect on the way to its answer
@@ -326,22 +326,22 @@ func (s Service) New(baseURL string, authorizer Authorizer, opts ...Option) (*Cl
 		return nil, errors.New("the server url must not contain credentials: they are passed separately, not as a user and password in the address")
 	}
 	if (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
-		return nil, fmt.Errorf("server url %q must be the address %s answers on, with its scheme and host%s", chttp.RedactURL(baseURL), s.name(), s.example())
+		return nil, fmt.Errorf("server url %q must be the address %s answers on, with its scheme and host%s", httpc.RedactURL(baseURL), s.name(), s.example())
 	}
 	if u.RawQuery != "" || u.Fragment != "" {
-		return nil, fmt.Errorf("server url %q must not carry a query or a fragment", chttp.RedactURL(baseURL))
+		return nil, fmt.Errorf("server url %q must not carry a query or a fragment", httpc.RedactURL(baseURL))
 	}
 
-	cfg := settings{http: chttp.Options{Name: s.Name, Retry: s.Retry, HeaderWait: cmp.Or(s.HeaderWait, s.timeout()), SecretHeaders: s.secretHeaders(), SecretNames: s.SecretNames}}
+	cfg := settings{http: httpc.Options{Name: s.Name, Retry: s.Retry, HeaderWait: cmp.Or(s.HeaderWait, s.timeout()), SecretHeaders: s.secretHeaders(), SecretNames: s.SecretNames}}
 	for _, opt := range opts {
 		opt(&cfg)
 	}
 
-	retries := chttp.New(cfg.http)
+	retries := httpc.New(cfg.http)
 	retries.Timeout = s.timeout()
 	retries.Jar = cfg.cookies
-	follow := chttp.KeepCredentialsOnHost(s.secretHeaders()...)
-	retries.CheckRedirect = chttp.RefuseRedirects(cmp.Or(s.RedirectAdvice, defaultAdvice))
+	follow := httpc.KeepCredentialsOnHost(s.secretHeaders()...)
+	retries.CheckRedirect = httpc.RefuseRedirects(cmp.Or(s.RedirectAdvice, defaultAdvice))
 	if s.FollowRedirects {
 		retries.CheckRedirect = follow
 	}

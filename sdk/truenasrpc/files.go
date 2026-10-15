@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 // A TrueNAS hands a file over, and takes one, outside the connection calls are made on: by an ordinary web request to the same address, let in
@@ -155,7 +155,7 @@ func (c *Conn) StartUpload(ctx context.Context, method string, params []any, fil
 	if err != nil {
 		_ = body.Close()
 
-		return nil, &ConnError{Address: c.address, Sent: true, Err: fmt.Errorf("%s: handing the file over: %w", method, chttp.Explain(chttp.RedactError(err)))}
+		return nil, &ConnError{Address: c.address, Sent: true, Err: fmt.Errorf("%s: handing the file over: %w", method, httpc.Explain(httpc.RedactError(err)))}
 	}
 	defer func() { _ = resp.Body.Close() }()
 
@@ -189,7 +189,7 @@ func (c *Conn) fetch(ctx context.Context, method, path string, w io.Writer) (int
 
 	resp, err := c.files.Do(req)
 	if err != nil {
-		return 0, &ConnError{Address: c.address, Sent: true, Err: fmt.Errorf("%s: fetching the file: %w", method, chttp.Explain(chttp.RedactError(err, "auth_token")))}
+		return 0, &ConnError{Address: c.address, Sent: true, Err: fmt.Errorf("%s: fetching the file: %w", method, httpc.Explain(httpc.RedactError(err, "auth_token")))}
 	}
 	defer func() { _ = resp.Body.Close() }()
 

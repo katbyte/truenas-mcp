@@ -1,9 +1,9 @@
-// Package chttp is the HTTP client every katbyte tool talks to APIs with: a stalled server fails fast, a passing failure is tried again without ever
+// Package httpc is the HTTP client every katbyte tool talks to APIs with: a stalled server fails fast, a passing failure is tried again without ever
 // re-sending a write whose fate is unknown, and every exchange is traced to whatever logger it is handed, with credentials blanked.
 //
 // It uses the standard library alone and logs nothing unasked, so an SDK can be built on it. What is worth another try, how long to wait, and what is
 // secret are each API's own to set (Options); the defaults are cautious.
-package chttp
+package httpc
 
 import (
 	"context"

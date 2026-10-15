@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 // Caller is what a call to a TrueNAS goes through: the name of the method, its arguments in order, and where to read the answer into. A Conn is one,
@@ -104,7 +104,7 @@ func New(address string, cred Credential, opts ...Option) (*Conn, error) {
 func opener(o settings, trust *tls.Config, socket string, files bool) *http.Client {
 	base := o.transport
 	if base == nil {
-		base = chttp.NewBaseTransport(chttp.Options{})
+		base = httpc.NewBaseTransport(httpc.Options{})
 		if t, ok := base.(*http.Transport); ok {
 			t.TLSClientConfig = trust
 
@@ -121,12 +121,12 @@ func opener(o settings, trust *tls.Config, socket string, files bool) *http.Clie
 	}
 
 	// a file's contents are a saved configuration or a dataset's keys as often as not, so a trace shows that a file went and not what was in it
-	traced := chttp.Options{Name: "TrueNAS", Log: o.log, SecretNames: []string{"auth_token"}}
+	traced := httpc.Options{Name: "TrueNAS", Log: o.log, SecretNames: []string{"auth_token"}}
 	if files {
 		traced.TraceBody = -1
 	}
 
-	return &http.Client{Transport: chttp.NewTransport(traced, base)}
+	return &http.Client{Transport: httpc.NewTransport(traced, base)}
 }
 
 // Address is where the connection reaches the NAS, as it was worked out from what New was given.
@@ -223,7 +223,7 @@ func refused(resp *http.Response, err error) error {
 		return fmt.Errorf("%w: its certificate is not one this machine trusts, as a TrueNAS's own is not: hand over the certificate itself, name the authority that signed it, or say the certificate is not to be checked", err)
 	}
 	if resp == nil {
-		return chttp.Explain(chttp.RedactError(err))
+		return httpc.Explain(httpc.RedactError(err))
 	}
 
 	switch resp.StatusCode {

@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 // What a connection does when it is told nothing else.
@@ -37,7 +37,7 @@ type Option func(*settings) error
 
 // settings are what a connection is made with.
 type settings struct {
-	log       chttp.Logger
+	log       httpc.Logger
 	roots     *x509.CertPool
 	unchecked bool
 	// keys are the public keys of the certificates the NAS is to be known by, each as a certificate writes it down
@@ -85,7 +85,7 @@ func redialWait(failures int) time.Duration {
 
 // WithLog sends what the connection does to a log: dialling and losing the connection at debug, each message at trace with its secrets hidden. A
 // logrus logger is one as it stands.
-func WithLog(log chttp.Logger) Option {
+func WithLog(log httpc.Logger) Option {
 	return func(s *settings) error {
 		s.log = log
 

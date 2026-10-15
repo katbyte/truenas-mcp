@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 // Options is what a generated options struct implements: the query and
@@ -204,7 +204,7 @@ func (r *Request) Execute(ctx context.Context) (*Response, error) {
 	whole.Client = r.sender(cmp.Or(r.client.HTTPClient.Timeout, service.timeout()))
 	httpResp, body, err := whole.Fetch(req, service.maxResponse()) //nolint:bodyclose // Fetch hands the response back with its body read and closed
 	if httpResp == nil {
-		return nil, r.client.redactErr(fmt.Errorf("%s %s: %w", r.Method, r.URL.Path, chttp.RedactError(err)))
+		return nil, r.client.redactErr(fmt.Errorf("%s %s: %w", r.Method, r.URL.Path, httpc.RedactError(err)))
 	}
 	resp := held(httpResp, body, r.client)
 
@@ -214,11 +214,11 @@ func (r *Request) Execute(ctx context.Context) (*Response, error) {
 	}
 
 	switch {
-	case errors.Is(err, chttp.ErrTooLarge):
+	case errors.Is(err, httpc.ErrTooLarge):
 		return resp, fmt.Errorf("%s %s: the answer is over %d MiB, more than this client holds: ask for less at a time", r.Method, r.URL.Path, service.maxResponse()>>20)
 	case err != nil:
-		return resp, r.client.redactErr(fmt.Errorf("%s %s: %w", r.Method, r.URL.Path, chttp.RedactError(err)))
-	case !redirect(httpResp.StatusCode) && chttp.IsWebPage(httpResp.Header.Get("Content-Type"), body):
+		return resp, r.client.redactErr(fmt.Errorf("%s %s: %w", r.Method, r.URL.Path, httpc.RedactError(err)))
+	case !redirect(httpResp.StatusCode) && httpc.IsWebPage(httpResp.Header.Get("Content-Type"), body):
 		return resp, fmt.Errorf("%s %s: answered with a web page, not %s's API: %s", r.Method, r.URL.Path, service.name(), cmp.Or(service.WebPageAdvice, "check the server url"))
 	default:
 		// a service that says in the body whether the call worked is read there
@@ -233,7 +233,7 @@ func (r *Request) stream(req *http.Request) (*Response, error) {
 	r.client.calls.record(r.Method, r.URL.Path, r.operation)
 	httpResp, err := r.sender(0).Do(req)
 	if err != nil {
-		return nil, r.client.redactErr(fmt.Errorf("%s %s: %w", r.Method, r.URL.Path, chttp.RedactError(err)))
+		return nil, r.client.redactErr(fmt.Errorf("%s %s: %w", r.Method, r.URL.Path, httpc.RedactError(err)))
 	}
 	if slices.Contains(r.ExpectedStatusCodes, httpResp.StatusCode) {
 		return &Response{Response: httpResp, client: r.client}, nil
@@ -287,10 +287,10 @@ func (r *Request) sender(timeout time.Duration) *http.Client {
 // and what the service knows of that status.
 func (r *Request) statusError(resp *http.Response, body []byte) *StatusError {
 	service := r.client.service
-	e := &StatusError{StatusError: &chttp.StatusError{Method: r.Method, Path: r.client.redact(r.URL.Path), StatusCode: resp.StatusCode, Expected: r.ExpectedStatusCodes, Body: r.client.redact(chttp.Preview(body))}}
+	e := &StatusError{StatusError: &httpc.StatusError{Method: r.Method, Path: r.client.redact(r.URL.Path), StatusCode: resp.StatusCode, Expected: r.ExpectedStatusCodes, Body: r.client.redact(httpc.Preview(body))}}
 
 	// a request sent once says nothing of how often it was sent
-	if tries := chttp.Tries(resp); tries > 1 {
+	if tries := httpc.Tries(resp); tries > 1 {
 		e.Tries = tries
 	}
 	if service.Messages != nil {
@@ -338,7 +338,7 @@ func (r *Response) Unmarshal(model any) error {
 		return nil
 	}
 	if err := json.Unmarshal(r.body, model); err != nil {
-		return fmt.Errorf("%s %s: the answer is not what this client reads there (%w): %s", r.Request.Method, r.Request.URL.Path, err, r.client.redact(chttp.Preview(r.body)))
+		return fmt.Errorf("%s %s: the answer is not what this client reads there (%w): %s", r.Request.Method, r.Request.URL.Path, err, r.client.redact(httpc.Preview(r.body)))
 	}
 
 	return nil
@@ -376,10 +376,10 @@ func (r *Response) hold() error {
 // StatusError is an answer with a status the operation does not document. Its
 // Body is what the server said went wrong, or the start of what it sent when
 // that is not one of the service's error shapes, and its Note what the
-// service knows of that status. It is chttp's status error, which is what it
+// service knows of that status. It is httpc's status error, which is what it
 // unwraps to, with the server's words kept apart as well as joined.
 type StatusError struct {
-	*chttp.StatusError
+	*httpc.StatusError
 
 	// Messages are what the server said went wrong, each thing it said as
 	// one entry, when the service could read them out of the body: a failed
@@ -387,13 +387,13 @@ type StatusError struct {
 	Messages []string
 }
 
-// Unwrap is the chttp status error this one is.
+// Unwrap is the httpc status error this one is.
 func (e *StatusError) Unwrap() error { return e.StatusError }
 
 // StatusCode returns the status of a status error in err's chain, or 0: the
 // status of an answer the operation did not document, and 0 for any other
 // error, one from an answer that did not decode included.
-func StatusCode(err error) int { return chttp.StatusCode(err) }
+func StatusCode(err error) int { return httpc.StatusCode(err) }
 
 // Messages returns what the server said went wrong, each thing as one entry,
 // for a status error in err's chain whose body the service could read; nil

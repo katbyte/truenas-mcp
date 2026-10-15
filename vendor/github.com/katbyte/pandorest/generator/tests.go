@@ -542,6 +542,12 @@ func (g *gen) sampleList(item definitions.TypeRef) (items string, values []strin
 	switch item.Type {
 	case definitions.ID:
 		kind := g.typeName(item.ReferenceName)
+		// a kind with a shape refuses "a" or 1 before the call is sent, so a list of it is its example twice over
+		if k := g.svc.IDKind(item.ReferenceName); k != nil && k.Example != "" {
+			expr, wire := g.sampleID(item.ReferenceName, "")
+
+			return expr + ", " + expr, []string{wire, wire}
+		}
 		if g.idBase(item.ReferenceName) == definitions.String {
 			return kind + `("a"), ` + kind + `("b")`, []string{"a", "b"}
 		}
@@ -722,7 +728,9 @@ func (g *gen) completeTest(o *definitions.Operation, call testCallInfo) string {
 	// has; one by page asks for the first page and then the next
 	starts := []string{`"", "1"`, `"", "1", "2"`, `""`}
 	if p.ByPage {
-		starts = []string{`"1", "2"`, `"1", "2", "3"`, `"1"`}
+		first := p.First()
+		page := func(n int) string { return strconv.Itoa(first + n) }
+		starts = []string{`"` + page(0) + `", "` + page(1) + `"`, `"` + page(0) + `", "` + page(1) + `", "` + page(2) + `"`, `"` + page(0) + `"`}
 	}
 	fmt.Fprintf(&b, "\t\t{\"total reached\", 2, 9, %s, 2, []string{%s}},\n", options(1), starts[0])
 	fmt.Fprintf(&b, "\t\t{\"empty page\", 0, 2, %s, 2, []string{%s}},\n", options(1), starts[1])

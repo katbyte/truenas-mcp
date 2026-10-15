@@ -1,4 +1,4 @@
-package chttp
+package httpc
 
 // localNetworkHint is added to a dial that macOS refused with "no route to host", whatever the address, which is why it says "may": for a server on
 // the LAN it is usually Local Network privacy denying a process that is not the app it was granted to, which happens when the terminal app is

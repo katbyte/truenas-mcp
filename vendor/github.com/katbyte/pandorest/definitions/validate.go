@@ -84,6 +84,9 @@ func Validate(svc *Service) error {
 		if o.Call != nil && o.Call.Form != "" && (!o.Call.Filterable || (o.Call.Form != QueryGet && o.Call.Form != QueryCount)) {
 			problems = append(problems, fmt.Sprintf("%s: a query form %q, which is %q or %q on a filterable call alone", o.Name, o.Call.Form, QueryGet, QueryCount))
 		}
+		if p := o.Pageable; p != nil && p.FirstPage != nil && (!p.ByPage || *p.FirstPage < 0) {
+			problems = append(problems, fmt.Sprintf("%s: a first page of %d, which is 0 or more on a list paged by number alone", o.Name, *p.FirstPage))
+		}
 	}
 	for name, m := range models {
 		for _, f := range m.Fields {

@@ -883,7 +883,7 @@ func writePageSetup(b *strings.Builder, p *definitions.Pageable, ov, in string) 
 		fmt.Fprintf(b, "%s%s.%s = &limit\n", in, ov, p.LimitOption)
 	}
 	if p.ByPage {
-		fmt.Fprintf(b, "%[3]snumber := 1\n%[3]sif %[2]s.%[1]s != nil && *%[2]s.%[1]s > 0 {\n%[3]s\tnumber = *%[2]s.%[1]s\n%[3]s}\n", p.StartIndexOption, ov, in)
+		fmt.Fprintf(b, "%[3]snumber := %[4]d\n%[3]sif %[2]s.%[1]s != nil && *%[2]s.%[1]s > 0 {\n%[3]s\tnumber = *%[2]s.%[1]s\n%[3]s}\n", p.StartIndexOption, ov, in, p.First())
 		fmt.Fprintf(b, "%s%s.%s = &number\n", in, ov, p.StartIndexOption)
 	} else {
 		fmt.Fprintf(b, "%[3]sstart := 0\n%[3]sif %[2]s.%[1]s != nil {\n%[3]s\tstart = *%[2]s.%[1]s\n%[3]s}\n", p.StartIndexOption, ov, in)
@@ -905,7 +905,7 @@ func writePageEnd(b *strings.Builder, p *definitions.Pageable, ov, in, loaded st
 	case p.ByPage:
 		fmt.Fprintf(b, "%s// a short page is the last; so is the page that reaches the total, when\n", in)
 		fmt.Fprintf(b, "%s// the server reports one\n", in)
-		fmt.Fprintf(b, "%[3]sif len(page.Answer.%[1]s) < limit || page.Answer.%[2]s > 0 && number*limit >= page.Answer.%[2]s {\n%[3]s\treturn\n%[3]s}\n", p.ItemsField, p.TotalField, in)
+		fmt.Fprintf(b, "%[3]sif len(page.Answer.%[1]s) < limit || page.Answer.%[2]s > 0 && %[4]s*limit >= page.Answer.%[2]s {\n%[3]s\treturn\n%[3]s}\n", p.ItemsField, p.TotalField, in, pagesLoaded(p))
 		// options holds a pointer to number, so the next call asks for the next page
 		fmt.Fprintf(b, "%snumber++\n", in)
 	default:
@@ -913,6 +913,18 @@ func writePageEnd(b *strings.Builder, p *definitions.Pageable, ov, in, loaded st
 		fmt.Fprintf(b, "%s// a short page is the last; so is reaching the total, when the server\n", in)
 		fmt.Fprintf(b, "%s// reports one (a list may report 0 whatever it holds)\n", in)
 		fmt.Fprintf(b, "%[3]sif len(page.Answer.%[1]s) < limit || page.Answer.%[2]s > 0 && start >= page.Answer.%[2]s {\n%[3]s\treturn\n%[3]s}\n", p.ItemsField, p.TotalField, in)
+	}
+}
+
+// pagesLoaded is how many pages a walk by number has loaded once it holds page number, as Go source: the number itself when pages count from 1.
+func pagesLoaded(p *definitions.Pageable) string {
+	switch first := p.First(); {
+	case first == 1:
+		return "number"
+	case first < 1:
+		return fmt.Sprintf("(number+%d)", 1-first)
+	default:
+		return fmt.Sprintf("(number-%d)", first-1)
 	}
 }
 

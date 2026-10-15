@@ -745,7 +745,13 @@ func (g *gen) docFile() string {
 		for _, k := range g.svc.IDs {
 			names = append(names, k.Name)
 		}
-		fmt.Fprintf(&b, "//\n// # Ids\n//\n// %s are kinds of id the package tells apart, each a bare named type over\n// the int or string the document declares, so that one kind where another goes\n// does not compile. Where an id sits among the options it is held by value and\n// sent when not zero. int(id) and SeriesID(n) convert one value, client.IDs and\n// client.StringIDs a list.\n", strings.Join(names, ", "))
+		// the example converts the first kind over its own base, not a kind this package may not have
+		first := g.svc.IDs[0]
+		base, value := "int", "n"
+		if first.Base == definitions.String {
+			base, value = "string", "s"
+		}
+		fmt.Fprintf(&b, "//\n// # Ids\n//\n// %s are kinds of id the package tells apart, each a bare named type over\n// the int or string the document declares, so that one kind where another goes\n// does not compile. Where an id sits among the options it is held by value and\n// sent when not zero. %s(id) and %s(%s) convert one value, client.IDs and\n// client.StringIDs a list.\n", strings.Join(names, ", "), base, first.Name, value)
 	}
 	if len(g.svc.Workarounds) > 0 {
 		b.WriteString("//\n// # Workarounds\n//\n// The importer fixed these bugs in the document before generating from it:\n//\n")

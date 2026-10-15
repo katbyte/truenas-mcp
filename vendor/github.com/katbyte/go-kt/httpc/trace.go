@@ -1,4 +1,4 @@
-package chttp
+package httpc
 
 import (
 	"bytes"

@@ -128,6 +128,9 @@ type Paging struct {
 	// index: Sonarr's page and pageSize, answering records and
 	// totalRecords.
 	ByPage bool
+	// FirstPage is the number of the first page, for a service whose pages count from 0 (Audiobookshelf's page and limit): FirstPage: new(0).
+	// Unset is 1. It needs ByPage.
+	FirstPage *int
 }
 
 // Service is one server API.

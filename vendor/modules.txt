@@ -22,17 +22,18 @@ github.com/gookit/color
 # github.com/inconshreveable/mousetrap v1.1.0
 ## explicit; go 1.18
 github.com/inconshreveable/mousetrap
-# github.com/katbyte/go-kt v0.7.0
+# github.com/katbyte/go-kt v0.8.0
 ## explicit; go 1.27.0
-github.com/katbyte/go-kt/chttp
 github.com/katbyte/go-kt/clog
+github.com/katbyte/go-kt/httpc
+github.com/katbyte/go-kt/httpd
 github.com/katbyte/go-kt/internal/addresses
 github.com/katbyte/go-kt/mcp/acctest
 github.com/katbyte/go-kt/mcp/registry
 github.com/katbyte/go-kt/mcp/server
 github.com/katbyte/go-kt/outside
 github.com/katbyte/go-kt/version
-# github.com/katbyte/pandorest v0.9.1
+# github.com/katbyte/pandorest v0.11.0
 ## explicit; go 1.27.0
 github.com/katbyte/pandorest
 github.com/katbyte/pandorest/client

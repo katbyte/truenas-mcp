@@ -22,8 +22,8 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/katbyte/go-kt/chttp"
 	"github.com/katbyte/go-kt/clog"
+	"github.com/katbyte/go-kt/httpc"
 	"github.com/katbyte/go-kt/internal/addresses"
 	"github.com/katbyte/go-kt/outside"
 )
@@ -84,7 +84,7 @@ type Config struct {
 	// ended. nil is the shared log at info, which a tool does not show at its default level: the line is there for whoever sets the log to info.
 	LogWrite func(format string, args ...any)
 	// SecretArguments are argument names, at any depth, whose values the write line blanks whole, whatever their type: a file's text, a command and
-	// its flags, an address whose path is the secret. Blanked unasked are arguments named as a credential (chttp.SecretName), everything under a
+	// its flags, an address whose path is the secret. Blanked unasked are arguments named as a credential (httpc.SecretName), everything under a
 	// free-form object such as a settings map, and in any address the sign-in, the query values and the fragment.
 	SecretArguments []string
 	// ShownArguments are, by tool, the free-form arguments that hold no credential and are written as sent: a server's own settings, checked against
@@ -675,7 +675,7 @@ func (h *hider) hide(v any) any {
 	switch v := v.(type) {
 	case map[string]any:
 		for name, held := range v {
-			if h.loose[name] || chttp.SecretName(name, h.secret...) {
+			if h.loose[name] || httpc.SecretName(name, h.secret...) {
 				v[name] = h.blank(held)
 
 				continue

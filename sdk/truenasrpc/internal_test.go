@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 // A setting holds whatever a person typed: a bare host, a host and port, the https address out of a browser's bar. Each must come to the one address
@@ -190,11 +190,11 @@ func TestALongMessageIsCutShortInATrace(t *testing.T) {
 	t.Parallel()
 
 	c := &Conn{}
-	long := `{"jsonrpc":"2.0","id":1,"result":"` + strings.Repeat("é", chttp.DefaultTraceBody) + `"}`
+	long := `{"jsonrpc":"2.0","id":1,"result":"` + strings.Repeat("é", httpc.DefaultTraceBody) + `"}`
 
 	got := c.shown("system.info", []byte(long))
-	if !strings.Contains(got, "more bytes)") || len(got) > chttp.DefaultTraceBody+40 {
-		t.Errorf("a %d byte message is shown as %d bytes ending %q, want it cut near %d with a note of the rest", len(long), len(got), got[len(got)-30:], chttp.DefaultTraceBody)
+	if !strings.Contains(got, "more bytes)") || len(got) > httpc.DefaultTraceBody+40 {
+		t.Errorf("a %d byte message is shown as %d bytes ending %q, want it cut near %d with a note of the rest", len(long), len(got), got[len(got)-30:], httpc.DefaultTraceBody)
 	}
 	if strings.ContainsRune(got, '�') {
 		t.Error("the cut split a character in two")

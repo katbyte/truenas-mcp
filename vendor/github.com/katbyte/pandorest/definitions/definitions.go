@@ -229,10 +229,21 @@ type Pageable struct {
 	// then the page wanted, counted from 1, rather than the index of its
 	// first result.
 	ByPage bool `json:"ByPage,omitempty"`
+	// FirstPage is the number of the first page where the list pages by number and does not count from 1; First is the number to read.
+	FirstPage *int `json:"FirstPage,omitempty"`
 	// ItemsField and TotalField are fields of the response model.
 	ItemsField string  `json:"ItemsField"`
 	TotalField string  `json:"TotalField"`
 	ItemType   TypeRef `json:"ItemType"`
+}
+
+// First is the number of the first page of a list that pages by number: 1 unless the service says otherwise.
+func (p *Pageable) First() int {
+	if p.FirstPage == nil {
+		return 1
+	}
+
+	return *p.FirstPage
 }
 
 // Model is an object schema, or a oneOf/anyOf union kept as raw JSON.

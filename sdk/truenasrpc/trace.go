@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/katbyte/go-kt/chttp"
+	"github.com/katbyte/go-kt/httpc"
 )
 
 // hidden stands in a trace for a value that is not shown, the word go-kt's HTTP trace uses.
@@ -134,7 +134,7 @@ func (c *Conn) shown(method string, frame []byte) string {
 		return fmt.Sprintf("%d bytes that cannot be shown", len(frame))
 	}
 
-	return cut(c.scrub(string(out), hidden), chttp.DefaultTraceBody)
+	return cut(c.scrub(string(out), hidden), httpc.DefaultTraceBody)
 }
 
 // jobShown blanks, in a NAS's account of a job, what the job was called with and what it answered, as they would be in the call's own trace: a
@@ -208,7 +208,7 @@ func (c *Conn) blanked(value any, also []string) any {
 // secretName reports whether a field of this name holds a secret: by the rule every trace of go-kt's goes by, by the names that are TrueNAS's own,
 // by those the caller added, and by those that are secret only where this message comes from.
 func (c *Conn) secretName(name string, also []string) bool {
-	return chttp.SecretName(name, secretNames...) || containsFold(c.o.secretNames, name) || containsFold(also, name)
+	return httpc.SecretName(name, secretNames...) || containsFold(c.o.secretNames, name) || containsFold(also, name)
 }
 
 // scrub is text with what the connection logs in with replaced wherever it appears: the key, its secret part, a password. One too short to tell
