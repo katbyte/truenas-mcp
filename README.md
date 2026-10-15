@@ -2,7 +2,7 @@
 
 An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking after a [TrueNAS](https://www.truenas.com) from Claude Code, Claude Desktop, or any other MCP client.
 
-**It was made mainly to get a Go SDK for [truenas-metrics](https://github.com/katbyte/truenas-metrics).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
+**It was made mainly to get a Go SDK for [truenas-exporter](https://github.com/katbyte/truenas-exporter).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
 
 **This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server with its first tools: which NAS it is, its pools down to each disk, its datasets, its disks and its alerts. The rest of the tools are being built on the typed client.
 
@@ -109,7 +109,7 @@ One connection is shared by any number of calls. It reconnects by itself, and it
 - The SDK is tested against a real TrueNAS in a virtual machine, started clean for every run. The tools get a machine of their own, and every tool must answer in that run or it fails.
 - Every read the API has that needs no argument is called and checked against the API's own description.
 - The test NAS is given real problems to see how it reports them: a dead disk, a disk that gives back what was never written, a full dataset, copies whose other end goes away, a restart.
-- Everything truenas-metrics asks a NAS is asked the same way, with a key that may only read.
+- Everything truenas-exporter asks a NAS is asked the same way, with a key that may only read.
 - Each run counts how much of the API it called: about two thirds of its 769 methods so far. Not every method has a live test yet.
 - CI runs on every push to main: build, unit tests with the race detector, the live tests, golangci-lint, CodeQL, govulncheck, a Trivy scan of the binary, zizmor, actionlint, yamllint, shellcheck, typos, markdownlint, and a check of the vendored dependencies.
 

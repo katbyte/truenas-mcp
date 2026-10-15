@@ -19,7 +19,7 @@ import (
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
-// question is one thing truenas-metrics asks a NAS: the method, what it asks it with, and the places in the answer it reads. It is the exporter
+// question is one thing truenas-exporter asks a NAS: the method, what it asks it with, and the places in the answer it reads. It is the exporter
 // this SDK was made for, it asks through the typed client with a key that may only read, and it reads these places and no others (lib/nas in
 // its repository).
 type question struct {

@@ -231,7 +231,7 @@ func WithoutCertificateCheck() Option {
 	}
 }
 
-// WithUserAgent names the program to the NAS, "truenas-metrics/1.2.0".
+// WithUserAgent names the program to the NAS, "truenas-exporter/1.2.0".
 func WithUserAgent(name string) Option {
 	return func(s *settings) error {
 		s.userAgent = name

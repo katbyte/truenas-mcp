@@ -4,7 +4,7 @@
 # live tests expect to find, and print the environment they need.
 #
 #   eval "$(.scripts/testenv.sh boot)" # start a NAS as its installer left it, export how to log in
-#   eval "$(.scripts/testenv.sh up)"   # the same, set up: export TRUENAS_TEST_* and TRUENAS_METRICS_TEST_*
+#   eval "$(.scripts/testenv.sh up)"   # the same, set up: export TRUENAS_TEST_* and TRUENAS_EXPORTER_TEST_*
 #   .scripts/testenv.sh down           # stop the machine and remove its disks
 #   .scripts/testenv.sh logs           # what the machine said and showed, for a failing run
 #   .scripts/testenv.sh image          # only install TrueNAS onto a disk, for a cache to keep

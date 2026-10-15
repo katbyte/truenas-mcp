@@ -40,7 +40,7 @@ make testacc-tools  # the tools' live tests, against a throwaway TrueNAS of thei
 
 **The rest of the configuration is made and changed.** One of each of twenty-one kinds of thing a NAS keeps a list of (users, groups, keys, scheduled commands, routes, alert services, cloud credentials, iSCSI and NVMe parts) is made, changed and removed. One setting on each of fifteen pages is changed and put back.
 
-**Everything truenas-metrics asks is asked its way**, with a key that may only read, on a NAS that has shares, tasks and a machine on it.
+**Everything truenas-exporter asks is asked its way**, with a key that may only read, on a NAS that has shares, tasks and a machine on it.
 
 **Each run ends by counting** how many of the NAS's API methods the tests called, by kind, and which they did not. A key the tests made turning up in any line of trace fails the run.
 
@@ -64,7 +64,7 @@ It needs QEMU and an x86-64 Linux machine with `/dev/kvm`, which a GitHub runner
 
 ## A NAS with more on it
 
-`TRUENAS_TEST_FURNISHED=1 make testenv-up` also gives the NAS one of each thing a NAS is watched for: a share of each kind, an iSCSI target, a virtual machine, a snapshot task that has run, a replication that has not, and a copy task that failed. `acceptance/layout` names them. It is for anything that reads a NAS and wants something to read, as [truenas-metrics](https://github.com/katbyte/truenas-metrics) does.
+`TRUENAS_TEST_FURNISHED=1 make testenv-up` also gives the NAS one of each thing a NAS is watched for: a share of each kind, an iSCSI target, a virtual machine, a snapshot task that has run, a replication that has not, and a copy task that failed. `acceptance/layout` names them. It is for anything that reads a NAS and wants something to read, as [truenas-exporter](https://github.com/katbyte/truenas-exporter) does.
 
 ## What the tests find
 

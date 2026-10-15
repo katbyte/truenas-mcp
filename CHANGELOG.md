@@ -24,7 +24,7 @@
 - every read that needs no argument is called on a real TrueNAS and its answer held to what the NAS's own description says it is, once by a user who may only read and once by the administrator; everything listed is fetched by its id; and the run ends by saying how many of the NAS's methods it called and which it did not
 - the live tests give the NAS real problems and check how it reports each: a disk taken out, a disk that dies and is replaced by a spare, a full dataset, a nearly full pool, and a copy, a replication and a snapshot task that fail
 - a list the NAS keeps as a set reads whether the NAS wrote it wrapped as one or as a plain list, which a real NAS does both of
-- the live tests set up and take down storage and data protection (a second pool's whole life, scrubs, datasets, encryption, replication, snapshot tasks, boot environments), and ask everything truenas-metrics asks, its way, with a key that may only read
+- the live tests set up and take down storage and data protection (a second pool's whole life, scrubs, datasets, encryption, replication, snapshot tasks, boot environments), and ask everything truenas-exporter asks, its way, with a key that may only read
 - the live tests make, change and remove one of each of twenty-one kinds of thing a NAS keeps, and change one setting on each of fifteen pages; a test NAS can be furnished with shares, a target, a machine and tasks on request (`TRUENAS_TEST_FURNISHED=1`), and has a disk that reports a temperature
 - a trace hides two secrets TrueNAS itself does not treat as secret and hands to any key that may read: the private keys its SSH server proves itself with (`ssh.config`) and the key a replication encrypts with (`replication.query`). The list of secrets under `api-defs` keeps them apart, as `unmarked`
 - the live tests start and stop a service every way there is, send a replication over SSH and a cloud sync over SFTP and take the other end away from each, write over a pool's disks from under it to see what a scrub finds and what it cannot repair, and bring the NAS certificates that have run out and are about to
@@ -38,7 +38,7 @@
 - a session only reads unless `--enable-write` is given, and deletes nothing without `--enable-delete` beside it; `--toolsets`, `--allow-tools` and `--deny-tools` choose which tools load, and `truenas-mcp tools` lists them with no NAS
 - a pool's scrub, expansion, auto-trim setting and vdevs with their disks read as types in the typed client (`truenas.PoolScan`, `truenas.PoolVdev`), where TrueNAS's description gives them no shape
 - a task's state (`truenas.TaskState`) and its last run, as a job record, read as types in the typed client, where TrueNAS's description gives them no shape
-- every question truenas-metrics asks, and every read that needs no argument, is also asked through the typed client in the live tests, with a key that may only read and as the administrator, and has to read into its types
+- every question truenas-exporter asks, and every read that needs no argument, is also asked through the typed client in the live tests, with a key that may only read and as the administrator, and has to read into its types
 - the tools have live tests of their own, on a NAS of their own, which fail when a tool never answers or says a key, and run the built binary as a client does
 
 ### Fixed
