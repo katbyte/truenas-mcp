@@ -211,10 +211,15 @@ func TestWhatATestNeedsIsHandedOnAsLinesAShellReads(t *testing.T) {
 		`export TRUENAS_TEST_SERVER='https://127.0.0.1:18443'`, `export TRUENAS_TEST_PASSWORD='it'\''s a password'`, `export TRUENAS_TEST_TOKEN='5-admin'`,
 		`export TRUENAS_TEST_HOSTNAME='` + layout.Hostname + `'`, `export TRUENAS_TEST_READONLY_TOKEN='6-readonly'`, `export TRUENAS_TEST_CERTIFICATE_FILE='/tmp/nas.pem'`,
 		`export TRUENAS_EXPORTER_TEST_SERVER='https://127.0.0.1:18443'`, `export TRUENAS_EXPORTER_TEST_USERNAME='` + layout.ReadOnlyUser + `'`, `export TRUENAS_EXPORTER_TEST_API_KEY='6-readonly'`, `export TRUENAS_EXPORTER_TEST_CERTIFICATE_FILE='/tmp/nas.pem'`,
-		`export TRUENAS_METRICS_TEST_USERNAME='` + layout.ReadOnlyUser + `'`, `export TRUENAS_METRICS_TEST_API_KEY='6-readonly'`,
 	} {
 		if !slices.Contains(got, want) {
 			t.Errorf("the lines handed on lack %s:\n%s", want, strings.Join(got, "\n"))
+		}
+	}
+	// the names the exporter read as truenas-metrics are no longer handed on
+	for _, line := range got {
+		if strings.Contains(line, "TRUENAS_METRICS_") {
+			t.Errorf("the lines handed on still hold %s", line)
 		}
 	}
 

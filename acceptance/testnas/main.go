@@ -191,8 +191,7 @@ func connect(ctx context.Context, server, password, certificate string) (*truena
 
 // exports is what is needed to log into the test NAS, as lines a shell takes: the address, the certificate and the administrator's password
 // always, and for a NAS that was set up, its keys too, under this repository's names and under those the truenas-exporter's live suite reads,
-// so that both run off the one NAS. The exporter is given the user who may only read. It is also handed them under the names it read as
-// truenas-metrics, until the truenas-mcp version it takes this script from is one that hands it the new ones.
+// so that both run off the one NAS. The exporter is given the user who may only read.
 func exports(server, password, certificate string, made *setup.Made) []string {
 	values := [][2]string{
 		{"TRUENAS_TEST_SERVER", server},
@@ -211,10 +210,6 @@ func exports(server, password, certificate string, made *setup.Made) []string {
 			{"TRUENAS_EXPORTER_TEST_USERNAME", layout.ReadOnlyUser},
 			{"TRUENAS_EXPORTER_TEST_API_KEY", made.ReadOnlyKey},
 			{"TRUENAS_EXPORTER_TEST_CERTIFICATE_FILE", certificate},
-			{"TRUENAS_METRICS_TEST_SERVER", server},
-			{"TRUENAS_METRICS_TEST_USERNAME", layout.ReadOnlyUser},
-			{"TRUENAS_METRICS_TEST_API_KEY", made.ReadOnlyKey},
-			{"TRUENAS_METRICS_TEST_CERTIFICATE_FILE", certificate},
 		}...)
 	}
 
