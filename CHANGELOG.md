@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.0 (2026-10-18)
 
 ### Added
 
@@ -12,7 +12,6 @@
 - tools that share a directory over SMB or NFS and change the share (`sharing_smb_create`, `sharing_smb_update`, `sharing_nfs_create`, `sharing_nfs_update`, with `add_hosts`, `remove_hosts`, `add_networks` and `remove_networks`); each says when the service that serves it is not running
 - tools that start, stop, restart and reload a service and set whether it starts with the NAS (`service_start`, `service_stop`, `service_restart`, `service_reload`, `service_update`), and that dismiss an alert and bring it back (`alert_dismiss`, `alert_restore`, toolset `alerts`). An alert the NAS raised once for something that happened may be removed for good when dismissed, and the answer says so first
 - the first tools that remove, registered only with `--enable-delete` as well: an SMB or NFS share (`sharing_smb_delete`, `sharing_nfs_delete`, the files staying where they are), a snapshot task (`snapshottask_delete`, saying which snapshots it took are then kept until removed by hand), a scrub task (`pool_scrub_delete`), a dataset (`dataset_delete`), a snapshot (`snapshot_delete`), and everything written since a snapshot (`snapshot_rollback`). Without `confirm: true` each only says what would go: the datasets under it, its snapshots, the shares and tasks the NAS removes with it, the snapshots newer than the one gone back to
-
 - `docs/tools.md`: every tool by toolset, what it needs to load and what it does, and what each set costs a client's context, written from the tools themselves by a test that fails while the page is out of date
 
 ### Changed
