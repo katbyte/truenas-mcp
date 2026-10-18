@@ -49,6 +49,19 @@ var everyDataset = []any{"type", "in", []string{"FILESYSTEM", "VOLUME"}}
 // namesOnly asks for the datasets' names and nothing else, so that counting them is cheap.
 var namesOnly = map[string]any{"flat": true, "retrieve_children": false, "properties": []string{}, "retrieve_user_props": false}
 
+// datasetNamed checks the NAS has a dataset by this whole name, asking for its name alone, and says what to do when it has none.
+func datasetNamed(ctx context.Context, r *registry, name string) error {
+	_, err := r.typed.PoolDataset.QueryOne(ctx, []any{[]any{"name", "=", name}}, truenas.PoolDatasetQueryOptions{Select: []any{"name"}, Extra: namesOnly})
+	switch {
+	case truenasrpc.IsNotFound(err):
+		return fmt.Errorf("the NAS has no dataset %q: dataset_list lists them, by their whole name", name)
+	case err != nil:
+		return fmt.Errorf("reading the dataset %s: %w", name, err)
+	}
+
+	return nil
+}
+
 func registerDatasetTools(r *registry) {
 	type datasetListIn struct {
 		Pool  string `json:"pool,omitempty"  jsonschema:"only the datasets on this pool"`

@@ -53,10 +53,38 @@ var Toolsets = map[string][]string{
 	"disks": {
 		"disk_list",
 	},
+	// what keeps the data safe: snapshots and the tasks that take them, copy data elsewhere, and check it
+	"protection": {
+		"snapshot_list", "snapshottask_list", "replication_list", "rsynctask_list", "cloudsync_list", "cloud_backup_list", "pool_scrub_list",
+	},
+	// what the NAS offers other machines: SMB and NFS shares, and iSCSI targets with what they offer
+	"shares": {
+		"sharing_smb_list", "sharing_nfs_list", "iscsi_target_list", "iscsi_extent_list",
+	},
+	// the services that serve the shares and everything else
+	"services": {
+		"service_list",
+	},
+	// the apps the NAS runs in containers
+	"apps": {
+		"app_list",
+	},
+	// the virtual machines it runs
+	"vms": {
+		"vm_list",
+	},
+	// how it is reached
+	"networking": {
+		"interface_list", "network_configuration_get",
+	},
+	// who may use it
+	"accounts": {
+		"user_list", "group_list",
+	},
 }
 
 // ToolsetOrder is the order a listing shows the sets in: the base first.
-var ToolsetOrder = []string{mcpregistry.Core, "audit", "disks"}
+var ToolsetOrder = []string{mcpregistry.Core, "audit", "disks", "protection", "shares", "services", "apps", "vms", "networking", "accounts"}
 
 // EssentialTools is the preset --allow-tools essential asks for: enough to know which NAS this is, what it holds and what it says is wrong.
 var EssentialTools = []string{
@@ -117,6 +145,13 @@ func queueTools(r *registry) {
 	registerDatasetTools(r)
 	registerDiskTools(r)
 	registerAlertTools(r)
+	registerProtectionTools(r)
+	registerSharingTools(r)
+	registerServiceTools(r)
+	registerAppTools(r)
+	registerVMTools(r)
+	registerNetworkTools(r)
+	registerAccountTools(r)
 	registerPoolAudits(r)
 	registerSpaceAudits(r)
 	registerTaskAudits(r)

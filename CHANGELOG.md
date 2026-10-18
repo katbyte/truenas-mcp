@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- tools that list what keeps a NAS's data safe: a dataset's snapshots (`snapshot_list`, read a page at a time without the NAS reading every snapshot it has), and the snapshot, replication, rsync, cloud sync, cloud backup and scrub tasks, with how each last went (toolset `protection`)
+- tools that list the SMB and NFS shares and the iSCSI targets and extents (`shares`), the services (`services`), the apps (`apps`), the virtual machines (`vms`), the network interfaces and the name, gateways and name servers in force (`networking`), and the users and groups (`accounts`)
+- a list never asks the NAS for a secret it would only have to hide: a replication's key, a cloud account's keys, a backup's password, an app's settings and a user's password hashes are left out of what is asked
+
 ## v0.1.0 (2026-10-18)
 
 ### Added

@@ -4,18 +4,17 @@ An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking aft
 
 **It was made mainly to get a Go SDK for [truenas-exporter](https://github.com/katbyte/truenas-exporter).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
 
-**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server with its first tools: which NAS it is, its pools down to each disk, its datasets, its disks and its alerts. The rest of the tools are being built on the typed client.
+**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server that reads most of a NAS and audits it. The tools that change a NAS are being built.
 
-**Detection is code, correction is judgment.** The checks that are coming only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
+**Detection is code, correction is judgment.** The audits only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
 
 ## Install
 
 ```bash
-git clone https://github.com/katbyte/truenas-mcp && cd truenas-mcp
-make install
+brew install katbyte/tap/truenas-mcp
 ```
 
-It needs Go, and a TrueNAS 25.04 or later. There is no release yet.
+Or take a binary from [the releases](https://github.com/katbyte/truenas-mcp/releases), run the image `ghcr.io/katbyte/truenas-mcp`, or build it with `make install`. It needs a TrueNAS 25.04 or later.
 
 ## Quick start
 
@@ -48,7 +47,24 @@ claude mcp add truenas -e TRUENAS_SERVER=nas.example.net -e TRUENAS_USERNAME=mcp
 | `truenas-mcp tools` | lists the tools the flags would load, with no NAS |
 | `truenas-mcp info` | checks an address, a certificate and a key |
 
-What is coming: the rest of the tools, built on the typed client.
+What is coming: the tools that change a NAS, each with a dry run.
+
+## Toolsets
+
+A session loads `core` and `audit` unless `--toolsets` names others, or `all`. A session only reads.
+
+| toolset | what it covers |
+|---|---|
+| `core` | which NAS this is, its pools and datasets, and its alerts |
+| `audit` | what is wrong, from every audit below |
+| `disks` | the disks, with the pool each is in and how warm it is |
+| `protection` | snapshots, and the tasks that take them, copy data elsewhere and scrub the pools |
+| `shares` | SMB and NFS shares, and iSCSI targets with what they offer |
+| `services` | the services, running or not |
+| `apps` | the apps the NAS runs in containers |
+| `vms` | the virtual machines |
+| `networking` | the interfaces with their addresses, and the name, gateways and name servers |
+| `accounts` | the users and groups |
 
 ## Audits
 

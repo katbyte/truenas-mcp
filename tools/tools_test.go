@@ -85,7 +85,7 @@ func TestASessionReadsUntilItIsToldItMayChangeOrDelete(t *testing.T) {
 	}
 }
 
-// The surface is 13 tools, all of which read. A tool added, merged, removed or moved between kinds changes these on purpose, and this is where that is
+// The surface is 31 tools, all of which read. A tool added, merged, removed or moved between kinds changes these on purpose, and this is where that is
 // said.
 func TestTheSurfaceIsTheSizeItIsSaidToBe(t *testing.T) {
 	t.Parallel()
@@ -95,8 +95,8 @@ func TestTheSurfaceIsTheSizeItIsSaidToBe(t *testing.T) {
 	for _, kind := range kinds {
 		counts[kind]++
 	}
-	if len(kinds) != 13 || counts["read"] != 13 || counts["write"] != 0 || counts["delete"] != 0 {
-		t.Errorf("surface = %d tools: %v, want 13 with 13 read, 0 write, 0 delete", len(kinds), counts)
+	if len(kinds) != 31 || counts["read"] != 31 || counts["write"] != 0 || counts["delete"] != 0 {
+		t.Errorf("surface = %d tools: %v, want 31 with 31 read, 0 write, 0 delete", len(kinds), counts)
 	}
 }
 
@@ -166,7 +166,7 @@ func TestToolsAreAskedForAndTakenAwayByName(t *testing.T) {
 	if got = register(t, Options{Allow: []string{"server_*"}}); !slices.Equal(got, []string{"server_info"}) {
 		t.Errorf("server_* = %v", got)
 	}
-	if got = register(t, Options{Toolsets: []string{mcpregistry.All}, Deny: []string{"*_info", "*_list", "audit_*"}}); !slices.Equal(got, []string{"dataset_get", "pool_get"}) {
+	if got = register(t, Options{Toolsets: []string{mcpregistry.All}, Deny: []string{"*_info", "*_list", "audit_*"}}); !slices.Equal(got, []string{"dataset_get", "network_configuration_get", "pool_get"}) {
 		t.Errorf("everything but *_info and *_list = %v", got)
 	}
 	// beside a toolset an allow list adds its tools to it, and core comes with the set

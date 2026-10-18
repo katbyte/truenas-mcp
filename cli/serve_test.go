@@ -90,7 +90,7 @@ func TestToolsListsWhatWouldBeRegisteredWithNothingConfigured(t *testing.T) {
 		}
 	}
 	// and it says how to get more
-	for _, want := range []string{"toolsets: all, ", "families: alert, audit, dataset, disk, pool, server", "--toolsets all", "only tools that read are listed; --enable-write registers the ones that change something", "--enable-delete", "TRUENAS_TOOLSETS"} {
+	for _, want := range []string{"toolsets: all, ", "families: alert, app, audit, cloud, cloudsync, dataset, disk, group, interface, iscsi, network, pool, replication, rsynctask, server, service, sharing, snapshot, snapshottask, user, vm", "--toolsets all", "only tools that read are listed; --enable-write registers the ones that change something", "--enable-delete", "TRUENAS_TOOLSETS"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("%q missing from the footer:\n%s", want, out)
 		}
@@ -110,7 +110,7 @@ func TestToolsFollowsTheFlags(t *testing.T) {
 	if out, err := run(t, "tools", "--allow-tools", "server_*", "-q"); err != nil || strings.TrimSpace(out) != coreTool {
 		t.Errorf("tools --allow-tools server_* -q = %q, %v", out, err)
 	}
-	if out, err := run(t, "tools", "--toolsets", "all", "--deny-tools", "*_info,*_list,audit_*", "-q"); err != nil || strings.Fields(out)[0] != "dataset_get" || len(strings.Fields(out)) != 2 {
+	if out, err := run(t, "tools", "--toolsets", "all", "--deny-tools", "*_info,*_list,audit_*", "-q"); err != nil || !slices.Equal(strings.Fields(out), []string{"dataset_get", "network_configuration_get", "pool_get"}) {
 		t.Errorf("tools --toolsets all --deny-tools *_info,*_list,audit_* -q = %q, %v", out, err)
 	}
 
