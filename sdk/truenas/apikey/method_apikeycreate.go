@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, apiKeyCreate truenas.ApiKeyCreate) (
 	result.ApiKeyEntryWithKey = &truenas.ApiKeyEntryWithKey{}
 	params := client.CallParams(1, apiKeyCreate)
 	var answer truenas.ApiKeyEntryWithKey
-	if err = c.Caller.Call(ctx, "api_key.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "api_key.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ApiKeyEntryWithKey = result.Answer
 
-	return
+	return result, nil
 }

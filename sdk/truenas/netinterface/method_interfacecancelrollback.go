@@ -13,5 +13,5 @@ func (c Client) CancelRollback(ctx context.Context) (result truenas.InterfaceCan
 	var params []any
 	err = c.Caller.Call(ctx, "interface.cancel_rollback", params, nil)
 
-	return
+	return result, err
 }

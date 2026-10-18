@@ -21,17 +21,17 @@ func (c Client) Update(ctx context.Context, id int, data truenas.PoolUpdateData)
 	result.PoolQueryResultItem = &truenas.PoolQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.PoolQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(id int, data truenas.PoolUpdateData) (string, []any) {
+func UpdateCall(id int, data truenas.PoolUpdateData) (call string, params []any) {
 	return "pool.update", client.CallParams(2, id, data)
 }

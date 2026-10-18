@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.App
 	result.AppsIxVolumeQueryResultItem = &truenas.AppsIxVolumeQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AppsIxVolumeQueryResultItem
-	if err = c.Caller.Call(ctx, "app.ix_volume.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.ix_volume.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppsIxVolumeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

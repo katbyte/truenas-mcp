@@ -15,5 +15,5 @@ func (c Client) UnixcharsetChoices(ctx context.Context) (result truenas.SmbUnixc
 	var params []any
 	err = c.Caller.Call(ctx, "smb.unixcharset_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

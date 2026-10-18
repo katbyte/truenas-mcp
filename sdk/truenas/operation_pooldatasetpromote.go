@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDatasetPromoteResponse is the result of PoolDatasetPromote.
-type PoolDatasetPromoteResponse struct {
-}
+type PoolDatasetPromoteResponse struct{}

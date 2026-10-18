@@ -17,10 +17,10 @@ import (
 func (c Client) ValidateName(ctx context.Context, name string, existingId int) (result truenas.IscsiTargetValidateNameResponse, err error) {
 	params := client.CallParams(1, name, existingId)
 	var answer string
-	if err = c.Caller.Call(ctx, "iscsi.target.validate_name", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.target.validate_name", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

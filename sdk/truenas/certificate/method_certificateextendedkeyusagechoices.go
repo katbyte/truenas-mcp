@@ -15,5 +15,5 @@ func (c Client) ExtendedKeyUsageChoices(ctx context.Context) (result truenas.Cer
 	var params []any
 	err = c.Caller.Call(ctx, "certificate.extended_key_usage_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

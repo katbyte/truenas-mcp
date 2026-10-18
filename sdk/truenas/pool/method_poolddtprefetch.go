@@ -19,11 +19,11 @@ func (c Client) DdtPrefetch(ctx context.Context, poolName string) (result truena
 	params := client.CallParams(1, poolName)
 	err = c.Caller.Call(ctx, "pool.ddt_prefetch", params, nil)
 
-	return
+	return result, err
 }
 
 // DdtPrefetchCall is the call DdtPrefetch makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DdtPrefetchCall(poolName string) (string, []any) {
+func DdtPrefetchCall(poolName string) (call string, params []any) {
 	return "pool.ddt_prefetch", client.CallParams(1, poolName)
 }

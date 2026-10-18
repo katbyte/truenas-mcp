@@ -15,5 +15,5 @@ func (c Client) Trains(ctx context.Context) (result truenas.CatalogTrainsRespons
 	var params []any
 	err = c.Caller.Call(ctx, "catalog.trains", params, &result.Answer)
 
-	return
+	return result, err
 }

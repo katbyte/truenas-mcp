@@ -15,5 +15,5 @@ func (c Client) Details(ctx context.Context) (result truenas.PoolDatasetDetailsR
 	var params []any
 	err = c.Caller.Call(ctx, "pool.dataset.details", params, &result.Answer)
 
-	return
+	return result, err
 }

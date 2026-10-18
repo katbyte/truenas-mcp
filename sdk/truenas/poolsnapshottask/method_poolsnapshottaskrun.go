@@ -16,5 +16,5 @@ func (c Client) Run(ctx context.Context, id int) (result truenas.PoolSnapshottas
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.snapshottask.run", params, nil)
 
-	return
+	return result, err
 }

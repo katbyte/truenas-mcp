@@ -18,5 +18,5 @@ func (c Client) BridgeMembersChoices(ctx context.Context, id string) (result tru
 	params := client.CallParams(0, id)
 	err = c.Caller.Call(ctx, "interface.bridge_members_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

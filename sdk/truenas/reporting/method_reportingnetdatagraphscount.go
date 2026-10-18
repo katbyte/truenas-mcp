@@ -19,10 +19,10 @@ import (
 func (c Client) NetdataGraphsCount(ctx context.Context, filters []any, options truenas.ReportingNetdataGraphsOptions) (result truenas.ReportingNetdataGraphsCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "reporting.netdata_graphs", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "reporting.netdata_graphs", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -16,5 +16,5 @@ func (c Client) SaveNetworkConfig(ctx context.Context, config truenas.InterfaceS
 	params := client.CallParams(1, config)
 	err = c.Caller.Call(ctx, "interface.save_network_config", params, nil)
 
-	return
+	return result, err
 }

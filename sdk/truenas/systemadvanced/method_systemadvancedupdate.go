@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, data truenas.SystemAdvancedUpdateDat
 	result.SystemAdvancedUpdateAnswer = &truenas.SystemAdvancedUpdateAnswer{}
 	params := client.CallParams(1, data)
 	var answer truenas.SystemAdvancedUpdateAnswer
-	if err = c.Caller.Call(ctx, "system.advanced.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.advanced.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemAdvancedUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

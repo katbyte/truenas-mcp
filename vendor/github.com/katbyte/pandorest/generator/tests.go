@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"slices"
 	"strconv"
@@ -139,8 +140,8 @@ func newOperationServer(t *testing.T, status int, contentType, body string) (*Cl
 	return c, s
 }
 
-// only returns the one request the server received.
-func (s *operationServer) only(t *testing.T) (*http.Request, string) {
+// only returns the one request the server received, and its body.
+func (s *operationServer) only(t *testing.T) (r *http.Request, body string) {
 	t.Helper()
 
 	if len(s.requests) != 1 {
@@ -170,34 +171,21 @@ func expectQuery(t *testing.T, r *http.Request, name string, want ...string) {
 
 `
 
-// pagedServerHelper is the canned server the Complete tests share, which
-// answers pages in the shape the service's lists have: the JSON names of the
-// first list operation's items and total. A service with no lists has none.
+// pagedServerHelper is the canned server the Complete tests share, which answers pages in the names each list's answer
+// carries, since a service's lists need not all answer alike. A service with no lists has none.
 func (g *gen) pagedServerHelper() string {
 	if g.paged == nil {
 		return ""
 	}
-	items, total := g.paged.Pageable.ItemsField, g.paged.Pageable.TotalField
-	if m := g.models[g.paged.Response.Type.ReferenceName]; m != nil {
-		for i := range m.Fields {
-			switch m.Fields[i].Name {
-			case g.paged.Pageable.ItemsField:
-				items = m.Fields[i].JSONName
-			case g.paged.Pageable.TotalField:
-				total = m.Fields[i].JSONName
-			}
-		}
-	}
-	answer := strconv.Quote(fmt.Sprintf(`{%q:[%%s],%q:%%d}`, items, total))
 	records := "start index"
 	if g.paged.Pageable.ByPage {
 		records = "page"
 	}
 
 	return `// pagedServer answers the first pages requests with one item each and an
-// empty list after, reporting total items, and records the ` + records + ` of
-// each request.
-func pagedServer(t *testing.T, startIndex, item string, total, pages int) (` + g.clientType() + `, *[]string) {
+// empty list after, reporting total items under the names the list answers
+// with, and records the ` + records + ` of each request.
+func pagedServer(t *testing.T, startIndex, items, total, item string, count, pages int) (paged ` + g.clientType() + `, asked *[]string) {
 	t.Helper()
 
 	var starts []string
@@ -207,7 +195,7 @@ func pagedServer(t *testing.T, startIndex, item string, total, pages int) (` + g
 		if len(starts) > pages {
 			item = ""
 		}
-		_, _ = fmt.Fprintf(w, ` + answer + `, item, total)
+		_, _ = fmt.Fprintf(w, "{%q:[%s],%q:%d}", items, item, total, count)
 	}))
 	t.Cleanup(srv.Close)
 ` + g.newTestClient("srv.URL") + `	c.Client.HTTPClient = srv.Client()
@@ -269,7 +257,7 @@ func (g *gen) testFile(o *definitions.Operation) string {
 		fmt.Fprintf(&b, "\texpectQuery(t, r, %q, %s)\n", q.name, quoteAll(q.values))
 	}
 	for _, h := range call.headers {
-		fmt.Fprintf(&b, "\tif got := r.Header.Get(%q); got != %q {\n\t\tt.Errorf(\"header %s = %%q, want %%q\", got, %q)\n\t}\n", h.name, h.value, h.name, h.value)
+		fmt.Fprintf(&b, "\tif got := r.Header.Get(%q); got != %q {\n\t\tt.Errorf(\"header %s = %%q, want %%q\", got, %q)\n\t}\n", textproto.CanonicalMIMEHeaderKey(h.name), h.value, h.name, h.value)
 	}
 	if asksFor := o.Response.AsksFor(); asksFor != "" && !acceptOption(o) {
 		fmt.Fprintf(&b, "\tif got := r.Header.Get(\"Accept\"); !strings.HasPrefix(got, %q) {\n\t\tt.Errorf(\"Accept = %%q, want %s asked for first\", got)\n\t}\n", asksFor, asksFor)
@@ -286,7 +274,7 @@ func (g *gen) testFile(o *definitions.Operation) string {
 			}
 		}
 	}
-	fmt.Fprintf(&b, "\tif result.HttpResponse == nil || result.HttpResponse.StatusCode != %d {\n\t\tt.Fatalf(\"HttpResponse = %%+v\", result.HttpResponse)\n\t}\n", status)
+	fmt.Fprintf(&b, "\tif result.HttpResponse == nil || result.HttpResponse.StatusCode != %s {\n\t\tt.Fatalf(\"HttpResponse = %%+v\", result.HttpResponse)\n\t}\n", statusName(status))
 	b.WriteString(g.responseChecks(o, call))
 
 	// a null result
@@ -328,7 +316,8 @@ func (g *gen) testFile(o *definitions.Operation) string {
 		b.WriteString("\n\t// the option may be left out, and then nothing is sent for it\n")
 		fmt.Fprintf(&b, "\tc, s = newOperationServer(t, %d, %q, %q)\n", status, contentType, body)
 		fmt.Fprintf(&b, "\tif _, err = c.%s(%s); err != nil {\n\t\tt.Errorf(\"without the option = %%v\", err)\n\t}\n", o.Name, without)
-		fmt.Fprintf(&b, "\tif r, _ := s.only(t); r.URL.RawQuery != \"\" || r.Header.Get(%q) != \"\" {\n\t\tt.Errorf(\"without the option, sent %%q and %%q\", r.URL.RawQuery, r.Header.Get(%q))\n\t}\n", o.Options[0].Name, o.Options[0].Name)
+		header := textproto.CanonicalMIMEHeaderKey(o.Options[0].Name)
+		fmt.Fprintf(&b, "\tif r, _ := s.only(t); r.URL.RawQuery != \"\" || r.Header.Get(%q) != \"\" {\n\t\tt.Errorf(\"without the option, sent %%q and %%q\", r.URL.RawQuery, r.Header.Get(%q))\n\t}\n", header, header)
 		if o.Options[0].Type.Type != definitions.List {
 			b.WriteString("\t// two values are refused before any request\n")
 			fmt.Fprintf(&b, "\tif _, err = c.%s(%s, %s, %s); err == nil || len(s.requests) != 1 {\n\t\tt.Errorf(\"two values = %%v, %%d requests\", err, len(s.requests))\n\t}\n", o.Name, without, call.inlined[0], call.inlined[0])
@@ -425,7 +414,13 @@ func (g *gen) testCall(o *definitions.Operation) testCallInfo {
 			}
 			placed[opt.In+" "+opt.Name] = true
 			info.optNames[opt.Field] = opt.Name
-			fields = append(fields, opt.Field+": "+expr)
+			field := opt.Field + ": " + expr + ","
+			if opt.Deprecated && g.qual != "" {
+				// set from another package, as a group's test sets the types package's options, a deprecated option is a staticcheck
+				// finding; in the same package it is not, and a nolint nothing needs is a finding of its own
+				field += " //nolint:staticcheck // the test sets every option, deprecated ones too"
+			}
+			fields = append(fields, field)
 			switch {
 			case opt.DeepObject:
 				info.query = append(info.query, wireValue{opt.Name + "[a]", []string{"b"}}, wireValue{opt.Name + "[k]", []string{"v"}})
@@ -437,7 +432,7 @@ func (g *gen) testCall(o *definitions.Operation) testCallInfo {
 		}
 		info.options = g.typeName(o.Name) + "Options{}"
 		if len(fields) > 0 {
-			info.options = g.typeName(o.Name) + "Options{\n\t\t" + strings.Join(fields, ",\n\t\t") + ",\n\t}"
+			info.options = g.typeName(o.Name) + "Options{\n\t\t" + strings.Join(fields, "\n\t\t") + "\n\t}"
 		}
 		args = append(args, info.options)
 	}
@@ -673,7 +668,7 @@ func (g *gen) responseChecks(o *definitions.Operation, call testCallInfo) string
 			"\tstreamed, _ := io.ReadAll(stream)\n\t_ = stream.Close()\n\tif string(streamed) != \"file bytes\" {\n\t\tt.Errorf(\"streamed body = %q\", streamed)\n\t}\n"
 	case o.Response.Type.Type == definitions.RawFile:
 		return "\tif _, contentType := result.Reader(); contentType == \"\" || result.ContentLength() != 10 || result.Filename() != \"answer.bin\" {\n\t\tt.Errorf(\"Reader = %q, length %d, filename %q\", contentType, result.ContentLength(), result.Filename())\n\t}\n" +
-			"\tif data, err := result.Bytes(9); err == nil || string(data) != \"\" {\n\t\tt.Errorf(\"Bytes over the size = %q, %v\", data, err)\n\t}\n" +
+			"\tif data, err := result.Bytes(9); err == nil || len(data) != 0 {\n\t\tt.Errorf(\"Bytes over the size = %q, %v\", data, err)\n\t}\n" +
 			"\tc, _ = newOperationServer(t, " + strconv.Itoa(o.ExpectedStatusCodes[0]) + ", " + strconv.Quote(concreteType(o.Response.ContentType)) + ", \"file bytes\")\n\tresult, err = " + call.expr + "\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n" +
 			"\tif data, err := result.Bytes(10); err != nil || string(data) != \"file bytes\" {\n\t\tt.Errorf(\"Bytes = %q, %v\", data, err)\n\t}\n" +
 			"\tc, _ = newOperationServer(t, " + strconv.Itoa(o.ExpectedStatusCodes[0]) + ", " + strconv.Quote(concreteType(o.Response.ContentType)) + ", \"file bytes\")\n\tresult, err = " + call.expr + "\n\tif err != nil {\n\t\tt.Fatal(err)\n\t}\n" +
@@ -690,7 +685,7 @@ func (g *gen) responseChecks(o *definitions.Operation, call testCallInfo) string
 		check := "\tif result.Answer == nil || !result.Answered() {\n\t\tt.Error(\"the answer was not decoded\")\n\t}\n"
 		if embedded := g.embedded(o); embedded != "" {
 			check += "\tif result." + embeddedField(embedded) + " != result.Answer {\n\t\tt.Error(\"the embedded answer is not the answer\")\n\t}\n"
-			check += "\tif record, err := result.Record(); err != nil || !reflect.DeepEqual(record, *result.Answer) {\n\t\tt.Errorf(\"Record = %+v, %v\", record, err)\n\t}\n"
+			check += "\tif record, err := result.Record(); err != nil || !reflect.DeepEqual(&record, result.Answer) {\n\t\tt.Errorf(\"Record = %+v, %v\", record, err)\n\t}\n"
 		}
 
 		return check
@@ -702,10 +697,28 @@ func (g *gen) responseChecks(o *definitions.Operation, call testCallInfo) string
 	}
 }
 
+// pagedNames is what a list's answer calls its items and its total on the wire.
+func (g *gen) pagedNames(o *definitions.Operation) (items, total string) {
+	items, total = o.Pageable.ItemsField, o.Pageable.TotalField
+	if m := g.models[o.Response.Type.ReferenceName]; m != nil {
+		for i := range m.Fields {
+			switch m.Fields[i].Name {
+			case o.Pageable.ItemsField:
+				items = m.Fields[i].JSONName
+			case o.Pageable.TotalField:
+				total = m.Fields[i].JSONName
+			}
+		}
+	}
+
+	return items, total
+}
+
 // completeTest proves a paged list's Complete method walks the pages.
 func (g *gen) completeTest(o *definitions.Operation, call testCallInfo) string {
 	p := o.Pageable
 	startName := call.optNames[p.StartIndexOption]
+	items, total := g.pagedNames(o)
 	args := strings.Join(slicesWithout(call.args, call.options), ", ")
 	if args != "" {
 		args += ", "
@@ -739,7 +752,7 @@ func (g *gen) completeTest(o *definitions.Operation, call testCallInfo) string {
 		fmt.Fprintf(&b, "\t\t{\"short page\", 0, 9, %s, 1, []string{%s}},\n", options(2), starts[2])
 	}
 	b.WriteString("\t} {\n\t\tt.Run(tc.name, func(t *testing.T) {\n\t\t\tt.Parallel()\n\n")
-	fmt.Fprintf(&b, "\t\t\tc, starts := pagedServer(t, %q, %q, tc.total, tc.pages)\n", startName, g.sampleJSON(p.ItemType))
+	fmt.Fprintf(&b, "\t\t\tc, starts := pagedServer(t, %q, %q, %q, %q, tc.total, tc.pages)\n", startName, items, total, g.sampleJSON(p.ItemType))
 	fmt.Fprintf(&b, "\t\t\tresult, err := c.%sComplete(%stc.options)\n", o.Name, args)
 	b.WriteString("\t\t\tif err != nil {\n\t\t\t\tt.Fatal(err)\n\t\t\t}\n")
 	b.WriteString("\t\t\tif len(result.Items) != tc.items || !slices.Equal(*starts, tc.starts) || result.LatestHttpResponse == nil {\n")
@@ -748,12 +761,12 @@ func (g *gen) completeTest(o *definitions.Operation, call testCallInfo) string {
 
 	// Each hands out the same results one at a time, and a loop that stops asks for no page more
 	fmt.Fprintf(&b, "\nfunc TestOperation%sEach(t *testing.T) {\n\tt.Parallel()\n\n", o.Name)
-	fmt.Fprintf(&b, "\tc, starts := pagedServer(t, %q, %q, 0, 2)\n", startName, g.sampleJSON(p.ItemType))
+	fmt.Fprintf(&b, "\tc, starts := pagedServer(t, %q, %q, %q, %q, 0, 2)\n", startName, items, total, g.sampleJSON(p.ItemType))
 	b.WriteString("\tn := 0\n")
 	fmt.Fprintf(&b, "\tfor _, err := range c.%sEach(%s%s) {\n\t\tif err != nil {\n\t\t\tt.Fatal(err)\n\t\t}\n\t\tn++\n\t}\n", o.Name, args, options(1))
 	b.WriteString("\tif n != 2 || len(*starts) != 3 {\n\t\tt.Errorf(\"Each handed out %d results over %d pages, want 2 over 3\", n, len(*starts))\n\t}\n\n")
 	b.WriteString("\t// stopping after the first result asks for no page more\n")
-	fmt.Fprintf(&b, "\tc, starts = pagedServer(t, %q, %q, 0, 2)\n", startName, g.sampleJSON(p.ItemType))
+	fmt.Fprintf(&b, "\tc, starts = pagedServer(t, %q, %q, %q, %q, 0, 2)\n", startName, items, total, g.sampleJSON(p.ItemType))
 	fmt.Fprintf(&b, "\tfor range c.%sEach(%s%s) {\n\t\tbreak\n\t}\n", o.Name, args, options(1))
 	b.WriteString("\tif len(*starts) != 1 {\n\t\tt.Errorf(\"a stopped Each asked for %d pages, want 1\", len(*starts))\n\t}\n}\n")
 

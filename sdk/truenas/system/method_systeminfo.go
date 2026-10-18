@@ -15,11 +15,11 @@ func (c Client) Info(ctx context.Context) (result truenas.SystemInfoResponse, er
 	result.SystemInfoAnswer = &truenas.SystemInfoAnswer{}
 	var params []any
 	var answer truenas.SystemInfoAnswer
-	if err = c.Caller.Call(ctx, "system.info", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.info", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemInfoAnswer = result.Answer
 
-	return
+	return result, nil
 }

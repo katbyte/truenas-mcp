@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, truecommandUpdate truenas.Truecomman
 	result.TruecommandUpdateAnswer = &truenas.TruecommandUpdateAnswer{}
 	params := client.CallParams(1, truecommandUpdate)
 	var answer truenas.TruecommandUpdateAnswer
-	if err = c.Caller.Call(ctx, "truecommand.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "truecommand.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.TruecommandUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, data truenas.SharingSmbUpdat
 	result.SmbShareQueryResultItem = &truenas.SmbShareQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.SmbShareQueryResultItem
-	if err = c.Caller.Call(ctx, "sharing.smb.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.smb.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SmbShareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -16,11 +16,11 @@ func (c Client) RemoteSshSemiautomaticSetup(ctx context.Context, data truenas.Ke
 	result.SSHCredentialsEntry = &truenas.SSHCredentialsEntry{}
 	params := client.CallParams(1, data)
 	var answer truenas.SSHCredentialsEntry
-	if err = c.Caller.Call(ctx, "keychaincredential.remote_ssh_semiautomatic_setup", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "keychaincredential.remote_ssh_semiautomatic_setup", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SSHCredentialsEntry = result.Answer
 
-	return
+	return result, nil
 }

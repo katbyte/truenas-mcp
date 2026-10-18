@@ -15,5 +15,5 @@ func (c Client) CertificateChoices(ctx context.Context) (result truenas.AppCerti
 	var params []any
 	err = c.Caller.Call(ctx, "app.certificate_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

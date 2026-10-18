@@ -18,5 +18,5 @@ func (c Client) GetInfo(ctx context.Context, data truenas.DeviceGetInfoData) (re
 	params := client.CallParams(1, data)
 	err = c.Caller.Call(ctx, "device.get_info", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // IpmiSelClearResponse is the result of IpmiSelClear.
-type IpmiSelClearResponse struct {
-}
+type IpmiSelClearResponse struct{}

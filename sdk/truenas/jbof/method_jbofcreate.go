@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.JbofCreateData) (result
 	result.JBOFQueryResultItem = &truenas.JBOFQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.JBOFQueryResultItem
-	if err = c.Caller.Call(ctx, "jbof.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "jbof.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.JBOFQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

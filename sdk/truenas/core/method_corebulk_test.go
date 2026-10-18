@@ -13,14 +13,14 @@ func TestOperationCoreBulk(t *testing.T) {
 	t.Parallel()
 
 	c, r := newCallRecorder(t, "[{}]", nil)
-	result, err := c.Bulk(t.Context(), "v-Arg", [][]any{[]any{"s"}}, "v-Arg")
+	result, err := c.Bulk(t.Context(), "v-Arg", [][]any{{"s"}}, "v-Arg")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if r.method != "core.bulk" {
 		t.Errorf("method = %q, want %q", r.method, "core.bulk")
 	}
-	if want := []any{"v-Arg", [][]any{[]any{"s"}}, "v-Arg"}; !reflect.DeepEqual(r.params, want) {
+	if want := []any{"v-Arg", [][]any{{"s"}}, "v-Arg"}; !reflect.DeepEqual(r.params, want) {
 		t.Errorf("params = %#v, want %#v", r.params, want)
 	}
 	if result.Answer == nil || !result.Answered() {
@@ -29,28 +29,28 @@ func TestOperationCoreBulk(t *testing.T) {
 
 	// an answer that does not decode is an error
 	c, _ = newCallRecorder(t, "<html>", nil)
-	if _, err = c.Bulk(t.Context(), "v-Arg", [][]any{[]any{"s"}}, "v-Arg"); err == nil {
+	if _, err = c.Bulk(t.Context(), "v-Arg", [][]any{{"s"}}, "v-Arg"); err == nil {
 		t.Error("an answer that does not decode succeeded")
 	}
 
 	// a call the server refuses is an error carrying what it said
 	c, _ = newCallRecorder(t, "", &client.CallError{Method: "core.bulk", Code: -32001, Errno: 2, ErrName: "ENOENT", Reason: "not there"})
-	result, err = c.Bulk(t.Context(), "v-Arg", [][]any{[]any{"s"}}, "v-Arg")
+	result, err = c.Bulk(t.Context(), "v-Arg", [][]any{{"s"}}, "v-Arg")
 	if !client.IsNotFound(err) || client.CallErrorOf(err) == nil || result.Answered() {
 		t.Errorf("a refused call = %v, answered %t", err, result.Answered())
 	}
 
 	// an argument the server does not insist on is left off the end when it is not set
 	c, r = newCallRecorder(t, "[{}]", nil)
-	if _, err = c.Bulk(t.Context(), "v-Arg", [][]any{[]any{"s"}}, ""); err != nil {
+	if _, err = c.Bulk(t.Context(), "v-Arg", [][]any{{"s"}}, ""); err != nil {
 		t.Fatal(err)
 	}
-	if want := []any{"v-Arg", [][]any{[]any{"s"}}}; !reflect.DeepEqual(r.params, want) {
+	if want := []any{"v-Arg", [][]any{{"s"}}}; !reflect.DeepEqual(r.params, want) {
 		t.Errorf("params = %#v, want %#v", r.params, want)
 	}
 
 	// the call itself, for a connection that starts the job and follows it
-	if method, params := BulkCall("v-Arg", [][]any{[]any{"s"}}, "v-Arg"); method != "core.bulk" || !reflect.DeepEqual(params, []any{"v-Arg", [][]any{[]any{"s"}}, "v-Arg"}) {
+	if method, params := BulkCall("v-Arg", [][]any{{"s"}}, "v-Arg"); method != "core.bulk" || !reflect.DeepEqual(params, []any{"v-Arg", [][]any{{"s"}}, "v-Arg"}) {
 		t.Errorf("Call = %q, %#v", method, params)
 	}
 }

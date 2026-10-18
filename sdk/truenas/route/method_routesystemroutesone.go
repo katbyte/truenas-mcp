@@ -20,11 +20,11 @@ func (c Client) SystemRoutesOne(ctx context.Context, filters []any, options true
 	result.RouteSystemRoutesItemQueryResultItem = &truenas.RouteSystemRoutesItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.RouteSystemRoutesItemQueryResultItem
-	if err = c.Caller.Call(ctx, "route.system_routes", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "route.system_routes", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.RouteSystemRoutesItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

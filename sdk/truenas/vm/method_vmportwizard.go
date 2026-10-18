@@ -15,11 +15,11 @@ func (c Client) PortWizard(ctx context.Context) (result truenas.VmPortWizardResp
 	result.VmPortWizardAnswer = &truenas.VmPortWizardAnswer{}
 	var params []any
 	var answer truenas.VmPortWizardAnswer
-	if err = c.Caller.Call(ctx, "vm.port_wizard", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.port_wizard", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmPortWizardAnswer = result.Answer
 
-	return
+	return result, nil
 }

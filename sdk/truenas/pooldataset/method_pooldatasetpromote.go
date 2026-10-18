@@ -16,5 +16,5 @@ func (c Client) Promote(ctx context.Context, id string) (result truenas.PoolData
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.dataset.promote", params, nil)
 
-	return
+	return result, err
 }

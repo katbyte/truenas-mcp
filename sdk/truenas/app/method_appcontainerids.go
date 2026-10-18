@@ -20,5 +20,5 @@ func (c Client) ContainerIds(ctx context.Context, appName string, options truena
 	params := client.CallParams(1, appName, options)
 	err = c.Caller.Call(ctx, "app.container_ids", params, &result.Answer)
 
-	return
+	return result, err
 }

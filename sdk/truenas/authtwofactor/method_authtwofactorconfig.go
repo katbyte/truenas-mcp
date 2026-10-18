@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.AuthTwofactorConfigR
 	result.AuthTwofactorConfigAnswer = &truenas.AuthTwofactorConfigAnswer{}
 	var params []any
 	var answer truenas.AuthTwofactorConfigAnswer
-	if err = c.Caller.Call(ctx, "auth.twofactor.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.twofactor.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AuthTwofactorConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

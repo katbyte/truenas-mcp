@@ -21,10 +21,10 @@ import (
 func (c Client) GenerateToken(ctx context.Context, ttl int, attrs map[string]any, matchOrigin bool, singleUse bool) (result truenas.AuthGenerateTokenResponse, err error) {
 	params := client.CallParams(0, ttl, attrs, matchOrigin, singleUse)
 	var answer string
-	if err = c.Caller.Call(ctx, "auth.generate_token", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.generate_token", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

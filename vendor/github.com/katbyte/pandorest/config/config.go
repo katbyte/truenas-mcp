@@ -271,6 +271,12 @@ type Service struct {
 	// there is the same JSON. Without it such a response is a file, which
 	// is what text/css listed beside JSON is on Jellyfin.
 	PreferJSON bool
+	// TextAnswers reads an answer the document labels text/plain whole into a string, closed and handed back as the answer,
+	// rather than as a file left open for the caller: Audiobookshelf answers "OK" to most writes, and a caller that never
+	// reads such a body holds its connection for good. A text/plain answer declared binary stays a file, as does one the
+	// File workaround declares, and a text/plain listed beside JSON is PreferJSON's to settle. Without it only the Text
+	// workaround makes an answer text.
+	TextAnswers bool
 	// ExpectSameShape counts a status outside 2xx as one an operation
 	// expects when the document gives it the success answer's shape: a
 	// failure that still answers in full, as Sonarr's test-all answers 400

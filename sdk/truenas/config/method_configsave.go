@@ -22,12 +22,12 @@ func (c Client) Save(ctx context.Context, options truenas.ConfigSaveOptions) (re
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "config.save", params, nil)
 
-	return
+	return result, err
 }
 
 // SaveCall is the call Save makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SaveCall(options truenas.ConfigSaveOptions) (string, []any) {
+func SaveCall(options truenas.ConfigSaveOptions) (call string, params []any) {
 	return "config.save", client.CallParams(0, options)
 }
 

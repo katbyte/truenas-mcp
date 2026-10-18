@@ -14,10 +14,10 @@ import (
 func (c Client) MaxTotalCount(ctx context.Context) (result truenas.PoolSnapshottaskMaxTotalCountResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "pool.snapshottask.max_total_count", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.snapshottask.max_total_count", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

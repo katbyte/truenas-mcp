@@ -16,5 +16,5 @@ func (c Client) Create(ctx context.Context, keychainCredentialCreate truenas.Key
 	params := client.CallParams(1, keychainCredentialCreate)
 	err = c.Caller.Call(ctx, "keychaincredential.create", params, &result.Answer)
 
-	return
+	return result, err
 }

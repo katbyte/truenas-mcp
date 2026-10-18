@@ -16,5 +16,5 @@ func (c Client) Poweroff(ctx context.Context, id int) (result truenas.VmPoweroff
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "vm.poweroff", params, nil)
 
-	return
+	return result, err
 }

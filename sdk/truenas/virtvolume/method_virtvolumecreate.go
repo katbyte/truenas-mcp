@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, virtVolumeCreate truenas.VirtVolumeC
 	result.VirtVolumeQueryResultItem = &truenas.VirtVolumeQueryResultItem{}
 	params := client.CallParams(1, virtVolumeCreate)
 	var answer truenas.VirtVolumeQueryResultItem
-	if err = c.Caller.Call(ctx, "virt.volume.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.volume.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtVolumeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

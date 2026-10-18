@@ -19,11 +19,11 @@ func (c Client) Leave(ctx context.Context, credential truenas.DirectoryservicesL
 	params := client.CallParams(1, credential)
 	err = c.Caller.Call(ctx, "directoryservices.leave", params, nil)
 
-	return
+	return result, err
 }
 
 // LeaveCall is the call Leave makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func LeaveCall(credential truenas.DirectoryservicesLeaveCredential) (string, []any) {
+func LeaveCall(credential truenas.DirectoryservicesLeaveCredential) (call string, params []any) {
 	return "directoryservices.leave", client.CallParams(1, credential)
 }

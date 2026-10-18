@@ -15,5 +15,5 @@ func (c Client) ProfileChoices(ctx context.Context) (result truenas.UpdateProfil
 	var params []any
 	err = c.Caller.Call(ctx, "update.profile_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

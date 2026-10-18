@@ -15,5 +15,5 @@ func (c Client) EcCurveChoices(ctx context.Context) (result truenas.CertificateE
 	var params []any
 	err = c.Caller.Call(ctx, "certificate.ec_curve_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

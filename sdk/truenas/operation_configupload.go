@@ -3,5 +3,4 @@
 package truenas
 
 // ConfigUploadResponse is the result of ConfigUpload.
-type ConfigUploadResponse struct {
-}
+type ConfigUploadResponse struct{}

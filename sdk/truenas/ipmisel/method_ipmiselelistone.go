@@ -21,11 +21,11 @@ func (c Client) ElistOne(ctx context.Context, filters []any, options truenas.Ipm
 	result.IpmiSelElistQueryResultItem = &truenas.IpmiSelElistQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.IpmiSelElistQueryResultItem
-	if err = c.Caller.Call(ctx, "ipmi.sel.elist", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "ipmi.sel.elist", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IpmiSelElistQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

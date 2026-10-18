@@ -16,5 +16,5 @@ func (c Client) LicenseUpdate(ctx context.Context, license string) (result truen
 	params := client.CallParams(1, license)
 	err = c.Caller.Call(ctx, "system.license_update", params, nil)
 
-	return
+	return result, err
 }

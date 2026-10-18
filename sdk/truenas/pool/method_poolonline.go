@@ -17,10 +17,10 @@ import (
 func (c Client) Online(ctx context.Context, id int, options truenas.PoolOnlineOptions) (result truenas.PoolOnlineResponse, err error) {
 	params := client.CallParams(2, id, options)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.online", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.online", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

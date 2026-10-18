@@ -3,5 +3,4 @@
 package truenas
 
 // PoolExpandResponse is the result of PoolExpand.
-type PoolExpandResponse struct {
-}
+type PoolExpandResponse struct{}

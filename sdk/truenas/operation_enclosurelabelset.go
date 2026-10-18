@@ -3,5 +3,4 @@
 package truenas
 
 // EnclosureLabelSetResponse is the result of EnclosureLabelSet.
-type EnclosureLabelSetResponse struct {
-}
+type EnclosureLabelSetResponse struct{}

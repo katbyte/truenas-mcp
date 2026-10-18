@@ -21,11 +21,11 @@ func (c Client) Elist(ctx context.Context, filters []any, options truenas.IpmiSe
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "ipmi.sel.elist", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // ElistCall is the call Elist makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ElistCall(filters []any, options truenas.IpmiSelElistOptions) (string, []any) {
+func ElistCall(filters []any, options truenas.IpmiSelElistOptions) (call string, params []any) {
 	return "ipmi.sel.elist", client.CallParams(0, filters, options)
 }

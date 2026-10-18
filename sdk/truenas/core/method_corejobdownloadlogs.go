@@ -19,10 +19,10 @@ import (
 func (c Client) JobDownloadLogs(ctx context.Context, id int, filename string, buffered bool) (result truenas.CoreJobDownloadLogsResponse, err error) {
 	params := client.CallParams(2, id, filename, buffered)
 	var answer string
-	if err = c.Caller.Call(ctx, "core.job_download_logs", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "core.job_download_logs", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

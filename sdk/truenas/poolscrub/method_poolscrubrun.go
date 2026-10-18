@@ -18,5 +18,5 @@ func (c Client) Run(ctx context.Context, name string, threshold int) (result tru
 	params := client.CallParams(1, name, threshold)
 	err = c.Caller.Call(ctx, "pool.scrub.run", params, nil)
 
-	return
+	return result, err
 }

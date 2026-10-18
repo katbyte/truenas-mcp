@@ -3,5 +3,4 @@
 package truenas
 
 // DirectoryservicesSyncKeytabResponse is the result of DirectoryservicesSyncKeytab.
-type DirectoryservicesSyncKeytabResponse struct {
-}
+type DirectoryservicesSyncKeytabResponse struct{}

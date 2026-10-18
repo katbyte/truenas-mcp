@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.DirectoryservicesCon
 	result.DirectoryservicesConfigAnswer = &truenas.DirectoryservicesConfigAnswer{}
 	var params []any
 	var answer truenas.DirectoryservicesConfigAnswer
-	if err = c.Caller.Call(ctx, "directoryservices.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "directoryservices.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DirectoryservicesConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

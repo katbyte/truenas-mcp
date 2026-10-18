@@ -16,5 +16,5 @@ func (c Client) UpdateGpuPciIds(ctx context.Context, data []string) (result true
 	params := client.CallParams(1, data)
 	err = c.Caller.Call(ctx, "system.advanced.update_gpu_pci_ids", params, nil)
 
-	return
+	return result, err
 }

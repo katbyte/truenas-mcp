@@ -19,17 +19,17 @@ func (c Client) Update(ctx context.Context, kmipUpdate truenas.KmipUpdate) (resu
 	result.KmipUpdateAnswer = &truenas.KmipUpdateAnswer{}
 	params := client.CallParams(1, kmipUpdate)
 	var answer truenas.KmipUpdateAnswer
-	if err = c.Caller.Call(ctx, "kmip.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kmip.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KmipUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(kmipUpdate truenas.KmipUpdate) (string, []any) {
+func UpdateCall(kmipUpdate truenas.KmipUpdate) (call string, params []any) {
 	return "kmip.update", client.CallParams(1, kmipUpdate)
 }

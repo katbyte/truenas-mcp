@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, data truenas.CronjobUpdateDa
 	result.CronJobQueryResultItem = &truenas.CronJobQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.CronJobQueryResultItem
-	if err = c.Caller.Call(ctx, "cronjob.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cronjob.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CronJobQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -24,5 +24,5 @@ func (c Client) GetQuota(ctx context.Context, dataset string, quotaType truenas.
 	params := client.CallParams(2, dataset, quotaType, filters, options)
 	err = c.Caller.Call(ctx, "pool.dataset.get_quota", params, &result.Answer)
 
-	return
+	return result, err
 }

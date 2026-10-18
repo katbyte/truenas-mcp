@@ -17,10 +17,10 @@ import (
 func (c Client) SnapshotCount(ctx context.Context, dataset string) (result truenas.PoolDatasetSnapshotCountResponse, err error) {
 	params := client.CallParams(1, dataset)
 	var answer int
-	if err = c.Caller.Call(ctx, "pool.dataset.snapshot_count", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.snapshot_count", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

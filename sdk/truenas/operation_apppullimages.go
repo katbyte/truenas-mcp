@@ -3,5 +3,4 @@
 package truenas
 
 // AppPullImagesResponse is the result of AppPullImages.
-type AppPullImagesResponse struct {
-}
+type AppPullImagesResponse struct{}

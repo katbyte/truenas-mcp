@@ -13,5 +13,5 @@ func (c Client) Checkin(ctx context.Context) (result truenas.InterfaceCheckinRes
 	var params []any
 	err = c.Caller.Call(ctx, "interface.checkin", params, nil)
 
-	return
+	return result, err
 }

@@ -15,10 +15,10 @@ import (
 func (c Client) Clone(ctx context.Context, data truenas.PoolSnapshotCloneData) (result truenas.PoolSnapshotCloneResponse, err error) {
 	params := client.CallParams(1, data)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.snapshot.clone", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.snapshot.clone", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

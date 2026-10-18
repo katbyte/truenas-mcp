@@ -19,10 +19,10 @@ import (
 func (c Client) QueryCount(ctx context.Context, filters []any, options truenas.AppRegistryQueryOptions) (result truenas.AppRegistryQueryCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "app.registry.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.registry.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

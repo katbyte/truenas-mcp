@@ -3,5 +3,4 @@
 package truenas
 
 // InterfaceCheckinResponse is the result of InterfaceCheckin.
-type InterfaceCheckinResponse struct {
-}
+type InterfaceCheckinResponse struct{}

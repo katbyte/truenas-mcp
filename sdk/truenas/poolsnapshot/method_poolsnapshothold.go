@@ -18,5 +18,5 @@ func (c Client) Hold(ctx context.Context, id string, options truenas.PoolSnapsho
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "pool.snapshot.hold", params, nil)
 
-	return
+	return result, err
 }

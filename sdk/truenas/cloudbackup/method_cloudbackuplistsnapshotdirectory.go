@@ -22,5 +22,5 @@ func (c Client) ListSnapshotDirectory(ctx context.Context, id int, snapshotId st
 	params := client.CallParams(3, id, snapshotId, path)
 	err = c.Caller.Call(ctx, "cloud_backup.list_snapshot_directory", params, &result.Answer)
 
-	return
+	return result, err
 }

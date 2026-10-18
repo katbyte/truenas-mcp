@@ -15,10 +15,10 @@ import (
 func (c Client) GenerateOnetimePassword(ctx context.Context, generateSingleUsePassword truenas.GenerateSingleUsePassword) (result truenas.AuthGenerateOnetimePasswordResponse, err error) {
 	params := client.CallParams(1, generateSingleUsePassword)
 	var answer string
-	if err = c.Caller.Call(ctx, "auth.generate_onetime_password", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.generate_onetime_password", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

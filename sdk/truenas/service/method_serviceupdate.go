@@ -17,10 +17,10 @@ import (
 func (c Client) Update(ctx context.Context, idOrName any, serviceUpdate truenas.ServiceUpdate) (result truenas.ServiceUpdateResponse, err error) {
 	params := client.CallParams(2, idOrName, serviceUpdate)
 	var answer int
-	if err = c.Caller.Call(ctx, "service.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "service.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

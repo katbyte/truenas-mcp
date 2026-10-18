@@ -3,5 +3,4 @@
 package truenas
 
 // BootAttachResponse is the result of BootAttach.
-type BootAttachResponse struct {
-}
+type BootAttachResponse struct{}

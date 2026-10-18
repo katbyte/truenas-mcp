@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id string, virtVolumeUpdate truenas.
 	result.VirtVolumeQueryResultItem = &truenas.VirtVolumeQueryResultItem{}
 	params := client.CallParams(2, id, virtVolumeUpdate)
 	var answer truenas.VirtVolumeQueryResultItem
-	if err = c.Caller.Call(ctx, "virt.volume.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.volume.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtVolumeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

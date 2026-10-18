@@ -135,21 +135,21 @@ func (g *gen) writeCallMethod(b *strings.Builder, o *definitions.Operation, resp
 	typ, pointer := g.responseModel(o)
 	switch {
 	case typ == "":
-		fmt.Fprintf(b, "\terr = %s(ctx, %q, params, nil)\n\n\treturn\n}\n", send, o.Call.Method)
+		fmt.Fprintf(b, "\terr = %s(ctx, %q, params, nil)\n\n\treturn result, err\n}\n", send, o.Call.Method)
 	case pointer:
-		fmt.Fprintf(b, "\tvar answer %s\n\tif err = %s(ctx, %q, params, &answer); err != nil {\n\t\treturn\n\t}\n\tresult.Answer = &answer\n", strings.TrimPrefix(typ, "*"), send, o.Call.Method)
+		fmt.Fprintf(b, "\tvar answer %s\n\tif err := %s(ctx, %q, params, &answer); err != nil {\n\t\treturn result, err\n\t}\n\tresult.Answer = &answer\n", strings.TrimPrefix(typ, "*"), send, o.Call.Method)
 		if embedded := g.embedded(o); embedded != "" {
 			fmt.Fprintf(b, "\tresult.%s = result.Answer\n", embeddedField(embedded))
 		}
-		b.WriteString("\n\treturn\n}\n")
+		b.WriteString("\n\treturn result, nil\n}\n")
 	default:
-		fmt.Fprintf(b, "\terr = %s(ctx, %q, params, &result.Answer)\n\n\treturn\n}\n", send, o.Call.Method)
+		fmt.Fprintf(b, "\terr = %s(ctx, %q, params, &result.Answer)\n\n\treturn result, err\n}\n", send, o.Call.Method)
 	}
 
 	if o.Call.Job && !o.Call.Uploadable && o.Call.Form == "" {
 		// the call itself, for a connection of the repository's own that starts a job and follows it rather than waiting
 		g.declare(name+"Call", "operation "+o.Name)
-		fmt.Fprintf(b, "\n// %sCall is the call %s makes, the method's name and its arguments as sent, for a connection that starts the job and\n// follows it rather than waiting for it.\nfunc %sCall(%s) (string, []any) {\n", name, name, name, strings.Join(params, ", "))
+		fmt.Fprintf(b, "\n// %sCall is the call %s makes, the method's name and its arguments as sent, for a connection that starts the job and\n// follows it rather than waiting for it.\nfunc %sCall(%s) (call string, params []any) {\n", name, name, name, strings.Join(params, ", "))
 		if len(call) == 0 {
 			fmt.Fprintf(b, "\treturn %q, nil\n}\n", o.Call.Method)
 		} else {
@@ -199,7 +199,25 @@ func (g *gen) operationsFile() string {
 					row.File = "upload"
 				}
 			}
-			fmt.Fprintf(&b, "\t{Name: %q, Method: %q, Path: %q, Group: %q, Read: %t, Job: %t, Form: %q, File: %q},\n", row.Name, row.Method, row.Path, row.Group, row.Read, row.Job, row.Form, row.File)
+			// only what the row has: a field left out reads as its zero
+			fields := []string{fmt.Sprintf("Name: %q", row.Name), fmt.Sprintf("Method: %q", row.Method)}
+			if row.Path != "" {
+				fields = append(fields, fmt.Sprintf("Path: %q", row.Path))
+			}
+			fields = append(fields, fmt.Sprintf("Group: %q", row.Group))
+			if row.Read {
+				fields = append(fields, "Read: true")
+			}
+			if row.Job {
+				fields = append(fields, "Job: true")
+			}
+			if row.Form != "" {
+				fields = append(fields, fmt.Sprintf("Form: %q", row.Form))
+			}
+			if row.File != "" {
+				fields = append(fields, fmt.Sprintf("File: %q", row.File))
+			}
+			fmt.Fprintf(&b, "\t{%s},\n", strings.Join(fields, ", "))
 		}
 	}
 	b.WriteString("}\n")
@@ -497,13 +515,24 @@ func (g *gen) sampleArgument(a definitions.Argument) string {
 	return g.sampleOf(a.Type)
 }
 
+// sampleElement is a value of a type inside a list or a map literal, where a list or a map of its own goes without its type, as gofmt
+// would have it.
+func (g *gen) sampleElement(t definitions.TypeRef) string {
+	sample := g.sampleOf(t)
+	if t.Type == definitions.List || t.Type == definitions.Dictionary {
+		return strings.TrimPrefix(sample, g.goType(t))
+	}
+
+	return sample
+}
+
 // sampleOf is a value of a type: a record empty, a list of one, a map of one, and a primitive the test's usual sample.
 func (g *gen) sampleOf(t definitions.TypeRef) string {
 	switch t.Type {
 	case definitions.List:
-		return g.goType(t) + "{" + g.sampleOf(*t.NestedItem) + "}"
+		return g.goType(t) + "{" + g.sampleElement(*t.NestedItem) + "}"
 	case definitions.Dictionary:
-		return g.goType(t) + `{"k": ` + g.sampleOf(*t.NestedItem) + "}"
+		return g.goType(t) + `{"k": ` + g.sampleElement(*t.NestedItem) + "}"
 	case definitions.Reference:
 		if c := g.constants[t.ReferenceName]; c != nil && len(c.Values) > 0 {
 			return g.typeName(c.Values[0].Name)

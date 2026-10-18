@@ -3,5 +3,4 @@
 package truenas
 
 // SupportAttachTicketResponse is the result of SupportAttachTicket.
-type SupportAttachTicketResponse struct {
-}
+type SupportAttachTicketResponse struct{}

@@ -17,10 +17,10 @@ import (
 func (c Client) RecommendedZvolBlocksize(ctx context.Context, pool string) (result truenas.PoolDatasetRecommendedZvolBlocksizeResponse, err error) {
 	params := client.CallParams(1, pool)
 	var answer string
-	if err = c.Caller.Call(ctx, "pool.dataset.recommended_zvol_blocksize", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.recommended_zvol_blocksize", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

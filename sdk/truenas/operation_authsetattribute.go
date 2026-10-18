@@ -3,5 +3,4 @@
 package truenas
 
 // AuthSetAttributeResponse is the result of AuthSetAttribute.
-type AuthSetAttributeResponse struct {
-}
+type AuthSetAttributeResponse struct{}

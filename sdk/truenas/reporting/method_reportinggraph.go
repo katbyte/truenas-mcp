@@ -20,5 +20,5 @@ func (c Client) Graph(ctx context.Context, str string, query truenas.Query) (res
 	params := client.CallParams(1, str, query)
 	err = c.Caller.Call(ctx, "reporting.graph", params, &result.Answer)
 
-	return
+	return result, err
 }

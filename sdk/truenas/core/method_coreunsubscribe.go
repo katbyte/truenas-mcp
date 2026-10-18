@@ -16,5 +16,5 @@ func (c Client) Unsubscribe(ctx context.Context, id string) (result truenas.Core
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "core.unsubscribe", params, nil)
 
-	return
+	return result, err
 }

@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Fil
 	result.AclTemplateQueryResultItem = &truenas.AclTemplateQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AclTemplateQueryResultItem
-	if err = c.Caller.Call(ctx, "filesystem.acltemplate.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.acltemplate.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AclTemplateQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

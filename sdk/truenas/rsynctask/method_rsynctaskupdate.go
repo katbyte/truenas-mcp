@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, rsyncTaskUpdate truenas.Rsyn
 	result.RsyncTaskQueryResultItem = &truenas.RsyncTaskQueryResultItem{}
 	params := client.CallParams(2, id, rsyncTaskUpdate)
 	var answer truenas.RsyncTaskQueryResultItem
-	if err = c.Caller.Call(ctx, "rsynctask.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "rsynctask.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.RsyncTaskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

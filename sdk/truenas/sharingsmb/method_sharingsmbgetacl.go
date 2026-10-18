@@ -18,11 +18,11 @@ func (c Client) Getacl(ctx context.Context, smbGetacl truenas.SmbGetacl) (result
 	result.SharingSmbGetaclAnswer = &truenas.SharingSmbGetaclAnswer{}
 	params := client.CallParams(1, smbGetacl)
 	var answer truenas.SharingSmbGetaclAnswer
-	if err = c.Caller.Call(ctx, "sharing.smb.getacl", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.smb.getacl", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SharingSmbGetaclAnswer = result.Answer
 
-	return
+	return result, nil
 }

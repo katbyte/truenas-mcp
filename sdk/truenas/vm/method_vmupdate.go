@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, vmUpdate truenas.VmUpdate) (
 	result.VMQueryResultItem = &truenas.VMQueryResultItem{}
 	params := client.CallParams(2, id, vmUpdate)
 	var answer truenas.VMQueryResultItem
-	if err = c.Caller.Call(ctx, "vm.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VMQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

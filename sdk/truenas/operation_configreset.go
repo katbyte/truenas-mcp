@@ -3,5 +3,4 @@
 package truenas
 
 // ConfigResetResponse is the result of ConfigReset.
-type ConfigResetResponse struct {
-}
+type ConfigResetResponse struct{}

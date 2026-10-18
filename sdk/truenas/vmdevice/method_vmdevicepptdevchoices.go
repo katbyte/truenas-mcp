@@ -15,5 +15,5 @@ func (c Client) PptdevChoices(ctx context.Context) (result truenas.VmDevicePptde
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.pptdev_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

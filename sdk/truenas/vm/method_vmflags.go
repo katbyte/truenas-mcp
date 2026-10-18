@@ -15,11 +15,11 @@ func (c Client) Flags(ctx context.Context) (result truenas.VmFlagsResponse, err 
 	result.VmFlagsAnswer = &truenas.VmFlagsAnswer{}
 	var params []any
 	var answer truenas.VmFlagsAnswer
-	if err = c.Caller.Call(ctx, "vm.flags", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.flags", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmFlagsAnswer = result.Answer
 
-	return
+	return result, nil
 }

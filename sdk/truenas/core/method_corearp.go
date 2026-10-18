@@ -16,5 +16,5 @@ func (c Client) Arp(ctx context.Context, options truenas.CoreArpOptions) (result
 	params := client.CallParams(1, options)
 	err = c.Caller.Call(ctx, "core.arp", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // AuditDownloadReportResponse is the result of AuditDownloadReport.
-type AuditDownloadReportResponse struct {
-}
+type AuditDownloadReportResponse struct{}

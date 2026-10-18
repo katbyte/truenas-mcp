@@ -18,5 +18,5 @@ func (c Client) ListDatasets(ctx context.Context, transport truenas.ReplicationT
 	params := client.CallParams(1, transport, sshCredentials)
 	err = c.Caller.Call(ctx, "replication.list_datasets", params, &result.Answer)
 
-	return
+	return result, err
 }

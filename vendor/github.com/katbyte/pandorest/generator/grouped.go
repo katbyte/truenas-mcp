@@ -229,7 +229,7 @@ const rootClient = `%[4]sfunc New(baseURL, %[5]s string, opts ...client.Option) 
 	}
 
 	// the credential is a secret whatever the authorizer makes of it, so no error repeats it
-	return %[3]s.New(baseURL, %[2]s, append(opts[:len(opts):len(opts)], client.WithSecrets(%[5]s))...)
+	return %[3]s.New(baseURL, %[2]s, append(slices.Clip(opts), client.WithSecrets(%[5]s))...)
 }
 `
 

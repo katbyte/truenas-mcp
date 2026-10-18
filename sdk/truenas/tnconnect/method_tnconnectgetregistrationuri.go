@@ -14,10 +14,10 @@ import (
 func (c Client) GetRegistrationUri(ctx context.Context) (result truenas.TnConnectGetRegistrationUriResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "tn_connect.get_registration_uri", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "tn_connect.get_registration_uri", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

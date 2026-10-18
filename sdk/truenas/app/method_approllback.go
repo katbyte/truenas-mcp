@@ -21,17 +21,17 @@ func (c Client) Rollback(ctx context.Context, appName string, options truenas.Ap
 	result.AppQueryResultItem = &truenas.AppQueryResultItem{}
 	params := client.CallParams(2, appName, options)
 	var answer truenas.AppQueryResultItem
-	if err = c.Caller.Call(ctx, "app.rollback", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.rollback", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // RollbackCall is the call Rollback makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RollbackCall(appName string, options truenas.AppRollbackOptions) (string, []any) {
+func RollbackCall(appName string, options truenas.AppRollbackOptions) (call string, params []any) {
 	return "app.rollback", client.CallParams(2, appName, options)
 }

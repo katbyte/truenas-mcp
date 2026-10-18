@@ -20,5 +20,5 @@ func (c Client) Available(ctx context.Context, filters []any, options truenas.Ap
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "app.available", params, &result.Answer)
 
-	return
+	return result, err
 }

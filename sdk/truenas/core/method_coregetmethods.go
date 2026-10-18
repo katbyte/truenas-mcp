@@ -20,5 +20,5 @@ func (c Client) GetMethods(ctx context.Context, service string, target truenas.C
 	params := client.CallParams(0, service, target)
 	err = c.Caller.Call(ctx, "core.get_methods", params, &result.Answer)
 
-	return
+	return result, err
 }

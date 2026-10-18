@@ -15,5 +15,5 @@ func (c Client) CountryChoices(ctx context.Context) (result truenas.SystemGenera
 	var params []any
 	err = c.Caller.Call(ctx, "system.general.country_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

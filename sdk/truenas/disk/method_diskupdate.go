@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id string, data truenas.DiskUpdateDa
 	result.DiskQueryResultItem = &truenas.DiskQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.DiskQueryResultItem
-	if err = c.Caller.Call(ctx, "disk.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "disk.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DiskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

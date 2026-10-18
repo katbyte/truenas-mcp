@@ -22,12 +22,12 @@ func (c Client) LogFileDownload(ctx context.Context, id int) (result truenas.VmL
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "vm.log_file_download", params, nil)
 
-	return
+	return result, err
 }
 
 // LogFileDownloadCall is the call LogFileDownload makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func LogFileDownloadCall(id int) (string, []any) {
+func LogFileDownloadCall(id int) (call string, params []any) {
 	return "vm.log_file_download", client.CallParams(1, id)
 }
 

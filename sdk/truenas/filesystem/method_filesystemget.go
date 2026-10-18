@@ -22,12 +22,12 @@ func (c Client) Get(ctx context.Context, path string) (result truenas.Filesystem
 	params := client.CallParams(1, path)
 	err = c.Caller.Call(ctx, "filesystem.get", params, nil)
 
-	return
+	return result, err
 }
 
 // GetCall is the call Get makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func GetCall(path string) (string, []any) {
+func GetCall(path string) (call string, params []any) {
 	return "filesystem.get", client.CallParams(1, path)
 }
 

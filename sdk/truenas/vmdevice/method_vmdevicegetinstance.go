@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.VmDevic
 	result.VmDeviceGetInstanceAnswer = &truenas.VmDeviceGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.VmDeviceGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "vm.device.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmDeviceGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

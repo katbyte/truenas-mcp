@@ -15,5 +15,5 @@ func (c Client) GuestArchitectureAndMachineChoices(ctx context.Context) (result 
 	var params []any
 	err = c.Caller.Call(ctx, "vm.guest_architecture_and_machine_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

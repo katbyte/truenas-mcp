@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.AlertclassesConfigRe
 	result.AlertclassesConfigAnswer = &truenas.AlertclassesConfigAnswer{}
 	var params []any
 	var answer truenas.AlertclassesConfigAnswer
-	if err = c.Caller.Call(ctx, "alertclasses.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "alertclasses.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AlertclassesConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

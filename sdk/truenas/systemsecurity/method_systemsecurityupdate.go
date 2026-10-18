@@ -19,17 +19,17 @@ func (c Client) Update(ctx context.Context, systemSecurityUpdate truenas.SystemS
 	result.SystemSecurityUpdateAnswer = &truenas.SystemSecurityUpdateAnswer{}
 	params := client.CallParams(1, systemSecurityUpdate)
 	var answer truenas.SystemSecurityUpdateAnswer
-	if err = c.Caller.Call(ctx, "system.security.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.security.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemSecurityUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(systemSecurityUpdate truenas.SystemSecurityUpdate) (string, []any) {
+func UpdateCall(systemSecurityUpdate truenas.SystemSecurityUpdate) (call string, params []any) {
 	return "system.security.update", client.CallParams(1, systemSecurityUpdate)
 }

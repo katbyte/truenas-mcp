@@ -18,5 +18,5 @@ func (c Client) DeleteWillChangeRetentionFor(ctx context.Context, id int) (resul
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.snapshottask.delete_will_change_retention_for", params, &result.Answer)
 
-	return
+	return result, err
 }

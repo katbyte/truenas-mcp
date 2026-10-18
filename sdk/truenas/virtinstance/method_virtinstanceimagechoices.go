@@ -18,5 +18,5 @@ func (c Client) ImageChoices(ctx context.Context, virtInstancesImageChoices true
 	params := client.CallParams(0, virtInstancesImageChoices)
 	err = c.Caller.Call(ctx, "virt.instance.image_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

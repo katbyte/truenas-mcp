@@ -20,11 +20,11 @@ func (c Client) AvailableOne(ctx context.Context, filters []any, options truenas
 	result.AppAvailableItemQueryResultItem = &truenas.AppAvailableItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AppAvailableItemQueryResultItem
-	if err = c.Caller.Call(ctx, "app.available", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.available", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppAvailableItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -19,17 +19,17 @@ func (c Client) Create(ctx context.Context, certificateCreate truenas.Certificat
 	result.CertificateQueryResultItem = &truenas.CertificateQueryResultItem{}
 	params := client.CallParams(1, certificateCreate)
 	var answer truenas.CertificateQueryResultItem
-	if err = c.Caller.Call(ctx, "certificate.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "certificate.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CertificateQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // CreateCall is the call Create makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func CreateCall(certificateCreate truenas.CertificateCreate) (string, []any) {
+func CreateCall(certificateCreate truenas.CertificateCreate) (call string, params []any) {
 	return "certificate.create", client.CallParams(1, certificateCreate)
 }

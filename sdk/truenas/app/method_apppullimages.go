@@ -21,11 +21,11 @@ func (c Client) PullImages(ctx context.Context, appName string, options truenas.
 	params := client.CallParams(1, appName, options)
 	err = c.Caller.Call(ctx, "app.pull_images", params, nil)
 
-	return
+	return result, err
 }
 
 // PullImagesCall is the call PullImages makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func PullImagesCall(appName string, options truenas.AppPullImagesOptions) (string, []any) {
+func PullImagesCall(appName string, options truenas.AppPullImagesOptions) (call string, params []any) {
 	return "app.pull_images", client.CallParams(1, appName, options)
 }

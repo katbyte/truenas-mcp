@@ -3,5 +3,4 @@
 package truenas
 
 // UpdateManualResponse is the result of UpdateManual.
-type UpdateManualResponse struct {
-}
+type UpdateManualResponse struct{}

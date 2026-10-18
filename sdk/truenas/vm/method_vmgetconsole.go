@@ -17,10 +17,10 @@ import (
 func (c Client) GetConsole(ctx context.Context, id int) (result truenas.VmGetConsoleResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer string
-	if err = c.Caller.Call(ctx, "vm.get_console", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.get_console", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -16,5 +16,5 @@ func (c Client) Delete(ctx context.Context, id int) (result truenas.KerberosReal
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "kerberos.realm.delete", params, nil)
 
-	return
+	return result, err
 }

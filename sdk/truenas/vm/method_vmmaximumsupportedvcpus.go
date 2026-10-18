@@ -14,10 +14,10 @@ import (
 func (c Client) MaximumSupportedVcpus(ctx context.Context) (result truenas.VmMaximumSupportedVcpusResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "vm.maximum_supported_vcpus", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.maximum_supported_vcpus", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

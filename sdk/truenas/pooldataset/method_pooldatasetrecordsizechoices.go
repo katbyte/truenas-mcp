@@ -18,5 +18,5 @@ func (c Client) RecordsizeChoices(ctx context.Context, poolName string) (result 
 	params := client.CallParams(0, poolName)
 	err = c.Caller.Call(ctx, "pool.dataset.recordsize_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

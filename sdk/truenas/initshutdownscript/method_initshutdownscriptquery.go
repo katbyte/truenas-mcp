@@ -20,5 +20,5 @@ func (c Client) Query(ctx context.Context, filters []any, options truenas.Initsh
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "initshutdownscript.query", params, &result.Answer)
 
-	return
+	return result, err
 }

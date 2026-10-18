@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, iscsiInitiatorUpdate truenas
 	result.IscsiInitiatorQueryResultItem = &truenas.IscsiInitiatorQueryResultItem{}
 	params := client.CallParams(2, id, iscsiInitiatorUpdate)
 	var answer truenas.IscsiInitiatorQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.initiator.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.initiator.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiInitiatorQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

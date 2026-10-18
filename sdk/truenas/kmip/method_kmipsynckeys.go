@@ -13,5 +13,5 @@ func (c Client) SyncKeys(ctx context.Context) (result truenas.KmipSyncKeysRespon
 	var params []any
 	err = c.Caller.Call(ctx, "kmip.sync_keys", params, nil)
 
-	return
+	return result, err
 }

@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Clo
 	result.CloudSyncQueryResultItem = &truenas.CloudSyncQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.CloudSyncQueryResultItem
-	if err = c.Caller.Call(ctx, "cloudsync.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudSyncQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

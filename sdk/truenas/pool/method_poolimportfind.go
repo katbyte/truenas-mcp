@@ -16,11 +16,11 @@ func (c Client) ImportFind(ctx context.Context) (result truenas.PoolImportFindRe
 	var params []any
 	err = c.Caller.Call(ctx, "pool.import_find", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // ImportFindCall is the call ImportFind makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ImportFindCall() (string, []any) {
+func ImportFindCall() (call string, params []any) {
 	return "pool.import_find", nil
 }

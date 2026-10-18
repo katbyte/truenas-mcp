@@ -19,17 +19,17 @@ func (c Client) Update(ctx context.Context, directoryservicesUpdate truenas.Dire
 	result.DirectoryservicesUpdateAnswer = &truenas.DirectoryservicesUpdateAnswer{}
 	params := client.CallParams(1, directoryservicesUpdate)
 	var answer truenas.DirectoryservicesUpdateAnswer
-	if err = c.Caller.Call(ctx, "directoryservices.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "directoryservices.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DirectoryservicesUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(directoryservicesUpdate truenas.DirectoryservicesUpdate) (string, []any) {
+func UpdateCall(directoryservicesUpdate truenas.DirectoryservicesUpdate) (call string, params []any) {
 	return "directoryservices.update", client.CallParams(1, directoryservicesUpdate)
 }

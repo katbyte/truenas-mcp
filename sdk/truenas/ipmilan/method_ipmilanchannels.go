@@ -15,5 +15,5 @@ func (c Client) Channels(ctx context.Context) (result truenas.IpmiLanChannelsRes
 	var params []any
 	err = c.Caller.Call(ctx, "ipmi.lan.channels", params, &result.Answer)
 
-	return
+	return result, err
 }

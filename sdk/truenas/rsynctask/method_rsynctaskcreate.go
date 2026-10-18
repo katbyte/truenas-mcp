@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, rsyncTaskCreate truenas.RsyncTaskCre
 	result.RsyncTaskQueryResultItem = &truenas.RsyncTaskQueryResultItem{}
 	params := client.CallParams(1, rsyncTaskCreate)
 	var answer truenas.RsyncTaskQueryResultItem
-	if err = c.Caller.Call(ctx, "rsynctask.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "rsynctask.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.RsyncTaskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

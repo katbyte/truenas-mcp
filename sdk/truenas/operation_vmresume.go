@@ -3,5 +3,4 @@
 package truenas
 
 // VmResumeResponse is the result of VmResume.
-type VmResumeResponse struct {
-}
+type VmResumeResponse struct{}

@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, dnsAuthenticatorUpdate truen
 	result.ACMEDNSAuthenticatorQueryResultItem = &truenas.ACMEDNSAuthenticatorQueryResultItem{}
 	params := client.CallParams(2, id, dnsAuthenticatorUpdate)
 	var answer truenas.ACMEDNSAuthenticatorQueryResultItem
-	if err = c.Caller.Call(ctx, "acme.dns.authenticator.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "acme.dns.authenticator.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ACMEDNSAuthenticatorQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

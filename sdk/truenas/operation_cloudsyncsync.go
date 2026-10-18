@@ -3,5 +3,4 @@
 package truenas
 
 // CloudsyncSyncResponse is the result of CloudsyncSync.
-type CloudsyncSyncResponse struct {
-}
+type CloudsyncSyncResponse struct{}

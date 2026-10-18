@@ -3,5 +3,4 @@
 package truenas
 
 // RsynctaskRunResponse is the result of RsynctaskRun.
-type RsynctaskRunResponse struct {
-}
+type RsynctaskRunResponse struct{}

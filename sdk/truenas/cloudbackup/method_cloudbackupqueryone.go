@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Clo
 	result.CloudBackupQueryResultItem = &truenas.CloudBackupQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.CloudBackupQueryResultItem
-	if err = c.Caller.Call(ctx, "cloud_backup.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloud_backup.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudBackupQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.NvmetGlobalConfigRes
 	result.NvmetGlobalConfigAnswer = &truenas.NvmetGlobalConfigAnswer{}
 	var params []any
 	var answer truenas.NvmetGlobalConfigAnswer
-	if err = c.Caller.Call(ctx, "nvmet.global.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.global.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NvmetGlobalConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

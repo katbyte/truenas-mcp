@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.InterfaceCreateData) (r
 	result.InterfaceCreateAnswer = &truenas.InterfaceCreateAnswer{}
 	params := client.CallParams(1, data)
 	var answer truenas.InterfaceCreateAnswer
-	if err = c.Caller.Call(ctx, "interface.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InterfaceCreateAnswer = result.Answer
 
-	return
+	return result, nil
 }

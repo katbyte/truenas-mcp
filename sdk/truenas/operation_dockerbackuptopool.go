@@ -3,5 +3,4 @@
 package truenas
 
 // DockerBackupToPoolResponse is the result of DockerBackupToPool.
-type DockerBackupToPoolResponse struct {
-}
+type DockerBackupToPoolResponse struct{}

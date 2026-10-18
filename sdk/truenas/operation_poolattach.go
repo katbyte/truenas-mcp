@@ -3,5 +3,4 @@
 package truenas
 
 // PoolAttachResponse is the result of PoolAttach.
-type PoolAttachResponse struct {
-}
+type PoolAttachResponse struct{}

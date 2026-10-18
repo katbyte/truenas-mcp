@@ -15,10 +15,10 @@ import (
 func (c Client) Test(ctx context.Context, alertServiceCreate truenas.AlertServiceCreate) (result truenas.AlertserviceTestResponse, err error) {
 	params := client.CallParams(1, alertServiceCreate)
 	var answer bool
-	if err = c.Caller.Call(ctx, "alertservice.test", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "alertservice.test", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

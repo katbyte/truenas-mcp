@@ -15,5 +15,5 @@ func (c Client) UiAddressChoices(ctx context.Context) (result truenas.SystemGene
 	var params []any
 	err = c.Caller.Call(ctx, "system.general.ui_address_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

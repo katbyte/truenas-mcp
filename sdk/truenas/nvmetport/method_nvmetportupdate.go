@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, nvmetPortUpdate truenas.Nvme
 	result.NVMetPortQueryResultItem = &truenas.NVMetPortQueryResultItem{}
 	params := client.CallParams(2, id, nvmetPortUpdate)
 	var answer truenas.NVMetPortQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.port.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.port.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetPortQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

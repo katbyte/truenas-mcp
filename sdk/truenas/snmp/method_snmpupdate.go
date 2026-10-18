@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, snmpUpdate truenas.SnmpUpdate) (resu
 	result.SnmpUpdateAnswer = &truenas.SnmpUpdateAnswer{}
 	params := client.CallParams(1, snmpUpdate)
 	var answer truenas.SnmpUpdateAnswer
-	if err = c.Caller.Call(ctx, "snmp.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "snmp.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SnmpUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // VmSuspendResponse is the result of VmSuspend.
-type VmSuspendResponse struct {
-}
+type VmSuspendResponse struct{}

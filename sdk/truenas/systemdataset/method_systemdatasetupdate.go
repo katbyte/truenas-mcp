@@ -19,17 +19,17 @@ func (c Client) Update(ctx context.Context, data truenas.SystemdatasetUpdateData
 	result.SystemdatasetUpdateAnswer = &truenas.SystemdatasetUpdateAnswer{}
 	params := client.CallParams(1, data)
 	var answer truenas.SystemdatasetUpdateAnswer
-	if err = c.Caller.Call(ctx, "systemdataset.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "systemdataset.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemdatasetUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(data truenas.SystemdatasetUpdateData) (string, []any) {
+func UpdateCall(data truenas.SystemdatasetUpdateData) (call string, params []any) {
 	return "systemdataset.update", client.CallParams(1, data)
 }

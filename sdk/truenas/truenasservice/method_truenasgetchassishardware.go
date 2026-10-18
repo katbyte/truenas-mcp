@@ -14,10 +14,10 @@ import (
 func (c Client) GetChassisHardware(ctx context.Context) (result truenas.TruenasGetChassisHardwareResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "truenas.get_chassis_hardware", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "truenas.get_chassis_hardware", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

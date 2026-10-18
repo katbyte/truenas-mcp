@@ -16,11 +16,11 @@ func (c Client) Sync(ctx context.Context) (result truenas.CatalogSyncResponse, e
 	var params []any
 	err = c.Caller.Call(ctx, "catalog.sync", params, nil)
 
-	return
+	return result, err
 }
 
 // SyncCall is the call Sync makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SyncCall() (string, []any) {
+func SyncCall() (call string, params []any) {
 	return "catalog.sync", nil
 }

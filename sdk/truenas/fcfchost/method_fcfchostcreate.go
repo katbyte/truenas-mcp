@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, fcHostCreate truenas.FcHostCreate) (
 	result.FCHostQueryResultItem = &truenas.FCHostQueryResultItem{}
 	params := client.CallParams(1, fcHostCreate)
 	var answer truenas.FCHostQueryResultItem
-	if err = c.Caller.Call(ctx, "fc.fc_host.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "fc.fc_host.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FCHostQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

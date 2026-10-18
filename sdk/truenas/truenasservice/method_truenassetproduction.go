@@ -21,11 +21,11 @@ func (c Client) SetProduction(ctx context.Context, production bool, attachDebug 
 	params := client.CallParams(1, production, attachDebug)
 	err = c.Caller.Call(ctx, "truenas.set_production", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // SetProductionCall is the call SetProduction makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SetProductionCall(production bool, attachDebug bool) (string, []any) {
+func SetProductionCall(production bool, attachDebug bool) (call string, params []any) {
 	return "truenas.set_production", client.CallParams(1, production, attachDebug)
 }

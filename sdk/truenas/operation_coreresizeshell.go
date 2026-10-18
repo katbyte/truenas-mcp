@@ -3,5 +3,4 @@
 package truenas
 
 // CoreResizeShellResponse is the result of CoreResizeShell.
-type CoreResizeShellResponse struct {
-}
+type CoreResizeShellResponse struct{}

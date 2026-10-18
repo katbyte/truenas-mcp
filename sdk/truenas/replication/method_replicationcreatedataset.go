@@ -20,5 +20,5 @@ func (c Client) CreateDataset(ctx context.Context, dataset string, transport tru
 	params := client.CallParams(2, dataset, transport, sshCredentials)
 	err = c.Caller.Call(ctx, "replication.create_dataset", params, nil)
 
-	return
+	return result, err
 }

@@ -17,10 +17,10 @@ import (
 func (c Client) Delete(ctx context.Context, id string, options truenas.PoolSnapshotDeleteOptions) (result truenas.PoolSnapshotDeleteResponse, err error) {
 	params := client.CallParams(1, id, options)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.snapshot.delete", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.snapshot.delete", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

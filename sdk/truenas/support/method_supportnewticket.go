@@ -19,17 +19,17 @@ func (c Client) NewTicket(ctx context.Context, data truenas.SupportNewTicketData
 	result.SupportNewTicketAnswer = &truenas.SupportNewTicketAnswer{}
 	params := client.CallParams(1, data)
 	var answer truenas.SupportNewTicketAnswer
-	if err = c.Caller.Call(ctx, "support.new_ticket", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "support.new_ticket", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SupportNewTicketAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // NewTicketCall is the call NewTicket makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func NewTicketCall(data truenas.SupportNewTicketData) (string, []any) {
+func NewTicketCall(data truenas.SupportNewTicketData) (call string, params []any) {
 	return "support.new_ticket", client.CallParams(1, data)
 }

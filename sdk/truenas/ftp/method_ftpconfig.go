@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.FtpConfigResponse, e
 	result.FtpConfigAnswer = &truenas.FtpConfigAnswer{}
 	var params []any
 	var answer truenas.FtpConfigAnswer
-	if err = c.Caller.Call(ctx, "ftp.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "ftp.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FtpConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,11 +15,11 @@ func (c Client) VirtualizationDetails(ctx context.Context) (result truenas.VmVir
 	result.VmVirtualizationDetailsAnswer = &truenas.VmVirtualizationDetailsAnswer{}
 	var params []any
 	var answer truenas.VmVirtualizationDetailsAnswer
-	if err = c.Caller.Call(ctx, "vm.virtualization_details", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.virtualization_details", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmVirtualizationDetailsAnswer = result.Answer
 
-	return
+	return result, nil
 }

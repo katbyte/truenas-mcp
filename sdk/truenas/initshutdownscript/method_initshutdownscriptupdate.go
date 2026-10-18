@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, data truenas.Initshutdownscr
 	result.InitShutdownScriptQueryResultItem = &truenas.InitShutdownScriptQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.InitShutdownScriptQueryResultItem
-	if err = c.Caller.Call(ctx, "initshutdownscript.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "initshutdownscript.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InitShutdownScriptQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -16,11 +16,11 @@ func (c Client) Verify(ctx context.Context, cloudSyncCredentialsCreate truenas.C
 	result.CloudsyncCredentialsVerifyAnswer = &truenas.CloudsyncCredentialsVerifyAnswer{}
 	params := client.CallParams(1, cloudSyncCredentialsCreate)
 	var answer truenas.CloudsyncCredentialsVerifyAnswer
-	if err = c.Caller.Call(ctx, "cloudsync.credentials.verify", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.credentials.verify", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudsyncCredentialsVerifyAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // AppRegistryDeleteResponse is the result of AppRegistryDelete.
-type AppRegistryDeleteResponse struct {
-}
+type AppRegistryDeleteResponse struct{}

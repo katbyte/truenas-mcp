@@ -31,5 +31,5 @@ func (c Client) ChangeKey(ctx context.Context, id string, options truenas.PoolDa
 	}
 	err = send(ctx, "pool.dataset.change_key", params, nil)
 
-	return
+	return result, err
 }

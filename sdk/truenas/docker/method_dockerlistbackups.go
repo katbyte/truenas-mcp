@@ -15,5 +15,5 @@ func (c Client) ListBackups(ctx context.Context) (result truenas.DockerListBacku
 	var params []any
 	err = c.Caller.Call(ctx, "docker.list_backups", params, &result.Answer)
 
-	return
+	return result, err
 }

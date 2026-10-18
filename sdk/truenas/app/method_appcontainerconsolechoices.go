@@ -18,5 +18,5 @@ func (c Client) ContainerConsoleChoices(ctx context.Context, appName string) (re
 	params := client.CallParams(1, appName)
 	err = c.Caller.Call(ctx, "app.container_console_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

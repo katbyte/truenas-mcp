@@ -20,5 +20,5 @@ func (c Client) ResizeShell(ctx context.Context, id string, cols int, rows int) 
 	params := client.CallParams(3, id, cols, rows)
 	err = c.Caller.Call(ctx, "core.resize_shell", params, nil)
 
-	return
+	return result, err
 }

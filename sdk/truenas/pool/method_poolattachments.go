@@ -18,5 +18,5 @@ func (c Client) Attachments(ctx context.Context, id int) (result truenas.PoolAtt
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.attachments", params, &result.Answer)
 
-	return
+	return result, err
 }

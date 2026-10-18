@@ -77,6 +77,8 @@ linters:
     - makezero                  # finds slice declarations with non-zero initial length but capacity is initialized
 
   exclusions:
+    # the client pandorest generates, its tests included, is linted like the code written by hand
+    generated: disable
     rules:
       # flag names ("repo", "build-type-id", ...) repeat across cobra/viper registration, env binding, and
       # validation lists by design; hoisting them into constants would just add indirection
@@ -88,6 +90,20 @@ linters:
       - path: '(sdk|acceptance|tools)/.*\.go'
         linters:
           - goconst
+      # TrueNAS names some of its values for what they hold, API_KEY_PLAIN among them, which gosec takes for a password written into the code
+      - path: 'sdk/truenas/'
+        text: 'G101'
+        linters:
+          - gosec
+      # the client's doc comments are TrueNAS's own words, its typos included; .typos.toml leaves the client out for the same reason
+      - path: 'sdk/truenas/'
+        linters:
+          - misspell
+      # pandorest gives each argument its own type (id string, label string) where gocritic would have them share one; until it does, the client is let off
+      - path: 'sdk/truenas/'
+        text: 'paramTypeCombine'
+        linters:
+          - gocritic
       # the idiomatic `if err := f(); err != nil` scoping shadows err on purpose; still flag other variables
       # and err shadows outside the if-statement form (source scopes the rule to the if idiom only)
       - text: 'shadow: declaration of "err"'
@@ -113,8 +129,9 @@ linters:
         # this is a network-bound CLI; only flag genuinely huge copies, not every mid-size struct
         rangeValCopy:
           sizeThreshold: 512
+        # the generated client takes what it sends the NAS by value, up to 608 bytes of it, as a caller writes it in place
         hugeParam:
-          sizeThreshold: 512
+          sizeThreshold: 1024
     revive:
       enable-all-rules: true
       rules:
@@ -160,3 +177,10 @@ formatters:
     - gofmt                     # checks whether code was gofmt-ed
     - gofumpt                   # checks whether code was gofumpt-ed, a stricter gofmt
     - goimports                 # check import statements are formatted according to the 'goimport' command
+  exclusions:
+    # the client pandorest generates is formatted like the code written by hand
+    generated: disable
+    # pandorest writes a list of empty bodies out in full in these tests ([]T{T{}}, where gofmt has []T{{}}); until it does not, they are let off
+    paths:
+      - 'sdk/truenas/pooldataset/method_pooldatasetsetquota_test\.go'
+      - 'sdk/truenas/reporting/method_reporting(netdata)?getdata_test\.go'

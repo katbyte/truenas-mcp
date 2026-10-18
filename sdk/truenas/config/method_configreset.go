@@ -19,11 +19,11 @@ func (c Client) Reset(ctx context.Context, options truenas.ConfigResetOptions) (
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "config.reset", params, nil)
 
-	return
+	return result, err
 }
 
 // ResetCall is the call Reset makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ResetCall(options truenas.ConfigResetOptions) (string, []any) {
+func ResetCall(options truenas.ConfigResetOptions) (call string, params []any) {
 	return "config.reset", client.CallParams(0, options)
 }

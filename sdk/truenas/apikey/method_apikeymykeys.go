@@ -15,5 +15,5 @@ func (c Client) MyKeys(ctx context.Context) (result truenas.ApiKeyMyKeysResponse
 	var params []any
 	err = c.Caller.Call(ctx, "api_key.my_keys", params, &result.Answer)
 
-	return
+	return result, err
 }

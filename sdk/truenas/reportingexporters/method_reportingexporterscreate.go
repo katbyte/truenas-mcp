@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, reportingExporterCreate truenas.Repo
 	result.ReportingExporterQueryResultItem = &truenas.ReportingExporterQueryResultItem{}
 	params := client.CallParams(1, reportingExporterCreate)
 	var answer truenas.ReportingExporterQueryResultItem
-	if err = c.Caller.Call(ctx, "reporting.exporters.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "reporting.exporters.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReportingExporterQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

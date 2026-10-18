@@ -22,12 +22,12 @@ func (c Client) DownloadReport(ctx context.Context, data truenas.AuditDownloadRe
 	params := client.CallParams(1, data)
 	err = c.Caller.Call(ctx, "audit.download_report", params, nil)
 
-	return
+	return result, err
 }
 
 // DownloadReportCall is the call DownloadReport makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DownloadReportCall(data truenas.AuditDownloadReportData) (string, []any) {
+func DownloadReportCall(data truenas.AuditDownloadReportData) (call string, params []any) {
 	return "audit.download_report", client.CallParams(1, data)
 }
 

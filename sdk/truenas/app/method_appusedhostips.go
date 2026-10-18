@@ -15,5 +15,5 @@ func (c Client) UsedHostIps(ctx context.Context) (result truenas.AppUsedHostIpsR
 	var params []any
 	err = c.Caller.Call(ctx, "app.used_host_ips", params, &result.Answer)
 
-	return
+	return result, err
 }

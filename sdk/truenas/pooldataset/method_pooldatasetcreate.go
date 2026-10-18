@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.PoolDatasetCreateData) 
 	result.PoolDatasetQueryResultItem = &truenas.PoolDatasetQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.PoolDatasetQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.dataset.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolDatasetQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

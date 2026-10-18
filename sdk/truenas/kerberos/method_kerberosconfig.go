@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.KerberosConfigRespon
 	result.KerberosConfigAnswer = &truenas.KerberosConfigAnswer{}
 	var params []any
 	var answer truenas.KerberosConfigAnswer
-	if err = c.Caller.Call(ctx, "kerberos.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kerberos.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KerberosConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

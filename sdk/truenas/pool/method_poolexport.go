@@ -21,11 +21,11 @@ func (c Client) Export(ctx context.Context, id int, options truenas.PoolExportOp
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "pool.export", params, nil)
 
-	return
+	return result, err
 }
 
 // ExportCall is the call Export makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExportCall(id int, options truenas.PoolExportOptions) (string, []any) {
+func ExportCall(id int, options truenas.PoolExportOptions) (call string, params []any) {
 	return "pool.export", client.CallParams(1, id, options)
 }

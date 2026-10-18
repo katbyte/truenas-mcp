@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, vmwareUpdate truenas.VmwareU
 	result.VMWareQueryResultItem = &truenas.VMWareQueryResultItem{}
 	params := client.CallParams(2, id, vmwareUpdate)
 	var answer truenas.VMWareQueryResultItem
-	if err = c.Caller.Call(ctx, "vmware.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vmware.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VMWareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

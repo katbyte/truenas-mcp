@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.CloudBa
 	result.CloudBackupQueryResultItem = &truenas.CloudBackupQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.CloudBackupQueryResultItem
-	if err = c.Caller.Call(ctx, "cloud_backup.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloud_backup.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudBackupQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -19,17 +19,17 @@ func (c Client) Create(ctx context.Context, virtInstanceCreate truenas.VirtInsta
 	result.VirtInstanceCreateAnswer = &truenas.VirtInstanceCreateAnswer{}
 	params := client.CallParams(1, virtInstanceCreate)
 	var answer truenas.VirtInstanceCreateAnswer
-	if err = c.Caller.Call(ctx, "virt.instance.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtInstanceCreateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // CreateCall is the call Create makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func CreateCall(virtInstanceCreate truenas.VirtInstanceCreate) (string, []any) {
+func CreateCall(virtInstanceCreate truenas.VirtInstanceCreate) (call string, params []any) {
 	return "virt.instance.create", client.CallParams(1, virtInstanceCreate)
 }

@@ -29,5 +29,5 @@ func (c Client) AttachTicket(ctx context.Context, data truenas.SupportAttachTick
 	}
 	err = send(ctx, "support.attach_ticket", params, nil)
 
-	return
+	return result, err
 }

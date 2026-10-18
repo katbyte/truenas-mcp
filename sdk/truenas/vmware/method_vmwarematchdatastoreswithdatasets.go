@@ -18,11 +18,11 @@ func (c Client) MatchDatastoresWithDatasets(ctx context.Context, vmwareCreds tru
 	result.VmwareMatchDatastoresWithDatasetsAnswer = &truenas.VmwareMatchDatastoresWithDatasetsAnswer{}
 	params := client.CallParams(1, vmwareCreds)
 	var answer truenas.VmwareMatchDatastoresWithDatasetsAnswer
-	if err = c.Caller.Call(ctx, "vmware.match_datastores_with_datasets", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vmware.match_datastores_with_datasets", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmwareMatchDatastoresWithDatasetsAnswer = result.Answer
 
-	return
+	return result, nil
 }

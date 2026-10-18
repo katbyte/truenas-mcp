@@ -18,5 +18,5 @@ func (c Client) Update(ctx context.Context, id int, apiKeyUpdate truenas.ApiKeyU
 	params := client.CallParams(2, id, apiKeyUpdate)
 	err = c.Caller.Call(ctx, "api_key.update", params, &result.Answer)
 
-	return
+	return result, err
 }

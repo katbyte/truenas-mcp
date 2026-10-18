@@ -15,10 +15,10 @@ import (
 func (c Client) Create(ctx context.Context, groupCreate truenas.GroupCreate) (result truenas.GroupCreateResponse, err error) {
 	params := client.CallParams(1, groupCreate)
 	var answer int
-	if err = c.Caller.Call(ctx, "group.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "group.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

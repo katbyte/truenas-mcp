@@ -19,10 +19,10 @@ import (
 func (c Client) Delete(ctx context.Context, id int, remove bool, force bool) (result truenas.IscsiExtentDeleteResponse, err error) {
 	params := client.CallParams(1, id, remove, force)
 	var answer bool
-	if err = c.Caller.Call(ctx, "iscsi.extent.delete", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.extent.delete", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

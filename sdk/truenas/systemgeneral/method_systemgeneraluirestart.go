@@ -16,5 +16,5 @@ func (c Client) UiRestart(ctx context.Context, delay int) (result truenas.System
 	params := client.CallParams(0, delay)
 	err = c.Caller.Call(ctx, "system.general.ui_restart", params, nil)
 
-	return
+	return result, err
 }

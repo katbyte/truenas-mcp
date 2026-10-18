@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.IscsiAuthCreateData) (r
 	result.IscsiAuthQueryResultItem = &truenas.IscsiAuthQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.IscsiAuthQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.auth.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.auth.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiAuthQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

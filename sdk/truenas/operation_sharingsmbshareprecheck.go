@@ -3,5 +3,4 @@
 package truenas
 
 // SharingSmbSharePrecheckResponse is the result of SharingSmbSharePrecheck.
-type SharingSmbSharePrecheckResponse struct {
-}
+type SharingSmbSharePrecheckResponse struct{}

@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.VirtGlobalConfigResp
 	result.VirtGlobalConfigAnswer = &truenas.VirtGlobalConfigAnswer{}
 	var params []any
 	var answer truenas.VirtGlobalConfigAnswer
-	if err = c.Caller.Call(ctx, "virt.global.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.global.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtGlobalConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -14,10 +14,10 @@ import (
 func (c Client) HasLocalAdministratorSetUp(ctx context.Context) (result truenas.UserHasLocalAdministratorSetUpResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "user.has_local_administrator_set_up", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.has_local_administrator_set_up", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

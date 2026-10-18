@@ -18,5 +18,5 @@ func (c Client) Query(ctx context.Context, data truenas.ZfsResourceQueryData) (r
 	params := client.CallParams(0, data)
 	err = c.Caller.Call(ctx, "zfs.resource.query", params, &result.Answer)
 
-	return
+	return result, err
 }

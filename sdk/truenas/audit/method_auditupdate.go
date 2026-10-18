@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, data truenas.AuditUpdateData) (resul
 	result.AuditUpdateAnswer = &truenas.AuditUpdateAnswer{}
 	params := client.CallParams(1, data)
 	var answer truenas.AuditUpdateAnswer
-	if err = c.Caller.Call(ctx, "audit.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "audit.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AuditUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

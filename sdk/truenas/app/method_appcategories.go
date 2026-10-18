@@ -15,5 +15,5 @@ func (c Client) Categories(ctx context.Context) (result truenas.AppCategoriesRes
 	var params []any
 	err = c.Caller.Call(ctx, "app.categories", params, &result.Answer)
 
-	return
+	return result, err
 }

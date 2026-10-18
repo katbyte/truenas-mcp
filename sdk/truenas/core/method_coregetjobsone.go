@@ -20,11 +20,11 @@ func (c Client) GetJobsOne(ctx context.Context, filters []any, options truenas.C
 	result.CoreGetJobsItemQueryResultItem = &truenas.CoreGetJobsItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.CoreGetJobsItemQueryResultItem
-	if err = c.Caller.Call(ctx, "core.get_jobs", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "core.get_jobs", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CoreGetJobsItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

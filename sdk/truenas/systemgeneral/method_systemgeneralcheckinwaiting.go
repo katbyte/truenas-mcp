@@ -12,10 +12,10 @@ import (
 func (c Client) CheckinWaiting(ctx context.Context) (result truenas.SystemGeneralCheckinWaitingResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "system.general.checkin_waiting", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.general.checkin_waiting", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

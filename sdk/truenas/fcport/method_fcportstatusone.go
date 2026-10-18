@@ -20,5 +20,5 @@ func (c Client) StatusOne(ctx context.Context, filters []any, options truenas.Fc
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	err = c.Caller.Call(ctx, "fcport.status", params, &result.Answer)
 
-	return
+	return result, err
 }

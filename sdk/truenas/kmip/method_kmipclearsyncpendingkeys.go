@@ -13,5 +13,5 @@ func (c Client) ClearSyncPendingKeys(ctx context.Context) (result truenas.KmipCl
 	var params []any
 	err = c.Caller.Call(ctx, "kmip.clear_sync_pending_keys", params, nil)
 
-	return
+	return result, err
 }

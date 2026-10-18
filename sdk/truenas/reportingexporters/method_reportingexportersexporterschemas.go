@@ -15,5 +15,5 @@ func (c Client) ExporterSchemas(ctx context.Context) (result truenas.ReportingEx
 	var params []any
 	err = c.Caller.Call(ctx, "reporting.exporters.exporter_schemas", params, &result.Answer)
 
-	return
+	return result, err
 }

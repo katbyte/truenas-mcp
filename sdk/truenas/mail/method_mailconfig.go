@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.MailConfigResponse, 
 	result.MailConfigAnswer = &truenas.MailConfigAnswer{}
 	var params []any
 	var answer truenas.MailConfigAnswer
-	if err = c.Caller.Call(ctx, "mail.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "mail.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.MailConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

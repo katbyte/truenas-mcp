@@ -18,5 +18,5 @@ func (c Client) Processes(ctx context.Context, id int) (result truenas.PoolProce
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.processes", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // BootReplaceResponse is the result of BootReplace.
-type BootReplaceResponse struct {
-}
+type BootReplaceResponse struct{}

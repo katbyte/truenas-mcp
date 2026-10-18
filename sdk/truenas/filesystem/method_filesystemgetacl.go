@@ -22,5 +22,5 @@ func (c Client) Getacl(ctx context.Context, path string, simplified bool, resolv
 	params := client.CallParams(1, path, simplified, resolveIds)
 	err = c.Caller.Call(ctx, "filesystem.getacl", params, &result.Answer)
 
-	return
+	return result, err
 }

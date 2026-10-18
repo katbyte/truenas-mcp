@@ -15,10 +15,10 @@ import (
 func (c Client) TerminateSession(ctx context.Context, id string) (result truenas.AuthTerminateSessionResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer bool
-	if err = c.Caller.Call(ctx, "auth.terminate_session", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.terminate_session", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

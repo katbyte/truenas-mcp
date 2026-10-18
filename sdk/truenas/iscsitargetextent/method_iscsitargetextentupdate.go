@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, iscsiTargetToExtentUpdate tr
 	result.IscsiTargetToExtentQueryResultItem = &truenas.IscsiTargetToExtentQueryResultItem{}
 	params := client.CallParams(2, id, iscsiTargetToExtentUpdate)
 	var answer truenas.IscsiTargetToExtentQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.targetextent.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.targetextent.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiTargetToExtentQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

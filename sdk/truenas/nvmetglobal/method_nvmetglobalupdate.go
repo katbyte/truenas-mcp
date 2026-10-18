@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, nvmetUpdate truenas.NvmetUpdate) (re
 	result.NvmetGlobalUpdateAnswer = &truenas.NvmetGlobalUpdateAnswer{}
 	params := client.CallParams(1, nvmetUpdate)
 	var answer truenas.NvmetGlobalUpdateAnswer
-	if err = c.Caller.Call(ctx, "nvmet.global.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.global.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NvmetGlobalUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -19,10 +19,10 @@ import (
 func (c Client) RolesCount(ctx context.Context, filters []any, options truenas.PrivilegeRolesOptions) (result truenas.PrivilegeRolesCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "privilege.roles", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "privilege.roles", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

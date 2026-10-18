@@ -27,5 +27,5 @@ func (c Client) Upload(ctx context.Context, files ...io.Reader) (result truenas.
 	}
 	err = send(ctx, "config.upload", params, nil)
 
-	return
+	return result, err
 }

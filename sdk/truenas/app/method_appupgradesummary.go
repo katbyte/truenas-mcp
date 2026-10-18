@@ -20,11 +20,11 @@ func (c Client) UpgradeSummary(ctx context.Context, appName string, options true
 	result.AppUpgradeSummaryAnswer = &truenas.AppUpgradeSummaryAnswer{}
 	params := client.CallParams(1, appName, options)
 	var answer truenas.AppUpgradeSummaryAnswer
-	if err = c.Caller.Call(ctx, "app.upgrade_summary", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.upgrade_summary", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppUpgradeSummaryAnswer = result.Answer
 
-	return
+	return result, nil
 }

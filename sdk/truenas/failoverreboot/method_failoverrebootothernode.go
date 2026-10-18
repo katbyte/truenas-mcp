@@ -19,11 +19,11 @@ func (c Client) OtherNode(ctx context.Context, options truenas.FailoverRebootOth
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "failover.reboot.other_node", params, nil)
 
-	return
+	return result, err
 }
 
 // OtherNodeCall is the call OtherNode makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func OtherNodeCall(options truenas.FailoverRebootOtherNodeOptions) (string, []any) {
+func OtherNodeCall(options truenas.FailoverRebootOtherNodeOptions) (call string, params []any) {
 	return "failover.reboot.other_node", client.CallParams(0, options)
 }

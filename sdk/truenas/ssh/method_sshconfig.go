@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.SshConfigResponse, e
 	result.SshConfigAnswer = &truenas.SshConfigAnswer{}
 	var params []any
 	var answer truenas.SshConfigAnswer
-	if err = c.Caller.Call(ctx, "ssh.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "ssh.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SshConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

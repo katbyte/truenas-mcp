@@ -17,10 +17,10 @@ import (
 func (c Client) Ipv4gwReachable(ctx context.Context, ipv4Gateway string) (result truenas.RouteIpv4gwReachableResponse, err error) {
 	params := client.CallParams(1, ipv4Gateway)
 	var answer bool
-	if err = c.Caller.Call(ctx, "route.ipv4gw_reachable", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "route.ipv4gw_reachable", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

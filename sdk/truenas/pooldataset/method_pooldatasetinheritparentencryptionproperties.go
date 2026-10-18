@@ -16,5 +16,5 @@ func (c Client) InheritParentEncryptionProperties(ctx context.Context, id string
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.dataset.inherit_parent_encryption_properties", params, nil)
 
-	return
+	return result, err
 }

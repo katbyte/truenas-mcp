@@ -31,11 +31,11 @@ func (c Client) Unlock(ctx context.Context, id string, options truenas.PoolDatas
 		}
 	}
 	var answer truenas.PoolDatasetUnlockAnswer
-	if err = send(ctx, "pool.dataset.unlock", params, &answer); err != nil {
-		return
+	if err := send(ctx, "pool.dataset.unlock", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolDatasetUnlockAnswer = result.Answer
 
-	return
+	return result, nil
 }

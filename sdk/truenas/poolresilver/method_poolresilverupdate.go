@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, data truenas.PoolResilverUpdateData)
 	result.PoolResilverUpdateAnswer = &truenas.PoolResilverUpdateAnswer{}
 	params := client.CallParams(1, data)
 	var answer truenas.PoolResilverUpdateAnswer
-	if err = c.Caller.Call(ctx, "pool.resilver.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.resilver.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolResilverUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

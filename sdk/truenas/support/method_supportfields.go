@@ -15,5 +15,5 @@ func (c Client) Fields(ctx context.Context) (result truenas.SupportFieldsRespons
 	var params []any
 	err = c.Caller.Call(ctx, "support.fields", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -22,12 +22,12 @@ func (c Client) ExportKeysForReplication(ctx context.Context, id int) (result tr
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.dataset.export_keys_for_replication", params, nil)
 
-	return
+	return result, err
 }
 
 // ExportKeysForReplicationCall is the call ExportKeysForReplication makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExportKeysForReplicationCall(id int) (string, []any) {
+func ExportKeysForReplicationCall(id int) (call string, params []any) {
 	return "pool.dataset.export_keys_for_replication", client.CallParams(1, id)
 }
 

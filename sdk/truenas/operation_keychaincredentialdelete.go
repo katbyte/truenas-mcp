@@ -3,5 +3,4 @@
 package truenas
 
 // KeychaincredentialDeleteResponse is the result of KeychaincredentialDelete.
-type KeychaincredentialDeleteResponse struct {
-}
+type KeychaincredentialDeleteResponse struct{}

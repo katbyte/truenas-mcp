@@ -15,5 +15,5 @@ func (c Client) UsedPorts(ctx context.Context) (result truenas.AppUsedPortsRespo
 	var params []any
 	err = c.Caller.Call(ctx, "app.used_ports", params, &result.Answer)
 
-	return
+	return result, err
 }

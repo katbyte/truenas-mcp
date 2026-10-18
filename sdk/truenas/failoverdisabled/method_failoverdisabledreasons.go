@@ -15,5 +15,5 @@ func (c Client) Reasons(ctx context.Context) (result truenas.FailoverDisabledRea
 	var params []any
 	err = c.Caller.Call(ctx, "failover.disabled.reasons", params, &result.Answer)
 
-	return
+	return result, err
 }

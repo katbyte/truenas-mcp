@@ -18,5 +18,5 @@ func (c Client) Choices(ctx context.Context, options truenas.InterfaceChoicesOpt
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "interface.choices", params, &result.Answer)
 
-	return
+	return result, err
 }

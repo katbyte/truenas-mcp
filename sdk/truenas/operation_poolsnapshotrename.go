@@ -3,5 +3,4 @@
 package truenas
 
 // PoolSnapshotRenameResponse is the result of PoolSnapshotRename.
-type PoolSnapshotRenameResponse struct {
-}
+type PoolSnapshotRenameResponse struct{}

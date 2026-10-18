@@ -15,5 +15,5 @@ func (c Client) UsbPassthroughChoices(ctx context.Context) (result truenas.VmDev
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.usb_passthrough_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

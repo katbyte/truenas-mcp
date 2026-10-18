@@ -3,5 +3,4 @@
 package truenas
 
 // CloudsyncCreateBucketResponse is the result of CloudsyncCreateBucket.
-type CloudsyncCreateBucketResponse struct {
-}
+type CloudsyncCreateBucketResponse struct{}

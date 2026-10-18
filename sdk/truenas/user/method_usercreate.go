@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, userCreate truenas.UserCreate) (resu
 	result.UserCreateAnswer = &truenas.UserCreateAnswer{}
 	params := client.CallParams(1, userCreate)
 	var answer truenas.UserCreateAnswer
-	if err = c.Caller.Call(ctx, "user.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.UserCreateAnswer = result.Answer
 
-	return
+	return result, nil
 }

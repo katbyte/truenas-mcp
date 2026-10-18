@@ -3,5 +3,4 @@
 package truenas
 
 // FilesystemChownResponse is the result of FilesystemChown.
-type FilesystemChownResponse struct {
-}
+type FilesystemChownResponse struct{}

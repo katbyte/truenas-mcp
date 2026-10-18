@@ -14,10 +14,10 @@ import (
 func (c Client) AttachTicketMaxSize(ctx context.Context) (result truenas.SupportAttachTicketMaxSizeResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "support.attach_ticket_max_size", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "support.attach_ticket_max_size", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

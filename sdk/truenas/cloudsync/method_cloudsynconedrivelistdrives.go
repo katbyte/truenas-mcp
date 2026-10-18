@@ -16,5 +16,5 @@ func (c Client) OnedriveListDrives(ctx context.Context, onedriveListDrives truen
 	params := client.CallParams(1, onedriveListDrives)
 	err = c.Caller.Call(ctx, "cloudsync.onedrive_list_drives", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // SystemDebugResponse is the result of SystemDebug.
-type SystemDebugResponse struct {
-}
+type SystemDebugResponse struct{}

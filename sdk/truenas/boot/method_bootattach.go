@@ -21,11 +21,11 @@ func (c Client) Attach(ctx context.Context, dev string, options truenas.BootAtta
 	params := client.CallParams(1, dev, options)
 	err = c.Caller.Call(ctx, "boot.attach", params, nil)
 
-	return
+	return result, err
 }
 
 // AttachCall is the call Attach makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func AttachCall(dev string, options truenas.BootAttachOptions) (string, []any) {
+func AttachCall(dev string, options truenas.BootAttachOptions) (call string, params []any) {
 	return "boot.attach", client.CallParams(1, dev, options)
 }

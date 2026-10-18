@@ -3,5 +3,4 @@
 package truenas
 
 // AppStartResponse is the result of AppStart.
-type AppStartResponse struct {
-}
+type AppStartResponse struct{}

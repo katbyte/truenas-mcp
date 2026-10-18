@@ -19,11 +19,11 @@ func (c Client) DdtPrune(ctx context.Context, options truenas.PoolDdtPruneOption
 	params := client.CallParams(1, options)
 	err = c.Caller.Call(ctx, "pool.ddt_prune", params, nil)
 
-	return
+	return result, err
 }
 
 // DdtPruneCall is the call DdtPrune makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DdtPruneCall(options truenas.PoolDdtPruneOptions) (string, []any) {
+func DdtPruneCall(options truenas.PoolDdtPruneOptions) (call string, params []any) {
 	return "pool.ddt_prune", client.CallParams(1, options)
 }

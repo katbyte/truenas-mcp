@@ -19,11 +19,11 @@ func (c Client) RestoreBackup(ctx context.Context, backupName string) (result tr
 	params := client.CallParams(1, backupName)
 	err = c.Caller.Call(ctx, "docker.restore_backup", params, nil)
 
-	return
+	return result, err
 }
 
 // RestoreBackupCall is the call RestoreBackup makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RestoreBackupCall(backupName string) (string, []any) {
+func RestoreBackupCall(backupName string) (call string, params []any) {
 	return "docker.restore_backup", client.CallParams(1, backupName)
 }

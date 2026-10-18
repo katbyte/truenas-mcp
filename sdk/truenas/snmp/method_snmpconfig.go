@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.SnmpConfigResponse, 
 	result.SnmpConfigAnswer = &truenas.SnmpConfigAnswer{}
 	var params []any
 	var answer truenas.SnmpConfigAnswer
-	if err = c.Caller.Call(ctx, "snmp.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "snmp.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SnmpConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

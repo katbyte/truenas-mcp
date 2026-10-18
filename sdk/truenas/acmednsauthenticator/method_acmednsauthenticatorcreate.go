@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, dnsAuthenticatorCreate truenas.DnsAu
 	result.ACMEDNSAuthenticatorQueryResultItem = &truenas.ACMEDNSAuthenticatorQueryResultItem{}
 	params := client.CallParams(1, dnsAuthenticatorCreate)
 	var answer truenas.ACMEDNSAuthenticatorQueryResultItem
-	if err = c.Caller.Call(ctx, "acme.dns.authenticator.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "acme.dns.authenticator.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ACMEDNSAuthenticatorQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

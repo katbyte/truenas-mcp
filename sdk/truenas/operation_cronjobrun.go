@@ -3,5 +3,4 @@
 package truenas
 
 // CronjobRunResponse is the result of CronjobRun.
-type CronjobRunResponse struct {
-}
+type CronjobRunResponse struct{}

@@ -18,5 +18,5 @@ func (c Client) GetDisplayDevices(ctx context.Context, id int) (result truenas.V
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "vm.get_display_devices", params, &result.Answer)
 
-	return
+	return result, err
 }

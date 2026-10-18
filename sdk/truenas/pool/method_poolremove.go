@@ -21,11 +21,11 @@ func (c Client) Remove(ctx context.Context, id int, options truenas.PoolRemoveOp
 	params := client.CallParams(2, id, options)
 	err = c.Caller.Call(ctx, "pool.remove", params, nil)
 
-	return
+	return result, err
 }
 
 // RemoveCall is the call Remove makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RemoveCall(id int, options truenas.PoolRemoveOptions) (string, []any) {
+func RemoveCall(id int, options truenas.PoolRemoveOptions) (call string, params []any) {
 	return "pool.remove", client.CallParams(2, id, options)
 }

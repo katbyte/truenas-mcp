@@ -21,11 +21,11 @@ func (c Client) Reboot(ctx context.Context, reason string, options truenas.Syste
 	params := client.CallParams(1, reason, options)
 	err = c.Caller.Call(ctx, "system.reboot", params, nil)
 
-	return
+	return result, err
 }
 
 // RebootCall is the call Reboot makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RebootCall(reason string, options truenas.SystemRebootOptions) (string, []any) {
+func RebootCall(reason string, options truenas.SystemRebootOptions) (call string, params []any) {
 	return "system.reboot", client.CallParams(1, reason, options)
 }

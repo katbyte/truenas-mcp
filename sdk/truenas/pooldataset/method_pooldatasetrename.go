@@ -18,5 +18,5 @@ func (c Client) Rename(ctx context.Context, id string, data truenas.PoolDatasetR
 	params := client.CallParams(2, id, data)
 	err = c.Caller.Call(ctx, "pool.dataset.rename", params, nil)
 
-	return
+	return result, err
 }

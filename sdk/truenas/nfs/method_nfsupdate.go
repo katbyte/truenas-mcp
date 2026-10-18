@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, nfsUpdate truenas.NfsUpdate) (result
 	result.NfsUpdateAnswer = &truenas.NfsUpdateAnswer{}
 	params := client.CallParams(1, nfsUpdate)
 	var answer truenas.NfsUpdateAnswer
-	if err = c.Caller.Call(ctx, "nfs.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nfs.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NfsUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

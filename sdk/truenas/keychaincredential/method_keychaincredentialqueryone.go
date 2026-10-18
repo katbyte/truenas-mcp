@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Key
 	result.KeychainCredentialQueryResultItem = &truenas.KeychainCredentialQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.KeychainCredentialQueryResultItem
-	if err = c.Caller.Call(ctx, "keychaincredential.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "keychaincredential.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KeychainCredentialQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

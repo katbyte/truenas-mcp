@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.AcmeDns
 	result.ACMEDNSAuthenticatorQueryResultItem = &truenas.ACMEDNSAuthenticatorQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.ACMEDNSAuthenticatorQueryResultItem
-	if err = c.Caller.Call(ctx, "acme.dns.authenticator.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "acme.dns.authenticator.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ACMEDNSAuthenticatorQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

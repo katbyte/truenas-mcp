@@ -3,5 +3,4 @@
 package truenas
 
 // SystemGeneralCheckinResponse is the result of SystemGeneralCheckin.
-type SystemGeneralCheckinResponse struct {
-}
+type SystemGeneralCheckinResponse struct{}

@@ -21,11 +21,11 @@ func (c Client) Stop(ctx context.Context, id int, options truenas.VmStopOptions)
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "vm.stop", params, nil)
 
-	return
+	return result, err
 }
 
 // StopCall is the call Stop makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func StopCall(id int, options truenas.VmStopOptions) (string, []any) {
+func StopCall(id int, options truenas.VmStopOptions) (call string, params []any) {
 	return "vm.stop", client.CallParams(1, id, options)
 }

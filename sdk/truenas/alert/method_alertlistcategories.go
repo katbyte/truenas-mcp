@@ -15,5 +15,5 @@ func (c Client) ListCategories(ctx context.Context) (result truenas.AlertListCat
 	var params []any
 	err = c.Caller.Call(ctx, "alert.list_categories", params, &result.Answer)
 
-	return
+	return result, err
 }

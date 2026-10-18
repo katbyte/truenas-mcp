@@ -15,11 +15,11 @@ func (c Client) IotypeChoices(ctx context.Context) (result truenas.VmDeviceIotyp
 	result.VmDeviceIotypeChoicesAnswer = &truenas.VmDeviceIotypeChoicesAnswer{}
 	var params []any
 	var answer truenas.VmDeviceIotypeChoicesAnswer
-	if err = c.Caller.Call(ctx, "vm.device.iotype_choices", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.iotype_choices", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmDeviceIotypeChoicesAnswer = result.Answer
 
-	return
+	return result, nil
 }

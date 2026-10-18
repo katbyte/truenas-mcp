@@ -20,5 +20,5 @@ func (c Client) Query(ctx context.Context, filters []any, options truenas.Sharin
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "sharing.smb.query", params, &result.Answer)
 
-	return
+	return result, err
 }

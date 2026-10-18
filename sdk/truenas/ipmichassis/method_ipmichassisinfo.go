@@ -18,5 +18,5 @@ func (c Client) Info(ctx context.Context, data truenas.IpmiChassisInfoData) (res
 	params := client.CallParams(0, data)
 	err = c.Caller.Call(ctx, "ipmi.chassis.info", params, &result.Answer)
 
-	return
+	return result, err
 }

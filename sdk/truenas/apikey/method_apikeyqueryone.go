@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Api
 	result.ApiKeyQueryResultItem = &truenas.ApiKeyQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.ApiKeyQueryResultItem
-	if err = c.Caller.Call(ctx, "api_key.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "api_key.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ApiKeyQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

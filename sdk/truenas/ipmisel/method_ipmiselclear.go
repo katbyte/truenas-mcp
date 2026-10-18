@@ -16,11 +16,11 @@ func (c Client) Clear(ctx context.Context) (result truenas.IpmiSelClearResponse,
 	var params []any
 	err = c.Caller.Call(ctx, "ipmi.sel.clear", params, nil)
 
-	return
+	return result, err
 }
 
 // ClearCall is the call Clear makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ClearCall() (string, []any) {
+func ClearCall() (call string, params []any) {
 	return "ipmi.sel.clear", nil
 }

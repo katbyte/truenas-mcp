@@ -3,5 +3,4 @@
 package truenas
 
 // DirectoryservicesLeaveResponse is the result of DirectoryservicesLeave.
-type DirectoryservicesLeaveResponse struct {
-}
+type DirectoryservicesLeaveResponse struct{}

@@ -20,5 +20,5 @@ func (c Client) TemperatureAgg(ctx context.Context, names []string, days int) (r
 	params := client.CallParams(1, names, days)
 	err = c.Caller.Call(ctx, "disk.temperature_agg", params, &result.Answer)
 
-	return
+	return result, err
 }

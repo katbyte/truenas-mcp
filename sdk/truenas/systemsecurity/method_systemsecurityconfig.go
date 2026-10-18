@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.SystemSecurityConfig
 	result.SystemSecurityConfigAnswer = &truenas.SystemSecurityConfigAnswer{}
 	var params []any
 	var answer truenas.SystemSecurityConfigAnswer
-	if err = c.Caller.Call(ctx, "system.security.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.security.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemSecurityConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

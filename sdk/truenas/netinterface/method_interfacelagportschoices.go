@@ -18,5 +18,5 @@ func (c Client) LagPortsChoices(ctx context.Context, id string) (result truenas.
 	params := client.CallParams(0, id)
 	err = c.Caller.Call(ctx, "interface.lag_ports_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

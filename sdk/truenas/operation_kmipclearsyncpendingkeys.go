@@ -3,5 +3,4 @@
 package truenas
 
 // KmipClearSyncPendingKeysResponse is the result of KmipClearSyncPendingKeys.
-type KmipClearSyncPendingKeysResponse struct {
-}
+type KmipClearSyncPendingKeysResponse struct{}

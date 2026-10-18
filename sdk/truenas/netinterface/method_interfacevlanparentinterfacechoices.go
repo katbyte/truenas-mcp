@@ -15,5 +15,5 @@ func (c Client) VlanParentInterfaceChoices(ctx context.Context) (result truenas.
 	var params []any
 	err = c.Caller.Call(ctx, "interface.vlan_parent_interface_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

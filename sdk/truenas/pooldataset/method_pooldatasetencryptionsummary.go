@@ -31,5 +31,5 @@ func (c Client) EncryptionSummary(ctx context.Context, id string, options truena
 	}
 	err = send(ctx, "pool.dataset.encryption_summary", params, &result.Answer)
 
-	return
+	return result, err
 }

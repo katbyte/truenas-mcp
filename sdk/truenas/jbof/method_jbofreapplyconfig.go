@@ -13,5 +13,5 @@ func (c Client) ReapplyConfig(ctx context.Context) (result truenas.JbofReapplyCo
 	var params []any
 	err = c.Caller.Call(ctx, "jbof.reapply_config", params, nil)
 
-	return
+	return result, err
 }

@@ -12,10 +12,10 @@ import (
 func (c Client) GenerateClaimToken(ctx context.Context) (result truenas.TnConnectGenerateClaimTokenResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "tn_connect.generate_claim_token", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "tn_connect.generate_claim_token", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

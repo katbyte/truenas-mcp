@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.PoolSnapshottaskCreateD
 	result.PoolSnapshotTaskQueryResultItem = &truenas.PoolSnapshotTaskQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.PoolSnapshotTaskQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.snapshottask.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.snapshottask.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolSnapshotTaskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

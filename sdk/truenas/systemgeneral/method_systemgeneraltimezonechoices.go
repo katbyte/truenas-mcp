@@ -15,5 +15,5 @@ func (c Client) TimezoneChoices(ctx context.Context) (result truenas.SystemGener
 	var params []any
 	err = c.Caller.Call(ctx, "system.general.timezone_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

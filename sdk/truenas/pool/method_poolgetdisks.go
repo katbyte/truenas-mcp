@@ -18,5 +18,5 @@ func (c Client) GetDisks(ctx context.Context, id int) (result truenas.PoolGetDis
 	params := client.CallParams(0, id)
 	err = c.Caller.Call(ctx, "pool.get_disks", params, &result.Answer)
 
-	return
+	return result, err
 }

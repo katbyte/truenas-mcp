@@ -15,5 +15,5 @@ func (c Client) PciChoices(ctx context.Context) (result truenas.VirtDevicePciCho
 	var params []any
 	err = c.Caller.Call(ctx, "virt.device.pci_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

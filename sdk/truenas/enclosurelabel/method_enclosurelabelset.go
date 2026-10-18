@@ -18,5 +18,5 @@ func (c Client) Set(ctx context.Context, id string, label string) (result truena
 	params := client.CallParams(2, id, label)
 	err = c.Caller.Call(ctx, "enclosure.label.set", params, nil)
 
-	return
+	return result, err
 }

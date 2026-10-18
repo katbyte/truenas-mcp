@@ -15,11 +15,11 @@ func (c Client) Me(ctx context.Context) (result truenas.AuthMeResponse, err erro
 	result.AuthUserInfo = &truenas.AuthUserInfo{}
 	var params []any
 	var answer truenas.AuthUserInfo
-	if err = c.Caller.Call(ctx, "auth.me", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.me", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AuthUserInfo = result.Answer
 
-	return
+	return result, nil
 }

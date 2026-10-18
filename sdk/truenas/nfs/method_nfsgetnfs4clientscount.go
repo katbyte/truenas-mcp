@@ -19,10 +19,10 @@ import (
 func (c Client) GetNfs4ClientsCount(ctx context.Context, filters []any, options truenas.NfsGetNfs4ClientsOptions) (result truenas.NfsGetNfs4ClientsCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "nfs.get_nfs4_clients", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nfs.get_nfs4_clients", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

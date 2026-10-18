@@ -20,12 +20,12 @@ func (c Client) Debug(ctx context.Context) (result truenas.SystemDebugResponse, 
 	var params []any
 	err = c.Caller.Call(ctx, "system.debug", params, nil)
 
-	return
+	return result, err
 }
 
 // DebugCall is the call Debug makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DebugCall() (string, []any) {
+func DebugCall() (call string, params []any) {
 	return "system.debug", nil
 }
 

@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, tnConnectUpdate truenas.TnConnectUpd
 	result.TnConnectUpdateAnswer = &truenas.TnConnectUpdateAnswer{}
 	params := client.CallParams(1, tnConnectUpdate)
 	var answer truenas.TnConnectUpdateAnswer
-	if err = c.Caller.Call(ctx, "tn_connect.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "tn_connect.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.TnConnectUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

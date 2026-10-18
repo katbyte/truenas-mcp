@@ -18,5 +18,5 @@ func (c Client) Details(ctx context.Context, data truenas.DiskDetailsData) (resu
 	params := client.CallParams(0, data)
 	err = c.Caller.Call(ctx, "disk.details", params, &result.Answer)
 
-	return
+	return result, err
 }

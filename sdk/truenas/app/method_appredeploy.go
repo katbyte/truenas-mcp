@@ -19,17 +19,17 @@ func (c Client) Redeploy(ctx context.Context, appName string) (result truenas.Ap
 	result.AppQueryResultItem = &truenas.AppQueryResultItem{}
 	params := client.CallParams(1, appName)
 	var answer truenas.AppQueryResultItem
-	if err = c.Caller.Call(ctx, "app.redeploy", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.redeploy", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // RedeployCall is the call Redeploy makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RedeployCall(appName string) (string, []any) {
+func RedeployCall(appName string) (call string, params []any) {
 	return "app.redeploy", client.CallParams(1, appName)
 }

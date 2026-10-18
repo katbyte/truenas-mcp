@@ -18,16 +18,16 @@ import (
 func (c Client) Delete(ctx context.Context, id string) (result truenas.VirtInstanceDeleteResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.instance.delete", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.delete", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // DeleteCall is the call Delete makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DeleteCall(id string) (string, []any) {
+func DeleteCall(id string) (call string, params []any) {
 	return "virt.instance.delete", client.CallParams(1, id)
 }

@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Rsy
 	result.RsyncTaskQueryResultItem = &truenas.RsyncTaskQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.RsyncTaskQueryResultItem
-	if err = c.Caller.Call(ctx, "rsynctask.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "rsynctask.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.RsyncTaskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

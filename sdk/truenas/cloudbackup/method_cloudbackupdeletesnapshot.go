@@ -21,11 +21,11 @@ func (c Client) DeleteSnapshot(ctx context.Context, id int, snapshotId string) (
 	params := client.CallParams(2, id, snapshotId)
 	err = c.Caller.Call(ctx, "cloud_backup.delete_snapshot", params, nil)
 
-	return
+	return result, err
 }
 
 // DeleteSnapshotCall is the call DeleteSnapshot makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DeleteSnapshotCall(id int, snapshotId string) (string, []any) {
+func DeleteSnapshotCall(id int, snapshotId string) (call string, params []any) {
 	return "cloud_backup.delete_snapshot", client.CallParams(2, id, snapshotId)
 }

@@ -20,10 +20,10 @@ import (
 func (c Client) ElistCount(ctx context.Context, filters []any, options truenas.IpmiSelElistOptions) (result truenas.IpmiSelElistCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "ipmi.sel.elist", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "ipmi.sel.elist", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

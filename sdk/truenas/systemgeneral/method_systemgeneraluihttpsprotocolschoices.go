@@ -15,5 +15,5 @@ func (c Client) UiHttpsprotocolsChoices(ctx context.Context) (result truenas.Sys
 	var params []any
 	err = c.Caller.Call(ctx, "system.general.ui_httpsprotocols_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

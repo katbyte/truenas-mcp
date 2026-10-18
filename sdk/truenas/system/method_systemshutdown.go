@@ -21,11 +21,11 @@ func (c Client) Shutdown(ctx context.Context, reason string, options truenas.Sys
 	params := client.CallParams(1, reason, options)
 	err = c.Caller.Call(ctx, "system.shutdown", params, nil)
 
-	return
+	return result, err
 }
 
 // ShutdownCall is the call Shutdown makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ShutdownCall(reason string, options truenas.SystemShutdownOptions) (string, []any) {
+func ShutdownCall(reason string, options truenas.SystemShutdownOptions) (call string, params []any) {
 	return "system.shutdown", client.CallParams(1, reason, options)
 }

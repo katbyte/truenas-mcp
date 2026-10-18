@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Keychai
 	result.KeychaincredentialGetInstanceAnswer = &truenas.KeychaincredentialGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.KeychaincredentialGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "keychaincredential.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "keychaincredential.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KeychaincredentialGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -19,17 +19,17 @@ func (c Client) Update(ctx context.Context, dockerUpdate truenas.DockerUpdate) (
 	result.DockerUpdateAnswer = &truenas.DockerUpdateAnswer{}
 	params := client.CallParams(1, dockerUpdate)
 	var answer truenas.DockerUpdateAnswer
-	if err = c.Caller.Call(ctx, "docker.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "docker.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DockerUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(dockerUpdate truenas.DockerUpdate) (string, []any) {
+func UpdateCall(dockerUpdate truenas.DockerUpdate) (call string, params []any) {
 	return "docker.update", client.CallParams(1, dockerUpdate)
 }

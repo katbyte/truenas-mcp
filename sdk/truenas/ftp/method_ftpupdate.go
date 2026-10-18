@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, ftpUpdate truenas.FtpUpdate) (result
 	result.FtpUpdateAnswer = &truenas.FtpUpdateAnswer{}
 	params := client.CallParams(1, ftpUpdate)
 	var answer truenas.FtpUpdateAnswer
-	if err = c.Caller.Call(ctx, "ftp.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "ftp.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FtpUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

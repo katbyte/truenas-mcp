@@ -16,5 +16,5 @@ func (c Client) Detach(ctx context.Context, dev string) (result truenas.BootDeta
 	params := client.CallParams(1, dev)
 	err = c.Caller.Call(ctx, "boot.detach", params, nil)
 
-	return
+	return result, err
 }

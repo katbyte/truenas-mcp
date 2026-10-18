@@ -18,5 +18,5 @@ func (c Client) SimilarIssues(ctx context.Context, query string) (result truenas
 	params := client.CallParams(1, query)
 	err = c.Caller.Call(ctx, "support.similar_issues", params, &result.Answer)
 
-	return
+	return result, err
 }

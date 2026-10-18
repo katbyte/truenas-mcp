@@ -3,5 +3,4 @@
 package truenas
 
 // SystemLicenseUpdateResponse is the result of SystemLicenseUpdate.
-type SystemLicenseUpdateResponse struct {
-}
+type SystemLicenseUpdateResponse struct{}

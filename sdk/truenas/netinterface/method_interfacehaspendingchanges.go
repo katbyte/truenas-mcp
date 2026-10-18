@@ -12,10 +12,10 @@ import (
 func (c Client) HasPendingChanges(ctx context.Context) (result truenas.InterfaceHasPendingChangesResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "interface.has_pending_changes", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.has_pending_changes", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -15,5 +15,5 @@ func (c Client) BootloaderOvmfChoices(ctx context.Context) (result truenas.VmBoo
 	var params []any
 	err = c.Caller.Call(ctx, "vm.bootloader_ovmf_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

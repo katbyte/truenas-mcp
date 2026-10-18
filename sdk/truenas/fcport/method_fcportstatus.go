@@ -20,5 +20,5 @@ func (c Client) Status(ctx context.Context, filters []any, options truenas.Fcpor
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "fcport.status", params, &result.Answer)
 
-	return
+	return result, err
 }

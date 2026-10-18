@@ -19,11 +19,11 @@ func (c Client) BackupToPool(ctx context.Context, targetPool string) (result tru
 	params := client.CallParams(1, targetPool)
 	err = c.Caller.Call(ctx, "docker.backup_to_pool", params, nil)
 
-	return
+	return result, err
 }
 
 // BackupToPoolCall is the call BackupToPool makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func BackupToPoolCall(targetPool string) (string, []any) {
+func BackupToPoolCall(targetPool string) (call string, params []any) {
 	return "docker.backup_to_pool", client.CallParams(1, targetPool)
 }

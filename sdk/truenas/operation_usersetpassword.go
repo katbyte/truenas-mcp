@@ -3,5 +3,4 @@
 package truenas
 
 // UserSetPasswordResponse is the result of UserSetPassword.
-type UserSetPasswordResponse struct {
-}
+type UserSetPasswordResponse struct{}

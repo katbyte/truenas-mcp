@@ -20,5 +20,5 @@ func (c Client) Query(ctx context.Context, filters []any, options truenas.IscsiE
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "iscsi.extent.query", params, &result.Answer)
 
-	return
+	return result, err
 }

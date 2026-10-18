@@ -15,5 +15,5 @@ func (c Client) IpChoices(ctx context.Context) (result truenas.AppIpChoicesRespo
 	var params []any
 	err = c.Caller.Call(ctx, "app.ip_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -14,10 +14,10 @@ import (
 func (c Client) ProductType(ctx context.Context) (result truenas.SystemProductTypeResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "system.product_type", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.product_type", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

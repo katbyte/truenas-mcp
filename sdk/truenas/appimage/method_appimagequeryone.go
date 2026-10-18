@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.App
 	result.AppImageQueryResultItem = &truenas.AppImageQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AppImageQueryResultItem
-	if err = c.Caller.Call(ctx, "app.image.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.image.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppImageQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

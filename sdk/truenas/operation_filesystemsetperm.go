@@ -3,5 +3,4 @@
 package truenas
 
 // FilesystemSetpermResponse is the result of FilesystemSetperm.
-type FilesystemSetpermResponse struct {
-}
+type FilesystemSetpermResponse struct{}

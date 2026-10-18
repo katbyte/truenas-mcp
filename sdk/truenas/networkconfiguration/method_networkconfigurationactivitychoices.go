@@ -15,5 +15,5 @@ func (c Client) ActivityChoices(ctx context.Context) (result truenas.NetworkConf
 	var params []any
 	err = c.Caller.Call(ctx, "network.configuration.activity_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

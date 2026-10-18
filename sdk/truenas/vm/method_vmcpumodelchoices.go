@@ -15,5 +15,5 @@ func (c Client) CpuModelChoices(ctx context.Context) (result truenas.VmCpuModelC
 	var params []any
 	err = c.Caller.Call(ctx, "vm.cpu_model_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Replica
 	result.ReplicationGetInstanceAnswer = &truenas.ReplicationGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.ReplicationGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "replication.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "replication.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReplicationGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

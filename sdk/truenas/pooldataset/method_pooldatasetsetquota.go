@@ -18,5 +18,5 @@ func (c Client) SetQuota(ctx context.Context, dataset string, quotas []truenas.P
 	params := client.CallParams(1, dataset, quotas)
 	err = c.Caller.Call(ctx, "pool.dataset.set_quota", params, nil)
 
-	return
+	return result, err
 }

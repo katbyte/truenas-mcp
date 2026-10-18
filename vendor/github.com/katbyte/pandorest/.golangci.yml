@@ -73,11 +73,26 @@ linters:
     - makezero                  # finds slice declarations with non-zero initial length but capacity is initialized
 
   exclusions:
+    # the only generated code here is what the generator's tests render under generator/testdata, and that is
+    # linted on purpose (make lint-generated): what pandorest writes is held to the same rules as the repositories
+    # that check it in, with their generated-file exclusion off
+    generated: disable
     rules:
       # table-driven tests repeat case names and fixture strings by design; constants would hurt readability
       - path: '_test\.go'
         linters:
           - goconst
+      # a generated method takes a request body by value whatever its size, so a caller can pass a literal; the
+      # repositories exclude these two performance checks for their generated packages the same way
+      - path: 'generator/testdata/.*\.go'
+        text: '(hugeParam|rangeValCopy)'
+        linters:
+          - gocritic
+      # an enum value a document names with the word key or token (TrueNAS's API_KEY_PLAIN) is read as a credential
+      - path: 'generator/testdata/.*\.go'
+        text: 'G101'
+        linters:
+          - gosec
       # media types, schema types and formats are the importer's and the generator's vocabulary, spelled
       # as the documents spell them; a constant for "application/json" would only add indirection
       - path: '(importer|generator)/.*\.go'

@@ -3,5 +3,4 @@
 package truenas
 
 // AlertRestoreResponse is the result of AlertRestore.
-type AlertRestoreResponse struct {
-}
+type AlertRestoreResponse struct{}

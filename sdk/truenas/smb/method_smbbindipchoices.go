@@ -15,5 +15,5 @@ func (c Client) BindipChoices(ctx context.Context) (result truenas.SmbBindipChoi
 	var params []any
 	err = c.Caller.Call(ctx, "smb.bindip_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

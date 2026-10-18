@@ -3,5 +3,4 @@
 package truenas
 
 // UserSetupLocalAdministratorResponse is the result of UserSetupLocalAdministrator.
-type UserSetupLocalAdministratorResponse struct {
-}
+type UserSetupLocalAdministratorResponse struct{}

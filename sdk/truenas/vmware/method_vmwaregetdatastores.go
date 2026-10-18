@@ -18,5 +18,5 @@ func (c Client) GetDatastores(ctx context.Context, vmwareCreds truenas.VmwareCre
 	params := client.CallParams(1, vmwareCreds)
 	err = c.Caller.Call(ctx, "vmware.get_datastores", params, &result.Answer)
 
-	return
+	return result, err
 }

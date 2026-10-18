@@ -15,5 +15,5 @@ func (c Client) TransferSettingChoices(ctx context.Context) (result truenas.Clou
 	var params []any
 	err = c.Caller.Call(ctx, "cloud_backup.transfer_setting_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -16,11 +16,11 @@ func (c Client) Info(ctx context.Context) (result truenas.IpmiSelInfoResponse, e
 	var params []any
 	err = c.Caller.Call(ctx, "ipmi.sel.info", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // InfoCall is the call Info makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func InfoCall() (string, []any) {
+func InfoCall() (call string, params []any) {
 	return "ipmi.sel.info", nil
 }

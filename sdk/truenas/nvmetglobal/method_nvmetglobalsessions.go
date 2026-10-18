@@ -20,5 +20,5 @@ func (c Client) Sessions(ctx context.Context, filters []any, options truenas.Nvm
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "nvmet.global.sessions", params, &result.Answer)
 
-	return
+	return result, err
 }

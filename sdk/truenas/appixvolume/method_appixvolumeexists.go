@@ -17,10 +17,10 @@ import (
 func (c Client) Exists(ctx context.Context, name string) (result truenas.AppIxVolumeExistsResponse, err error) {
 	params := client.CallParams(1, name)
 	var answer bool
-	if err = c.Caller.Call(ctx, "app.ix_volume.exists", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.ix_volume.exists", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

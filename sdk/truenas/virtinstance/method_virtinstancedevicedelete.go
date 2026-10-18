@@ -17,10 +17,10 @@ import (
 func (c Client) DeviceDelete(ctx context.Context, id string, name string) (result truenas.VirtInstanceDeviceDeleteResponse, err error) {
 	params := client.CallParams(2, id, name)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.instance.device_delete", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.device_delete", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -18,16 +18,16 @@ import (
 func (c Client) Backup(ctx context.Context, backupName string) (result truenas.DockerBackupResponse, err error) {
 	params := client.CallParams(0, backupName)
 	var answer string
-	if err = c.Caller.Call(ctx, "docker.backup", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "docker.backup", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // BackupCall is the call Backup makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func BackupCall(backupName string) (string, []any) {
+func BackupCall(backupName string) (call string, params []any) {
 	return "docker.backup", client.CallParams(0, backupName)
 }

@@ -14,10 +14,10 @@ import (
 func (c Client) FipsEnabled(ctx context.Context) (result truenas.SystemSecurityInfoFipsEnabledResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "system.security.info.fips_enabled", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.security.info.fips_enabled", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

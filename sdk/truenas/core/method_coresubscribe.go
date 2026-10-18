@@ -15,10 +15,10 @@ import (
 func (c Client) Subscribe(ctx context.Context, event string) (result truenas.CoreSubscribeResponse, err error) {
 	params := client.CallParams(1, event)
 	var answer string
-	if err = c.Caller.Call(ctx, "core.subscribe", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "core.subscribe", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

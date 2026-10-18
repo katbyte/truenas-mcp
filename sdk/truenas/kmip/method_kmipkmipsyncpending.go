@@ -14,10 +14,10 @@ import (
 func (c Client) KmipSyncPending(ctx context.Context) (result truenas.KmipKmipSyncPendingResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "kmip.kmip_sync_pending", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kmip.kmip_sync_pending", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

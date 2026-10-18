@@ -3,5 +3,4 @@
 package truenas
 
 // ReplicationRunOnetimeResponse is the result of ReplicationRunOnetime.
-type ReplicationRunOnetimeResponse struct {
-}
+type ReplicationRunOnetimeResponse struct{}

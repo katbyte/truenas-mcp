@@ -19,17 +19,17 @@ func (c Client) Update(ctx context.Context, virtGlobalUpdate truenas.VirtGlobalU
 	result.VirtGlobalUpdateAnswer = &truenas.VirtGlobalUpdateAnswer{}
 	params := client.CallParams(1, virtGlobalUpdate)
 	var answer truenas.VirtGlobalUpdateAnswer
-	if err = c.Caller.Call(ctx, "virt.global.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.global.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtGlobalUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(virtGlobalUpdate truenas.VirtGlobalUpdate) (string, []any) {
+func UpdateCall(virtGlobalUpdate truenas.VirtGlobalUpdate) (call string, params []any) {
 	return "virt.global.update", client.CallParams(1, virtGlobalUpdate)
 }

@@ -18,5 +18,5 @@ func (c Client) DeviceList(ctx context.Context, id string) (result truenas.VirtI
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "virt.instance.device_list", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -18,5 +18,5 @@ func (c Client) Release(ctx context.Context, id string, options truenas.PoolSnap
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "pool.snapshot.release", params, nil)
 
-	return
+	return result, err
 }

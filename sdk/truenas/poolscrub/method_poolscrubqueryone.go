@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Poo
 	result.PoolScrubQueryResultItem = &truenas.PoolScrubQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.PoolScrubQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.scrub.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.scrub.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolScrubQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

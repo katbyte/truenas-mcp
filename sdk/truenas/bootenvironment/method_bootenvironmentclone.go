@@ -16,11 +16,11 @@ func (c Client) Clone(ctx context.Context, bootEnvironmentClone truenas.BootEnvi
 	result.BootEnvironmentQueryResultItem = &truenas.BootEnvironmentQueryResultItem{}
 	params := client.CallParams(1, bootEnvironmentClone)
 	var answer truenas.BootEnvironmentQueryResultItem
-	if err = c.Caller.Call(ctx, "boot.environment.clone", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "boot.environment.clone", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.BootEnvironmentQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

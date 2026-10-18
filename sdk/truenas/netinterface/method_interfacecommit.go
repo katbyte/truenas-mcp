@@ -16,5 +16,5 @@ func (c Client) Commit(ctx context.Context, options truenas.InterfaceCommitOptio
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "interface.commit", params, nil)
 
-	return
+	return result, err
 }

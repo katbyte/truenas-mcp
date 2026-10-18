@@ -3,5 +3,4 @@
 package truenas
 
 // CatalogSyncResponse is the result of CatalogSync.
-type CatalogSyncResponse struct {
-}
+type CatalogSyncResponse struct{}

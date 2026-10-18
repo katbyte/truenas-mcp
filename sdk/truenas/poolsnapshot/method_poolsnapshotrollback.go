@@ -18,5 +18,5 @@ func (c Client) Rollback(ctx context.Context, id string, options truenas.PoolSna
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "pool.snapshot.rollback", params, nil)
 
-	return
+	return result, err
 }

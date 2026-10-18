@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, nvmetNamespaceUpdate truenas
 	result.NVMetNamespaceQueryResultItem = &truenas.NVMetNamespaceQueryResultItem{}
 	params := client.CallParams(2, id, nvmetNamespaceUpdate)
 	var answer truenas.NVMetNamespaceQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.namespace.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.namespace.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetNamespaceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // VmStartResponse is the result of VmStart.
-type VmStartResponse struct {
-}
+type VmStartResponse struct{}

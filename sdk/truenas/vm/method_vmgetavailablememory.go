@@ -17,10 +17,10 @@ import (
 func (c Client) GetAvailableMemory(ctx context.Context, overcommit bool) (result truenas.VmGetAvailableMemoryResponse, err error) {
 	params := client.CallParams(0, overcommit)
 	var answer int
-	if err = c.Caller.Call(ctx, "vm.get_available_memory", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.get_available_memory", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

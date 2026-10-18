@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Cronjob
 	result.CronJobQueryResultItem = &truenas.CronJobQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.CronJobQueryResultItem
-	if err = c.Caller.Call(ctx, "cronjob.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cronjob.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CronJobQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -14,10 +14,10 @@ import (
 func (c Client) RandomMac(ctx context.Context) (result truenas.VmRandomMacResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "vm.random_mac", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.random_mac", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -15,10 +15,10 @@ import (
 func (c Client) RemoteSshHostKeyScan(ctx context.Context, keychainRemoteSshHostKeyScan truenas.KeychainRemoteSshHostKeyScan) (result truenas.KeychaincredentialRemoteSshHostKeyScanResponse, err error) {
 	params := client.CallParams(1, keychainRemoteSshHostKeyScan)
 	var answer string
-	if err = c.Caller.Call(ctx, "keychaincredential.remote_ssh_host_key_scan", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "keychaincredential.remote_ssh_host_key_scan", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

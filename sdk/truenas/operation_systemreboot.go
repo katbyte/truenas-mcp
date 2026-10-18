@@ -3,5 +3,4 @@
 package truenas
 
 // SystemRebootResponse is the result of SystemReboot.
-type SystemRebootResponse struct {
-}
+type SystemRebootResponse struct{}

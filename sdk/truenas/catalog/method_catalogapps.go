@@ -18,5 +18,5 @@ func (c Client) Apps(ctx context.Context, catalogAppsOptions truenas.CatalogApps
 	params := client.CallParams(1, catalogAppsOptions)
 	err = c.Caller.Call(ctx, "catalog.apps", params, &result.Answer)
 
-	return
+	return result, err
 }

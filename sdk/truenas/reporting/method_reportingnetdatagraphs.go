@@ -20,5 +20,5 @@ func (c Client) NetdataGraphs(ctx context.Context, filters []any, options truena
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "reporting.netdata_graphs", params, &result.Answer)
 
-	return
+	return result, err
 }

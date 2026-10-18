@@ -18,5 +18,5 @@ func (c Client) Update(ctx context.Context, id int, keychainCredentialUpdate tru
 	params := client.CallParams(2, id, keychainCredentialUpdate)
 	err = c.Caller.Call(ctx, "keychaincredential.update", params, &result.Answer)
 
-	return
+	return result, err
 }

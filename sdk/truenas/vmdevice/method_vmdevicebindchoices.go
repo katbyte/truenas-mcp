@@ -15,5 +15,5 @@ func (c Client) BindChoices(ctx context.Context) (result truenas.VmDeviceBindCho
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.bind_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

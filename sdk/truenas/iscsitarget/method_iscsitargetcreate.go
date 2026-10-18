@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, iscsiTargetCreate truenas.IscsiTarge
 	result.IscsiTargetQueryResultItem = &truenas.IscsiTargetQueryResultItem{}
 	params := client.CallParams(1, iscsiTargetCreate)
 	var answer truenas.IscsiTargetQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.target.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.target.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiTargetQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

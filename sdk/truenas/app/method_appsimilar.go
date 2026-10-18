@@ -16,5 +16,5 @@ func (c Client) Similar(ctx context.Context, appName string, train string) (resu
 	params := client.CallParams(2, appName, train)
 	err = c.Caller.Call(ctx, "app.similar", params, &result.Answer)
 
-	return
+	return result, err
 }

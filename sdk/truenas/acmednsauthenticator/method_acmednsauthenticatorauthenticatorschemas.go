@@ -15,5 +15,5 @@ func (c Client) AuthenticatorSchemas(ctx context.Context) (result truenas.AcmeDn
 	var params []any
 	err = c.Caller.Call(ctx, "acme.dns.authenticator.authenticator_schemas", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -20,5 +20,5 @@ func (c Client) Query(ctx context.Context, filters []any, options truenas.Static
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "staticroute.query", params, &result.Answer)
 
-	return
+	return result, err
 }

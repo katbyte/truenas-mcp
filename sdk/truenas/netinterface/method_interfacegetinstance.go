@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id string, options truenas.Inte
 	result.InterfaceGetInstanceAnswer = &truenas.InterfaceGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.InterfaceGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "interface.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InterfaceGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

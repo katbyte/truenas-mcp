@@ -3,5 +3,4 @@
 package truenas
 
 // InterfaceCancelRollbackResponse is the result of InterfaceCancelRollback.
-type InterfaceCancelRollbackResponse struct {
-}
+type InterfaceCancelRollbackResponse struct{}

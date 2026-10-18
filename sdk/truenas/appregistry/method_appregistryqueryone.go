@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.App
 	result.AppRegistryQueryResultItem = &truenas.AppRegistryQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AppRegistryQueryResultItem
-	if err = c.Caller.Call(ctx, "app.registry.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.registry.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppRegistryQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

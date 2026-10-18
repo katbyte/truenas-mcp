@@ -3,5 +3,4 @@
 package truenas
 
 // PoolRemoveResponse is the result of PoolRemove.
-type PoolRemoveResponse struct {
-}
+type PoolRemoveResponse struct{}

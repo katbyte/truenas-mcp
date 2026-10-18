@@ -16,11 +16,11 @@ func (c Client) SetOptions(ctx context.Context, options truenas.CoreSetOptionsOp
 	result.CoreSetOptionsAnswer = &truenas.CoreSetOptionsAnswer{}
 	params := client.CallParams(1, options)
 	var answer truenas.CoreSetOptionsAnswer
-	if err = c.Caller.Call(ctx, "core.set_options", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "core.set_options", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CoreSetOptionsAnswer = result.Answer
 
-	return
+	return result, nil
 }

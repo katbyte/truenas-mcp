@@ -15,5 +15,5 @@ func (c Client) SyslogCertificateChoices(ctx context.Context) (result truenas.Sy
 	var params []any
 	err = c.Caller.Call(ctx, "system.advanced.syslog_certificate_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

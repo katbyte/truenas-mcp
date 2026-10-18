@@ -18,5 +18,5 @@ func (c Client) Query(ctx context.Context, data truenas.IpmiLanQueryData) (resul
 	params := client.CallParams(0, data)
 	err = c.Caller.Call(ctx, "ipmi.lan.query", params, &result.Answer)
 
-	return
+	return result, err
 }

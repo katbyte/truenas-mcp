@@ -22,16 +22,16 @@ import (
 func (c Client) Control(ctx context.Context, verb truenas.ServiceControlVerb, service string, options truenas.ServiceControlOptions) (result truenas.ServiceControlResponse, err error) {
 	params := client.CallParams(2, verb, service, options)
 	var answer bool
-	if err = c.Caller.Call(ctx, "service.control", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "service.control", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ControlCall is the call Control makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ControlCall(verb truenas.ServiceControlVerb, service string, options truenas.ServiceControlOptions) (string, []any) {
+func ControlCall(verb truenas.ServiceControlVerb, service string, options truenas.ServiceControlOptions) (call string, params []any) {
 	return "service.control", client.CallParams(2, verb, service, options)
 }

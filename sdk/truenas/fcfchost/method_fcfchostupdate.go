@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, fcHostUpdate truenas.FcHostU
 	result.FCHostQueryResultItem = &truenas.FCHostQueryResultItem{}
 	params := client.CallParams(2, id, fcHostUpdate)
 	var answer truenas.FCHostQueryResultItem
-	if err = c.Caller.Call(ctx, "fc.fc_host.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "fc.fc_host.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FCHostQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

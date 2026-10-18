@@ -3,5 +3,4 @@
 package truenas
 
 // PoolExportResponse is the result of PoolExport.
-type PoolExportResponse struct {
-}
+type PoolExportResponse struct{}

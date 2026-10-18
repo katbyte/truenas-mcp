@@ -15,11 +15,11 @@ func (c Client) TunableTypeChoices(ctx context.Context) (result truenas.TunableT
 	result.TunableTunableTypeChoicesAnswer = &truenas.TunableTunableTypeChoicesAnswer{}
 	var params []any
 	var answer truenas.TunableTunableTypeChoicesAnswer
-	if err = c.Caller.Call(ctx, "tunable.tunable_type_choices", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "tunable.tunable_type_choices", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.TunableTunableTypeChoicesAnswer = result.Answer
 
-	return
+	return result, nil
 }

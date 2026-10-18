@@ -20,5 +20,5 @@ func (c Client) NetdataGraph(ctx context.Context, str string, query truenas.Quer
 	params := client.CallParams(1, str, query)
 	err = c.Caller.Call(ctx, "reporting.netdata_graph", params, &result.Answer)
 
-	return
+	return result, err
 }

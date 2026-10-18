@@ -15,5 +15,5 @@ func (c Client) DhchapDhgroupChoices(ctx context.Context) (result truenas.NvmetH
 	var params []any
 	err = c.Caller.Call(ctx, "nvmet.host.dhchap_dhgroup_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

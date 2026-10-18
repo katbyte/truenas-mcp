@@ -3,5 +3,4 @@
 package truenas
 
 // InterfaceCommitResponse is the result of InterfaceCommit.
-type InterfaceCommitResponse struct {
-}
+type InterfaceCommitResponse struct{}

@@ -20,16 +20,16 @@ import (
 func (c Client) Download(ctx context.Context, train string, version string) (result truenas.UpdateDownloadResponse, err error) {
 	params := client.CallParams(0, train, version)
 	var answer bool
-	if err = c.Caller.Call(ctx, "update.download", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "update.download", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // DownloadCall is the call Download makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DownloadCall(train string, version string) (string, []any) {
+func DownloadCall(train string, version string) (call string, params []any) {
 	return "update.download", client.CallParams(0, train, version)
 }

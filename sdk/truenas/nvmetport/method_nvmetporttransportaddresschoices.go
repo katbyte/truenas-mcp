@@ -20,5 +20,5 @@ func (c Client) TransportAddressChoices(ctx context.Context, addrTrtype truenas.
 	params := client.CallParams(1, addrTrtype, forceAna)
 	err = c.Caller.Call(ctx, "nvmet.port.transport_address_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

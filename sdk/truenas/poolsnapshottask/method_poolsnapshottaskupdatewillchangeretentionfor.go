@@ -20,5 +20,5 @@ func (c Client) UpdateWillChangeRetentionFor(ctx context.Context, id int, data t
 	params := client.CallParams(2, id, data)
 	err = c.Caller.Call(ctx, "pool.snapshottask.update_will_change_retention_for", params, &result.Answer)
 
-	return
+	return result, err
 }

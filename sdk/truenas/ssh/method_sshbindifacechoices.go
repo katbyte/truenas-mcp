@@ -15,5 +15,5 @@ func (c Client) BindifaceChoices(ctx context.Context) (result truenas.SshBindifa
 	var params []any
 	err = c.Caller.Call(ctx, "ssh.bindiface_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

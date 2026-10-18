@@ -16,5 +16,5 @@ func (c Client) Restore(ctx context.Context, uuid string) (result truenas.AlertR
 	params := client.CallParams(1, uuid)
 	err = c.Caller.Call(ctx, "alert.restore", params, nil)
 
-	return
+	return result, err
 }

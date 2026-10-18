@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.KerberosKeytabCreateDat
 	result.KerberosKeytabQueryResultItem = &truenas.KerberosKeytabQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.KerberosKeytabQueryResultItem
-	if err = c.Caller.Call(ctx, "kerberos.keytab.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kerberos.keytab.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KerberosKeytabQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

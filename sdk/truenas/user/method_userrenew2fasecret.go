@@ -18,11 +18,11 @@ func (c Client) Renew2faSecret(ctx context.Context, username string, twofactorOp
 	result.UserRenew2faSecretAnswer = &truenas.UserRenew2faSecretAnswer{}
 	params := client.CallParams(2, username, twofactorOptions)
 	var answer truenas.UserRenew2faSecretAnswer
-	if err = c.Caller.Call(ctx, "user.renew_2fa_secret", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.renew_2fa_secret", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.UserRenew2faSecretAnswer = result.Answer
 
-	return
+	return result, nil
 }

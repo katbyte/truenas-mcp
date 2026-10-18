@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, acltemplateCreate truenas.Acltemplat
 	result.FilesystemAcltemplateCreateAnswer = &truenas.FilesystemAcltemplateCreateAnswer{}
 	params := client.CallParams(1, acltemplateCreate)
 	var answer truenas.FilesystemAcltemplateCreateAnswer
-	if err = c.Caller.Call(ctx, "filesystem.acltemplate.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.acltemplate.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemAcltemplateCreateAnswer = result.Answer
 
-	return
+	return result, nil
 }

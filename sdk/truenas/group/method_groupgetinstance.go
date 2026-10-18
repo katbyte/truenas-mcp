@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.GroupGe
 	result.GroupGetInstanceAnswer = &truenas.GroupGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.GroupGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "group.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "group.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.GroupGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

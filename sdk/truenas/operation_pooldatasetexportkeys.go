@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDatasetExportKeysResponse is the result of PoolDatasetExportKeys.
-type PoolDatasetExportKeysResponse struct {
-}
+type PoolDatasetExportKeysResponse struct{}

@@ -3,5 +3,4 @@
 package truenas
 
 // TruenasAcceptEulaResponse is the result of TruenasAcceptEula.
-type TruenasAcceptEulaResponse struct {
-}
+type TruenasAcceptEulaResponse struct{}

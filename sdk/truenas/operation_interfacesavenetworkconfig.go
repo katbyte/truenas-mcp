@@ -3,5 +3,4 @@
 package truenas
 
 // InterfaceSaveNetworkConfigResponse is the result of InterfaceSaveNetworkConfig.
-type InterfaceSaveNetworkConfigResponse struct {
-}
+type InterfaceSaveNetworkConfigResponse struct{}

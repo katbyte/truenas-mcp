@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id string, data truenas.PoolSnapshot
 	result.PoolSnapshotUpdateAnswer = &truenas.PoolSnapshotUpdateAnswer{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.PoolSnapshotUpdateAnswer
-	if err = c.Caller.Call(ctx, "pool.snapshot.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.snapshot.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolSnapshotUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -14,10 +14,10 @@ import (
 func (c Client) VersionShort(ctx context.Context) (result truenas.SystemVersionShortResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "system.version_short", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.version_short", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -16,5 +16,5 @@ func (c Client) DeleteBackup(ctx context.Context, backupName string) (result tru
 	params := client.CallParams(1, backupName)
 	err = c.Caller.Call(ctx, "docker.delete_backup", params, nil)
 
-	return
+	return result, err
 }

@@ -19,10 +19,10 @@ import (
 func (c Client) Login(ctx context.Context, username string, password string, otpToken string) (result truenas.AuthLoginResponse, err error) {
 	params := client.CallParams(2, username, password, otpToken)
 	var answer bool
-	if err = c.Caller.Call(ctx, "auth.login", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.login", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

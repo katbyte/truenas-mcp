@@ -18,5 +18,5 @@ func (c Client) IpInUse(ctx context.Context, options truenas.InterfaceIpInUseOpt
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "interface.ip_in_use", params, &result.Answer)
 
-	return
+	return result, err
 }

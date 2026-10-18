@@ -16,5 +16,5 @@ func (c Client) LoginExContinue(ctx context.Context, loginData truenas.AuthOTPTo
 	params := client.CallParams(1, loginData)
 	err = c.Caller.Call(ctx, "auth.login_ex_continue", params, &result.Answer)
 
-	return
+	return result, err
 }

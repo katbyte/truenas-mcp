@@ -18,5 +18,5 @@ func (c Client) SharePrecheck(ctx context.Context, smbSharePrecheck truenas.SmbS
 	params := client.CallParams(1, smbSharePrecheck)
 	err = c.Caller.Call(ctx, "sharing.smb.share_precheck", params, nil)
 
-	return
+	return result, err
 }

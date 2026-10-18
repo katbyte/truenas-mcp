@@ -20,5 +20,5 @@ func (c Client) GetNfs4Clients(ctx context.Context, filters []any, options truen
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "nfs.get_nfs4_clients", params, &result.Answer)
 
-	return
+	return result, err
 }

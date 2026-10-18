@@ -21,11 +21,11 @@ func (c Client) Attach(ctx context.Context, oid int, options truenas.PoolAttachO
 	params := client.CallParams(2, oid, options)
 	err = c.Caller.Call(ctx, "pool.attach", params, nil)
 
-	return
+	return result, err
 }
 
 // AttachCall is the call Attach makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func AttachCall(oid int, options truenas.PoolAttachOptions) (string, []any) {
+func AttachCall(oid int, options truenas.PoolAttachOptions) (call string, params []any) {
 	return "pool.attach", client.CallParams(2, oid, options)
 }

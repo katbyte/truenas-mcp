@@ -18,5 +18,5 @@ func (c Client) SetAttribute(ctx context.Context, key string, value any) (result
 	params := client.CallParams(2, key, value)
 	err = c.Caller.Call(ctx, "auth.set_attribute", params, nil)
 
-	return
+	return result, err
 }

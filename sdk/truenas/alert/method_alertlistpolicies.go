@@ -15,5 +15,5 @@ func (c Client) ListPolicies(ctx context.Context) (result truenas.AlertListPolic
 	var params []any
 	err = c.Caller.Call(ctx, "alert.list_policies", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.SystemdatasetConfigR
 	result.SystemdatasetConfigAnswer = &truenas.SystemdatasetConfigAnswer{}
 	var params []any
 	var answer truenas.SystemdatasetConfigAnswer
-	if err = c.Caller.Call(ctx, "systemdataset.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "systemdataset.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemdatasetConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

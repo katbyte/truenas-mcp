@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.IscsiTa
 	result.IscsiTargetToExtentQueryResultItem = &truenas.IscsiTargetToExtentQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.IscsiTargetToExtentQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.targetextent.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.targetextent.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiTargetToExtentQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

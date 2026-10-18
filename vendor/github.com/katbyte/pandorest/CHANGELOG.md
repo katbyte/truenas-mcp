@@ -1,3 +1,19 @@
+## v0.13.1 (2026-10-18)
+
+- **A grouped package's tests pass staticcheck.** Their options live in another package, so every deprecated option a generated test set was a finding. The line now says why it is set.
+
+## v0.13.0 (2026-10-18)
+
+- **The generated code passes the linters.** A repository can turn off the generated-code exclusion and lint the package it checks in like the rest of its code. Every method and test file moves on regenerate; nothing a caller wrote changes. Three checks stay for the repository to exclude for the package, as [docs/generated-code.md](docs/generated-code.md) says.
+- **pandorest lints what it writes.** `make lint-generated` renders the test packages and lints them the same way, and CI runs it.
+
+## v0.12.0 (2026-10-18)
+
+- **A missing id's answer is checked, not just noted.** The sweep's `MissingIDs` now takes, per kind, the id, the GET to probe through and the answer wanted (`"404"`, or `"nothing"`), and fails the run when the server answers anything else, so a server that changes what a missing id gets fails CI instead of changing a line in the log. A service's file moves from `"ItemID": "000"` to `"ItemID": {ID: "000", Operation: "GetItem", Want: "404"}`.
+- **Uncalled can count through one client's field.** With two services in one repository a call to one's `GetItems` counted for the other's. `generator.UncalledOn(defs, root, "emby")` counts only what is reached through that field.
+- **A service can say its text answers are short.** With `TextAnswers` set, an answer labelled `text/plain` is read whole into a string and closed, instead of being left open in the response for the caller, who mostly never read it and so held the connection for good. One declared binary, or made a file by a workaround, stays a file.
+- **A generated list test answers in the list's own names.** The shared test server always wrote the first list's items and total names, so every list of a service's second paging shape read an empty page and its Complete and Each tests failed. Each test now hands the server the names its list answers with. The call in every generated list test gains those two names.
+
 ## v0.11.0 (2026-10-14)
 
 - **The client is on go-kt v0.8.0, where chttp is now httpc.** Nothing about it changes, but a repository that takes go-kt v0.8.0 needs this release for the client to compile, so pandorest moves first and the generated packages follow.

@@ -14,10 +14,10 @@ import (
 func (c Client) State(ctx context.Context) (result truenas.SystemStateResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "system.state", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.state", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -20,5 +20,5 @@ func (c Client) NetdataGetData(ctx context.Context, graphs []truenas.GraphIdenti
 	params := client.CallParams(1, graphs, query)
 	err = c.Caller.Call(ctx, "reporting.netdata_get_data", params, &result.Answer)
 
-	return
+	return result, err
 }

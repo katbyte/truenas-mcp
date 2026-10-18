@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.IscsiAu
 	result.IscsiAuthQueryResultItem = &truenas.IscsiAuthQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.IscsiAuthQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.auth.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.auth.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiAuthQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -20,11 +20,11 @@ func (c Client) SessionsOne(ctx context.Context, filters []any, options truenas.
 	result.AuthSessionsQueryResultItem = &truenas.AuthSessionsQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AuthSessionsQueryResultItem
-	if err = c.Caller.Call(ctx, "auth.sessions", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.sessions", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AuthSessionsQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,5 +15,5 @@ func (c Client) NicAttachChoices(ctx context.Context) (result truenas.VmDeviceNi
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.nic_attach_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

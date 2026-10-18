@@ -19,17 +19,17 @@ func (c Client) Create(ctx context.Context, data truenas.PoolCreateData) (result
 	result.PoolQueryResultItem = &truenas.PoolQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.PoolQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // CreateCall is the call Create makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func CreateCall(data truenas.PoolCreateData) (string, []any) {
+func CreateCall(data truenas.PoolCreateData) (call string, params []any) {
 	return "pool.create", client.CallParams(1, data)
 }

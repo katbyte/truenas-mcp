@@ -19,11 +19,11 @@ func (c Client) Expand(ctx context.Context, id int) (result truenas.PoolExpandRe
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.expand", params, nil)
 
-	return
+	return result, err
 }
 
 // ExpandCall is the call Expand makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExpandCall(id int) (string, []any) {
+func ExpandCall(id int) (call string, params []any) {
 	return "pool.expand", client.CallParams(1, id)
 }

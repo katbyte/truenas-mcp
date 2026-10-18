@@ -18,11 +18,11 @@ func (c Client) Stat(ctx context.Context, path string) (result truenas.Filesyste
 	result.FilesystemStatAnswer = &truenas.FilesystemStatAnswer{}
 	params := client.CallParams(1, path)
 	var answer truenas.FilesystemStatAnswer
-	if err = c.Caller.Call(ctx, "filesystem.stat", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.stat", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemStatAnswer = result.Answer
 
-	return
+	return result, nil
 }

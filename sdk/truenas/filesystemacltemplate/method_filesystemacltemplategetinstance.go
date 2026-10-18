@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Filesys
 	result.FilesystemAcltemplateGetInstanceAnswer = &truenas.FilesystemAcltemplateGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.FilesystemAcltemplateGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "filesystem.acltemplate.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.acltemplate.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemAcltemplateGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

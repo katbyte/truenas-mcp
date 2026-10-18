@@ -15,5 +15,5 @@ func (c Client) PassthroughDeviceChoices(ctx context.Context) (result truenas.Vm
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.passthrough_device_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

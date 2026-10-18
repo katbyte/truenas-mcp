@@ -3,5 +3,4 @@
 package truenas
 
 // PoolScrubRunResponse is the result of PoolScrubRun.
-type PoolScrubRunResponse struct {
-}
+type PoolScrubRunResponse struct{}

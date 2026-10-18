@@ -21,17 +21,17 @@ func (c Client) Update(ctx context.Context, id int, data truenas.TunableUpdateDa
 	result.TunableQueryResultItem = &truenas.TunableQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.TunableQueryResultItem
-	if err = c.Caller.Call(ctx, "tunable.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "tunable.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.TunableQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(id int, data truenas.TunableUpdateData) (string, []any) {
+func UpdateCall(id int, data truenas.TunableUpdateData) (call string, params []any) {
 	return "tunable.update", client.CallParams(2, id, data)
 }

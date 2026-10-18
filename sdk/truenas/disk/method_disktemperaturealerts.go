@@ -18,5 +18,5 @@ func (c Client) TemperatureAlerts(ctx context.Context, names []string) (result t
 	params := client.CallParams(1, names)
 	err = c.Caller.Call(ctx, "disk.temperature_alerts", params, &result.Answer)
 
-	return
+	return result, err
 }

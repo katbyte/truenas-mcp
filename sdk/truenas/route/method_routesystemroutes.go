@@ -20,5 +20,5 @@ func (c Client) SystemRoutes(ctx context.Context, filters []any, options truenas
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "route.system_routes", params, &result.Answer)
 
-	return
+	return result, err
 }

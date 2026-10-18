@@ -16,5 +16,5 @@ func (c Client) Resume(ctx context.Context, id int) (result truenas.VmResumeResp
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "vm.resume", params, nil)
 
-	return
+	return result, err
 }

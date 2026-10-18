@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.VmD
 	result.VMDeviceQueryResultItem = &truenas.VMDeviceQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.VMDeviceQueryResultItem
-	if err = c.Caller.Call(ctx, "vm.device.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VMDeviceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,11 +15,11 @@ func (c Client) BootloaderOptions(ctx context.Context) (result truenas.VmBootloa
 	result.VmBootloaderOptionsAnswer = &truenas.VmBootloaderOptionsAnswer{}
 	var params []any
 	var answer truenas.VmBootloaderOptionsAnswer
-	if err = c.Caller.Call(ctx, "vm.bootloader_options", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.bootloader_options", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmBootloaderOptionsAnswer = result.Answer
 
-	return
+	return result, nil
 }

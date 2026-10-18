@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id string, data truenas.PoolDatasetU
 	result.PoolDatasetQueryResultItem = &truenas.PoolDatasetQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.PoolDatasetQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.dataset.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolDatasetQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

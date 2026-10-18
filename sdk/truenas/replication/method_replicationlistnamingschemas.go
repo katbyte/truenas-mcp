@@ -13,5 +13,5 @@ func (c Client) ListNamingSchemas(ctx context.Context) (result truenas.Replicati
 	var params []any
 	err = c.Caller.Call(ctx, "replication.list_naming_schemas", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -22,12 +22,12 @@ func (c Client) ExportKeys(ctx context.Context, id string) (result truenas.PoolD
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "pool.dataset.export_keys", params, nil)
 
-	return
+	return result, err
 }
 
 // ExportKeysCall is the call ExportKeys makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExportKeysCall(id string) (string, []any) {
+func ExportKeysCall(id string) (call string, params []any) {
 	return "pool.dataset.export_keys", client.CallParams(1, id)
 }
 

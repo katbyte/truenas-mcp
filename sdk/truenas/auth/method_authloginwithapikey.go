@@ -15,10 +15,10 @@ import (
 func (c Client) LoginWithApiKey(ctx context.Context, apiKey string) (result truenas.AuthLoginWithApiKeyResponse, err error) {
 	params := client.CallParams(1, apiKey)
 	var answer bool
-	if err = c.Caller.Call(ctx, "auth.login_with_api_key", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.login_with_api_key", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

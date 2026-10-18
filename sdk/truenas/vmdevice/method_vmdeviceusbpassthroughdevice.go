@@ -18,11 +18,11 @@ func (c Client) UsbPassthroughDevice(ctx context.Context, device string) (result
 	result.VmDeviceUsbPassthroughDeviceAnswer = &truenas.VmDeviceUsbPassthroughDeviceAnswer{}
 	params := client.CallParams(1, device)
 	var answer truenas.VmDeviceUsbPassthroughDeviceAnswer
-	if err = c.Caller.Call(ctx, "vm.device.usb_passthrough_device", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.usb_passthrough_device", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmDeviceUsbPassthroughDeviceAnswer = result.Answer
 
-	return
+	return result, nil
 }

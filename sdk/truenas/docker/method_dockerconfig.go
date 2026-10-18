@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.DockerConfigResponse
 	result.DockerConfigAnswer = &truenas.DockerConfigAnswer{}
 	var params []any
 	var answer truenas.DockerConfigAnswer
-	if err = c.Caller.Call(ctx, "docker.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "docker.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DockerConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

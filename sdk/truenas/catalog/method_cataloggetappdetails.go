@@ -20,11 +20,11 @@ func (c Client) GetAppDetails(ctx context.Context, appName string, appVersionDet
 	result.CatalogGetAppDetailsAnswer = &truenas.CatalogGetAppDetailsAnswer{}
 	params := client.CallParams(2, appName, appVersionDetails)
 	var answer truenas.CatalogGetAppDetailsAnswer
-	if err = c.Caller.Call(ctx, "catalog.get_app_details", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "catalog.get_app_details", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CatalogGetAppDetailsAnswer = result.Answer
 
-	return
+	return result, nil
 }

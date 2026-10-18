@@ -15,11 +15,11 @@ func (c Client) Status(ctx context.Context) (result truenas.UpdateStatusResponse
 	result.UpdateStatusAnswer = &truenas.UpdateStatusAnswer{}
 	var params []any
 	var answer truenas.UpdateStatusAnswer
-	if err = c.Caller.Call(ctx, "update.status", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "update.status", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.UpdateStatusAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,5 +15,5 @@ func (c Client) PoolChoices(ctx context.Context) (result truenas.VirtGlobalPoolC
 	var params []any
 	err = c.Caller.Call(ctx, "virt.global.pool_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

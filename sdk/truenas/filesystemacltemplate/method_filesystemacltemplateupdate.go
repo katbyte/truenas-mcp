@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, acltemplateUpdate truenas.Ac
 	result.FilesystemAcltemplateUpdateAnswer = &truenas.FilesystemAcltemplateUpdateAnswer{}
 	params := client.CallParams(2, id, acltemplateUpdate)
 	var answer truenas.FilesystemAcltemplateUpdateAnswer
-	if err = c.Caller.Call(ctx, "filesystem.acltemplate.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.acltemplate.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemAcltemplateUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

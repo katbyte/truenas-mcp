@@ -3,5 +3,4 @@
 package truenas
 
 // VmPoweroffResponse is the result of VmPoweroff.
-type VmPoweroffResponse struct {
-}
+type VmPoweroffResponse struct{}

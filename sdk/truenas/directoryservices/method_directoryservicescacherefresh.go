@@ -16,11 +16,11 @@ func (c Client) CacheRefresh(ctx context.Context) (result truenas.Directoryservi
 	var params []any
 	err = c.Caller.Call(ctx, "directoryservices.cache_refresh", params, nil)
 
-	return
+	return result, err
 }
 
 // CacheRefreshCall is the call CacheRefresh makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func CacheRefreshCall() (string, []any) {
+func CacheRefreshCall() (call string, params []any) {
 	return "directoryservices.cache_refresh", nil
 }

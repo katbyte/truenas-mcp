@@ -23,11 +23,11 @@ func (c Client) Wipe(ctx context.Context, dev string, mode truenas.DiskWipeMode,
 	params := client.CallParams(2, dev, mode, synccache)
 	err = c.Caller.Call(ctx, "disk.wipe", params, nil)
 
-	return
+	return result, err
 }
 
 // WipeCall is the call Wipe makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func WipeCall(dev string, mode truenas.DiskWipeMode, synccache bool) (string, []any) {
+func WipeCall(dev string, mode truenas.DiskWipeMode, synccache bool) (call string, params []any) {
 	return "disk.wipe", client.CallParams(2, dev, mode, synccache)
 }

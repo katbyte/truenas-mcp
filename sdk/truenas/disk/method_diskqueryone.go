@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Dis
 	result.DiskQueryResultItem = &truenas.DiskQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.DiskQueryResultItem
-	if err = c.Caller.Call(ctx, "disk.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "disk.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DiskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

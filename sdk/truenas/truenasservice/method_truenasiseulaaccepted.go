@@ -14,10 +14,10 @@ import (
 func (c Client) IsEulaAccepted(ctx context.Context) (result truenas.TruenasIsEulaAcceptedResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "truenas.is_eula_accepted", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "truenas.is_eula_accepted", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

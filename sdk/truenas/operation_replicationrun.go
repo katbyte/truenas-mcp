@@ -3,5 +3,4 @@
 package truenas
 
 // ReplicationRunResponse is the result of ReplicationRun.
-type ReplicationRunResponse struct {
-}
+type ReplicationRunResponse struct{}

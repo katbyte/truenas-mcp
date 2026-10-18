@@ -18,16 +18,16 @@ import (
 func (c Client) Convert(ctx context.Context, vmConvert truenas.VmConvert) (result truenas.VmDeviceConvertResponse, err error) {
 	params := client.CallParams(1, vmConvert)
 	var answer bool
-	if err = c.Caller.Call(ctx, "vm.device.convert", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.convert", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ConvertCall is the call Convert makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ConvertCall(vmConvert truenas.VmConvert) (string, []any) {
+func ConvertCall(vmConvert truenas.VmConvert) (call string, params []any) {
 	return "vm.device.convert", client.CallParams(1, vmConvert)
 }

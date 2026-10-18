@@ -16,5 +16,5 @@ func (c Client) LoginEx(ctx context.Context, loginData truenas.AuthLoginExLoginD
 	params := client.CallParams(1, loginData)
 	err = c.Caller.Call(ctx, "auth.login_ex", params, &result.Answer)
 
-	return
+	return result, err
 }

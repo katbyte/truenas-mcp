@@ -15,11 +15,11 @@ func (c Client) Summary(ctx context.Context) (result truenas.NetworkGeneralSumma
 	result.NetworkGeneralSummaryAnswer = &truenas.NetworkGeneralSummaryAnswer{}
 	var params []any
 	var answer truenas.NetworkGeneralSummaryAnswer
-	if err = c.Caller.Call(ctx, "network.general.summary", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "network.general.summary", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NetworkGeneralSummaryAnswer = result.Answer
 
-	return
+	return result, nil
 }

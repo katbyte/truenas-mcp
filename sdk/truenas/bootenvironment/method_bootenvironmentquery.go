@@ -20,5 +20,5 @@ func (c Client) Query(ctx context.Context, filters []any, options truenas.BootEn
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "boot.environment.query", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -18,5 +18,5 @@ func (c Client) PortChoices(ctx context.Context, includeUsed bool) (result truen
 	params := client.CallParams(0, includeUsed)
 	err = c.Caller.Call(ctx, "fcport.port_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

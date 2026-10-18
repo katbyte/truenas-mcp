@@ -106,7 +106,7 @@ func (im *importer) queryForms(o *definitions.Operation) []definitions.Operation
 // keep clear of (core.bulk's params is paramsParam); the predeclared names and Go's keywords are kept clear of as well.
 var callReserved = func() map[string]bool {
 	m := map[string]bool{}
-	for n := range strings.FieldsSeq("c ctx params answer result err client context errors " +
+	for n := range strings.FieldsSeq("c ctx call params answer result err client context errors " +
 		"string int int64 float32 float64 bool error any len cap new make nil true false") {
 		m[n] = true
 	}

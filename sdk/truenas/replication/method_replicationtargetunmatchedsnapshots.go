@@ -24,5 +24,5 @@ func (c Client) TargetUnmatchedSnapshots(ctx context.Context, direction truenas.
 	params := client.CallParams(4, direction, sourceDatasets, targetDataset, transport, sshCredentials)
 	err = c.Caller.Call(ctx, "replication.target_unmatched_snapshots", params, &result.Answer)
 
-	return
+	return result, err
 }

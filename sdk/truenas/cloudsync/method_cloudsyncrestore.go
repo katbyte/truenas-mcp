@@ -18,11 +18,11 @@ func (c Client) Restore(ctx context.Context, id int, opts truenas.CloudsyncResto
 	result.CloudSyncQueryResultItem = &truenas.CloudSyncQueryResultItem{}
 	params := client.CallParams(2, id, opts)
 	var answer truenas.CloudSyncQueryResultItem
-	if err = c.Caller.Call(ctx, "cloudsync.restore", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.restore", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudSyncQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

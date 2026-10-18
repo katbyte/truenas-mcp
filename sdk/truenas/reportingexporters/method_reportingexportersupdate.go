@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, reportingExporterUpdate true
 	result.ReportingExporterQueryResultItem = &truenas.ReportingExporterQueryResultItem{}
 	params := client.CallParams(2, id, reportingExporterUpdate)
 	var answer truenas.ReportingExporterQueryResultItem
-	if err = c.Caller.Call(ctx, "reporting.exporters.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "reporting.exporters.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReportingExporterQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

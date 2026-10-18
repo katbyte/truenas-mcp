@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, catalogUpdate truenas.CatalogUpdate)
 	result.CatalogUpdateAnswer = &truenas.CatalogUpdateAnswer{}
 	params := client.CallParams(1, catalogUpdate)
 	var answer truenas.CatalogUpdateAnswer
-	if err = c.Caller.Call(ctx, "catalog.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "catalog.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CatalogUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

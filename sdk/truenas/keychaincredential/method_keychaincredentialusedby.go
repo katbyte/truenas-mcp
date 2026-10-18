@@ -18,5 +18,5 @@ func (c Client) UsedBy(ctx context.Context, id int) (result truenas.Keychaincred
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "keychaincredential.used_by", params, &result.Answer)
 
-	return
+	return result, err
 }

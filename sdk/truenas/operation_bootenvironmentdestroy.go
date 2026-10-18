@@ -3,5 +3,4 @@
 package truenas
 
 // BootEnvironmentDestroyResponse is the result of BootEnvironmentDestroy.
-type BootEnvironmentDestroyResponse struct {
-}
+type BootEnvironmentDestroyResponse struct{}

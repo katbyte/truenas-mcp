@@ -15,5 +15,5 @@ func (c Client) Presets(ctx context.Context) (result truenas.SharingSmbPresetsRe
 	var params []any
 	err = c.Caller.Call(ctx, "sharing.smb.presets", params, &result.Answer)
 
-	return
+	return result, err
 }

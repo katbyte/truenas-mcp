@@ -15,11 +15,11 @@ func (c Client) WebsocketInterface(ctx context.Context) (result truenas.Interfac
 	result.InterfaceEntry = &truenas.InterfaceEntry{}
 	var params []any
 	var answer truenas.InterfaceEntry
-	if err = c.Caller.Call(ctx, "interface.websocket_interface", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.websocket_interface", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InterfaceEntry = result.Answer
 
-	return
+	return result, nil
 }

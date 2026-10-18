@@ -15,10 +15,10 @@ import (
 func (c Client) PingRemote(ctx context.Context, options truenas.CorePingRemoteOptions) (result truenas.CorePingRemoteResponse, err error) {
 	params := client.CallParams(1, options)
 	var answer bool
-	if err = c.Caller.Call(ctx, "core.ping_remote", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "core.ping_remote", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

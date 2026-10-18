@@ -19,11 +19,11 @@ func (c Client) RunOnetime(ctx context.Context, replicationRunOnetime truenas.Re
 	params := client.CallParams(1, replicationRunOnetime)
 	err = c.Caller.Call(ctx, "replication.run_onetime", params, nil)
 
-	return
+	return result, err
 }
 
 // RunOnetimeCall is the call RunOnetime makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RunOnetimeCall(replicationRunOnetime truenas.ReplicationRunOnetime) (string, []any) {
+func RunOnetimeCall(replicationRunOnetime truenas.ReplicationRunOnetime) (call string, params []any) {
 	return "replication.run_onetime", client.CallParams(1, replicationRunOnetime)
 }

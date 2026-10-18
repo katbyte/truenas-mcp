@@ -23,11 +23,11 @@ func (c Client) Bulk(ctx context.Context, method string, paramsParam [][]any, de
 	params := client.CallParams(2, method, paramsParam, description)
 	err = c.Caller.Call(ctx, "core.bulk", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // BulkCall is the call Bulk makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func BulkCall(method string, paramsParam [][]any, description string) (string, []any) {
+func BulkCall(method string, paramsParam [][]any, description string) (call string, params []any) {
 	return "core.bulk", client.CallParams(2, method, paramsParam, description)
 }

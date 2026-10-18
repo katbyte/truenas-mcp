@@ -15,11 +15,11 @@ func (c Client) DockerhubRateLimit(ctx context.Context) (result truenas.AppImage
 	result.AppImageDockerhubRateLimitAnswer = &truenas.AppImageDockerhubRateLimitAnswer{}
 	var params []any
 	var answer truenas.AppImageDockerhubRateLimitAnswer
-	if err = c.Caller.Call(ctx, "app.image.dockerhub_rate_limit", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.image.dockerhub_rate_limit", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppImageDockerhubRateLimitAnswer = result.Answer
 
-	return
+	return result, nil
 }

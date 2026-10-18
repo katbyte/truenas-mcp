@@ -14,10 +14,10 @@ import (
 func (c Client) IommuEnabled(ctx context.Context) (result truenas.VmDeviceIommuEnabledResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "vm.device.iommu_enabled", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.iommu_enabled", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

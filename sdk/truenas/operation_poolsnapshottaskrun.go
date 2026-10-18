@@ -3,5 +3,4 @@
 package truenas
 
 // PoolSnapshottaskRunResponse is the result of PoolSnapshottaskRun.
-type PoolSnapshottaskRunResponse struct {
-}
+type PoolSnapshottaskRunResponse struct{}

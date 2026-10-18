@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id string, options truenas.Pool
 	result.PoolSnapshotGetInstanceAnswer = &truenas.PoolSnapshotGetInstanceAnswer{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.PoolSnapshotGetInstanceAnswer
-	if err = c.Caller.Call(ctx, "pool.snapshot.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.snapshot.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolSnapshotGetInstanceAnswer = result.Answer
 
-	return
+	return result, nil
 }

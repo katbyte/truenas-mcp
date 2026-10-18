@@ -14,10 +14,10 @@ import (
 func (c Client) WebsocketLocalIp(ctx context.Context) (result truenas.InterfaceWebsocketLocalIpResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "interface.websocket_local_ip", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.websocket_local_ip", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

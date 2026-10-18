@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, generalSettings truenas.GeneralSetti
 	result.SystemGeneralUpdateAnswer = &truenas.SystemGeneralUpdateAnswer{}
 	params := client.CallParams(1, generalSettings)
 	var answer truenas.SystemGeneralUpdateAnswer
-	if err = c.Caller.Call(ctx, "system.general.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.general.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SystemGeneralUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

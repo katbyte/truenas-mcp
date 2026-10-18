@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, replicationConfigUpdate truenas.Repl
 	result.ReplicationConfigUpdateAnswer = &truenas.ReplicationConfigUpdateAnswer{}
 	params := client.CallParams(1, replicationConfigUpdate)
 	var answer truenas.ReplicationConfigUpdateAnswer
-	if err = c.Caller.Call(ctx, "replication.config.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "replication.config.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReplicationConfigUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

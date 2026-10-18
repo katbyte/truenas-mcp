@@ -3,5 +3,4 @@
 package truenas
 
 // KerberosRealmDeleteResponse is the result of KerberosRealmDelete.
-type KerberosRealmDeleteResponse struct {
-}
+type KerberosRealmDeleteResponse struct{}

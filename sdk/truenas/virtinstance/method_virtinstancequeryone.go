@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Vir
 	result.VirtInstanceQueryResultItem = &truenas.VirtInstanceQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.VirtInstanceQueryResultItem
-	if err = c.Caller.Call(ctx, "virt.instance.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtInstanceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.SharingNfsCreateData) (
 	result.NfsShareQueryResultItem = &truenas.NfsShareQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.NfsShareQueryResultItem
-	if err = c.Caller.Call(ctx, "sharing.nfs.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.nfs.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NfsShareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

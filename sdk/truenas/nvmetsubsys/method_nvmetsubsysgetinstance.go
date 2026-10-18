@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.NvmetSu
 	result.NVMetSubsysQueryResultItem = &truenas.NVMetSubsysQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.NVMetSubsysQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.subsys.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.subsys.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetSubsysQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Kerbero
 	result.KerberosRealmQueryResultItem = &truenas.KerberosRealmQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.KerberosRealmQueryResultItem
-	if err = c.Caller.Call(ctx, "kerberos.realm.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kerberos.realm.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KerberosRealmQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

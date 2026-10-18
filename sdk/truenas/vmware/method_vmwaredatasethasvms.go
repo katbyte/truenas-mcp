@@ -19,10 +19,10 @@ import (
 func (c Client) DatasetHasVms(ctx context.Context, dataset string, recursive bool) (result truenas.VmwareDatasetHasVmsResponse, err error) {
 	params := client.CallParams(2, dataset, recursive)
 	var answer bool
-	if err = c.Caller.Call(ctx, "vmware.dataset_has_vms", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vmware.dataset_has_vms", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

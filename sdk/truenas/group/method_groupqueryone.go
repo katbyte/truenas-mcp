@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Gro
 	result.GroupQueryResultItem = &truenas.GroupQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.GroupQueryResultItem
-	if err = c.Caller.Call(ctx, "group.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "group.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.GroupQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

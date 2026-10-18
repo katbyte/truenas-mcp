@@ -15,5 +15,5 @@ func (c Client) ServicesRestartedOnSync(ctx context.Context) (result truenas.Int
 	var params []any
 	err = c.Caller.Call(ctx, "interface.services_restarted_on_sync", params, &result.Answer)
 
-	return
+	return result, err
 }

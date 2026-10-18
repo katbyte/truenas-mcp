@@ -15,5 +15,5 @@ func (c Client) MechanismChoices(ctx context.Context) (result truenas.AuthMechan
 	var params []any
 	err = c.Caller.Call(ctx, "auth.mechanism_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

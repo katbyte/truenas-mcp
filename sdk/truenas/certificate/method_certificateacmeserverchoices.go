@@ -15,5 +15,5 @@ func (c Client) AcmeServerChoices(ctx context.Context) (result truenas.Certifica
 	var params []any
 	err = c.Caller.Call(ctx, "certificate.acme_server_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

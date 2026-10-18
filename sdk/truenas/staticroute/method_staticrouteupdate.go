@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, data truenas.StaticrouteUpda
 	result.StaticRouteQueryResultItem = &truenas.StaticRouteQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.StaticRouteQueryResultItem
-	if err = c.Caller.Call(ctx, "staticroute.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "staticroute.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.StaticRouteQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

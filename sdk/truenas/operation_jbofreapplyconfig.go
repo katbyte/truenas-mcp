@@ -3,5 +3,4 @@
 package truenas
 
 // JbofReapplyConfigResponse is the result of JbofReapplyConfig.
-type JbofReapplyConfigResponse struct {
-}
+type JbofReapplyConfigResponse struct{}

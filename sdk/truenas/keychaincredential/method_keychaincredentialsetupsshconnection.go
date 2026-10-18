@@ -16,11 +16,11 @@ func (c Client) SetupSshConnection(ctx context.Context, options truenas.Keychain
 	result.SSHCredentialsEntry = &truenas.SSHCredentialsEntry{}
 	params := client.CallParams(1, options)
 	var answer truenas.SSHCredentialsEntry
-	if err = c.Caller.Call(ctx, "keychaincredential.setup_ssh_connection", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "keychaincredential.setup_ssh_connection", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SSHCredentialsEntry = result.Answer
 
-	return
+	return result, nil
 }

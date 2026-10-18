@@ -18,11 +18,11 @@ func (c Client) GetGroupObj(ctx context.Context, getGroupObj truenas.GetGroupObj
 	result.GroupGetGroupObjAnswer = &truenas.GroupGetGroupObjAnswer{}
 	params := client.CallParams(1, getGroupObj)
 	var answer truenas.GroupGetGroupObjAnswer
-	if err = c.Caller.Call(ctx, "group.get_group_obj", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "group.get_group_obj", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.GroupGetGroupObjAnswer = result.Answer
 
-	return
+	return result, nil
 }

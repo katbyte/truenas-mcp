@@ -19,11 +19,11 @@ func (c Client) Chown(ctx context.Context, filesystemChown truenas.FilesystemCho
 	params := client.CallParams(1, filesystemChown)
 	err = c.Caller.Call(ctx, "filesystem.chown", params, nil)
 
-	return
+	return result, err
 }
 
 // ChownCall is the call Chown makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ChownCall(filesystemChown truenas.FilesystemChown) (string, []any) {
+func ChownCall(filesystemChown truenas.FilesystemChown) (call string, params []any) {
 	return "filesystem.chown", client.CallParams(1, filesystemChown)
 }

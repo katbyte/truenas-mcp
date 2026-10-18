@@ -15,5 +15,5 @@ func (c Client) DriverChoices(ctx context.Context) (result truenas.UpsDriverChoi
 	var params []any
 	err = c.Caller.Call(ctx, "ups.driver_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

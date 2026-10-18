@@ -3,5 +3,4 @@
 package truenas
 
 // PoolSnapshotRollbackResponse is the result of PoolSnapshotRollback.
-type PoolSnapshotRollbackResponse struct {
-}
+type PoolSnapshotRollbackResponse struct{}

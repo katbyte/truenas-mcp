@@ -16,5 +16,5 @@ func (c Client) Identify(ctx context.Context, data truenas.IpmiChassisIdentifyDa
 	params := client.CallParams(0, data)
 	err = c.Caller.Call(ctx, "ipmi.chassis.identify", params, nil)
 
-	return
+	return result, err
 }

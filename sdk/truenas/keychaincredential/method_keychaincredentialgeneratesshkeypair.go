@@ -13,11 +13,11 @@ func (c Client) GenerateSshKeyPair(ctx context.Context) (result truenas.Keychain
 	result.KeychaincredentialGenerateSshKeyPairAnswer = &truenas.KeychaincredentialGenerateSshKeyPairAnswer{}
 	var params []any
 	var answer truenas.KeychaincredentialGenerateSshKeyPairAnswer
-	if err = c.Caller.Call(ctx, "keychaincredential.generate_ssh_key_pair", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "keychaincredential.generate_ssh_key_pair", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KeychaincredentialGenerateSshKeyPairAnswer = result.Answer
 
-	return
+	return result, nil
 }

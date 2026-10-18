@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDatasetSetQuotaResponse is the result of PoolDatasetSetQuota.
-type PoolDatasetSetQuotaResponse struct {
-}
+type PoolDatasetSetQuotaResponse struct{}

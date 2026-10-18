@@ -21,11 +21,11 @@ func (c Client) Scrub(ctx context.Context, id int, action truenas.PoolScrubActio
 	params := client.CallParams(2, id, action)
 	err = c.Caller.Call(ctx, "pool.scrub", params, nil)
 
-	return
+	return result, err
 }
 
 // ScrubCall is the call Scrub makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ScrubCall(id int, action truenas.PoolScrubAction) (string, []any) {
+func ScrubCall(id int, action truenas.PoolScrubAction) (call string, params []any) {
 	return "pool.scrub", client.CallParams(2, id, action)
 }

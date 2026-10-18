@@ -14,10 +14,10 @@ import (
 func (c Client) ManagedByTruecommand(ctx context.Context) (result truenas.TruenasManagedByTruecommandResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "truenas.managed_by_truecommand", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "truenas.managed_by_truecommand", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

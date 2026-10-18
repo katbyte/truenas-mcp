@@ -18,11 +18,11 @@ func (c Client) Status(ctx context.Context, id int) (result truenas.VmStatusResp
 	result.VmStatusAnswer = &truenas.VmStatusAnswer{}
 	params := client.CallParams(1, id)
 	var answer truenas.VmStatusAnswer
-	if err = c.Caller.Call(ctx, "vm.status", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.status", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmStatusAnswer = result.Answer
 
-	return
+	return result, nil
 }

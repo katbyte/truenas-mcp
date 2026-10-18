@@ -21,11 +21,11 @@ func (c Client) Manual(ctx context.Context, path string, options truenas.UpdateM
 	params := client.CallParams(1, path, options)
 	err = c.Caller.Call(ctx, "update.manual", params, nil)
 
-	return
+	return result, err
 }
 
 // ManualCall is the call Manual makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ManualCall(path string, options truenas.UpdateManualOptions) (string, []any) {
+func ManualCall(path string, options truenas.UpdateManualOptions) (call string, params []any) {
 	return "update.manual", client.CallParams(1, path, options)
 }

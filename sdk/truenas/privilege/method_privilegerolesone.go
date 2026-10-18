@@ -20,11 +20,11 @@ func (c Client) RolesOne(ctx context.Context, filters []any, options truenas.Pri
 	result.PrivilegeRolesQueryResultItem = &truenas.PrivilegeRolesQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.PrivilegeRolesQueryResultItem
-	if err = c.Caller.Call(ctx, "privilege.roles", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "privilege.roles", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PrivilegeRolesQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

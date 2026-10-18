@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, privilegeCreate truenas.PrivilegeCre
 	result.PrivilegeQueryResultItem = &truenas.PrivilegeQueryResultItem{}
 	params := client.CallParams(1, privilegeCreate)
 	var answer truenas.PrivilegeQueryResultItem
-	if err = c.Caller.Call(ctx, "privilege.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "privilege.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PrivilegeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

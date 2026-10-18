@@ -16,5 +16,5 @@ func (c Client) SetPassword(ctx context.Context, setPasswordData truenas.SetPass
 	params := client.CallParams(1, setPasswordData)
 	err = c.Caller.Call(ctx, "user.set_password", params, nil)
 
-	return
+	return result, err
 }

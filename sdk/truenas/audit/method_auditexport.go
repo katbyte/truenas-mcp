@@ -18,16 +18,16 @@ import (
 func (c Client) Export(ctx context.Context, data truenas.AuditExportData) (result truenas.AuditExportResponse, err error) {
 	params := client.CallParams(0, data)
 	var answer string
-	if err = c.Caller.Call(ctx, "audit.export", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "audit.export", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ExportCall is the call Export makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExportCall(data truenas.AuditExportData) (string, []any) {
+func ExportCall(data truenas.AuditExportData) (call string, params []any) {
 	return "audit.export", client.CallParams(0, data)
 }

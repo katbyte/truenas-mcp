@@ -14,10 +14,10 @@ import (
 func (c Client) SupportsVirtualization(ctx context.Context) (result truenas.VmSupportsVirtualizationResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "vm.supports_virtualization", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.supports_virtualization", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

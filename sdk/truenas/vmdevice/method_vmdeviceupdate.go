@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, vmDeviceUpdate truenas.VmDev
 	result.VmDeviceUpdateAnswer = &truenas.VmDeviceUpdateAnswer{}
 	params := client.CallParams(2, id, vmDeviceUpdate)
 	var answer truenas.VmDeviceUpdateAnswer
-	if err = c.Caller.Call(ctx, "vm.device.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmDeviceUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

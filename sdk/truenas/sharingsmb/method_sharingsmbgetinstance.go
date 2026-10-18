@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Sharing
 	result.SmbShareQueryResultItem = &truenas.SmbShareQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.SmbShareQueryResultItem
-	if err = c.Caller.Call(ctx, "sharing.smb.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.smb.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SmbShareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

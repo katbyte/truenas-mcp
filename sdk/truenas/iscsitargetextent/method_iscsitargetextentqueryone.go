@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Isc
 	result.IscsiTargetToExtentQueryResultItem = &truenas.IscsiTargetToExtentQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.IscsiTargetToExtentQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.targetextent.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.targetextent.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiTargetToExtentQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

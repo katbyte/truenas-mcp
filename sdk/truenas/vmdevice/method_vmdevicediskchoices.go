@@ -15,5 +15,5 @@ func (c Client) DiskChoices(ctx context.Context) (result truenas.VmDeviceDiskCho
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.disk_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

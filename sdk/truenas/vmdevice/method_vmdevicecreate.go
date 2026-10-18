@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, vmDeviceCreate truenas.VmDeviceCreat
 	result.VmDeviceCreateAnswer = &truenas.VmDeviceCreateAnswer{}
 	params := client.CallParams(1, vmDeviceCreate)
 	var answer truenas.VmDeviceCreateAnswer
-	if err = c.Caller.Call(ctx, "vm.device.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmDeviceCreateAnswer = result.Answer
 
-	return
+	return result, nil
 }

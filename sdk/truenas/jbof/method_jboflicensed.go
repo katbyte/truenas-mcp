@@ -14,10 +14,10 @@ import (
 func (c Client) Licensed(ctx context.Context) (result truenas.JbofLicensedResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "jbof.licensed", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "jbof.licensed", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -17,10 +17,10 @@ import (
 func (c Client) GetMemoryUsage(ctx context.Context, id int) (result truenas.VmGetMemoryUsageResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer int
-	if err = c.Caller.Call(ctx, "vm.get_memory_usage", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.get_memory_usage", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -18,11 +18,11 @@ func (c Client) GetNetwork(ctx context.Context, name string) (result truenas.Vir
 	result.VirtGlobalGetNetworkAnswer = &truenas.VirtGlobalGetNetworkAnswer{}
 	params := client.CallParams(1, name)
 	var answer truenas.VirtGlobalGetNetworkAnswer
-	if err = c.Caller.Call(ctx, "virt.global.get_network", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.global.get_network", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtGlobalGetNetworkAnswer = result.Answer
 
-	return
+	return result, nil
 }

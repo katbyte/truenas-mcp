@@ -3,5 +3,4 @@
 package truenas
 
 // BootScrubResponse is the result of BootScrub.
-type BootScrubResponse struct {
-}
+type BootScrubResponse struct{}

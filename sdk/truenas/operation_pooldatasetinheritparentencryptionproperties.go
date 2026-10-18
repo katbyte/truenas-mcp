@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDatasetInheritParentEncryptionPropertiesResponse is the result of PoolDatasetInheritParentEncryptionProperties.
-type PoolDatasetInheritParentEncryptionPropertiesResponse struct {
-}
+type PoolDatasetInheritParentEncryptionPropertiesResponse struct{}

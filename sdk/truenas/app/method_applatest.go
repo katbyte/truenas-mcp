@@ -20,5 +20,5 @@ func (c Client) Latest(ctx context.Context, filters []any, options truenas.AppLa
 	params := client.CallParams(0, filters, options)
 	err = c.Caller.Call(ctx, "app.latest", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, authTwofactorUpdate truenas.AuthTwof
 	result.AuthTwofactorUpdateAnswer = &truenas.AuthTwofactorUpdateAnswer{}
 	params := client.CallParams(1, authTwofactorUpdate)
 	var answer truenas.AuthTwofactorUpdateAnswer
-	if err = c.Caller.Call(ctx, "auth.twofactor.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.twofactor.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AuthTwofactorUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

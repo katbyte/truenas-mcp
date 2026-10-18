@@ -19,11 +19,11 @@ func (c Client) JobWait(ctx context.Context, id int) (result truenas.CoreJobWait
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "core.job_wait", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // JobWaitCall is the call JobWait makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func JobWaitCall(id int) (string, []any) {
+func JobWaitCall(id int) (call string, params []any) {
 	return "core.job_wait", client.CallParams(1, id)
 }

@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, fcPortUpdate truenas.FcPortU
 	result.FCPortQueryResultItem = &truenas.FCPortQueryResultItem{}
 	params := client.CallParams(2, id, fcPortUpdate)
 	var answer truenas.FCPortQueryResultItem
-	if err = c.Caller.Call(ctx, "fcport.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "fcport.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FCPortQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

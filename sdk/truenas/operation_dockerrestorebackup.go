@@ -3,5 +3,4 @@
 package truenas
 
 // DockerRestoreBackupResponse is the result of DockerRestoreBackup.
-type DockerRestoreBackupResponse struct {
-}
+type DockerRestoreBackupResponse struct{}

@@ -29,11 +29,11 @@ func (c Client) ImportIso(ctx context.Context, virtVolumeImportIso truenas.VirtV
 		}
 	}
 	var answer truenas.VirtVolumeQueryResultItem
-	if err = send(ctx, "virt.volume.import_iso", params, &answer); err != nil {
-		return
+	if err := send(ctx, "virt.volume.import_iso", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtVolumeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

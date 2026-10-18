@@ -15,11 +15,11 @@ func (c Client) Info(ctx context.Context) (result truenas.FailoverRebootInfoResp
 	result.FailoverRebootInfoAnswer = &truenas.FailoverRebootInfoAnswer{}
 	var params []any
 	var answer truenas.FailoverRebootInfoAnswer
-	if err = c.Caller.Call(ctx, "failover.reboot.info", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "failover.reboot.info", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FailoverRebootInfoAnswer = result.Answer
 
-	return
+	return result, nil
 }

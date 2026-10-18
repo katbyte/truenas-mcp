@@ -3,5 +3,4 @@
 package truenas
 
 // DockerDeleteBackupResponse is the result of DockerDeleteBackup.
-type DockerDeleteBackupResponse struct {
-}
+type DockerDeleteBackupResponse struct{}

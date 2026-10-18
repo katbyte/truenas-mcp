@@ -15,5 +15,5 @@ func (c Client) AvailableVersions(ctx context.Context) (result truenas.UpdateAva
 	var params []any
 	err = c.Caller.Call(ctx, "update.available_versions", params, &result.Answer)
 
-	return
+	return result, err
 }

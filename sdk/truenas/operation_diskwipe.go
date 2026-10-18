@@ -3,5 +3,4 @@
 package truenas
 
 // DiskWipeResponse is the result of DiskWipe.
-type DiskWipeResponse struct {
-}
+type DiskWipeResponse struct{}

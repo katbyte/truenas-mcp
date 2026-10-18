@@ -3,5 +3,4 @@
 package truenas
 
 // VmRestartResponse is the result of VmRestart.
-type VmRestartResponse struct {
-}
+type VmRestartResponse struct{}

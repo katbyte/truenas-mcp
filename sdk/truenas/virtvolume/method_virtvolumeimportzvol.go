@@ -19,17 +19,17 @@ func (c Client) ImportZvol(ctx context.Context, virtVolumeImportIso truenas.Virt
 	result.VirtVolumeQueryResultItem = &truenas.VirtVolumeQueryResultItem{}
 	params := client.CallParams(1, virtVolumeImportIso)
 	var answer truenas.VirtVolumeQueryResultItem
-	if err = c.Caller.Call(ctx, "virt.volume.import_zvol", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.volume.import_zvol", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtVolumeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // ImportZvolCall is the call ImportZvol makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ImportZvolCall(virtVolumeImportIso truenas.VirtVolumeImportIso2) (string, []any) {
+func ImportZvolCall(virtVolumeImportIso truenas.VirtVolumeImportIso2) (call string, params []any) {
 	return "virt.volume.import_zvol", client.CallParams(1, virtVolumeImportIso)
 }

@@ -20,16 +20,16 @@ import (
 func (c Client) Stop(ctx context.Context, id string, stopArgs truenas.StopArgs) (result truenas.VirtInstanceStopResponse, err error) {
 	params := client.CallParams(1, id, stopArgs)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.instance.stop", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.stop", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // StopCall is the call Stop makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func StopCall(id string, stopArgs truenas.StopArgs) (string, []any) {
+func StopCall(id string, stopArgs truenas.StopArgs) (call string, params []any) {
 	return "virt.instance.stop", client.CallParams(1, id, stopArgs)
 }

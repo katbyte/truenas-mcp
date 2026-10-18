@@ -20,11 +20,11 @@ func (c Client) GetNfs4ClientsOne(ctx context.Context, filters []any, options tr
 	result.NFSGetNfs4ClientsQueryResultItem = &truenas.NFSGetNfs4ClientsQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.NFSGetNfs4ClientsQueryResultItem
-	if err = c.Caller.Call(ctx, "nfs.get_nfs4_clients", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nfs.get_nfs4_clients", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NFSGetNfs4ClientsQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

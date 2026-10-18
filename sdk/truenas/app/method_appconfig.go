@@ -18,5 +18,5 @@ func (c Client) Config(ctx context.Context, appName string) (result truenas.AppC
 	params := client.CallParams(1, appName)
 	err = c.Caller.Call(ctx, "app.config", params, &result.Answer)
 
-	return
+	return result, err
 }

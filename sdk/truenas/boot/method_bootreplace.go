@@ -21,11 +21,11 @@ func (c Client) Replace(ctx context.Context, label string, dev string) (result t
 	params := client.CallParams(2, label, dev)
 	err = c.Caller.Call(ctx, "boot.replace", params, nil)
 
-	return
+	return result, err
 }
 
 // ReplaceCall is the call Replace makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ReplaceCall(label string, dev string) (string, []any) {
+func ReplaceCall(label string, dev string) (call string, params []any) {
 	return "boot.replace", client.CallParams(2, label, dev)
 }

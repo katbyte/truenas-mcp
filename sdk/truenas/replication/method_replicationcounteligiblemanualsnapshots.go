@@ -16,11 +16,11 @@ func (c Client) CountEligibleManualSnapshots(ctx context.Context, countEligibleM
 	result.ReplicationCountEligibleManualSnapshotsAnswer = &truenas.ReplicationCountEligibleManualSnapshotsAnswer{}
 	params := client.CallParams(1, countEligibleManualSnapshots)
 	var answer truenas.ReplicationCountEligibleManualSnapshotsAnswer
-	if err = c.Caller.Call(ctx, "replication.count_eligible_manual_snapshots", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "replication.count_eligible_manual_snapshots", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReplicationCountEligibleManualSnapshotsAnswer = result.Answer
 
-	return
+	return result, nil
 }

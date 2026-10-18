@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Cer
 	result.CertificateQueryResultItem = &truenas.CertificateQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.CertificateQueryResultItem
-	if err = c.Caller.Call(ctx, "certificate.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "certificate.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CertificateQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

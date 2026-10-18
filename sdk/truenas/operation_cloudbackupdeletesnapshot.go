@@ -3,5 +3,4 @@
 package truenas
 
 // CloudBackupDeleteSnapshotResponse is the result of CloudBackupDeleteSnapshot.
-type CloudBackupDeleteSnapshotResponse struct {
-}
+type CloudBackupDeleteSnapshotResponse struct{}

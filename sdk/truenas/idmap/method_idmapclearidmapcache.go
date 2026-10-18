@@ -16,11 +16,11 @@ func (c Client) ClearIdmapCache(ctx context.Context) (result truenas.IdmapClearI
 	var params []any
 	err = c.Caller.Call(ctx, "idmap.clear_idmap_cache", params, nil)
 
-	return
+	return result, err
 }
 
 // ClearIdmapCacheCall is the call ClearIdmapCache makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ClearIdmapCacheCall() (string, []any) {
+func ClearIdmapCacheCall() (call string, params []any) {
 	return "idmap.clear_idmap_cache", nil
 }

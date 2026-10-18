@@ -17,10 +17,10 @@ import (
 func (c Client) SetBootableDisk(ctx context.Context, id string, disk string) (result truenas.VirtInstanceSetBootableDiskResponse, err error) {
 	params := client.CallParams(2, id, disk)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.instance.set_bootable_disk", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.set_bootable_disk", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

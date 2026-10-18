@@ -19,17 +19,17 @@ func (c Client) ConvertToCustom(ctx context.Context, appName string) (result tru
 	result.AppQueryResultItem = &truenas.AppQueryResultItem{}
 	params := client.CallParams(1, appName)
 	var answer truenas.AppQueryResultItem
-	if err = c.Caller.Call(ctx, "app.convert_to_custom", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.convert_to_custom", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // ConvertToCustomCall is the call ConvertToCustom makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ConvertToCustomCall(appName string) (string, []any) {
+func ConvertToCustomCall(appName string) (call string, params []any) {
 	return "app.convert_to_custom", client.CallParams(1, appName)
 }

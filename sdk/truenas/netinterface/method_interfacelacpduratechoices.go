@@ -15,11 +15,11 @@ func (c Client) LacpduRateChoices(ctx context.Context) (result truenas.Interface
 	result.InterfaceLacpduRateChoicesAnswer = &truenas.InterfaceLacpduRateChoicesAnswer{}
 	var params []any
 	var answer truenas.InterfaceLacpduRateChoicesAnswer
-	if err = c.Caller.Call(ctx, "interface.lacpdu_rate_choices", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.lacpdu_rate_choices", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InterfaceLacpduRateChoicesAnswer = result.Answer
 
-	return
+	return result, nil
 }

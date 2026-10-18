@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, data truenas.JbofUpdateData)
 	result.JBOFQueryResultItem = &truenas.JBOFQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.JBOFQueryResultItem
-	if err = c.Caller.Call(ctx, "jbof.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "jbof.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.JBOFQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

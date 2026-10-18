@@ -14,10 +14,10 @@ import (
 func (c Client) LoginBanner(ctx context.Context) (result truenas.SystemAdvancedLoginBannerResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "system.advanced.login_banner", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.advanced.login_banner", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

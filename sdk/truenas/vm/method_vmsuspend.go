@@ -16,5 +16,5 @@ func (c Client) Suspend(ctx context.Context, id int) (result truenas.VmSuspendRe
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "vm.suspend", params, nil)
 
-	return
+	return result, err
 }

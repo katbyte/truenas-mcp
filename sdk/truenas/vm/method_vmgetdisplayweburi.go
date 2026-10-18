@@ -22,11 +22,11 @@ func (c Client) GetDisplayWebUri(ctx context.Context, id int, host string, optio
 	result.VmGetDisplayWebUriAnswer = &truenas.VmGetDisplayWebUriAnswer{}
 	params := client.CallParams(1, id, host, options)
 	var answer truenas.VmGetDisplayWebUriAnswer
-	if err = c.Caller.Call(ctx, "vm.get_display_web_uri", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.get_display_web_uri", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmGetDisplayWebUriAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // KerberosKeytabDeleteResponse is the result of KerberosKeytabDelete.
-type KerberosKeytabDeleteResponse struct {
-}
+type KerberosKeytabDeleteResponse struct{}

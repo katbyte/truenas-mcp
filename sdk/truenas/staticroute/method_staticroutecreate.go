@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.StaticrouteCreateData) 
 	result.StaticRouteQueryResultItem = &truenas.StaticRouteQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.StaticRouteQueryResultItem
-	if err = c.Caller.Call(ctx, "staticroute.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "staticroute.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.StaticRouteQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -21,17 +21,17 @@ func (c Client) Update(ctx context.Context, id string, virtInstanceUpdate truena
 	result.VirtInstanceUpdateAnswer = &truenas.VirtInstanceUpdateAnswer{}
 	params := client.CallParams(2, id, virtInstanceUpdate)
 	var answer truenas.VirtInstanceUpdateAnswer
-	if err = c.Caller.Call(ctx, "virt.instance.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VirtInstanceUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(id string, virtInstanceUpdate truenas.VirtInstanceUpdate) (string, []any) {
+func UpdateCall(id string, virtInstanceUpdate truenas.VirtInstanceUpdate) (call string, params []any) {
 	return "virt.instance.update", client.CallParams(2, id, virtInstanceUpdate)
 }

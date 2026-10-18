@@ -123,7 +123,7 @@ The code is written with Claude Code. I then review it and prune or rework it un
 
 This is a library, so it has no server of its own to test against. Its tests are unit tests under the race detector, and generator tests that write a package from a small document, then build it, vet it and run its generated tests. The live tests against real servers are in the repositories that use it, one per server, where each runs its generated client against the server itself.
 
-CI runs build, tests with coverage, golangci-lint, CodeQL, govulncheck, a check that go.mod is tidy, markdownlint, typos, shellcheck, actionlint and a workflow lint, and zizmor for workflow security.
+CI runs build, tests with coverage, golangci-lint over the code and over the packages the generator's tests render (with the generated-code exclusion off, so what it writes is held to the same rules), CodeQL, govulncheck, a check that go.mod is tidy, markdownlint, typos, shellcheck, actionlint and a workflow lint, and zizmor for workflow security.
 
 ## Development
 

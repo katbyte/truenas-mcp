@@ -21,11 +21,11 @@ func (c Client) Sync(ctx context.Context, id int, cloudSyncSyncOptions truenas.C
 	params := client.CallParams(1, id, cloudSyncSyncOptions)
 	err = c.Caller.Call(ctx, "cloudsync.sync", params, nil)
 
-	return
+	return result, err
 }
 
 // SyncCall is the call Sync makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SyncCall(id int, cloudSyncSyncOptions truenas.CloudSyncSyncOptions) (string, []any) {
+func SyncCall(id int, cloudSyncSyncOptions truenas.CloudSyncSyncOptions) (call string, params []any) {
 	return "cloudsync.sync", client.CallParams(1, id, cloudSyncSyncOptions)
 }

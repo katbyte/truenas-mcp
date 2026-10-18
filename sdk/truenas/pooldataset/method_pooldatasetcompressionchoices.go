@@ -15,5 +15,5 @@ func (c Client) CompressionChoices(ctx context.Context) (result truenas.PoolData
 	var params []any
 	err = c.Caller.Call(ctx, "pool.dataset.compression_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

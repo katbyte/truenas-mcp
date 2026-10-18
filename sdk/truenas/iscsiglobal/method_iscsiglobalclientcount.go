@@ -14,10 +14,10 @@ import (
 func (c Client) ClientCount(ctx context.Context) (result truenas.IscsiGlobalClientCountResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "iscsi.global.client_count", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.global.client_count", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

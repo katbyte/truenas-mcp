@@ -16,5 +16,5 @@ func (c Client) ListBuckets(ctx context.Context, credentialsId int) (result true
 	params := client.CallParams(1, credentialsId)
 	err = c.Caller.Call(ctx, "cloudsync.list_buckets", params, &result.Answer)
 
-	return
+	return result, err
 }

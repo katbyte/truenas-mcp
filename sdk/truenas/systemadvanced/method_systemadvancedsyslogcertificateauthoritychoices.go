@@ -15,5 +15,5 @@ func (c Client) SyslogCertificateAuthorityChoices(ctx context.Context) (result t
 	var params []any
 	err = c.Caller.Call(ctx, "system.advanced.syslog_certificate_authority_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

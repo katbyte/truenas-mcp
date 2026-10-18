@@ -3,5 +3,4 @@
 package truenas
 
 // ConfigSaveResponse is the result of ConfigSave.
-type ConfigSaveResponse struct {
-}
+type ConfigSaveResponse struct{}

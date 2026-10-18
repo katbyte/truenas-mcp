@@ -15,5 +15,5 @@ func (c Client) ListenIpChoices(ctx context.Context) (result truenas.IscsiPortal
 	var params []any
 	err = c.Caller.Call(ctx, "iscsi.portal.listen_ip_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

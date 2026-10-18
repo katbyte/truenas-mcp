@@ -14,10 +14,10 @@ import (
 func (c Client) IserEnabled(ctx context.Context) (result truenas.IscsiGlobalIserEnabledResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "iscsi.global.iser_enabled", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.global.iser_enabled", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

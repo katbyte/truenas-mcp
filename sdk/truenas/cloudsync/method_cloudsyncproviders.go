@@ -15,5 +15,5 @@ func (c Client) Providers(ctx context.Context) (result truenas.CloudsyncProvider
 	var params []any
 	err = c.Caller.Call(ctx, "cloudsync.providers", params, &result.Answer)
 
-	return
+	return result, err
 }

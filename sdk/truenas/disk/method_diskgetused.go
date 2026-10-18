@@ -18,5 +18,5 @@ func (c Client) GetUsed(ctx context.Context, joinPartitions bool) (result truena
 	params := client.CallParams(0, joinPartitions)
 	err = c.Caller.Call(ctx, "disk.get_used", params, &result.Answer)
 
-	return
+	return result, err
 }

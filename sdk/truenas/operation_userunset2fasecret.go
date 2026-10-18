@@ -3,5 +3,4 @@
 package truenas
 
 // UserUnset2faSecretResponse is the result of UserUnset2faSecret.
-type UserUnset2faSecretResponse struct {
-}
+type UserUnset2faSecretResponse struct{}

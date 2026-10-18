@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, nvmetHostUpdate truenas.Nvme
 	result.NVMetHostQueryResultItem = &truenas.NVMetHostQueryResultItem{}
 	params := client.CallParams(2, id, nvmetHostUpdate)
 	var answer truenas.NVMetHostQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.host.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.host.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetHostQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -18,5 +18,5 @@ func (c Client) GpuChoices(ctx context.Context, gpuType truenas.VirtDeviceGpuCho
 	params := client.CallParams(1, gpuType)
 	err = c.Caller.Call(ctx, "virt.device.gpu_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

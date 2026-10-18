@@ -21,17 +21,17 @@ func (c Client) Update(ctx context.Context, id int, certificateUpdate truenas.Ce
 	result.CertificateQueryResultItem = &truenas.CertificateQueryResultItem{}
 	params := client.CallParams(1, id, certificateUpdate)
 	var answer truenas.CertificateQueryResultItem
-	if err = c.Caller.Call(ctx, "certificate.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "certificate.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CertificateQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpdateCall is the call Update makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpdateCall(id int, certificateUpdate truenas.CertificateUpdate) (string, []any) {
+func UpdateCall(id int, certificateUpdate truenas.CertificateUpdate) (call string, params []any) {
 	return "certificate.update", client.CallParams(1, id, certificateUpdate)
 }

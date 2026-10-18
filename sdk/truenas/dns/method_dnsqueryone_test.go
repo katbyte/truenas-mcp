@@ -30,7 +30,7 @@ func TestOperationDnsQueryOne(t *testing.T) {
 	if result.DNSQueryItemQueryResultItem != result.Answer {
 		t.Error("the embedded answer is not the answer")
 	}
-	if record, err := result.Record(); err != nil || !reflect.DeepEqual(record, *result.Answer) {
+	if record, err := result.Record(); err != nil || !reflect.DeepEqual(&record, result.Answer) {
 		t.Errorf("Record = %+v, %v", record, err)
 	}
 

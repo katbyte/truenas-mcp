@@ -17,10 +17,10 @@ import (
 func (c Client) IsUpgraded(ctx context.Context, id int) (result truenas.PoolIsUpgradedResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.is_upgraded", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.is_upgraded", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

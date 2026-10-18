@@ -15,11 +15,11 @@ func (c Client) Status(ctx context.Context) (result truenas.DirectoryservicesSta
 	result.DirectoryservicesStatusAnswer = &truenas.DirectoryservicesStatusAnswer{}
 	var params []any
 	var answer truenas.DirectoryservicesStatusAnswer
-	if err = c.Caller.Call(ctx, "directoryservices.status", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "directoryservices.status", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DirectoryservicesStatusAnswer = result.Answer
 
-	return
+	return result, nil
 }

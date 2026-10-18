@@ -20,11 +20,11 @@ func (c Client) NetdataGraphsOne(ctx context.Context, filters []any, options tru
 	result.ReportingNetdataGraphsItemQueryResultItem = &truenas.ReportingNetdataGraphsItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.ReportingNetdataGraphsItemQueryResultItem
-	if err = c.Caller.Call(ctx, "reporting.netdata_graphs", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "reporting.netdata_graphs", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReportingNetdataGraphsItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

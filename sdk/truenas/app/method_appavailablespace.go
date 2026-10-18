@@ -14,10 +14,10 @@ import (
 func (c Client) AvailableSpace(ctx context.Context) (result truenas.AppAvailableSpaceResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "app.available_space", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.available_space", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

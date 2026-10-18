@@ -20,5 +20,5 @@ func (c Client) GetData(ctx context.Context, graphs []truenas.GraphIdentifier, q
 	params := client.CallParams(1, graphs, query)
 	err = c.Caller.Call(ctx, "reporting.get_data", params, &result.Answer)
 
-	return
+	return result, err
 }

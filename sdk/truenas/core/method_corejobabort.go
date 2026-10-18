@@ -16,5 +16,5 @@ func (c Client) JobAbort(ctx context.Context, id int) (result truenas.CoreJobAbo
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "core.job_abort", params, nil)
 
-	return
+	return result, err
 }

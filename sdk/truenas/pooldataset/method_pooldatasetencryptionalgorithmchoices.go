@@ -15,11 +15,11 @@ func (c Client) EncryptionAlgorithmChoices(ctx context.Context) (result truenas.
 	result.PoolDatasetEncryptionAlgorithmChoicesAnswer = &truenas.PoolDatasetEncryptionAlgorithmChoicesAnswer{}
 	var params []any
 	var answer truenas.PoolDatasetEncryptionAlgorithmChoicesAnswer
-	if err = c.Caller.Call(ctx, "pool.dataset.encryption_algorithm_choices", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.encryption_algorithm_choices", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolDatasetEncryptionAlgorithmChoicesAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, fcPortCreate truenas.FcPortCreate) (
 	result.FCPortQueryResultItem = &truenas.FCPortQueryResultItem{}
 	params := client.CallParams(1, fcPortCreate)
 	var answer truenas.FCPortQueryResultItem
-	if err = c.Caller.Call(ctx, "fcport.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "fcport.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FCPortQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

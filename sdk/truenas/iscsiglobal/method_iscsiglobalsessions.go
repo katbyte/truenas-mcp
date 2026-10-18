@@ -20,5 +20,5 @@ func (c Client) Sessions(ctx context.Context, queryFilters []any, queryOptions t
 	params := client.CallParams(0, queryFilters, queryOptions)
 	err = c.Caller.Call(ctx, "iscsi.global.sessions", params, &result.Answer)
 
-	return
+	return result, err
 }

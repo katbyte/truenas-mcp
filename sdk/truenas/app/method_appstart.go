@@ -19,11 +19,11 @@ func (c Client) Start(ctx context.Context, appName string) (result truenas.AppSt
 	params := client.CallParams(1, appName)
 	err = c.Caller.Call(ctx, "app.start", params, nil)
 
-	return
+	return result, err
 }
 
 // StartCall is the call Start makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func StartCall(appName string) (string, []any) {
+func StartCall(appName string) (call string, params []any) {
 	return "app.start", client.CallParams(1, appName)
 }

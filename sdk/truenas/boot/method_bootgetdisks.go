@@ -15,5 +15,5 @@ func (c Client) GetDisks(ctx context.Context) (result truenas.BootGetDisksRespon
 	var params []any
 	err = c.Caller.Call(ctx, "boot.get_disks", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -15,5 +15,5 @@ func (c Client) GetGpuPciChoices(ctx context.Context) (result truenas.SystemAdva
 	var params []any
 	err = c.Caller.Call(ctx, "system.advanced.get_gpu_pci_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

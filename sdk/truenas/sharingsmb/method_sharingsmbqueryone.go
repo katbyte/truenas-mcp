@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Sha
 	result.SmbShareQueryResultItem = &truenas.SmbShareQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.SmbShareQueryResultItem
-	if err = c.Caller.Call(ctx, "sharing.smb.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.smb.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SmbShareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

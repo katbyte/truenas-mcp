@@ -16,11 +16,11 @@ func (c Client) Keep(ctx context.Context, bootEnvironmentDestroy truenas.BootEnv
 	result.BootEnvironmentQueryResultItem = &truenas.BootEnvironmentQueryResultItem{}
 	params := client.CallParams(1, bootEnvironmentDestroy)
 	var answer truenas.BootEnvironmentQueryResultItem
-	if err = c.Caller.Call(ctx, "boot.environment.keep", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "boot.environment.keep", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.BootEnvironmentQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

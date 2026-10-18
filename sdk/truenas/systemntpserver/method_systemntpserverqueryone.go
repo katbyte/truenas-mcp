@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Sys
 	result.NTPServerQueryResultItem = &truenas.NTPServerQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.NTPServerQueryResultItem
-	if err = c.Caller.Call(ctx, "system.ntpserver.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.ntpserver.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NTPServerQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

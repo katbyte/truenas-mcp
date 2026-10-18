@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.VmQ
 	result.VMQueryResultItem = &truenas.VMQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.VMQueryResultItem
-	if err = c.Caller.Call(ctx, "vm.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VMQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

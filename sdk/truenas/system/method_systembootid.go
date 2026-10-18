@@ -14,10 +14,10 @@ import (
 func (c Client) BootId(ctx context.Context) (result truenas.SystemBootIdResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "system.boot_id", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.boot_id", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

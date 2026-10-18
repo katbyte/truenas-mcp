@@ -17,10 +17,10 @@ import (
 func (c Client) Restart(ctx context.Context, service string, options truenas.ServiceRestartOptions) (result truenas.ServiceRestartResponse, err error) {
 	params := client.CallParams(1, service, options)
 	var answer bool
-	if err = c.Caller.Call(ctx, "service.restart", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "service.restart", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

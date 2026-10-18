@@ -30,10 +30,10 @@ func (c Client) Send(ctx context.Context, message truenas.MailSendMessage, confi
 		}
 	}
 	var answer bool
-	if err = send(ctx, "mail.send", params, &answer); err != nil {
-		return
+	if err := send(ctx, "mail.send", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

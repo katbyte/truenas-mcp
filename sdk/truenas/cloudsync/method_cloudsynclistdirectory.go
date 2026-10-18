@@ -16,5 +16,5 @@ func (c Client) ListDirectory(ctx context.Context, cloudSyncLs truenas.CloudSync
 	params := client.CallParams(1, cloudSyncLs)
 	err = c.Caller.Call(ctx, "cloudsync.list_directory", params, &result.Answer)
 
-	return
+	return result, err
 }

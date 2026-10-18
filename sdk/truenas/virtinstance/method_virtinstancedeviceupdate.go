@@ -17,10 +17,10 @@ import (
 func (c Client) DeviceUpdate(ctx context.Context, id string, device truenas.VirtInstanceDeviceUpdateDevice) (result truenas.VirtInstanceDeviceUpdateResponse, err error) {
 	params := client.CallParams(2, id, device)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.instance.device_update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.device_update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

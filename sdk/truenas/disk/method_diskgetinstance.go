@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id string, options truenas.Disk
 	result.DiskQueryResultItem = &truenas.DiskQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.DiskQueryResultItem
-	if err = c.Caller.Call(ctx, "disk.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "disk.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DiskQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

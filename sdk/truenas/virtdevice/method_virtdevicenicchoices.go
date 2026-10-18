@@ -18,5 +18,5 @@ func (c Client) NicChoices(ctx context.Context, nicType truenas.VirtDeviceNicCho
 	params := client.CallParams(1, nicType)
 	err = c.Caller.Call(ctx, "virt.device.nic_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -18,16 +18,16 @@ import (
 func (c Client) Run(ctx context.Context, attrs truenas.UpdateRunAttrs) (result truenas.UpdateRunResponse, err error) {
 	params := client.CallParams(0, attrs)
 	var answer bool
-	if err = c.Caller.Call(ctx, "update.run", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "update.run", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // RunCall is the call Run makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RunCall(attrs truenas.UpdateRunAttrs) (string, []any) {
+func RunCall(attrs truenas.UpdateRunAttrs) (call string, params []any) {
 	return "update.run", client.CallParams(0, attrs)
 }

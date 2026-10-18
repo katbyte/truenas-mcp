@@ -17,10 +17,10 @@ import (
 func (c Client) GenerateKey(ctx context.Context, dhchapHash truenas.NvmetHostGenerateKeyDhchapHash, nqn string) (result truenas.NvmetHostGenerateKeyResponse, err error) {
 	params := client.CallParams(0, dhchapHash, nqn)
 	var answer string
-	if err = c.Caller.Call(ctx, "nvmet.host.generate_key", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.host.generate_key", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

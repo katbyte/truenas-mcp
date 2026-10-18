@@ -30,10 +30,10 @@ func (c Client) Put(ctx context.Context, path string, options truenas.Filesystem
 		}
 	}
 	var answer bool
-	if err = send(ctx, "filesystem.put", params, &answer); err != nil {
-		return
+	if err := send(ctx, "filesystem.put", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

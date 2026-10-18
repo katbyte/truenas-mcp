@@ -3,5 +3,4 @@
 package truenas
 
 // CloudsyncSyncOnetimeResponse is the result of CloudsyncSyncOnetime.
-type CloudsyncSyncOnetimeResponse struct {
-}
+type CloudsyncSyncOnetimeResponse struct{}

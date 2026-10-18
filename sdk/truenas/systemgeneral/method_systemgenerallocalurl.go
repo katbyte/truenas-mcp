@@ -14,10 +14,10 @@ import (
 func (c Client) LocalUrl(ctx context.Context) (result truenas.SystemGeneralLocalUrlResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "system.general.local_url", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.general.local_url", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

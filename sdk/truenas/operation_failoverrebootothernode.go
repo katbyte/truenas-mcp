@@ -3,5 +3,4 @@
 package truenas
 
 // FailoverRebootOtherNodeResponse is the result of FailoverRebootOtherNode.
-type FailoverRebootOtherNodeResponse struct {
-}
+type FailoverRebootOtherNodeResponse struct{}

@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, privilegeUpdate truenas.Priv
 	result.PrivilegeQueryResultItem = &truenas.PrivilegeQueryResultItem{}
 	params := client.CallParams(2, id, privilegeUpdate)
 	var answer truenas.PrivilegeQueryResultItem
-	if err = c.Caller.Call(ctx, "privilege.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "privilege.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PrivilegeQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

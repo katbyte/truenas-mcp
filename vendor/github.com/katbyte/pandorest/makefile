@@ -116,6 +116,17 @@ lint-fix: $(GOLANGCI_LINT_MODULES) ## Fix source code with all golangci linters
 	@echo "==> Checking source code against linters (applying autofixes)..."
 	$(GOLANGCI_LINT_MODULES) run --fix ./...
 
+# the generator's tests render every shape it writes; kept, those packages are linted as a repository that checks
+# them in would, with the generated-file exclusion off (.golangci.yml). go's ./... skips a testdata directory, so
+# the packages are named one by one
+lint-generated: $(GOLANGCI_LINT_MODULES) ## Lint what the generator writes, rendered by its tests
+	@echo "==> Rendering the generated packages..."
+	@rm -rf generator/testdata
+	@PANDOREST_KEEP_TESTDATA=1 go test ./generator -timeout ${TEST_TIMEOUT}
+	@echo "==> Checking the generated packages against linters..."
+	$(GOLANGCI_LINT_MODULES) run $$(find generator/testdata -name '*.go' -exec dirname {} \; | sort -u | sed 's#^#./#')
+	@rm -rf generator/testdata
+
 yamllint: $(YAMLLINT) ## Check YAML files with yamllint (config in .yamllint.yml)
 	@echo "==> Checking YAML files with yamllint..."
 	@$(YAMLLINT) -s .
@@ -171,6 +182,6 @@ cover: build ## Run the tests with coverage and report the total
 cover-html: cover ## Run the tests with coverage and open the HTML report
 	@go tool cover -html=$(COVERDIR)/coverage.out
 
-check-all: build test lint actionlint yamllint shellcheck typos zizmor markdownlint depscheck ## Run build + test + all linters + depscheck
+check-all: build test lint lint-generated actionlint yamllint shellcheck typos zizmor markdownlint depscheck ## Run build + test + all linters + depscheck
 
-.PHONY: default all help fmt goimports build lint lint-fix actionlint yamllint shellcheck typos typos-fix zizmor markdownlint depscheck check-all tools test cover cover-html
+.PHONY: default all help fmt goimports build lint lint-fix lint-generated actionlint yamllint shellcheck typos typos-fix zizmor markdownlint depscheck check-all tools test cover cover-html

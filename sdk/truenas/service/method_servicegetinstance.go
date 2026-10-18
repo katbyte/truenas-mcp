@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Service
 	result.ServiceQueryResultItem = &truenas.ServiceQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.ServiceQueryResultItem
-	if err = c.Caller.Call(ctx, "service.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "service.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ServiceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, nvmetNamespaceCreate truenas.NvmetNa
 	result.NVMetNamespaceQueryResultItem = &truenas.NVMetNamespaceQueryResultItem{}
 	params := client.CallParams(1, nvmetNamespaceCreate)
 	var answer truenas.NVMetNamespaceQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.namespace.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.namespace.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetNamespaceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

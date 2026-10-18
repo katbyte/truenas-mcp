@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.NfsConfigResponse, e
 	result.NfsConfigAnswer = &truenas.NfsConfigAnswer{}
 	var params []any
 	var answer truenas.NfsConfigAnswer
-	if err = c.Caller.Call(ctx, "nfs.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nfs.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NfsConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Sha
 	result.NfsShareQueryResultItem = &truenas.NfsShareQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.NfsShareQueryResultItem
-	if err = c.Caller.Call(ctx, "sharing.nfs.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.nfs.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NfsShareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

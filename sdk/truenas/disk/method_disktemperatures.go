@@ -20,5 +20,5 @@ func (c Client) Temperatures(ctx context.Context, name []string, includeThreshol
 	params := client.CallParams(0, name, includeThresholds)
 	err = c.Caller.Call(ctx, "disk.temperatures", params, &result.Answer)
 
-	return
+	return result, err
 }

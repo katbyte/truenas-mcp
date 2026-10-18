@@ -18,11 +18,11 @@ func (c Client) GetUserObj(ctx context.Context, getUserObj truenas.GetUserObj) (
 	result.UserGetUserObjAnswer = &truenas.UserGetUserObjAnswer{}
 	params := client.CallParams(1, getUserObj)
 	var answer truenas.UserGetUserObjAnswer
-	if err = c.Caller.Call(ctx, "user.get_user_obj", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.get_user_obj", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.UserGetUserObjAnswer = result.Answer
 
-	return
+	return result, nil
 }

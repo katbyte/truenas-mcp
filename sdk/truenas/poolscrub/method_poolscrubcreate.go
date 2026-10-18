@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.PoolScrubCreateData) (r
 	result.PoolScrubQueryResultItem = &truenas.PoolScrubQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.PoolScrubQueryResultItem
-	if err = c.Caller.Call(ctx, "pool.scrub.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.scrub.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolScrubQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -20,11 +20,11 @@ func (c Client) LatestOne(ctx context.Context, filters []any, options truenas.Ap
 	result.AppLatestItemQueryResultItem = &truenas.AppLatestItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.AppLatestItemQueryResultItem
-	if err = c.Caller.Call(ctx, "app.latest", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.latest", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppLatestItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -18,5 +18,5 @@ func (c Client) Query(ctx context.Context, data truenas.AuditQueryData) (result 
 	params := client.CallParams(0, data)
 	err = c.Caller.Call(ctx, "audit.query", params, &result.Answer)
 
-	return
+	return result, err
 }

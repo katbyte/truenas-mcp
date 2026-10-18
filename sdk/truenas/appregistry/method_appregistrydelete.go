@@ -16,5 +16,5 @@ func (c Client) Delete(ctx context.Context, id int) (result truenas.AppRegistryD
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "app.registry.delete", params, nil)
 
-	return
+	return result, err
 }

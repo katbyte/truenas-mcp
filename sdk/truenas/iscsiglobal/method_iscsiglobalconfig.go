@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.IscsiGlobalConfigRes
 	result.IscsiGlobalConfigAnswer = &truenas.IscsiGlobalConfigAnswer{}
 	var params []any
 	var answer truenas.IscsiGlobalConfigAnswer
-	if err = c.Caller.Call(ctx, "iscsi.global.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.global.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiGlobalConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

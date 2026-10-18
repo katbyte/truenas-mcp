@@ -18,16 +18,16 @@ import (
 func (c Client) ImportPool(ctx context.Context, poolImport truenas.PoolImport) (result truenas.PoolImportPoolResponse, err error) {
 	params := client.CallParams(1, poolImport)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.import_pool", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.import_pool", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ImportPoolCall is the call ImportPool makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ImportPoolCall(poolImport truenas.PoolImport) (string, []any) {
+func ImportPoolCall(poolImport truenas.PoolImport) (call string, params []any) {
 	return "pool.import_pool", client.CallParams(1, poolImport)
 }

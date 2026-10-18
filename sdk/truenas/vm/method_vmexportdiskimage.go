@@ -18,16 +18,16 @@ import (
 func (c Client) ExportDiskImage(ctx context.Context, vmExportDiskImage truenas.ExportDiskImage) (result truenas.VmExportDiskImageResponse, err error) {
 	params := client.CallParams(1, vmExportDiskImage)
 	var answer bool
-	if err = c.Caller.Call(ctx, "vm.export_disk_image", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.export_disk_image", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ExportDiskImageCall is the call ExportDiskImage makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExportDiskImageCall(vmExportDiskImage truenas.ExportDiskImage) (string, []any) {
+func ExportDiskImageCall(vmExportDiskImage truenas.ExportDiskImage) (call string, params []any) {
 	return "vm.export_disk_image", client.CallParams(1, vmExportDiskImage)
 }

@@ -15,11 +15,11 @@ func (c Client) ChecksumChoices(ctx context.Context) (result truenas.PoolDataset
 	result.PoolDatasetChecksumChoicesAnswer = &truenas.PoolDatasetChecksumChoicesAnswer{}
 	var params []any
 	var answer truenas.PoolDatasetChecksumChoicesAnswer
-	if err = c.Caller.Call(ctx, "pool.dataset.checksum_choices", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.checksum_choices", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolDatasetChecksumChoicesAnswer = result.Answer
 
-	return
+	return result, nil
 }

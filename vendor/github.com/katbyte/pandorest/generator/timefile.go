@@ -55,7 +55,7 @@ var (
 	failingUnread = unread{"type %[1]s struct{ time.Time }\n", "\treturn err\n"}
 	keepingUnread = unread{
 		"type %[1]s struct {\n\ttime.Time\n\t// Unread is the text of a date no layout read, which is held as zero.\n\tUnread string\n}\n\n// UnreadDate is the text of a date no layout read, or \"\".\nfunc (t %[1]s) UnreadDate() string { return t.Unread }\n",
-		"\tvar unread *client.UnreadDateError\n\tif errors.As(err, &unread) {\n\t\t// a date no layout reads is kept as its text and held as zero (KeepUnread)\n\t\tt.Unread = unread.Text\n\n\t\treturn nil\n\t}\n\n\treturn err\n",
+		"\tif unread, ok := errors.AsType[*client.UnreadDateError](err); ok {\n\t\t// a date no layout reads is kept as its text and held as zero (KeepUnread)\n\t\tt.Unread = unread.Text\n\n\t\treturn nil\n\t}\n\n\treturn err\n",
 	}
 )
 

@@ -17,10 +17,10 @@ import (
 func (c Client) ReleaseNotesUrl(ctx context.Context, versionStr string) (result truenas.SystemReleaseNotesUrlResponse, err error) {
 	params := client.CallParams(0, versionStr)
 	var answer string
-	if err = c.Caller.Call(ctx, "system.release_notes_url", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.release_notes_url", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

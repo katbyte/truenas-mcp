@@ -15,5 +15,5 @@ func (c Client) ResolutionChoices(ctx context.Context) (result truenas.VmResolut
 	var params []any
 	err = c.Caller.Call(ctx, "vm.resolution_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

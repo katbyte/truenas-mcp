@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id string, options truenas.AppI
 	result.AppImageQueryResultItem = &truenas.AppImageQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.AppImageQueryResultItem
-	if err = c.Caller.Call(ctx, "app.image.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.image.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppImageQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

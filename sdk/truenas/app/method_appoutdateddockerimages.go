@@ -18,5 +18,5 @@ func (c Client) OutdatedDockerImages(ctx context.Context, appName string) (resul
 	params := client.CallParams(1, appName)
 	err = c.Caller.Call(ctx, "app.outdated_docker_images", params, &result.Answer)
 
-	return
+	return result, err
 }

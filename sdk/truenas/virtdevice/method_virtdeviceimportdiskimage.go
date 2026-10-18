@@ -18,16 +18,16 @@ import (
 func (c Client) ImportDiskImage(ctx context.Context, virtDeviceImportDiskImage truenas.ImportDiskImage) (result truenas.VirtDeviceImportDiskImageResponse, err error) {
 	params := client.CallParams(1, virtDeviceImportDiskImage)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.device.import_disk_image", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.device.import_disk_image", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ImportDiskImageCall is the call ImportDiskImage makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ImportDiskImageCall(virtDeviceImportDiskImage truenas.ImportDiskImage) (string, []any) {
+func ImportDiskImageCall(virtDeviceImportDiskImage truenas.ImportDiskImage) (call string, params []any) {
 	return "virt.device.import_disk_image", client.CallParams(1, virtDeviceImportDiskImage)
 }

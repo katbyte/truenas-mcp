@@ -15,10 +15,10 @@ import (
 func (c Client) Abort(ctx context.Context, id int) (result truenas.CloudsyncAbortResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer bool
-	if err = c.Caller.Call(ctx, "cloudsync.abort", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.abort", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

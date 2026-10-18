@@ -18,5 +18,5 @@ func (c Client) FilesystemChoices(ctx context.Context, types []string) (result t
 	params := client.CallParams(0, types)
 	err = c.Caller.Call(ctx, "pool.filesystem_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

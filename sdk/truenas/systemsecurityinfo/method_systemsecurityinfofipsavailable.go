@@ -14,10 +14,10 @@ import (
 func (c Client) FipsAvailable(ctx context.Context) (result truenas.SystemSecurityInfoFipsAvailableResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "system.security.info.fips_available", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.security.info.fips_available", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

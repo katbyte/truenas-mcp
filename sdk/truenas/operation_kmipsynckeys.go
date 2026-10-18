@@ -3,5 +3,4 @@
 package truenas
 
 // KmipSyncKeysResponse is the result of KmipSyncKeys.
-type KmipSyncKeysResponse struct {
-}
+type KmipSyncKeysResponse struct{}

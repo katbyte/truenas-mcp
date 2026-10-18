@@ -3,5 +3,4 @@
 package truenas
 
 // VmLogFileDownloadResponse is the result of VmLogFileDownload.
-type VmLogFileDownloadResponse struct {
-}
+type VmLogFileDownloadResponse struct{}

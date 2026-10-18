@@ -18,5 +18,5 @@ func (c Client) Start(ctx context.Context, id int, options truenas.VmStartOption
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "vm.start", params, nil)
 
-	return
+	return result, err
 }

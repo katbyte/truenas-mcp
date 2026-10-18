@@ -18,11 +18,11 @@ func (c Client) GetVmMemoryInfo(ctx context.Context, id int) (result truenas.VmG
 	result.VmGetVmMemoryInfoAnswer = &truenas.VmGetVmMemoryInfoAnswer{}
 	params := client.CallParams(1, id)
 	var answer truenas.VmGetVmMemoryInfoAnswer
-	if err = c.Caller.Call(ctx, "vm.get_vm_memory_info", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.get_vm_memory_info", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmGetVmMemoryInfoAnswer = result.Answer
 
-	return
+	return result, nil
 }

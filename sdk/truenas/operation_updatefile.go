@@ -3,5 +3,4 @@
 package truenas
 
 // UpdateFileResponse is the result of UpdateFile.
-type UpdateFileResponse struct {
-}
+type UpdateFileResponse struct{}

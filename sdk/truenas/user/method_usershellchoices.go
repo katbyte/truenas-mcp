@@ -18,5 +18,5 @@ func (c Client) ShellChoices(ctx context.Context, groupIds []int) (result truena
 	params := client.CallParams(0, groupIds)
 	err = c.Caller.Call(ctx, "user.shell_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

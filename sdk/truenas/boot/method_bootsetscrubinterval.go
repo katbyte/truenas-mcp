@@ -15,10 +15,10 @@ import (
 func (c Client) SetScrubInterval(ctx context.Context, interval int) (result truenas.BootSetScrubIntervalResponse, err error) {
 	params := client.CallParams(1, interval)
 	var answer int
-	if err = c.Caller.Call(ctx, "boot.set_scrub_interval", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "boot.set_scrub_interval", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

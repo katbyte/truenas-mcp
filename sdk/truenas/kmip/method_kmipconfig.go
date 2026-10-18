@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.KmipConfigResponse, 
 	result.KmipConfigAnswer = &truenas.KmipConfigAnswer{}
 	var params []any
 	var answer truenas.KmipConfigAnswer
-	if err = c.Caller.Call(ctx, "kmip.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kmip.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KmipConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

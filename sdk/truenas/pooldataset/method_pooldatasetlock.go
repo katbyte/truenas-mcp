@@ -20,16 +20,16 @@ import (
 func (c Client) Lock(ctx context.Context, id string, options truenas.PoolDatasetLockOptions) (result truenas.PoolDatasetLockResponse, err error) {
 	params := client.CallParams(1, id, options)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.dataset.lock", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.lock", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // LockCall is the call Lock makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func LockCall(id string, options truenas.PoolDatasetLockOptions) (string, []any) {
+func LockCall(id string, options truenas.PoolDatasetLockOptions) (call string, params []any) {
 	return "pool.dataset.lock", client.CallParams(1, id, options)
 }

@@ -14,10 +14,10 @@ import (
 func (c Client) IsIxHardware(ctx context.Context) (result truenas.TruenasIsIxHardwareResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "truenas.is_ix_hardware", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "truenas.is_ix_hardware", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

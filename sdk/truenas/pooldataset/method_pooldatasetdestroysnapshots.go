@@ -21,11 +21,11 @@ func (c Client) DestroySnapshots(ctx context.Context, name string, snapshots tru
 	params := client.CallParams(2, name, snapshots)
 	err = c.Caller.Call(ctx, "pool.dataset.destroy_snapshots", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // DestroySnapshotsCall is the call DestroySnapshots makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DestroySnapshotsCall(name string, snapshots truenas.PoolDatasetDestroySnapshotsSnapshots) (string, []any) {
+func DestroySnapshotsCall(name string, snapshots truenas.PoolDatasetDestroySnapshotsSnapshots) (call string, params []any) {
 	return "pool.dataset.destroy_snapshots", client.CallParams(2, name, snapshots)
 }

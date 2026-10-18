@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, cloudSyncUpdate truenas.Clou
 	result.CloudSyncQueryResultItem = &truenas.CloudSyncQueryResultItem{}
 	params := client.CallParams(2, id, cloudSyncUpdate)
 	var answer truenas.CloudSyncQueryResultItem
-	if err = c.Caller.Call(ctx, "cloudsync.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudSyncQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

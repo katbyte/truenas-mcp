@@ -15,11 +15,11 @@ func (c Client) GetVmemoryInUse(ctx context.Context) (result truenas.VmGetVmemor
 	result.VmGetVmemoryInUseAnswer = &truenas.VmGetVmemoryInUseAnswer{}
 	var params []any
 	var answer truenas.VmGetVmemoryInUseAnswer
-	if err = c.Caller.Call(ctx, "vm.get_vmemory_in_use", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.get_vmemory_in_use", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VmGetVmemoryInUseAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.PoolResilverConfigRe
 	result.PoolResilverConfigAnswer = &truenas.PoolResilverConfigAnswer{}
 	var params []any
 	var answer truenas.PoolResilverConfigAnswer
-	if err = c.Caller.Call(ctx, "pool.resilver.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.resilver.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.PoolResilverConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

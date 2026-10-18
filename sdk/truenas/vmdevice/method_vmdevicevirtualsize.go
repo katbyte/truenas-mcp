@@ -17,10 +17,10 @@ import (
 func (c Client) VirtualSize(ctx context.Context, vmVirtualSize truenas.VmVirtualSize) (result truenas.VmDeviceVirtualSizeResponse, err error) {
 	params := client.CallParams(1, vmVirtualSize)
 	var answer int
-	if err = c.Caller.Call(ctx, "vm.device.virtual_size", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vm.device.virtual_size", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

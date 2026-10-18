@@ -15,5 +15,5 @@ func (c Client) KbdmapChoices(ctx context.Context) (result truenas.SystemGeneral
 	var params []any
 	err = c.Caller.Call(ctx, "system.general.kbdmap_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

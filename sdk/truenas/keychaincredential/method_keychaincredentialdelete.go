@@ -18,5 +18,5 @@ func (c Client) Delete(ctx context.Context, id int, options truenas.Keychaincred
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "keychaincredential.delete", params, nil)
 
-	return
+	return result, err
 }

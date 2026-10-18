@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, alertServiceUpdate truenas.A
 	result.AlertServiceQueryResultItem = &truenas.AlertServiceQueryResultItem{}
 	params := client.CallParams(2, id, alertServiceUpdate)
 	var answer truenas.AlertServiceQueryResultItem
-	if err = c.Caller.Call(ctx, "alertservice.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "alertservice.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AlertServiceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

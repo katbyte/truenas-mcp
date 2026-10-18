@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, cloudSyncCreate truenas.CloudSyncCre
 	result.CloudSyncQueryResultItem = &truenas.CloudSyncQueryResultItem{}
 	params := client.CallParams(1, cloudSyncCreate)
 	var answer truenas.CloudSyncQueryResultItem
-	if err = c.Caller.Call(ctx, "cloudsync.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudSyncQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

@@ -19,11 +19,11 @@ func (c Client) Run(ctx context.Context, id int) (result truenas.RsynctaskRunRes
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "rsynctask.run", params, nil)
 
-	return
+	return result, err
 }
 
 // RunCall is the call Run makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RunCall(id int) (string, []any) {
+func RunCall(id int) (call string, params []any) {
 	return "rsynctask.run", client.CallParams(1, id)
 }

@@ -34,7 +34,7 @@ github.com/katbyte/go-kt/mcp/server
 github.com/katbyte/go-kt/outside
 github.com/katbyte/go-kt/pointer
 github.com/katbyte/go-kt/version
-# github.com/katbyte/pandorest v0.11.0
+# github.com/katbyte/pandorest v0.13.1
 ## explicit; go 1.27.0
 github.com/katbyte/pandorest
 github.com/katbyte/pandorest/client

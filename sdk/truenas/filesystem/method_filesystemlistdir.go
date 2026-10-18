@@ -22,5 +22,5 @@ func (c Client) Listdir(ctx context.Context, path string, queryFilters []any, qu
 	params := client.CallParams(1, path, queryFilters, queryOptions)
 	err = c.Caller.Call(ctx, "filesystem.listdir", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -16,11 +16,11 @@ func (c Client) Setacl(ctx context.Context, smbSetacl truenas.SmbSetacl) (result
 	result.SharingSmbSetaclAnswer = &truenas.SharingSmbSetaclAnswer{}
 	params := client.CallParams(1, smbSetacl)
 	var answer truenas.SharingSmbSetaclAnswer
-	if err = c.Caller.Call(ctx, "sharing.smb.setacl", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.smb.setacl", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SharingSmbSetaclAnswer = result.Answer
 
-	return
+	return result, nil
 }

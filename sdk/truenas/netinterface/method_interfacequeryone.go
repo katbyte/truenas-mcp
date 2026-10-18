@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Int
 	result.InterfaceQueryResultItem = &truenas.InterfaceQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.InterfaceQueryResultItem
-	if err = c.Caller.Call(ctx, "interface.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InterfaceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

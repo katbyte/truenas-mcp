@@ -14,10 +14,10 @@ import (
 func (c Client) GetNextGid(ctx context.Context) (result truenas.GroupGetNextGidResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "group.get_next_gid", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "group.get_next_gid", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

@@ -23,17 +23,17 @@ import (
 func (c Client) ExportKey(ctx context.Context, id string, download bool) (result truenas.PoolDatasetExportKeyResponse, err error) {
 	params := client.CallParams(1, id, download)
 	var answer string
-	if err = c.Caller.Call(ctx, "pool.dataset.export_key", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.dataset.export_key", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // ExportKeyCall is the call ExportKey makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ExportKeyCall(id string, download bool) (string, []any) {
+func ExportKeyCall(id string, download bool) (call string, params []any) {
 	return "pool.dataset.export_key", client.CallParams(1, id, download)
 }
 

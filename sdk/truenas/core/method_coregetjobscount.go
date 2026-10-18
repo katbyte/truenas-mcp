@@ -19,10 +19,10 @@ import (
 func (c Client) GetJobsCount(ctx context.Context, filters []any, options truenas.CoreGetJobsOptions) (result truenas.CoreGetJobsCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "core.get_jobs", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "core.get_jobs", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

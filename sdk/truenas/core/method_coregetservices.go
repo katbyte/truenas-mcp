@@ -18,5 +18,5 @@ func (c Client) GetServices(ctx context.Context, target truenas.CoreGetTarget) (
 	params := client.CallParams(0, target)
 	err = c.Caller.Call(ctx, "core.get_services", params, &result.Answer)
 
-	return
+	return result, err
 }

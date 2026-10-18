@@ -16,11 +16,11 @@ func (c Client) Activate(ctx context.Context, bootEnvironmentActivate truenas.Bo
 	result.BootEnvironmentQueryResultItem = &truenas.BootEnvironmentQueryResultItem{}
 	params := client.CallParams(1, bootEnvironmentActivate)
 	var answer truenas.BootEnvironmentQueryResultItem
-	if err = c.Caller.Call(ctx, "boot.environment.activate", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "boot.environment.activate", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.BootEnvironmentQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

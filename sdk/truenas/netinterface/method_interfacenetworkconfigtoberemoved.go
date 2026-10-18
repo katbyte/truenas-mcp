@@ -15,5 +15,5 @@ func (c Client) NetworkConfigToBeRemoved(ctx context.Context) (result truenas.In
 	var params []any
 	err = c.Caller.Call(ctx, "interface.network_config_to_be_removed", params, &result.Answer)
 
-	return
+	return result, err
 }

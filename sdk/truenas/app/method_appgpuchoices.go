@@ -15,5 +15,5 @@ func (c Client) GpuChoices(ctx context.Context) (result truenas.AppGpuChoicesRes
 	var params []any
 	err = c.Caller.Call(ctx, "app.gpu_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

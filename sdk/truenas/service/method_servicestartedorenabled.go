@@ -17,10 +17,10 @@ import (
 func (c Client) StartedOrEnabled(ctx context.Context, service string) (result truenas.ServiceStartedOrEnabledResponse, err error) {
 	params := client.CallParams(1, service)
 	var answer bool
-	if err = c.Caller.Call(ctx, "service.started_or_enabled", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "service.started_or_enabled", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

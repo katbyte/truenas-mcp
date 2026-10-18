@@ -18,5 +18,5 @@ func (c Client) ListSnapshots(ctx context.Context, id int) (result truenas.Cloud
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "cloud_backup.list_snapshots", params, &result.Answer)
 
-	return
+	return result, err
 }

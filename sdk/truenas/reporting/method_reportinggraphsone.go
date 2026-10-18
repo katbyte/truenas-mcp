@@ -20,11 +20,11 @@ func (c Client) GraphsOne(ctx context.Context, filters []any, options truenas.Re
 	result.ReportingGraphsItemQueryResultItem = &truenas.ReportingGraphsItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.ReportingGraphsItemQueryResultItem
-	if err = c.Caller.Call(ctx, "reporting.graphs", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "reporting.graphs", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReportingGraphsItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

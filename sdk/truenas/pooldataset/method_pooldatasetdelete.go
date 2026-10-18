@@ -18,5 +18,5 @@ func (c Client) Delete(ctx context.Context, id string, options truenas.PoolDatas
 	params := client.CallParams(1, id, options)
 	err = c.Caller.Call(ctx, "pool.dataset.delete", params, &result.Answer)
 
-	return
+	return result, err
 }

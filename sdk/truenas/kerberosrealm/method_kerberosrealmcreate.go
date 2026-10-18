@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.KerberosRealmCreateData
 	result.KerberosRealmQueryResultItem = &truenas.KerberosRealmQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.KerberosRealmQueryResultItem
-	if err = c.Caller.Call(ctx, "kerberos.realm.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kerberos.realm.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KerberosRealmQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

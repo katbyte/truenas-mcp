@@ -21,11 +21,11 @@ func (c Client) SyncOnetime(ctx context.Context, cloudSyncSyncOnetime truenas.Cl
 	params := client.CallParams(1, cloudSyncSyncOnetime, cloudSyncSyncOnetimeOptions)
 	err = c.Caller.Call(ctx, "cloudsync.sync_onetime", params, nil)
 
-	return
+	return result, err
 }
 
 // SyncOnetimeCall is the call SyncOnetime makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SyncOnetimeCall(cloudSyncSyncOnetime truenas.CloudSyncSyncOnetime, cloudSyncSyncOnetimeOptions truenas.CloudSyncSyncOnetimeOptions) (string, []any) {
+func SyncOnetimeCall(cloudSyncSyncOnetime truenas.CloudSyncSyncOnetime, cloudSyncSyncOnetimeOptions truenas.CloudSyncSyncOnetimeOptions) (call string, params []any) {
 	return "cloudsync.sync_onetime", client.CallParams(1, cloudSyncSyncOnetime, cloudSyncSyncOnetimeOptions)
 }

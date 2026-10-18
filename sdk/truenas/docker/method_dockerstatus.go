@@ -15,11 +15,11 @@ func (c Client) Status(ctx context.Context) (result truenas.DockerStatusResponse
 	result.DockerStatusAnswer = &truenas.DockerStatusAnswer{}
 	var params []any
 	var answer truenas.DockerStatusAnswer
-	if err = c.Caller.Call(ctx, "docker.status", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "docker.status", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.DockerStatusAnswer = result.Answer
 
-	return
+	return result, nil
 }

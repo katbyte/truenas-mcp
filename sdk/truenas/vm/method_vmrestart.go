@@ -19,11 +19,11 @@ func (c Client) Restart(ctx context.Context, id int) (result truenas.VmRestartRe
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "vm.restart", params, nil)
 
-	return
+	return result, err
 }
 
 // RestartCall is the call Restart makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RestartCall(id int) (string, []any) {
+func RestartCall(id int) (call string, params []any) {
 	return "vm.restart", client.CallParams(1, id)
 }

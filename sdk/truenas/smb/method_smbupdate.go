@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, smbUpdate truenas.SmbUpdate) (result
 	result.SmbUpdateAnswer = &truenas.SmbUpdateAnswer{}
 	params := client.CallParams(1, smbUpdate)
 	var answer truenas.SmbUpdateAnswer
-	if err = c.Caller.Call(ctx, "smb.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "smb.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SmbUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

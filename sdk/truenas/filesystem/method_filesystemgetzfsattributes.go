@@ -18,11 +18,11 @@ func (c Client) GetZfsAttributes(ctx context.Context, path string) (result truen
 	result.FilesystemGetZfsAttributesAnswer = &truenas.FilesystemGetZfsAttributesAnswer{}
 	params := client.CallParams(1, path)
 	var answer truenas.FilesystemGetZfsAttributesAnswer
-	if err = c.Caller.Call(ctx, "filesystem.get_zfs_attributes", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.get_zfs_attributes", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemGetZfsAttributesAnswer = result.Answer
 
-	return
+	return result, nil
 }

@@ -15,5 +15,5 @@ func (c Client) UiCertificateChoices(ctx context.Context) (result truenas.System
 	var params []any
 	err = c.Caller.Call(ctx, "system.general.ui_certificate_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

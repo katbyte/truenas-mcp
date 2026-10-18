@@ -19,10 +19,10 @@ import (
 func (c Client) HasPasswordEnabledUser(ctx context.Context, gids []int, excludeUserIds []int) (result truenas.GroupHasPasswordEnabledUserResponse, err error) {
 	params := client.CallParams(1, gids, excludeUserIds)
 	var answer bool
-	if err = c.Caller.Call(ctx, "group.has_password_enabled_user", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "group.has_password_enabled_user", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

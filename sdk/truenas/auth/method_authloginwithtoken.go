@@ -15,10 +15,10 @@ import (
 func (c Client) LoginWithToken(ctx context.Context, token string) (result truenas.AuthLoginWithTokenResponse, err error) {
 	params := client.CallParams(1, token)
 	var answer bool
-	if err = c.Caller.Call(ctx, "auth.login_with_token", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "auth.login_with_token", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

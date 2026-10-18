@@ -16,5 +16,5 @@ func (c Client) Unset2faSecret(ctx context.Context, username string) (result tru
 	params := client.CallParams(1, username)
 	err = c.Caller.Call(ctx, "user.unset_2fa_secret", params, nil)
 
-	return
+	return result, err
 }

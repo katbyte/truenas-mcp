@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, nvmetHostCreate truenas.NvmetHostCre
 	result.NVMetHostQueryResultItem = &truenas.NVMetHostQueryResultItem{}
 	params := client.CallParams(1, nvmetHostCreate)
 	var answer truenas.NVMetHostQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.host.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.host.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetHostQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

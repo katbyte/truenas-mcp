@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Ini
 	result.InitShutdownScriptQueryResultItem = &truenas.InitShutdownScriptQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.InitShutdownScriptQueryResultItem
-	if err = c.Caller.Call(ctx, "initshutdownscript.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "initshutdownscript.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InitShutdownScriptQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

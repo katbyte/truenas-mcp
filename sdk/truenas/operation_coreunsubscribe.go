@@ -3,5 +3,4 @@
 package truenas
 
 // CoreUnsubscribeResponse is the result of CoreUnsubscribe.
-type CoreUnsubscribeResponse struct {
-}
+type CoreUnsubscribeResponse struct{}

@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDdtPrefetchResponse is the result of PoolDdtPrefetch.
-type PoolDdtPrefetchResponse struct {
-}
+type PoolDdtPrefetchResponse struct{}

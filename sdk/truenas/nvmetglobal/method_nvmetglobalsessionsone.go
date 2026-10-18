@@ -20,11 +20,11 @@ func (c Client) SessionsOne(ctx context.Context, filters []any, options truenas.
 	result.NVMetGlobalSessionsItemQueryResultItem = &truenas.NVMetGlobalSessionsItemQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.NVMetGlobalSessionsItemQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.global.sessions", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.global.sessions", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetGlobalSessionsItemQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

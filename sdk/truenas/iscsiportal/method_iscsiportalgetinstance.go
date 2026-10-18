@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.IscsiPo
 	result.IscsiPortalQueryResultItem = &truenas.IscsiPortalQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.IscsiPortalQueryResultItem
-	if err = c.Caller.Call(ctx, "iscsi.portal.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.portal.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiPortalQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

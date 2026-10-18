@@ -15,10 +15,10 @@ import (
 func (c Client) Abort(ctx context.Context, id int) (result truenas.CloudBackupAbortResponse, err error) {
 	params := client.CallParams(1, id)
 	var answer bool
-	if err = c.Caller.Call(ctx, "cloud_backup.abort", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloud_backup.abort", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

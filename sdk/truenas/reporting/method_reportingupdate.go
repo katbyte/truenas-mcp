@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, reportingUpdate truenas.ReportingUpd
 	result.ReportingUpdateAnswer = &truenas.ReportingUpdateAnswer{}
 	params := client.CallParams(1, reportingUpdate)
 	var answer truenas.ReportingUpdateAnswer
-	if err = c.Caller.Call(ctx, "reporting.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "reporting.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReportingUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

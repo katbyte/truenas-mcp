@@ -3,5 +3,4 @@
 package truenas
 
 // TunableDeleteResponse is the result of TunableDelete.
-type TunableDeleteResponse struct {
-}
+type TunableDeleteResponse struct{}

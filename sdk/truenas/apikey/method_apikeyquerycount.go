@@ -19,10 +19,10 @@ import (
 func (c Client) QueryCount(ctx context.Context, filters []any, options truenas.ApiKeyQueryOptions) (result truenas.ApiKeyQueryCountResponse, err error) {
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "count"})
 	var answer int
-	if err = c.Caller.Call(ctx, "api_key.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "api_key.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

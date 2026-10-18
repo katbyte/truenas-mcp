@@ -3,5 +3,4 @@
 package truenas
 
 // IdmapClearIdmapCacheResponse is the result of IdmapClearIdmapCache.
-type IdmapClearIdmapCacheResponse struct {
-}
+type IdmapClearIdmapCacheResponse struct{}

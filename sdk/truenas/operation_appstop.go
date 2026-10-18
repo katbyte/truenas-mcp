@@ -3,5 +3,4 @@
 package truenas
 
 // AppStopResponse is the result of AppStop.
-type AppStopResponse struct {
-}
+type AppStopResponse struct{}

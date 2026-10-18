@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, alertClassUpdate truenas.AlertClassU
 	result.AlertclassesUpdateAnswer = &truenas.AlertclassesUpdateAnswer{}
 	params := client.CallParams(1, alertClassUpdate)
 	var answer truenas.AlertclassesUpdateAnswer
-	if err = c.Caller.Call(ctx, "alertclasses.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "alertclasses.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AlertclassesUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

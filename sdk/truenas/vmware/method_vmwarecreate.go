@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, vmwareCreate truenas.VmwareCreate) (
 	result.VMWareQueryResultItem = &truenas.VMWareQueryResultItem{}
 	params := client.CallParams(1, vmwareCreate)
 	var answer truenas.VMWareQueryResultItem
-	if err = c.Caller.Call(ctx, "vmware.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "vmware.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.VMWareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

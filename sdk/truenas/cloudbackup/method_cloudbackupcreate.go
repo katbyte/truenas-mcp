@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, cloudBackup truenas.CloudBackup) (re
 	result.CloudBackupQueryResultItem = &truenas.CloudBackupQueryResultItem{}
 	params := client.CallParams(1, cloudBackup)
 	var answer truenas.CloudBackupQueryResultItem
-	if err = c.Caller.Call(ctx, "cloud_backup.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloud_backup.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudBackupQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

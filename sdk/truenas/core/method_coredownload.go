@@ -22,5 +22,5 @@ func (c Client) Download(ctx context.Context, method string, args []any, filenam
 	params := client.CallParams(3, method, args, filename, buffered)
 	err = c.Caller.Call(ctx, "core.download", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, iscsiUpdate truenas.IscsiUpdate) (re
 	result.IscsiGlobalUpdateAnswer = &truenas.IscsiGlobalUpdateAnswer{}
 	params := client.CallParams(1, iscsiUpdate)
 	var answer truenas.IscsiGlobalUpdateAnswer
-	if err = c.Caller.Call(ctx, "iscsi.global.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "iscsi.global.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.IscsiGlobalUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

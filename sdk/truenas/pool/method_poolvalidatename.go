@@ -17,10 +17,10 @@ import (
 func (c Client) ValidateName(ctx context.Context, poolName string) (result truenas.PoolValidateNameResponse, err error) {
 	params := client.CallParams(1, poolName)
 	var answer bool
-	if err = c.Caller.Call(ctx, "pool.validate_name", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "pool.validate_name", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

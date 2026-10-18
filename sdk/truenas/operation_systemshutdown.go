@@ -3,5 +3,4 @@
 package truenas
 
 // SystemShutdownResponse is the result of SystemShutdown.
-type SystemShutdownResponse struct {
-}
+type SystemShutdownResponse struct{}

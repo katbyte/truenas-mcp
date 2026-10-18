@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Nvm
 	result.NVMetNamespaceQueryResultItem = &truenas.NVMetNamespaceQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.NVMetNamespaceQueryResultItem
-	if err = c.Caller.Call(ctx, "nvmet.namespace.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "nvmet.namespace.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NVMetNamespaceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

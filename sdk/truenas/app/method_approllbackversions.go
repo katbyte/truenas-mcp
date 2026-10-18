@@ -18,5 +18,5 @@ func (c Client) RollbackVersions(ctx context.Context, appName string) (result tr
 	params := client.CallParams(1, appName)
 	err = c.Caller.Call(ctx, "app.rollback_versions", params, &result.Answer)
 
-	return
+	return result, err
 }

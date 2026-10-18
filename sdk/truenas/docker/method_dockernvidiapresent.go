@@ -14,10 +14,10 @@ import (
 func (c Client) NvidiaPresent(ctx context.Context) (result truenas.DockerNvidiaPresentResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "docker.nvidia_present", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "docker.nvidia_present", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

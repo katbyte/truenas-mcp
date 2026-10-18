@@ -16,11 +16,11 @@ func (c Client) Scrub(ctx context.Context) (result truenas.BootScrubResponse, er
 	var params []any
 	err = c.Caller.Call(ctx, "boot.scrub", params, nil)
 
-	return
+	return result, err
 }
 
 // ScrubCall is the call Scrub makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func ScrubCall() (string, []any) {
+func ScrubCall() (call string, params []any) {
 	return "boot.scrub", nil
 }

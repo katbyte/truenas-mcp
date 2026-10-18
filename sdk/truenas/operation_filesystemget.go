@@ -3,5 +3,4 @@
 package truenas
 
 // FilesystemGetResponse is the result of FilesystemGet.
-type FilesystemGetResponse struct {
-}
+type FilesystemGetResponse struct{}

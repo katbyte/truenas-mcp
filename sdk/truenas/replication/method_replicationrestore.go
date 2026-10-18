@@ -18,11 +18,11 @@ func (c Client) Restore(ctx context.Context, id int, replicationRestore truenas.
 	result.ReplicationRestoreAnswer = &truenas.ReplicationRestoreAnswer{}
 	params := client.CallParams(2, id, replicationRestore)
 	var answer truenas.ReplicationRestoreAnswer
-	if err = c.Caller.Call(ctx, "replication.restore", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "replication.restore", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReplicationRestoreAnswer = result.Answer
 
-	return
+	return result, nil
 }

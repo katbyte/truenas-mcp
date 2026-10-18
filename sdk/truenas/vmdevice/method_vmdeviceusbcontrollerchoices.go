@@ -15,5 +15,5 @@ func (c Client) UsbControllerChoices(ctx context.Context) (result truenas.VmDevi
 	var params []any
 	err = c.Caller.Call(ctx, "vm.device.usb_controller_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

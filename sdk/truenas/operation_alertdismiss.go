@@ -3,5 +3,4 @@
 package truenas
 
 // AlertDismissResponse is the result of AlertDismiss.
-type AlertDismissResponse struct {
-}
+type AlertDismissResponse struct{}

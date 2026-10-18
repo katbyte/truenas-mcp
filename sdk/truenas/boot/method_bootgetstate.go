@@ -15,11 +15,11 @@ func (c Client) GetState(ctx context.Context) (result truenas.BootGetStateRespon
 	result.BootGetStateAnswer = &truenas.BootGetStateAnswer{}
 	var params []any
 	var answer truenas.BootGetStateAnswer
-	if err = c.Caller.Call(ctx, "boot.get_state", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "boot.get_state", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.BootGetStateAnswer = result.Answer
 
-	return
+	return result, nil
 }

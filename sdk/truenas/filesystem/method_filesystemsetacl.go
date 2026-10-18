@@ -19,11 +19,11 @@ func (c Client) Setacl(ctx context.Context, filesystemAcl truenas.FilesystemAcl2
 	params := client.CallParams(1, filesystemAcl)
 	err = c.Caller.Call(ctx, "filesystem.setacl", params, &result.Answer)
 
-	return
+	return result, err
 }
 
 // SetaclCall is the call Setacl makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SetaclCall(filesystemAcl truenas.FilesystemAcl2) (string, []any) {
+func SetaclCall(filesystemAcl truenas.FilesystemAcl2) (call string, params []any) {
 	return "filesystem.setacl", client.CallParams(1, filesystemAcl)
 }

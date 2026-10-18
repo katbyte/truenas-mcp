@@ -3,5 +3,4 @@
 package truenas
 
 // CoreJobAbortResponse is the result of CoreJobAbort.
-type CoreJobAbortResponse struct {
-}
+type CoreJobAbortResponse struct{}

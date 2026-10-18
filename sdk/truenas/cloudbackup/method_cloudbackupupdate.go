@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, data truenas.CloudBackupUpda
 	result.CloudBackupQueryResultItem = &truenas.CloudBackupQueryResultItem{}
 	params := client.CallParams(2, id, data)
 	var answer truenas.CloudBackupQueryResultItem
-	if err = c.Caller.Call(ctx, "cloud_backup.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloud_backup.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudBackupQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

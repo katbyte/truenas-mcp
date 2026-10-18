@@ -616,7 +616,7 @@ type Client struct {
 		return nil, errors.New(%[6]q)
 	}
 	// the credential is a secret whatever the authorizer makes of it, so no error repeats it
-	c, err := %[3]s.New(baseURL, %[2]s, append(opts[:len(opts):len(opts)], client.WithSecrets(%[5]s))...)
+	c, err := %[3]s.New(baseURL, %[2]s, append(slices.Clip(opts), client.WithSecrets(%[5]s))...)
 	if err != nil {
 		return nil, err
 	}
@@ -870,7 +870,11 @@ func (g *gen) idsFile() string {
 			g.declare(shape, "ids.go")
 			fmt.Fprintf(&b, "\n// %s is the shape every %s has.\nvar %s = regexp.MustCompile(%s)\n", shape, k.Name, shape, strconv.Quote(k.Shape))
 			fmt.Fprintf(&b, "\n// Check refuses a value that has not the shape every %s has, which a method does before sending a request with it; the error names the value.\n", k.Name)
-			fmt.Fprintf(&b, "func (id %s) Check() error {\n\tif !%s.MatchString(fmt.Sprint(%s(id))) {\n\t\treturn fmt.Errorf(\"%%v is not %s %s (the shape is %%s)\", %s(id), %s)\n\t}\n\n\treturn nil\n}\n", k.Name, shape, base, article(k.Name), k.Name, base, strconv.Quote(k.Shape))
+			text := "strconv.Itoa(int(id))"
+			if k.Base == definitions.String {
+				text = "string(id)"
+			}
+			fmt.Fprintf(&b, "func (id %s) Check() error {\n\tif !%s.MatchString(%s) {\n\t\treturn fmt.Errorf(\"%%v is not %s %s (the shape is %%s)\", %s(id), %s)\n\t}\n\n\treturn nil\n}\n", k.Name, shape, text, article(k.Name), k.Name, base, strconv.Quote(k.Shape))
 		}
 	}
 

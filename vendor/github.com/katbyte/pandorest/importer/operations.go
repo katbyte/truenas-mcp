@@ -17,7 +17,12 @@ import (
 
 var pathParamRe = regexp.MustCompile(`\{([^}]+)\}`)
 
-const acceptHeader = "Accept"
+const (
+	acceptHeader = "Accept"
+	// textPlain is the media type of a short text answer, and binaryFormat the schema format that makes one a download instead.
+	textPlain    = "text/plain"
+	binaryFormat = "binary"
+)
 
 // importOperations builds every operation, grouped by tag.
 func (im *importer) importOperations() map[string]*definitions.Group {
@@ -386,8 +391,9 @@ func (im *importer) responseBody(method, path, owner string, op *openapi.Operati
 			if other == "" {
 				other = openapi.SortedKeys(resp.Content)[0]
 			}
-			// text a workaround says is short enough to hold: read whole, where any other answer that is not JSON is a file
-			if resp.Content[other].Text {
+			// text a workaround says is short enough to hold, or text/plain on a service that says its text answers are short, is read
+			// whole, where any other answer that is not JSON is a file; a text/plain declared binary is a download, and stays one
+			if media := resp.Content[other]; media.Text || (im.cfg.TextAnswers && other == textPlain && (media.Schema == nil || media.Schema.Format != binaryFormat)) {
 				return &definitions.Body{ContentType: other, Type: definitions.TypeRef{Type: definitions.String}}
 			}
 			return &definitions.Body{ContentType: other, Type: definitions.TypeRef{Type: definitions.RawFile}}
@@ -434,7 +440,7 @@ func (im *importer) responseType(s *openapi.Schema, owner string) definitions.Ty
 	if s == nil {
 		return raw
 	}
-	if s.Type == openapi.TypeString && s.Format == "binary" {
+	if s.Type == openapi.TypeString && s.Format == binaryFormat {
 		return raw
 	}
 	if s.RefName() == "" && (s.Type == openapi.TypeObject || s.Type == "") && len(s.Properties) == 0 {

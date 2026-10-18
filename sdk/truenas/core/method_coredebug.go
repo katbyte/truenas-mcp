@@ -16,5 +16,5 @@ func (c Client) Debug(ctx context.Context, options truenas.CoreDebugOptions) (re
 	params := client.CallParams(1, options)
 	err = c.Caller.Call(ctx, "core.debug", params, nil)
 
-	return
+	return result, err
 }

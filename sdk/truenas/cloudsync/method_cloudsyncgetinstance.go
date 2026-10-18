@@ -18,11 +18,11 @@ func (c Client) GetInstance(ctx context.Context, id int, options truenas.Cloudsy
 	result.CloudSyncQueryResultItem = &truenas.CloudSyncQueryResultItem{}
 	params := client.CallParams(1, id, options)
 	var answer truenas.CloudSyncQueryResultItem
-	if err = c.Caller.Call(ctx, "cloudsync.get_instance", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "cloudsync.get_instance", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.CloudSyncQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

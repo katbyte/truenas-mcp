@@ -19,11 +19,11 @@ func (c Client) Delete(ctx context.Context, id int) (result truenas.TunableDelet
 	params := client.CallParams(1, id)
 	err = c.Caller.Call(ctx, "tunable.delete", params, nil)
 
-	return
+	return result, err
 }
 
 // DeleteCall is the call Delete makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func DeleteCall(id int) (string, []any) {
+func DeleteCall(id int) (call string, params []any) {
 	return "tunable.delete", client.CallParams(1, id)
 }

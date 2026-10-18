@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, data truenas.SharingSmbCreateData) (
 	result.SmbShareQueryResultItem = &truenas.SmbShareQueryResultItem{}
 	params := client.CallParams(1, data)
 	var answer truenas.SmbShareQueryResultItem
-	if err = c.Caller.Call(ctx, "sharing.smb.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "sharing.smb.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SmbShareQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

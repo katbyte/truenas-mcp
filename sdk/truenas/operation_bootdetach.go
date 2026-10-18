@@ -3,5 +3,4 @@
 package truenas
 
 // BootDetachResponse is the result of BootDetach.
-type BootDetachResponse struct {
-}
+type BootDetachResponse struct{}

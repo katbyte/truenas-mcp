@@ -16,5 +16,5 @@ func (c Client) Dismiss(ctx context.Context, uuid string) (result truenas.AlertD
 	params := client.CallParams(1, uuid)
 	err = c.Caller.Call(ctx, "alert.dismiss", params, nil)
 
-	return
+	return result, err
 }

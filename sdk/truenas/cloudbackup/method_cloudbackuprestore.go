@@ -27,11 +27,11 @@ func (c Client) Restore(ctx context.Context, id int, snapshotId string, subfolde
 	params := client.CallParams(4, id, snapshotId, subfolder, destinationPath, options)
 	err = c.Caller.Call(ctx, "cloud_backup.restore", params, nil)
 
-	return
+	return result, err
 }
 
 // RestoreCall is the call Restore makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RestoreCall(id int, snapshotId string, subfolder string, destinationPath string, options truenas.CloudBackupRestoreOptions) (string, []any) {
+func RestoreCall(id int, snapshotId string, subfolder string, destinationPath string, options truenas.CloudBackupRestoreOptions) (call string, params []any) {
 	return "cloud_backup.restore", client.CallParams(4, id, snapshotId, subfolder, destinationPath, options)
 }

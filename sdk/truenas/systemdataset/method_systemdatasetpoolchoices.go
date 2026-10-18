@@ -18,5 +18,5 @@ func (c Client) PoolChoices(ctx context.Context, includeCurrentPool bool) (resul
 	params := client.CallParams(0, includeCurrentPool)
 	err = c.Caller.Call(ctx, "systemdataset.pool_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

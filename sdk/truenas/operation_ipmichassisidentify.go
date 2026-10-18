@@ -3,5 +3,4 @@
 package truenas
 
 // IpmiChassisIdentifyResponse is the result of IpmiChassisIdentify.
-type IpmiChassisIdentifyResponse struct {
-}
+type IpmiChassisIdentifyResponse struct{}

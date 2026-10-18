@@ -18,5 +18,5 @@ func (c Client) ByPath(ctx context.Context, filesystemAcl truenas.FilesystemAcl)
 	params := client.CallParams(1, filesystemAcl)
 	err = c.Caller.Call(ctx, "filesystem.acltemplate.by_path", params, &result.Answer)
 
-	return
+	return result, err
 }

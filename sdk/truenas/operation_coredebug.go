@@ -3,5 +3,4 @@
 package truenas
 
 // CoreDebugResponse is the result of CoreDebug.
-type CoreDebugResponse struct {
-}
+type CoreDebugResponse struct{}

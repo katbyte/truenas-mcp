@@ -15,5 +15,5 @@ func (c Client) PortChoices(ctx context.Context) (result truenas.UpsPortChoicesR
 	var params []any
 	err = c.Caller.Call(ctx, "ups.port_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // DirectoryservicesCacheRefreshResponse is the result of DirectoryservicesCacheRefresh.
-type DirectoryservicesCacheRefreshResponse struct {
-}
+type DirectoryservicesCacheRefreshResponse struct{}

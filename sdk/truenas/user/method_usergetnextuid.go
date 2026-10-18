@@ -14,10 +14,10 @@ import (
 func (c Client) GetNextUid(ctx context.Context) (result truenas.UserGetNextUidResponse, err error) {
 	var params []any
 	var answer int
-	if err = c.Caller.Call(ctx, "user.get_next_uid", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.get_next_uid", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

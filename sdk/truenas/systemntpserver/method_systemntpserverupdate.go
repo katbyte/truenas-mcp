@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, ntpServerUpdate truenas.NtpS
 	result.NTPServerQueryResultItem = &truenas.NTPServerQueryResultItem{}
 	params := client.CallParams(2, id, ntpServerUpdate)
 	var answer truenas.NTPServerQueryResultItem
-	if err = c.Caller.Call(ctx, "system.ntpserver.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.ntpserver.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NTPServerQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

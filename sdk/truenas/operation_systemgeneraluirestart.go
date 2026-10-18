@@ -3,5 +3,4 @@
 package truenas
 
 // SystemGeneralUiRestartResponse is the result of SystemGeneralUiRestart.
-type SystemGeneralUiRestartResponse struct {
-}
+type SystemGeneralUiRestartResponse struct{}

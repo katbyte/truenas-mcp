@@ -15,11 +15,11 @@ func (c Client) XmitHashPolicyChoices(ctx context.Context) (result truenas.Inter
 	result.InterfaceXmitHashPolicyChoicesAnswer = &truenas.InterfaceXmitHashPolicyChoicesAnswer{}
 	var params []any
 	var answer truenas.InterfaceXmitHashPolicyChoicesAnswer
-	if err = c.Caller.Call(ctx, "interface.xmit_hash_policy_choices", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "interface.xmit_hash_policy_choices", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.InterfaceXmitHashPolicyChoicesAnswer = result.Answer
 
-	return
+	return result, nil
 }

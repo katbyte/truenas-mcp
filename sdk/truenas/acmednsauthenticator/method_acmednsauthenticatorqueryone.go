@@ -20,11 +20,11 @@ func (c Client) QueryOne(ctx context.Context, filters []any, options truenas.Acm
 	result.ACMEDNSAuthenticatorQueryResultItem = &truenas.ACMEDNSAuthenticatorQueryResultItem{}
 	params := client.CallParams(2, filters, client.Flagged{Record: options, Flag: "get"})
 	var answer truenas.ACMEDNSAuthenticatorQueryResultItem
-	if err = c.Caller.Call(ctx, "acme.dns.authenticator.query", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "acme.dns.authenticator.query", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ACMEDNSAuthenticatorQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

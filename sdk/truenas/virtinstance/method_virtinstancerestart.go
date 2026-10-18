@@ -20,16 +20,16 @@ import (
 func (c Client) Restart(ctx context.Context, id string, stopArgs truenas.StopArgs) (result truenas.VirtInstanceRestartResponse, err error) {
 	params := client.CallParams(1, id, stopArgs)
 	var answer bool
-	if err = c.Caller.Call(ctx, "virt.instance.restart", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "virt.instance.restart", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }
 
 // RestartCall is the call Restart makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RestartCall(id string, stopArgs truenas.StopArgs) (string, []any) {
+func RestartCall(id string, stopArgs truenas.StopArgs) (call string, params []any) {
 	return "virt.instance.restart", client.CallParams(1, id, stopArgs)
 }

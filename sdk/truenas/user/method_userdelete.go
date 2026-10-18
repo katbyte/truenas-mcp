@@ -17,10 +17,10 @@ import (
 func (c Client) Delete(ctx context.Context, id int, options truenas.UserDeleteOptions) (result truenas.UserDeleteResponse, err error) {
 	params := client.CallParams(1, id, options)
 	var answer int
-	if err = c.Caller.Call(ctx, "user.delete", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.delete", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

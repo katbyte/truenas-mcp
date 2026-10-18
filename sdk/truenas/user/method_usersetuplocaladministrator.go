@@ -20,5 +20,5 @@ func (c Client) SetupLocalAdministrator(ctx context.Context, username truenas.Us
 	params := client.CallParams(2, username, password, options)
 	err = c.Caller.Call(ctx, "user.setup_local_administrator", params, nil)
 
-	return
+	return result, err
 }

@@ -21,17 +21,17 @@ func (c Client) Upgrade(ctx context.Context, appName string, options truenas.App
 	result.AppQueryResultItem = &truenas.AppQueryResultItem{}
 	params := client.CallParams(1, appName, options)
 	var answer truenas.AppQueryResultItem
-	if err = c.Caller.Call(ctx, "app.upgrade", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "app.upgrade", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AppQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }
 
 // UpgradeCall is the call Upgrade makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func UpgradeCall(appName string, options truenas.AppUpgradeOptions) (string, []any) {
+func UpgradeCall(appName string, options truenas.AppUpgradeOptions) (call string, params []any) {
 	return "app.upgrade", client.CallParams(1, appName, options)
 }

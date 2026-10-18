@@ -16,11 +16,11 @@ func (c Client) Update(ctx context.Context, kerberosUpdate truenas.KerberosUpdat
 	result.KerberosUpdateAnswer = &truenas.KerberosUpdateAnswer{}
 	params := client.CallParams(1, kerberosUpdate)
 	var answer truenas.KerberosUpdateAnswer
-	if err = c.Caller.Call(ctx, "kerberos.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "kerberos.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.KerberosUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }

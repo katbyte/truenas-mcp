@@ -16,5 +16,5 @@ func (c Client) Destroy(ctx context.Context, bootEnvironmentDestroy truenas.Boot
 	params := client.CallParams(1, bootEnvironmentDestroy)
 	err = c.Caller.Call(ctx, "boot.environment.destroy", params, nil)
 
-	return
+	return result, err
 }

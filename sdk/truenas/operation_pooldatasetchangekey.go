@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDatasetChangeKeyResponse is the result of PoolDatasetChangeKey.
-type PoolDatasetChangeKeyResponse struct {
-}
+type PoolDatasetChangeKeyResponse struct{}

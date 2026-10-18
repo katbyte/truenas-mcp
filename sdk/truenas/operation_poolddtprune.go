@@ -3,5 +3,4 @@
 package truenas
 
 // PoolDdtPruneResponse is the result of PoolDdtPrune.
-type PoolDdtPruneResponse struct {
-}
+type PoolDdtPruneResponse struct{}

@@ -14,10 +14,10 @@ import (
 func (c Client) Ready(ctx context.Context) (result truenas.SystemReadyResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "system.ready", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.ready", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

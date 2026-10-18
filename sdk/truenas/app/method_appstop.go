@@ -19,11 +19,11 @@ func (c Client) Stop(ctx context.Context, appName string) (result truenas.AppSto
 	params := client.CallParams(1, appName)
 	err = c.Caller.Call(ctx, "app.stop", params, nil)
 
-	return
+	return result, err
 }
 
 // StopCall is the call Stop makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func StopCall(appName string) (string, []any) {
+func StopCall(appName string) (call string, params []any) {
 	return "app.stop", client.CallParams(1, appName)
 }

@@ -3,5 +3,4 @@
 package truenas
 
 // ReplicationCreateDatasetResponse is the result of ReplicationCreateDataset.
-type ReplicationCreateDatasetResponse struct {
-}
+type ReplicationCreateDatasetResponse struct{}

@@ -3,5 +3,4 @@
 package truenas
 
 // SystemAdvancedUpdateGpuPciIdsResponse is the result of SystemAdvancedUpdateGpuPciIds.
-type SystemAdvancedUpdateGpuPciIdsResponse struct {
-}
+type SystemAdvancedUpdateGpuPciIdsResponse struct{}

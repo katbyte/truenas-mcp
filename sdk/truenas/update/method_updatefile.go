@@ -19,11 +19,11 @@ func (c Client) File(ctx context.Context, options truenas.UpdateFileOptions) (re
 	params := client.CallParams(0, options)
 	err = c.Caller.Call(ctx, "update.file", params, nil)
 
-	return
+	return result, err
 }
 
 // FileCall is the call File makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func FileCall(options truenas.UpdateFileOptions) (string, []any) {
+func FileCall(options truenas.UpdateFileOptions) (call string, params []any) {
 	return "update.file", client.CallParams(0, options)
 }

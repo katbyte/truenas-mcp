@@ -15,11 +15,11 @@ func (c Client) Config(ctx context.Context) (result truenas.SupportConfigRespons
 	result.SupportConfigAnswer = &truenas.SupportConfigAnswer{}
 	var params []any
 	var answer truenas.SupportConfigAnswer
-	if err = c.Caller.Call(ctx, "support.config", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "support.config", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.SupportConfigAnswer = result.Answer
 
-	return
+	return result, nil
 }

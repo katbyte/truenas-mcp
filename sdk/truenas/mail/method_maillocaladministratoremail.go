@@ -14,10 +14,10 @@ import (
 func (c Client) LocalAdministratorEmail(ctx context.Context) (result truenas.MailLocalAdministratorEmailResponse, err error) {
 	var params []any
 	var answer string
-	if err = c.Caller.Call(ctx, "mail.local_administrator_email", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "mail.local_administrator_email", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

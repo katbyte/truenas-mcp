@@ -16,11 +16,11 @@ func (c Client) SetZfsAttributes(ctx context.Context, setZfsFileAttributes truen
 	result.FilesystemSetZfsAttributesAnswer = &truenas.FilesystemSetZfsAttributesAnswer{}
 	params := client.CallParams(1, setZfsFileAttributes)
 	var answer truenas.FilesystemSetZfsAttributesAnswer
-	if err = c.Caller.Call(ctx, "filesystem.set_zfs_attributes", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.set_zfs_attributes", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemSetZfsAttributesAnswer = result.Answer
 
-	return
+	return result, nil
 }

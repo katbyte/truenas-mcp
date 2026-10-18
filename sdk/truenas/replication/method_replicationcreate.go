@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, replicationCreate truenas.Replicatio
 	result.ReplicationCreateAnswer = &truenas.ReplicationCreateAnswer{}
 	params := client.CallParams(1, replicationCreate)
 	var answer truenas.ReplicationCreateAnswer
-	if err = c.Caller.Call(ctx, "replication.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "replication.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.ReplicationCreateAnswer = result.Answer
 
-	return
+	return result, nil
 }

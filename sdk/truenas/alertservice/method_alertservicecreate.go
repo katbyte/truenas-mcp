@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, alertServiceCreate truenas.AlertServ
 	result.AlertServiceQueryResultItem = &truenas.AlertServiceQueryResultItem{}
 	params := client.CallParams(1, alertServiceCreate)
 	var answer truenas.AlertServiceQueryResultItem
-	if err = c.Caller.Call(ctx, "alertservice.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "alertservice.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.AlertServiceQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

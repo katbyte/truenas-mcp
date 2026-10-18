@@ -18,5 +18,5 @@ func (c Client) CreateBucket(ctx context.Context, credentialsId int, name string
 	params := client.CallParams(2, credentialsId, name)
 	err = c.Caller.Call(ctx, "cloudsync.create_bucket", params, nil)
 
-	return
+	return result, err
 }

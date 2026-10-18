@@ -16,11 +16,11 @@ func (c Client) Mkdir(ctx context.Context, filesystemMkdir truenas.FilesystemMkd
 	result.FilesystemDirQueryResultItem = &truenas.FilesystemDirQueryResultItem{}
 	params := client.CallParams(1, filesystemMkdir)
 	var answer truenas.FilesystemDirQueryResultItem
-	if err = c.Caller.Call(ctx, "filesystem.mkdir", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "filesystem.mkdir", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.FilesystemDirQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

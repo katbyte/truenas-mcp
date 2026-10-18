@@ -15,5 +15,5 @@ func (c Client) SerialPortChoices(ctx context.Context) (result truenas.SystemAdv
 	var params []any
 	err = c.Caller.Call(ctx, "system.advanced.serial_port_choices", params, &result.Answer)
 
-	return
+	return result, err
 }

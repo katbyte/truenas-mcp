@@ -13,5 +13,5 @@ func (c Client) AcceptEula(ctx context.Context) (result truenas.TruenasAcceptEul
 	var params []any
 	err = c.Caller.Call(ctx, "truenas.accept_eula", params, nil)
 
-	return
+	return result, err
 }

@@ -19,11 +19,11 @@ func (c Client) Setperm(ctx context.Context, filesystemSetperm truenas.Filesyste
 	params := client.CallParams(1, filesystemSetperm)
 	err = c.Caller.Call(ctx, "filesystem.setperm", params, nil)
 
-	return
+	return result, err
 }
 
 // SetpermCall is the call Setperm makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SetpermCall(filesystemSetperm truenas.FilesystemSetperm) (string, []any) {
+func SetpermCall(filesystemSetperm truenas.FilesystemSetperm) (call string, params []any) {
 	return "filesystem.setperm", client.CallParams(1, filesystemSetperm)
 }

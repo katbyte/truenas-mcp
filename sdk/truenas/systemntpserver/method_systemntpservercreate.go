@@ -16,11 +16,11 @@ func (c Client) Create(ctx context.Context, ntpServerCreate truenas.NtpServerCre
 	result.NTPServerQueryResultItem = &truenas.NTPServerQueryResultItem{}
 	params := client.CallParams(1, ntpServerCreate)
 	var answer truenas.NTPServerQueryResultItem
-	if err = c.Caller.Call(ctx, "system.ntpserver.create", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.ntpserver.create", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.NTPServerQueryResultItem = result.Answer
 
-	return
+	return result, nil
 }

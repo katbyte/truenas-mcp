@@ -16,11 +16,11 @@ func (c Client) SyncKeytab(ctx context.Context) (result truenas.Directoryservice
 	var params []any
 	err = c.Caller.Call(ctx, "directoryservices.sync_keytab", params, nil)
 
-	return
+	return result, err
 }
 
 // SyncKeytabCall is the call SyncKeytab makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func SyncKeytabCall() (string, []any) {
+func SyncKeytabCall() (call string, params []any) {
 	return "directoryservices.sync_keytab", nil
 }

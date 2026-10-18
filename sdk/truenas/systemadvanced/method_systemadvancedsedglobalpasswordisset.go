@@ -14,10 +14,10 @@ import (
 func (c Client) SedGlobalPasswordIsSet(ctx context.Context) (result truenas.SystemAdvancedSedGlobalPasswordIsSetResponse, err error) {
 	var params []any
 	var answer bool
-	if err = c.Caller.Call(ctx, "system.advanced.sed_global_password_is_set", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "system.advanced.sed_global_password_is_set", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 
-	return
+	return result, nil
 }

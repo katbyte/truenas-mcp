@@ -21,11 +21,11 @@ func (c Client) Run(ctx context.Context, id int, skipDisabled bool) (result true
 	params := client.CallParams(1, id, skipDisabled)
 	err = c.Caller.Call(ctx, "cronjob.run", params, nil)
 
-	return
+	return result, err
 }
 
 // RunCall is the call Run makes, the method's name and its arguments as sent, for a connection that starts the job and
 // follows it rather than waiting for it.
-func RunCall(id int, skipDisabled bool) (string, []any) {
+func RunCall(id int, skipDisabled bool) (call string, params []any) {
 	return "cronjob.run", client.CallParams(1, id, skipDisabled)
 }

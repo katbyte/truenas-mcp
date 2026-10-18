@@ -18,11 +18,11 @@ func (c Client) Update(ctx context.Context, id int, userUpdate truenas.UserUpdat
 	result.UserUpdateAnswer = &truenas.UserUpdateAnswer{}
 	params := client.CallParams(2, id, userUpdate)
 	var answer truenas.UserUpdateAnswer
-	if err = c.Caller.Call(ctx, "user.update", params, &answer); err != nil {
-		return
+	if err := c.Caller.Call(ctx, "user.update", params, &answer); err != nil {
+		return result, err
 	}
 	result.Answer = &answer
 	result.UserUpdateAnswer = result.Answer
 
-	return
+	return result, nil
 }
