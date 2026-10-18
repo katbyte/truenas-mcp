@@ -119,7 +119,7 @@ func TestToolsFollowsTheFlags(t *testing.T) {
 		t.Errorf("with --enable-write: %v\n%s", err, out)
 	}
 	out, err = run(t, "tools", "--toolsets", "all", "--enable-write", "--enable-delete")
-	if err != nil || strings.Contains(out, "hidden") || strings.Contains(out, "only tools that read") {
+	if err != nil || strings.Contains(out, "tools are hidden") || strings.Contains(out, "only tools that read") {
 		t.Errorf("with everything enabled the listing still says something is held back: %v\n%s", err, out)
 	}
 

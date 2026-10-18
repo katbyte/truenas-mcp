@@ -533,10 +533,13 @@ func registerScrubChanges(r *registry) {
 			moves.move("the days between scrubs", strconv.Itoa(row.ThresholdDays), strconv.Itoa(in.ThresholdDays))
 			data.Threshold = in.ThresholdDays
 		}
-		clearDescription := false
+		var blank []string
 		if in.Description != nil && *in.Description != row.Description {
 			moves.move("the description", quotedOrNone(row.Description), quotedOrNone(*in.Description))
-			data.Description, clearDescription = *in.Description, *in.Description == ""
+			data.Description = *in.Description
+			if *in.Description == "" {
+				blank = append(blank, "description")
+			}
 		}
 		if in.Enabled != nil && *in.Enabled != row.Enabled {
 			moves.move("whether it runs", onOff(row.Enabled), onOff(*in.Enabled))
@@ -549,16 +552,13 @@ func registerScrubChanges(r *registry) {
 			return nil, out, nil
 		}
 
-		// the client leaves out a setting it is given empty, so a description is taken away by a call of its own
-		if len(moves) > 1 || !clearDescription {
+		if len(moves) > len(blank) {
 			if _, err := r.typed.PoolScrub.Update(ctx, in.ID, data); err != nil {
 				return nil, out, fmt.Errorf("the scrub task %d was not changed: %w", in.ID, err)
 			}
 		}
-		if clearDescription {
-			if err := r.nas.Call(ctx, "pool.scrub.update", []any{in.ID, map[string]any{"description": ""}}, nil); err != nil {
-				return nil, out, fmt.Errorf("the description of the scrub task %d was not taken away: %w", in.ID, err)
-			}
+		if err := blankOut(ctx, r, "pool.scrub.update", in.ID, blank); err != nil {
+			return nil, out, fmt.Errorf("the description of the scrub task %d was not taken away: %w", in.ID, err)
 		}
 		out.ScrubTask = scrubTaskRead(ctx, r, in.ID, &out.changed)
 

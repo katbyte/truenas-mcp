@@ -37,8 +37,8 @@ func registerServiceTools(r *registry) {
 		}
 
 		rows := make([]serviceRow, 0, len(found.Answer))
-		for _, s := range found.Answer {
-			rows = append(rows, serviceRow{ID: s.Id, Service: s.Service, State: s.State, Enabled: s.Enable})
+		for i := range found.Answer {
+			rows = append(rows, serviceRowOf(&found.Answer[i]))
 		}
 		out := serviceListOut{}
 		out.Services, out.pageOut = pageRows(rows, in.pageIn)

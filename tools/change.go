@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
@@ -132,4 +133,18 @@ func several(n int, one string, many ...string) string {
 	}
 
 	return fmt.Sprintf("%d %ss", n, one)
+}
+
+// blankOut takes settings away by setting each to empty, in a call of its own: the client leaves out a setting it is given empty, so an update
+// through it cannot.
+func blankOut(ctx context.Context, r *registry, method string, id any, names []string) error {
+	if len(names) == 0 {
+		return nil
+	}
+	blank := make(map[string]any, len(names))
+	for _, name := range names {
+		blank[name] = ""
+	}
+
+	return r.nas.Call(ctx, method, []any{id, blank}, nil)
 }

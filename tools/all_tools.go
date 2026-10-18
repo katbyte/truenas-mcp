@@ -49,6 +49,10 @@ var Toolsets = map[string][]string{
 	"audit": {
 		"audit_all", "audit_pools", "audit_space", "audit_tasks", "audit_disks", "audit_system",
 	},
+	// dismiss what the NAS has raised, and bring it back
+	"alerts": {
+		"alert_dismiss", "alert_restore",
+	},
 	// make, change and remove datasets and volumes
 	"storage": {
 		"dataset_create", "dataset_update", "dataset_delete",
@@ -66,10 +70,11 @@ var Toolsets = map[string][]string{
 	// what the NAS offers other machines: SMB and NFS shares, and iSCSI targets with what they offer
 	"shares": {
 		"sharing_smb_list", "sharing_nfs_list", "iscsi_target_list", "iscsi_extent_list",
+		"sharing_smb_create", "sharing_smb_update", "sharing_smb_delete", "sharing_nfs_create", "sharing_nfs_update", "sharing_nfs_delete",
 	},
 	// the services that serve the shares and everything else
 	"services": {
-		"service_list",
+		"service_list", "service_start", "service_stop", "service_restart", "service_reload", "service_update",
 	},
 	// the apps the NAS runs in containers
 	"apps": {
@@ -90,7 +95,7 @@ var Toolsets = map[string][]string{
 }
 
 // ToolsetOrder is the order a listing shows the sets in: the base first.
-var ToolsetOrder = []string{mcpregistry.Core, "audit", "storage", "disks", "protection", "shares", "services", "apps", "vms", "networking", "accounts"}
+var ToolsetOrder = []string{mcpregistry.Core, "audit", "alerts", "storage", "disks", "protection", "shares", "services", "apps", "vms", "networking", "accounts"}
 
 // EssentialTools is the preset --allow-tools essential asks for: enough to know which NAS this is, what it holds and what it says is wrong.
 var EssentialTools = []string{
@@ -135,6 +140,20 @@ var toolHints = map[string]mcpregistry.Hints{
 	"pool_scrub_start":  {Additive: true, Idempotent: true},
 	"pool_scrub_pause":  {Additive: true, Idempotent: true},
 	"pool_scrub_stop":   {Idempotent: true},
+	// a share changed can stop machines reaching what they had mounted
+	"sharing_smb_create": {Additive: true},
+	"sharing_smb_update": {Idempotent: true},
+	"sharing_nfs_create": {Additive: true},
+	"sharing_nfs_update": {Idempotent: true},
+	// a stopped service stops what it serves, a restart cuts it off for a moment, and one set not to start is down after the NAS restarts
+	"service_start":   {Additive: true, Idempotent: true},
+	"service_stop":    {Idempotent: true},
+	"service_restart": {},
+	"service_reload":  {Additive: true, Idempotent: true},
+	"service_update":  {Idempotent: true},
+	// a dismissed alert is brought back as it was
+	"alert_dismiss": {Additive: true, Idempotent: true},
+	"alert_restore": {Additive: true, Idempotent: true},
 }
 
 // queued is every tool queued so far, in go-kt's registry, which is made when the first tool is.
@@ -168,12 +187,16 @@ func queueTools(r *registry) {
 	registerDatasetChanges(r)
 	registerDiskTools(r)
 	registerAlertTools(r)
+	registerAlertChanges(r)
 	registerProtectionTools(r)
 	registerSnapshotChanges(r)
 	registerSnapshotTaskChanges(r)
 	registerScrubChanges(r)
 	registerSharingTools(r)
+	registerSMBShareChanges(r)
+	registerNFSShareChanges(r)
 	registerServiceTools(r)
+	registerServiceChanges(r)
 	registerAppTools(r)
 	registerVMTools(r)
 	registerNetworkTools(r)

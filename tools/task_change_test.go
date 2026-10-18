@@ -50,7 +50,11 @@ func storeRows(t *testing.T, nas *truenastest.NAS, kind string, made, changed fu
 			row, ok := s.rows[id]
 			passes := ok
 			for _, f := range filters {
-				passes = passes && acctest.NumOr0(row[acctest.Str(f[0])]) == acctest.NumOr0(f[2])
+				if text, ok := f[2].(string); ok {
+					passes = passes && row[acctest.Str(f[0])] == text
+				} else {
+					passes = passes && acctest.NumOr0(row[acctest.Str(f[0])]) == acctest.NumOr0(f[2])
+				}
 			}
 			if passes {
 				found = append(found, row)

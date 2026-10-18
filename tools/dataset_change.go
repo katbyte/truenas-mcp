@@ -225,10 +225,13 @@ func registerDatasetChanges(r *registry) {
 			moves.move("compression", row.Compression, want)
 			data.Compression = truenas.PoolDatasetCompression(want)
 		}
-		clearComments := false
+		var blank []string
 		if was := commentsOf(d); in.Comments != nil && *in.Comments != was {
 			moves.move("the comments", quotedOrNone(was), quotedOrNone(*in.Comments))
-			data.Comments, clearComments = *in.Comments, *in.Comments == ""
+			data.Comments = *in.Comments
+			if *in.Comments == "" {
+				blank = append(blank, "comments")
+			}
 		}
 		if in.ReadOnly != nil && *in.ReadOnly != row.ReadOnly {
 			moves.move("read only", onOff(row.ReadOnly), onOff(*in.ReadOnly))
@@ -241,16 +244,13 @@ func registerDatasetChanges(r *registry) {
 			return nil, out, nil
 		}
 
-		// the client leaves out a setting it is given empty, so comments are taken away by a call of their own
-		if len(moves) > 1 || !clearComments {
+		if len(moves) > len(blank) {
 			if _, err := r.typed.PoolDataset.Update(ctx, name, data); err != nil {
 				return nil, out, fmt.Errorf("%s was not changed: %w", name, err)
 			}
 		}
-		if clearComments {
-			if err := r.nas.Call(ctx, "pool.dataset.update", []any{name, map[string]any{"comments": ""}}, nil); err != nil {
-				return nil, out, fmt.Errorf("the comments on %s were not taken away: %w", name, err)
-			}
+		if err := blankOut(ctx, r, "pool.dataset.update", name, blank); err != nil {
+			return nil, out, fmt.Errorf("the comments on %s were not taken away: %w", name, err)
 		}
 		out.Dataset = datasetRead(ctx, r, name, &out.changed)
 

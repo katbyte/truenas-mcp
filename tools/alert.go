@@ -7,22 +7,30 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/katbyte/truenas-mcp/sdk/truenas"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 // alertLevels are the levels an alert can be at, the gravest first.
 var alertLevels = []string{"EMERGENCY", "ALERT", "CRITICAL", "ERROR", "WARNING", "NOTICE", "INFO"}
 
+// alertRow is an alert as a list answers it.
+type alertRow struct {
+	ID        string `json:"id"                  jsonschema:"the alert's own id"`
+	Level     string `json:"level"               jsonschema:"how grave it is: EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE or INFO"`
+	Class     string `json:"class"               jsonschema:"the kind of alert, as the NAS names it: VolumeStatus, ScrubPaused, ReplicationFailed, CertificateExpired"`
+	Text      string `json:"text"                jsonschema:"what the NAS says, written by the NAS from what it found"`
+	Raised    string `json:"raised,omitempty"    jsonschema:"when it was raised"`
+	LastSeen  string `json:"last_seen,omitempty" jsonschema:"when the NAS last found it still so"`
+	Dismissed bool   `json:"dismissed"           jsonschema:"whether someone has dismissed it; the NAS clears an alert by itself once what raised it is gone"`
+}
+
+// alertRowOf is an alert as a list answers it.
+func alertRowOf(a *truenas.Alert) alertRow {
+	return alertRow{ID: a.Uuid, Level: a.Level, Class: a.Klass, Text: a.Formatted, Raised: when(a.Datetime.Time), LastSeen: when(a.LastOccurrence.Time), Dismissed: a.Dismissed}
+}
+
 func registerAlertTools(r *registry) {
-	type alertRow struct {
-		ID        string `json:"id"                  jsonschema:"the alert's own id"`
-		Level     string `json:"level"               jsonschema:"how grave it is: EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE or INFO"`
-		Class     string `json:"class"               jsonschema:"the kind of alert, as the NAS names it: VolumeStatus, ScrubPaused, ReplicationFailed, CertificateExpired"`
-		Text      string `json:"text"                jsonschema:"what the NAS says, written by the NAS from what it found"`
-		Raised    string `json:"raised,omitempty"    jsonschema:"when it was raised"`
-		LastSeen  string `json:"last_seen,omitempty" jsonschema:"when the NAS last found it still so"`
-		Dismissed bool   `json:"dismissed"           jsonschema:"whether someone has dismissed it; the NAS clears an alert by itself once what raised it is gone"`
-	}
 	type alertListIn struct {
 		Dismissed bool   `json:"dismissed,omitempty" jsonschema:"list the dismissed alerts too"`
 		AtLeast   string `json:"at_least,omitempty"  jsonschema:"only alerts at this level or graver: WARNING leaves out NOTICE and INFO"`
@@ -50,12 +58,13 @@ func registerAlertTools(r *registry) {
 		}
 
 		rows := make([]alertRow, 0, len(found.Answer))
-		for _, a := range found.Answer {
+		for i := range found.Answer {
+			a := &found.Answer[i]
 			level := slices.Index(alertLevels, a.Level)
 			if (a.Dismissed && !in.Dismissed) || level < 0 && in.AtLeast != "" || level >= floor {
 				continue
 			}
-			rows = append(rows, alertRow{ID: a.Uuid, Level: a.Level, Class: a.Klass, Text: a.Formatted, Raised: when(a.Datetime.Time), LastSeen: when(a.LastOccurrence.Time), Dismissed: a.Dismissed})
+			rows = append(rows, alertRowOf(a))
 		}
 		slices.SortStableFunc(rows, func(a, b alertRow) int {
 			return cmp.Or(cmp.Compare(slices.Index(alertLevels, a.Level), slices.Index(alertLevels, b.Level)), cmp.Compare(b.Raised, a.Raised))

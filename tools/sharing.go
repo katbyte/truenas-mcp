@@ -12,20 +12,21 @@ import (
 
 // smbShareRow is an SMB share as a list answers it.
 type smbShareRow struct {
-	ID        int    `json:"id"                jsonschema:"the share's number"`
-	Name      string `json:"name"              jsonschema:"the name other machines see it by"`
-	Path      string `json:"path"              jsonschema:"the directory it shares"`
-	Purpose   string `json:"purpose"           jsonschema:"what it is set up for, which decides much of how it behaves: DEFAULT_SHARE, TIMEMACHINE_SHARE, MULTIPROTOCOL_SHARE and the like"`
-	Comment   string `json:"comment,omitempty" jsonschema:"what it is for, in its owner's words"`
-	Enabled   bool   `json:"enabled"           jsonschema:"whether it is offered at all"`
-	ReadOnly  bool   `json:"read_only"         jsonschema:"whether it may only be read"`
-	Browsable bool   `json:"browsable"         jsonschema:"whether it is shown to machines that look for shares; a hidden one is still there for those that name it"`
-	Locked    bool   `json:"locked,omitempty"  jsonschema:"whether its directory is on a locked dataset, so it serves nothing until the dataset is unlocked"`
+	ID          int    `json:"id"                     jsonschema:"the share's number"`
+	Name        string `json:"name"                   jsonschema:"the name other machines see it by"`
+	Path        string `json:"path"                   jsonschema:"the directory it shares"`
+	Purpose     string `json:"purpose"                jsonschema:"what it is set up for, which decides much of how it behaves: DEFAULT_SHARE, TIMEMACHINE_SHARE, MULTIPROTOCOL_SHARE and the like"`
+	Comment     string `json:"comment,omitempty"      jsonschema:"what it is for, in its owner's words"`
+	Enabled     bool   `json:"enabled"                jsonschema:"whether it is offered at all"`
+	ReadOnly    bool   `json:"read_only"              jsonschema:"whether it may only be read"`
+	Browsable   bool   `json:"browsable"              jsonschema:"whether it is shown to machines that look for shares; a hidden one is still there for those that name it"`
+	Locked      bool   `json:"locked,omitempty"       jsonschema:"whether its directory is on a locked dataset, so it serves nothing until the dataset is unlocked"`
+	AccessBased bool   `json:"access_based,omitempty" jsonschema:"whether a machine is shown only the files and folders its user may read"`
 }
 
 // smbShareRowOf is an SMB share as a list answers it.
 func smbShareRowOf(s *truenas.SmbShareQueryResultItem) smbShareRow {
-	return smbShareRow{ID: s.Id, Name: s.Name, Path: s.Path, Purpose: string(s.Purpose), Comment: s.Comment, Enabled: s.Enabled, ReadOnly: s.Readonly, Browsable: s.Browsable, Locked: s.Locked != nil && *s.Locked}
+	return smbShareRow{ID: s.Id, Name: s.Name, Path: s.Path, Purpose: string(s.Purpose), Comment: s.Comment, Enabled: s.Enabled, ReadOnly: s.Readonly, Browsable: s.Browsable, Locked: s.Locked != nil && *s.Locked, AccessBased: s.AccessBasedShareEnumeration}
 }
 
 func registerSharingTools(r *registry) {
@@ -159,21 +160,29 @@ func registerSharingTools(r *registry) {
 
 // nfsShareRow is an NFS share as a list answers it.
 type nfsShareRow struct {
-	ID          int      `json:"id"                     jsonschema:"the share's number"`
-	Path        string   `json:"path"                   jsonschema:"the directory it shares, which is also what other machines mount"`
-	Comment     string   `json:"comment,omitempty"      jsonschema:"what it is for, in its owner's words"`
-	Enabled     bool     `json:"enabled"                jsonschema:"whether it is offered at all"`
-	ReadOnly    bool     `json:"read_only"              jsonschema:"whether it may only be read"`
-	Hosts       []string `json:"hosts"                  jsonschema:"the machines, by name or address, allowed to mount it; with none and no networks, any machine may"`
-	Networks    []string `json:"networks"               jsonschema:"the networks allowed to mount it, as address/prefix"`
-	MaprootUser string   `json:"maproot_user,omitempty" jsonschema:"the user a client's root acts as here; none leaves root as root"`
-	MapallUser  string   `json:"mapall_user,omitempty"  jsonschema:"the user every client user acts as here"`
-	Locked      bool     `json:"locked,omitempty"       jsonschema:"whether its directory is on a locked dataset, so it serves nothing until the dataset is unlocked"`
+	ID           int      `json:"id"                      jsonschema:"the share's number"`
+	Path         string   `json:"path"                    jsonschema:"the directory it shares, which is also what other machines mount"`
+	Comment      string   `json:"comment,omitempty"       jsonschema:"what it is for, in its owner's words"`
+	Enabled      bool     `json:"enabled"                 jsonschema:"whether it is offered at all"`
+	ReadOnly     bool     `json:"read_only"               jsonschema:"whether it may only be read"`
+	Hosts        []string `json:"hosts"                   jsonschema:"the machines, by name or address, allowed to mount it; with none and no networks, any machine may"`
+	Networks     []string `json:"networks"                jsonschema:"the networks allowed to mount it, as address/prefix"`
+	MaprootUser  string   `json:"maproot_user,omitempty"  jsonschema:"the user a client's root acts as here; none leaves root as root"`
+	MapallUser   string   `json:"mapall_user,omitempty"   jsonschema:"the user every client user acts as here"`
+	Locked       bool     `json:"locked,omitempty"        jsonschema:"whether its directory is on a locked dataset, so it serves nothing until the dataset is unlocked"`
+	MaprootGroup string   `json:"maproot_group,omitempty" jsonschema:"the group a client's root acts as here"`
+	MapallGroup  string   `json:"mapall_group,omitempty"  jsonschema:"the group every client user acts as here"`
+	Security     []string `json:"security,omitempty"      jsonschema:"how clients may prove who they are: SYS takes the client's word, KRB5, KRB5I and KRB5P need Kerberos; none is what the NFS service allows"`
 }
 
 // nfsShareRowOf is an NFS share as a list answers it.
 func nfsShareRowOf(s *truenas.NfsShareQueryResultItem) nfsShareRow {
-	return nfsShareRow{ID: s.Id, Path: s.Path, Comment: s.Comment, Enabled: s.Enabled, ReadOnly: s.Ro, Hosts: orEmpty(s.Hosts), Networks: orEmpty(s.Networks), MaprootUser: s.MaprootUser, MapallUser: s.MapallUser, Locked: s.Locked != nil && *s.Locked}
+	row := nfsShareRow{ID: s.Id, Path: s.Path, Comment: s.Comment, Enabled: s.Enabled, ReadOnly: s.Ro, Hosts: orEmpty(s.Hosts), Networks: orEmpty(s.Networks), MaprootUser: s.MaprootUser, MapallUser: s.MapallUser, Locked: s.Locked != nil && *s.Locked, MaprootGroup: s.MaprootGroup, MapallGroup: s.MapallGroup}
+	for _, security := range s.Security {
+		row.Security = append(row.Security, string(security))
+	}
+
+	return row
 }
 
 // orEmpty is a list as an answer gives it: empty rather than absent, so that none is told apart from not asked.

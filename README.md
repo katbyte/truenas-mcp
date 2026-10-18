@@ -4,7 +4,7 @@ An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking aft
 
 **It was made mainly to get a Go SDK for [truenas-exporter](https://github.com/katbyte/truenas-exporter).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
 
-**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server that reads most of a NAS and audits it, and makes, changes and removes its datasets, snapshots, snapshot tasks and scrubs. The tools that change the rest of a NAS are being built.
+**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server that reads most of a NAS and audits it, and changes what holds and protects its data, what it shares and which services run. The tools that change the rest of a NAS are being built.
 
 **Detection is code, correction is judgment.** The audits only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
 
@@ -57,11 +57,12 @@ A session loads `core` and `audit` unless `--toolsets` names others, or `all`. A
 |---|---|
 | `core` | which NAS this is, its pools and datasets, and its alerts |
 | `audit` | what is wrong, from every audit below |
+| `alerts` | dismiss an alert, and bring it back |
 | `storage` | make, change and remove datasets and volumes |
 | `disks` | the disks, with the pool each is in and how warm it is |
 | `protection` | snapshots, taken, gone back to and removed; the tasks that take them and scrub the pools, made, changed and run; and the tasks that copy data elsewhere |
-| `shares` | SMB and NFS shares, and iSCSI targets with what they offer |
-| `services` | the services, running or not |
+| `shares` | SMB and NFS shares, made, changed and removed, and iSCSI targets with what they offer |
+| `services` | the services, started, stopped and set to start with the NAS |
 | `apps` | the apps the NAS runs in containers |
 | `vms` | the virtual machines |
 | `networking` | the interfaces with their addresses, and the name, gateways and name servers |

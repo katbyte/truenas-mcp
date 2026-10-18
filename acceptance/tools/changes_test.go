@@ -271,3 +271,132 @@ func TestAPoolsScrubTaskAndScrubAreRunThroughTheTools(t *testing.T) {
 		}
 	}
 }
+
+// An SMB share and an NFS share of a dataset are made, changed and removed through the tools alone, each read back through the lists after every
+// step, and the dataset's files are left where they were.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestSharesAreMadeChangedAndRemovedThroughTheTools(t *testing.T) {
+	conn, _ := planter(t)
+	dataset := layout.Pool + "/shared-by-tools"
+	path := "/mnt/" + dataset
+	cleared(t, conn, dataset)
+	suite.Call(t, "dataset_create", map[string]any{"dataset": dataset})
+	smb := func() map[string]any {
+		return rowWith(listed(t, "sharing_smb_list", "shares", nil), "name", "by-tools")
+	}
+	nfs := func() map[string]any { return rowWith(listed(t, "sharing_nfs_list", "shares", nil), "path", path) }
+
+	if dry := suite.Call(t, "sharing_smb_create", map[string]any{"name": "by-tools", "path": path, "dry_run": true}); len(changes(t, dry)) != 1 || smb() != nil {
+		t.Fatalf("a dry run answered %v", dry)
+	}
+	made := acctest.Object(t, suite.Call(t, "sharing_smb_create", map[string]any{"name": "by-tools", "path": path, "comment": "made by the tools"})["share"], "share")
+	if made["name"] != "by-tools" || made["path"] != path || made["comment"] != "made by the tools" || !acctest.BoolOf(made["enabled"]) {
+		t.Errorf("made %v", made)
+	}
+	if msg := suite.CallErr(t, "sharing_smb_create", map[string]any{"name": "by-tools", "path": path}); !strings.Contains(msg, "already has an SMB share") {
+		t.Errorf("a second share by the same name: %q", msg)
+	}
+	updated := suite.Call(t, "sharing_smb_update", map[string]any{"share": "by-tools", "read_only": true, "comment": ""})
+	if row := smb(); len(changes(t, updated)) != 2 || !acctest.BoolOf(row["read_only"]) || row["comment"] != nil {
+		t.Errorf("updated %v, and listed as %v", updated, row)
+	}
+	if asked := suite.Call(t, "sharing_smb_delete", map[string]any{"share": "by-tools"}); acctest.BoolOf(asked["removed"]) || smb() == nil {
+		t.Errorf("without confirm: %v", asked)
+	}
+	if gone := suite.Call(t, "sharing_smb_delete", map[string]any{"share": "by-tools", "confirm": true}); !acctest.BoolOf(gone["removed"]) || smb() != nil {
+		t.Errorf("confirmed: %v", gone)
+	}
+
+	if dry := suite.Call(t, "sharing_nfs_create", map[string]any{"path": path, "dry_run": true}); len(changes(t, dry)) != 1 || nfs() != nil {
+		t.Fatalf("a dry run answered %v", dry)
+	}
+	made = acctest.Object(t, suite.Call(t, "sharing_nfs_create", map[string]any{"path": path, "hosts": []string{"10.0.0.5"}, "maproot_user": "root"})["share"], "share")
+	if made["path"] != path || !slices.Equal(acctest.Strs(t, made["hosts"], "hosts"), []string{"10.0.0.5"}) || made["maproot_user"] != "root" {
+		t.Errorf("made %v", made)
+	}
+	updated = suite.Call(t, "sharing_nfs_update", map[string]any{"share": path, "remove_hosts": []string{"10.0.0.5"}, "add_networks": []string{"192.168.77.0/24"}, "maproot_user": ""})
+	if row := nfs(); len(changes(t, updated)) != 3 || len(acctest.Strs(t, row["hosts"], "hosts")) != 0 || !slices.Equal(acctest.Strs(t, row["networks"], "networks"), []string{"192.168.77.0/24"}) || row["maproot_user"] != nil {
+		t.Errorf("updated %v, and listed as %v", updated, row)
+	}
+	if asked := suite.Call(t, "sharing_nfs_delete", map[string]any{"share": path}); acctest.BoolOf(asked["removed"]) || nfs() == nil {
+		t.Errorf("without confirm: %v", asked)
+	}
+	if gone := suite.Call(t, "sharing_nfs_delete", map[string]any{"share": path, "confirm": true}); !acctest.BoolOf(gone["removed"]) || nfs() != nil {
+		t.Errorf("confirmed: %v", gone)
+	}
+
+	suite.Call(t, "dataset_get", map[string]any{"dataset": dataset})
+	suite.Call(t, "dataset_delete", map[string]any{"dataset": dataset, "confirm": true})
+}
+
+// A service is started, reloaded, restarted and stopped through the tools alone, and set to start with the NAS and back; SNMP is used, as nothing
+// the tests need runs over it.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestAServiceIsStartedAndStoppedThroughTheTools(t *testing.T) {
+	planter(t)
+	state := func() map[string]any { return rowWith(listed(t, "service_list", "services", nil), "service", "snmp") }
+	was := state()
+	if was == nil {
+		t.Fatal("the NAS lists no snmp service")
+	}
+	t.Cleanup(func() {
+		suite.Call(t, "service_stop", map[string]any{"service": "snmp"})
+		suite.Call(t, "service_update", map[string]any{"service": "snmp", "enabled": acctest.BoolOf(was["enabled"])})
+	})
+
+	for _, step := range []struct {
+		tool, state string
+	}{{"service_start", "RUNNING"}, {"service_reload", "RUNNING"}, {"service_restart", "RUNNING"}, {"service_stop", "STOPPED"}} {
+		out := suite.Call(t, step.tool, map[string]any{"service": "snmp"})
+		if row := acctest.Object(t, out["service"], "service"); row["state"] != step.state || state()["state"] != step.state {
+			t.Errorf("%s: %v", step.tool, out)
+		}
+	}
+	if again := suite.Call(t, "service_stop", map[string]any{"service": "snmp"}); len(changes(t, again)) != 0 {
+		t.Errorf("stopping a stopped service: %v", again)
+	}
+
+	on := suite.Call(t, "service_update", map[string]any{"service": "snmp", "enabled": !acctest.BoolOf(was["enabled"])})
+	if row := state(); len(changes(t, on)) != 1 || acctest.BoolOf(row["enabled"]) == acctest.BoolOf(was["enabled"]) || row["state"] != "STOPPED" {
+		t.Errorf("set to start with the NAS: %v, and listed as %v", on, row)
+	}
+}
+
+// An alert is dismissed and brought back through the tools alone. The throwaway NAS has none to begin with, so one is raised the way TrueNAS raises
+// its own: a share said to be on a locked dataset, with a number no share has.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestAnAlertIsDismissedAndBroughtBackThroughTheTools(t *testing.T) {
+	conn, _ := planter(t)
+	raised := map[string]any{"type": "SMB", "identifier": "raised-by-the-tests", "id": 99999}
+	if err := conn.Call(t.Context(), "alert.oneshot_create", []any{"ShareLocked", raised}, nil); err != nil {
+		t.Fatalf("raising an alert: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := conn.Call(context.WithoutCancel(t.Context()), "alert.oneshot_delete", []any{"ShareLocked", "SMB_99999"}, nil); err != nil {
+			t.Errorf("clearing the alert raised: %v", err)
+		}
+	})
+	var alert map[string]any
+	if !eventually(time.Minute, func() bool {
+		alert = rowWith(listed(t, "alert_list", "alerts", map[string]any{"dismissed": true}), "class", "ShareLocked")
+		return alert != nil
+	}) {
+		t.Fatal("the alert raised is not listed")
+	}
+	id := acctest.Str(alert["id"])
+
+	if dry := suite.Call(t, "alert_dismiss", map[string]any{"id": id, "dry_run": true}); len(changes(t, dry)) != 1 || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) == nil {
+		t.Errorf("a dry run answered %v", dry)
+	}
+	gone := suite.Call(t, "alert_dismiss", map[string]any{"id": id})
+	if row := acctest.Object(t, gone["alert"], "alert"); !acctest.BoolOf(row["dismissed"]) || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) != nil {
+		t.Errorf("dismissed %v", gone)
+	}
+	back := suite.Call(t, "alert_restore", map[string]any{"id": id})
+	if row := acctest.Object(t, back["alert"], "alert"); acctest.BoolOf(row["dismissed"]) || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) == nil {
+		t.Errorf("brought back %v", back)
+	}
+}
