@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/katbyte/go-kt/version"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 	"github.com/katbyte/truenas-mcp/tools"
 	"github.com/spf13/cobra"
@@ -60,7 +59,7 @@ Complete documentation is available at https://github.com/katbyte/truenas-mcp`,
 		Args:          cobra.NoArgs,
 		SilenceErrors: true,
 		Run: func(cmd *cobra.Command, _ []string) {
-			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "truenas-mcp "+version.Version)
+			_, _ = fmt.Fprintln(cmd.OutOrStdout(), "truenas-mcp "+versionLine())
 		},
 	})
 

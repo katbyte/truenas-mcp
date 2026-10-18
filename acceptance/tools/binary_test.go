@@ -234,10 +234,14 @@ func TestTheBinarySpeaksOnlyTheProtocolOnStdout(t *testing.T) {
 			t.Fatalf("stdout line %d is not a protocol message, which breaks the stream: %q", i+1, line)
 		}
 	}
-	// the logging that must not be on stdout does happen, on stderr: the start, and the traffic at trace, with no key in it
+	// the logging that must not be on stdout does happen, on stderr: the version it started as first, the start, and the traffic at trace, with no
+	// key in it
 	logged := errOut.String()
 	if !strings.Contains(logged, "registered") || !strings.Contains(logged, "system.info") {
 		t.Errorf("stderr has no start line and no traffic at trace level: %q", logged)
+	}
+	if first, _, _ := strings.Cut(logged, "\n"); !strings.Contains(first, `msg="truenas-mcp `) || !strings.HasSuffix(first, ` starting"`) {
+		t.Errorf("stderr does not open with the version the binary started as: %q", first)
 	}
 	for _, secret := range secrets() {
 		if strings.Contains(logged, secret) || strings.Contains(out.String(), secret) {

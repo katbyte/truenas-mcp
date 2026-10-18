@@ -23,8 +23,13 @@ with --allow-no-auth (TRUENAS_ALLOW_NO_AUTH=true).
 Every tool only reads unless --enable-write (TRUENAS_ENABLE_WRITE=true) is given, and none deletes without --enable-delete beside it.
 
 The NAS is not called at start: one that is down is something the tools report, not a reason to have no tools.`,
-		Args:          cobra.NoArgs,
-		PreRunE:       connectionGiven,
+		Args: cobra.NoArgs,
+		// the version comes first, so that a start that is refused still says what refused it
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			announce("truenas-mcp %s starting", versionLine())
+
+			return connectionGiven(cmd, args)
+		},
 		SilenceErrors: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cmd.SilenceUsage = true

@@ -17,6 +17,7 @@
 
 ### Changed
 
+- `truenas-mcp serve` says the version it starts as, and the commit it was built from, as its first line in the log, whatever level the log is set to; `truenas-mcp version` says the same. A build from a checkout reads `v0.1.0+6@gbfa4166`, six commits past v0.1.0 at commit bfa4166, and a release reads `v0.1.0 (commit 1a2b3c4)`
 - a connection turned away before TrueNAS's API is reached says so (`sdk/truenasrpc`): an HTTP 401, 403 or 407 there comes from a proxy or firewall in front of the NAS, and never from the key, and a 502, 503 or 504 from a web server that could not reach the API behind it. Read in a log, it no longer looks like the NAS turning the key down
 - the live tests set the throwaway NAS up through the typed client, and every call that setup sends is held to TrueNAS's description of its API
 
