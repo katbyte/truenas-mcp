@@ -227,7 +227,8 @@ func TestDatasetUpdateMovesOnlyWhatItIsGiven(t *testing.T) {
 
 	nas := truenastest.New(t)
 	store := storeDatasets(t, nas, "tank", "tank/media")
-	store.rows["tank/media"]["comments"] = prop("films and music")
+	// as a 25.10 answers them: among the user properties, not beside the other properties as the description has it
+	store.rows["tank/media"]["user_properties"] = map[string]any{"comments": prop("films and music")}
 	store.rows["tank/vm"] = datasetNamedRow("tank/vm", "VOLUME", map[string]any{"volsize": prop("1073741824")})
 	suite := session(t, nas, everything)
 
@@ -240,6 +241,9 @@ func TestDatasetUpdateMovesOnlyWhatItIsGiven(t *testing.T) {
 	}
 
 	changed := suite.Call(t, "dataset_update", map[string]any{"dataset": "tank/media", "quota_bytes": 2 << 30, "comments": ""})
+	if changes := acctest.Strs(t, changed["changes"], "changes"); !slices.Equal(changes, []string{"set the quota from none to 2.0 GiB", `set the comments from "films and music" to none`}) {
+		t.Errorf("changed %v", changes)
+	}
 	if row := acctest.Object(t, changed["dataset"], "dataset"); acctest.Num(t, row["quota_bytes"], "quota_bytes") != 2<<30 {
 		t.Errorf("read back as %v", row)
 	}

@@ -226,7 +226,7 @@ func registerDatasetChanges(r *registry) {
 			data.Compression = truenas.PoolDatasetCompression(want)
 		}
 		clearComments := false
-		if was := property(d.Comments); in.Comments != nil && *in.Comments != was {
+		if was := commentsOf(d); in.Comments != nil && *in.Comments != was {
 			moves.move("the comments", quotedOrNone(was), quotedOrNone(*in.Comments))
 			data.Comments, clearComments = *in.Comments, *in.Comments == ""
 		}

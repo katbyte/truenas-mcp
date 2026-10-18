@@ -60,7 +60,8 @@ var Toolsets = map[string][]string{
 	// what keeps the data safe: snapshots and the tasks that take them, copy data elsewhere, and check it
 	"protection": {
 		"snapshot_list", "snapshottask_list", "replication_list", "rsynctask_list", "cloudsync_list", "cloud_backup_list", "pool_scrub_list",
-		"snapshot_create", "snapshot_delete", "snapshot_rollback",
+		"snapshot_create", "snapshot_delete", "snapshot_rollback", "snapshottask_create", "snapshottask_update", "snapshottask_delete", "snapshottask_run",
+		"pool_scrub_create", "pool_scrub_update", "pool_scrub_delete", "pool_scrub_start", "pool_scrub_pause", "pool_scrub_stop",
 	},
 	// what the NAS offers other machines: SMB and NFS shares, and iSCSI targets with what they offer
 	"shares": {
@@ -124,6 +125,16 @@ var toolHints = map[string]mcpregistry.Hints{
 	"dataset_create":  {Additive: true},
 	"dataset_update":  {Idempotent: true},
 	"snapshot_create": {Additive: true},
+	// a task's schedule and keeping move what is kept, so a change to one can lose snapshots sooner; running one takes a snapshot
+	"snapshottask_create": {Additive: true},
+	"snapshottask_update": {Idempotent: true},
+	"snapshottask_run":    {Additive: true},
+	// a scrub only reads, and a paused one is taken up where it stopped; a stopped one starts again from the beginning
+	"pool_scrub_create": {Additive: true},
+	"pool_scrub_update": {Idempotent: true},
+	"pool_scrub_start":  {Additive: true, Idempotent: true},
+	"pool_scrub_pause":  {Additive: true, Idempotent: true},
+	"pool_scrub_stop":   {Idempotent: true},
 }
 
 // queued is every tool queued so far, in go-kt's registry, which is made when the first tool is.
@@ -159,6 +170,8 @@ func queueTools(r *registry) {
 	registerAlertTools(r)
 	registerProtectionTools(r)
 	registerSnapshotChanges(r)
+	registerSnapshotTaskChanges(r)
+	registerScrubChanges(r)
 	registerSharingTools(r)
 	registerServiceTools(r)
 	registerAppTools(r)

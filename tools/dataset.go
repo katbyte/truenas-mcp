@@ -39,6 +39,21 @@ func datasetRowOf(d truenas.PoolDatasetQueryResultItem) datasetRow {
 	return row
 }
 
+// commentsOf is what someone wrote about a dataset. The description has a NAS answer it beside the other properties, and a 25.10 answers it among
+// the user properties instead, so it is read from wherever it is.
+func commentsOf(d *truenas.PoolDatasetQueryResultItem) string {
+	if c := property(d.Comments); c != "" {
+		return c
+	}
+	if c, ok := d.UserProperties["comments"].(map[string]any); ok {
+		if value, ok := c["value"].(string); ok {
+			return value
+		}
+	}
+
+	return ""
+}
+
 // flat asks for a list of datasets as rows alone: each with no copy of everything under it, which the NAS otherwise nests in every row. Asked this way
 // with no filter, a NAS goes no deeper than each pool's own dataset, so such a query always carries everyDataset at least.
 var flat = map[string]any{"flat": true, "retrieve_children": false}
@@ -140,7 +155,7 @@ func registerDatasetTools(r *registry) {
 			return nil, datasetGetOut{}, fmt.Errorf("the NAS answered nothing for the dataset %s", in.Dataset)
 		}
 
-		out := datasetGetOut{datasetRow: datasetRowOf(*d), EncryptionRoot: d.EncryptionRoot, Origin: property(d.Origin), Comments: property(d.Comments)}
+		out := datasetGetOut{datasetRow: datasetRowOf(*d), EncryptionRoot: d.EncryptionRoot, Origin: property(d.Origin), Comments: commentsOf(d)}
 		out.SnapshotsBytes, out.ChildrenBytes, out.ReservationBytes, out.RefreservationBytes, out.VolumeBytes = bytesOf(d.Usedbysnapshots), bytesOf(d.Usedbychildren), bytesOf(d.Reservation), bytesOf(d.Refreservation), bytesOf(d.Volsize)
 		out.RecordSize, out.Sync, out.Deduplication, out.Atime = property(d.Recordsize), strings.ToUpper(property(d.Sync)), strings.ToUpper(property(d.Deduplication)), strings.ToUpper(property(d.Atime))
 		out.KeyFormat = strings.ToUpper(property(d.KeyFormat))

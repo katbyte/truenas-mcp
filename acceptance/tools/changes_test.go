@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/katbyte/go-kt/mcp/acctest"
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
@@ -69,6 +70,12 @@ func TestADatasetIsMadeChangedAndRemovedThroughTheTools(t *testing.T) {
 		t.Errorf("a volume reads back as %v", volume)
 	}
 
+	// grown before its dataset is made read only, which a volume under it takes on
+	grown := suite.Call(t, "dataset_update", map[string]any{"dataset": name + "/disk", "volume_bytes": 128 << 20})
+	if got := suite.Call(t, "dataset_get", map[string]any{"dataset": name + "/disk"}); len(changes(t, grown)) != 1 || acctest.NumOr0(got["volume_bytes"]) != 128<<20 {
+		t.Errorf("a volume grown reads back as %v, after %v", got, grown)
+	}
+
 	updated := suite.Call(t, "dataset_update", map[string]any{"dataset": name, "quota_bytes": 2 << 30, "read_only": true, "comments": ""})
 	if row := acctest.Object(t, updated["dataset"], "dataset"); len(changes(t, updated)) != 3 || acctest.NumOr0(row["quota_bytes"]) != 2<<30 || !acctest.BoolOf(row["read_only"]) {
 		t.Errorf("updated %v", updated)
@@ -78,10 +85,6 @@ func TestADatasetIsMadeChangedAndRemovedThroughTheTools(t *testing.T) {
 	}
 	if same := suite.Call(t, "dataset_update", map[string]any{"dataset": name, "quota_bytes": 2 << 30}); len(changes(t, same)) != 0 {
 		t.Errorf("asked for what is already so: %v", same)
-	}
-	grown := suite.Call(t, "dataset_update", map[string]any{"dataset": name + "/disk", "volume_bytes": 128 << 20})
-	if got := suite.Call(t, "dataset_get", map[string]any{"dataset": name + "/disk"}); len(changes(t, grown)) != 1 || acctest.NumOr0(got["volume_bytes"]) != 128<<20 {
-		t.Errorf("a volume grown reads back as %v, after %v", got, grown)
 	}
 
 	asked := suite.Call(t, "dataset_delete", map[string]any{"dataset": name})
@@ -165,4 +168,106 @@ func TestASnapshotIsTakenGoneBackToAndRemovedThroughTheTools(t *testing.T) {
 	}
 
 	suite.Call(t, "dataset_delete", map[string]any{"dataset": name, "recursive": true, "confirm": true})
+}
+
+// A snapshot task is made, run, changed and removed through the tools alone: run, it takes a snapshot named by its schema; switched off, it is not
+// run; and removed, it is no longer listed.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestASnapshotTaskIsMadeRunChangedAndRemovedThroughTheTools(t *testing.T) {
+	conn, _ := planter(t)
+	dataset := layout.Pool + "/tasked-by-tools"
+	cleared(t, conn, dataset)
+	suite.Call(t, "dataset_create", map[string]any{"dataset": dataset})
+	task := func(id int) map[string]any {
+		return rowWith(listed(t, "snapshottask_list", "snapshot_tasks", nil), "id", float64(id))
+	}
+
+	// once a year, so that it never runs on its own while the test does
+	args := map[string]any{"dataset": dataset, "schedule": "0 0 1 1 *", "keep_for": "1 WEEK", "naming_schema": "tools-%Y-%m-%d_%H-%M"}
+	dry := suite.Call(t, "snapshottask_create", map[string]any{"dataset": dataset, "schedule": "0 0 1 1 *", "keep_for": "1 WEEK", "dry_run": true})
+	if len(changes(t, dry)) != 1 || rowWith(listed(t, "snapshottask_list", "snapshot_tasks", nil), "dataset", dataset) != nil {
+		t.Fatalf("a dry run answered %v", dry)
+	}
+	made := acctest.Object(t, suite.Call(t, "snapshottask_create", args)["snapshot_task"], "snapshot_task")
+	id := acctest.NumOr0(made["id"])
+	if made["dataset"] != dataset || made["schedule"] != "0 0 1 1 *" || made["keep_for"] != "1 WEEK" || !acctest.BoolOf(made["enabled"]) || task(id) == nil {
+		t.Fatalf("made %v", made)
+	}
+
+	suite.Call(t, "snapshottask_run", map[string]any{"id": id})
+	if !eventually(time.Minute, func() bool {
+		rows := listed(t, "snapshot_list", "snapshots", map[string]any{"dataset": dataset})
+		return len(rows) == 1 && strings.HasPrefix(acctest.Str(rows[0]["snapshot"]), "tools-")
+	}) {
+		t.Errorf("the task run took no snapshot: %v", listed(t, "snapshot_list", "snapshots", map[string]any{"dataset": dataset}))
+	}
+
+	updated := suite.Call(t, "snapshottask_update", map[string]any{"id": id, "keep_for": "2 DAY", "enabled": false})
+	if row := acctest.Object(t, updated["snapshot_task"], "snapshot_task"); len(changes(t, updated)) != 2 || row["keep_for"] != "2 DAY" || acctest.BoolOf(row["enabled"]) {
+		t.Errorf("updated %v", updated)
+	}
+	if msg := suite.CallErr(t, "snapshottask_run", map[string]any{"id": id}); !strings.Contains(msg, "switched off") {
+		t.Errorf("running a task switched off: %q", msg)
+	}
+
+	if asked := suite.Call(t, "snapshottask_delete", map[string]any{"id": id}); acctest.BoolOf(asked["removed"]) || task(id) == nil {
+		t.Errorf("without confirm: %v", asked)
+	}
+	if gone := suite.Call(t, "snapshottask_delete", map[string]any{"id": id, "confirm": true}); !acctest.BoolOf(gone["removed"]) || task(id) != nil {
+		t.Errorf("confirmed: %v", gone)
+	}
+
+	suite.Call(t, "dataset_delete", map[string]any{"dataset": dataset, "recursive": true, "confirm": true})
+}
+
+// The pool's scrub task is changed, removed and made again through the tools alone, and the pool scrubbed. The test pool is so small a scrub may
+// end before it can be paused or stopped, so either is held only to what it says it did.
+//
+//nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
+func TestAPoolsScrubTaskAndScrubAreRunThroughTheTools(t *testing.T) {
+	planter(t)
+	scrubOf := func() map[string]any {
+		return rowWith(listed(t, "pool_scrub_list", "scrubs", nil), "pool", layout.Pool)
+	}
+	was := scrubOf()
+	if was == nil {
+		t.Fatal("the pool has no scrub task to change")
+	}
+	id := acctest.NumOr0(was["id"])
+
+	if msg := suite.CallErr(t, "pool_scrub_create", map[string]any{"pool": layout.Pool}); !strings.Contains(msg, "already has the scrub task") {
+		t.Errorf("a second scrub task for the pool: %q", msg)
+	}
+	updated := suite.Call(t, "pool_scrub_update", map[string]any{"id": id, "threshold_days": 10, "description": "set by the tools", "schedule": "0 4 * * 6"})
+	if row := acctest.Object(t, updated["scrub_task"], "scrub_task"); acctest.NumOr0(row["threshold_days"]) != 10 || row["description"] != "set by the tools" || row["schedule"] != "0 4 * * 6" {
+		t.Errorf("updated %v", updated)
+	}
+
+	if asked := suite.Call(t, "pool_scrub_delete", map[string]any{"id": id}); acctest.BoolOf(asked["removed"]) || scrubOf() == nil {
+		t.Errorf("without confirm: %v", asked)
+	}
+	suite.Call(t, "pool_scrub_delete", map[string]any{"id": id, "confirm": true})
+	if scrubOf() != nil {
+		t.Fatal("the scrub task removed is still listed")
+	}
+	again := acctest.Object(t, suite.Call(t, "pool_scrub_create", map[string]any{"pool": layout.Pool, "schedule": was["schedule"], "threshold_days": was["threshold_days"], "description": acctest.Str(was["description"])})["scrub_task"], "scrub_task")
+	if again["schedule"] != was["schedule"] || again["threshold_days"] != was["threshold_days"] {
+		t.Errorf("made again as %v, where it was %v", again, was)
+	}
+
+	started := suite.Call(t, "pool_scrub_start", map[string]any{"pool": layout.Pool})
+	if scan := acctest.Object(t, started["scan"], "scan"); scan["function"] != "SCRUB" {
+		t.Errorf("started %v", started)
+	}
+	for tool, after := range map[string]string{"pool_scrub_pause": "paused", "pool_scrub_stop": "state"} {
+		out := suite.Call(t, tool, map[string]any{"pool": layout.Pool})
+		if len(changes(t, out)) == 0 {
+			continue
+		}
+		scan := acctest.Object(t, out["scan"], "scan")
+		if after == "paused" && !acctest.BoolOf(scan["paused"]) || after == "state" && scan["state"] != "CANCELED" {
+			t.Errorf("%s said it did %v, and the scrub reads as %v", tool, changes(t, out), scan)
+		}
+	}
 }

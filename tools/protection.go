@@ -73,6 +73,15 @@ func cronOf(s *truenas.Schedule) string {
 	return cron(s.Minute, s.Hour, s.Dom, s.Month, s.Dow)
 }
 
+// windowOf is the times of day a task runs between, as 09:00-18:00, or "" for a task that runs at any hour.
+func windowOf(begin, end string) string {
+	if begin == "" && end == "" || begin == "00:00" && end == "23:59" {
+		return ""
+	}
+
+	return begin + "-" + end
+}
+
 // snapshotsAtOnce is how many snapshots are asked after at once: each is one quick question, and the NAS takes ten at a time from one connection.
 const snapshotsAtOnce = 8
 
@@ -202,15 +211,18 @@ func snapshotRowOf(s *truenas.PoolSnapshotQueryResultItem) snapshotRow {
 
 // snapshotTaskRow is a snapshot task as a list answers it.
 type snapshotTaskRow struct {
-	ID           int       `json:"id"                      jsonschema:"the task's number"`
-	Dataset      string    `json:"dataset"                 jsonschema:"the dataset it takes snapshots of"`
-	Recursive    bool      `json:"recursive"               jsonschema:"whether it takes the datasets under it too"`
-	NamingSchema string    `json:"naming_schema"           jsonschema:"how its snapshots are named, in strftime terms: auto-%Y-%m-%d_%H-%M"`
-	Schedule     string    `json:"schedule"                jsonschema:"when it runs, as cron: minute hour day-of-month month day-of-week"`
-	KeepFor      string    `json:"keep_for"                jsonschema:"how long its snapshots are kept before it deletes them: 2 WEEK"`
-	Enabled      bool      `json:"enabled"                 jsonschema:"whether it runs; a task switched off takes no snapshots"`
-	State        *standing `json:"state,omitempty"         jsonschema:"where it stands, as the NAS says"`
-	LastSnapshot string    `json:"last_snapshot,omitempty" jsonschema:"the last snapshot it took"`
+	ID            int       `json:"id"                       jsonschema:"the task's number"`
+	Dataset       string    `json:"dataset"                  jsonschema:"the dataset it takes snapshots of"`
+	Recursive     bool      `json:"recursive"                jsonschema:"whether it takes the datasets under it too"`
+	NamingSchema  string    `json:"naming_schema"            jsonschema:"how its snapshots are named, in strftime terms: auto-%Y-%m-%d_%H-%M"`
+	Schedule      string    `json:"schedule"                 jsonschema:"when it runs, as cron: minute hour day-of-month month day-of-week"`
+	KeepFor       string    `json:"keep_for"                 jsonschema:"how long its snapshots are kept before it deletes them: 2 WEEK"`
+	Enabled       bool      `json:"enabled"                  jsonschema:"whether it runs; a task switched off takes no snapshots"`
+	State         *standing `json:"state,omitempty"          jsonschema:"where it stands, as the NAS says"`
+	LastSnapshot  string    `json:"last_snapshot,omitempty"  jsonschema:"the last snapshot it took"`
+	Window        string    `json:"window,omitempty"         jsonschema:"the times of day it takes snapshots between, as 09:00-18:00; none when it takes them at any hour"`
+	Exclude       []string  `json:"exclude,omitempty"        jsonschema:"with recursive, the datasets under it leaves out"`
+	SkipUnchanged bool      `json:"skip_unchanged,omitempty" jsonschema:"whether it takes no snapshot of a dataset unchanged since the last"`
 }
 
 // snapshotTaskRowOf is a snapshot task as a list answers it.
@@ -218,10 +230,12 @@ func snapshotTaskRowOf(t *truenas.PoolSnapshotTaskQueryResultItem) snapshotTaskR
 	row := snapshotTaskRow{ID: t.Id, Dataset: t.Dataset, Recursive: t.Recursive, NamingSchema: t.NamingSchema, KeepFor: fmt.Sprintf("%d %s", t.LifetimeValue, t.LifetimeUnit), Enabled: t.Enabled, State: standingOf(t.State)}
 	if s := t.Schedule; s != nil {
 		row.Schedule = cron(s.Minute, s.Hour, s.Dom, s.Month, s.Dow)
+		row.Window = windowOf(s.Begin, s.End)
 	}
 	if t.State != nil {
 		row.LastSnapshot = t.State.LastSnapshot
 	}
+	row.Exclude, row.SkipUnchanged = t.Exclude, !t.AllowEmpty
 
 	return row
 }
@@ -434,15 +448,22 @@ func registerCopyTaskTools(r *registry) {
 	})
 }
 
+// scrubRow is a scrub task as a list answers it.
+type scrubRow struct {
+	ID            int    `json:"id"                    jsonschema:"the scrub task's number"`
+	Pool          string `json:"pool"                  jsonschema:"the pool it scrubs"`
+	Schedule      string `json:"schedule"              jsonschema:"when it may start, as cron"`
+	ThresholdDays int    `json:"threshold_days"        jsonschema:"how many days must pass since the last scrub before a scheduled one runs"`
+	Enabled       bool   `json:"enabled"               jsonschema:"whether it runs"`
+	Description   string `json:"description,omitempty" jsonschema:"what it is for, in its owner's words"`
+}
+
+// scrubRowOf is a scrub task as a list answers it.
+func scrubRowOf(t *truenas.PoolScrubQueryResultItem) scrubRow {
+	return scrubRow{ID: t.Id, Pool: t.PoolName, Schedule: cronOf(t.Schedule), ThresholdDays: t.Threshold, Enabled: t.Enabled, Description: t.Description}
+}
+
 func registerScrubTools(r *registry) {
-	type scrubRow struct {
-		ID            int    `json:"id"                    jsonschema:"the scrub task's number"`
-		Pool          string `json:"pool"                  jsonschema:"the pool it scrubs"`
-		Schedule      string `json:"schedule"              jsonschema:"when it may start, as cron"`
-		ThresholdDays int    `json:"threshold_days"        jsonschema:"how many days must pass since the last scrub before a scheduled one runs"`
-		Enabled       bool   `json:"enabled"               jsonschema:"whether it runs"`
-		Description   string `json:"description,omitempty" jsonschema:"what it is for, in its owner's words"`
-	}
 	type scrubListIn struct {
 		pageIn
 	}
@@ -461,7 +482,7 @@ func registerScrubTools(r *registry) {
 
 		rows := make([]scrubRow, 0, len(found.Answer))
 		for _, t := range found.Answer {
-			rows = append(rows, scrubRow{ID: t.Id, Pool: t.PoolName, Schedule: cronOf(t.Schedule), ThresholdDays: t.Threshold, Enabled: t.Enabled, Description: t.Description})
+			rows = append(rows, scrubRowOf(&t))
 		}
 		out := scrubListOut{}
 		out.Scrubs, out.pageOut = pageRows(rows, in.pageIn)

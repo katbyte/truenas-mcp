@@ -8,11 +8,13 @@
 - tools that list the SMB and NFS shares and the iSCSI targets and extents (`shares`), the services (`services`), the apps (`apps`), the virtual machines (`vms`), the network interfaces and the name, gateways and name servers in force (`networking`), and the users and groups (`accounts`)
 - a list never asks the NAS for a secret it would only have to hide: a replication's key, a cloud account's keys, a backup's password, an app's settings and a user's password hashes are left out of what is asked
 - the first tools that change a NAS, registered only with `--enable-write`: make and change a dataset or volume (`dataset_create`, `dataset_update`, toolset `storage`) and take a snapshot (`snapshot_create`). Each takes `dry_run`, says each setting it moved from what to what, and reads back what it made
-- the first tools that remove, registered only with `--enable-delete` as well: a dataset (`dataset_delete`), a snapshot (`snapshot_delete`), and everything written since a snapshot (`snapshot_rollback`). Without `confirm: true` each only says what would go: the datasets under it, its snapshots, the shares and tasks the NAS removes with it, the snapshots newer than the one gone back to
+- tools that make, change and run the tasks that take snapshots (`snapshottask_create`, `snapshottask_update`, `snapshottask_run`) and that scrub a pool (`pool_scrub_create`, `pool_scrub_update`), and that start, pause and stop a scrub now (`pool_scrub_start`, `pool_scrub_pause`, `pool_scrub_stop`). A change to how long a task keeps its snapshots names the snapshots it took whose removal moves
+- the first tools that remove, registered only with `--enable-delete` as well: a snapshot task (`snapshottask_delete`, saying which snapshots it took are then kept until removed by hand), a scrub task (`pool_scrub_delete`), a dataset (`dataset_delete`), a snapshot (`snapshot_delete`), and everything written since a snapshot (`snapshot_rollback`). Without `confirm: true` each only says what would go: the datasets under it, its snapshots, the shares and tasks the NAS removes with it, the snapshots newer than the one gone back to
 
 ### Fixed
 
 - `group_list` asked the NAS to order the groups by a field it does not have, and was refused
+- `dataset_get` never showed a dataset's comments: a 25.10 answers them among the user properties, not where TrueNAS's description of its API puts them
 
 ## v0.1.0 (2026-10-18)
 

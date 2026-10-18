@@ -123,6 +123,27 @@ func poolNamed(ctx context.Context, r *registry, pool string) (truenas.PoolQuery
 	return *found.Answer, nil
 }
 
+// scanRow is a pool's last scrub or resilver, or the one running, as an answer gives it.
+type scanRow struct {
+	Function    string  `json:"function"               jsonschema:"SCRUB or RESILVER"`
+	State       string  `json:"state"                  jsonschema:"SCANNING while it runs, then FINISHED or CANCELED"`
+	Paused      bool    `json:"paused,omitempty"       jsonschema:"whether a scrub was paused part way, to be taken up where it stopped"`
+	Started     string  `json:"started,omitempty"      jsonschema:"when it started"`
+	Ended       string  `json:"ended,omitempty"        jsonschema:"when it ended; none while it runs"`
+	Percent     float64 `json:"percent"                jsonschema:"how far it got, in per cent"`
+	Errors      int     `json:"errors"                 jsonschema:"how many errors it found"`
+	SecondsLeft *int    `json:"seconds_left,omitempty" jsonschema:"how long it expects to go on, while it runs and can tell"`
+}
+
+// scanOf is a pool's scan as an answer gives it, or nil when the pool was never scrubbed or resilvered.
+func scanOf(s *truenas.PoolScan) *scanRow {
+	if s == nil || s.Function == "" {
+		return nil
+	}
+
+	return &scanRow{Function: s.Function, State: s.State, Paused: s.Pause != nil, Started: when(s.StartTime.Time), Ended: when(s.EndTime.Time), Percent: s.Percentage, Errors: s.Errors, SecondsLeft: s.TotalSecsLeft}
+}
+
 func registerPoolTools(r *registry) {
 	type poolListIn struct {
 		pageIn
@@ -168,15 +189,6 @@ func registerPoolTools(r *registry) {
 		AllocatedBytes int64     `json:"allocated_bytes,omitempty" jsonschema:"how much of it is used, in bytes"`
 		Disks          []diskOut `json:"disks"`
 	}
-	type scanOut struct {
-		Function    string  `json:"function"               jsonschema:"SCRUB or RESILVER"`
-		State       string  `json:"state"                  jsonschema:"SCANNING while it runs, then FINISHED or CANCELED"`
-		Started     string  `json:"started,omitempty"      jsonschema:"when it started"`
-		Ended       string  `json:"ended,omitempty"        jsonschema:"when it ended; none while it runs"`
-		Percent     float64 `json:"percent"                jsonschema:"how far it got, in per cent"`
-		Errors      int     `json:"errors"                 jsonschema:"how many errors it found"`
-		SecondsLeft *int    `json:"seconds_left,omitempty" jsonschema:"how long it expects to go on, while it runs and can tell"`
-	}
 	type poolGetIn struct {
 		Pool string `json:"pool" jsonschema:"the pool, by name or by number"`
 	}
@@ -184,7 +196,7 @@ func registerPoolTools(r *registry) {
 		poolRow
 		StatusCode string    `json:"status_code,omitempty" jsonschema:"ZFS's code for what is wrong: FAILING_DEV for a disk with errors, CORRUPT_DATA for data lost"`
 		Autotrim   bool      `json:"autotrim"              jsonschema:"whether the pool trims its disks as space is freed"`
-		Scan       *scanOut  `json:"scan,omitempty"        jsonschema:"the last scrub or resilver, or the one running"`
+		Scan       *scanRow  `json:"scan,omitempty"        jsonschema:"the last scrub or resilver, or the one running"`
 		Vdevs      []vdevOut `json:"vdevs"                 jsonschema:"what the pool is made of: each vdev, and the disks under it"`
 	}
 	add(r, readTool, &mcp.Tool{
@@ -197,9 +209,7 @@ func registerPoolTools(r *registry) {
 		}
 
 		out := poolGetOut{poolRow: poolRowOf(p), StatusCode: p.StatusCode, Autotrim: p.Autotrim != nil && p.Autotrim.Value == "on"}
-		if s := p.Scan; s != nil && s.Function != "" {
-			out.Scan = &scanOut{Function: s.Function, State: s.State, Started: when(s.StartTime.Time), Ended: when(s.EndTime.Time), Percent: s.Percentage, Errors: s.Errors, SecondsLeft: s.TotalSecsLeft}
-		}
+		out.Scan = scanOf(p.Scan)
 		for _, vdev := range vdevsOf(p.Topology) {
 			v := vdevOut{Role: vdev.Role, Name: vdev.Name, Type: vdev.Type, Status: vdev.Status, errorCounts: countsOf(vdev.Stats)}
 			if vdev.Stats != nil {
