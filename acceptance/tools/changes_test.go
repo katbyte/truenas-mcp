@@ -364,11 +364,12 @@ func TestAServiceIsStartedAndStoppedThroughTheTools(t *testing.T) {
 	}
 }
 
-// An alert is dismissed and brought back through the tools alone. The throwaway NAS has none to begin with, so one is raised the way TrueNAS raises
-// its own: a share said to be on a locked dataset, with a number no share has.
+// An alert is dismissed through the tools alone. The throwaway NAS has none to begin with, so one is raised the way TrueNAS raises its own: a share
+// said to be on a locked dataset, with a number no share has. That is an alert raised once, which the NAS removes for good when it is dismissed, so
+// bringing it back is asked of it only before, when there is nothing to bring back.
 //
 //nolint:paralleltest // the tests share one NAS, which takes only twenty logins a minute from one address
-func TestAnAlertIsDismissedAndBroughtBackThroughTheTools(t *testing.T) {
+func TestAnAlertIsDismissedThroughTheTools(t *testing.T) {
 	conn, _ := planter(t)
 	raised := map[string]any{"type": "SMB", "identifier": "raised-by-the-tests", "id": 99999}
 	if err := conn.Call(t.Context(), "alert.oneshot_create", []any{"ShareLocked", raised}, nil); err != nil {
@@ -387,16 +388,21 @@ func TestAnAlertIsDismissedAndBroughtBackThroughTheTools(t *testing.T) {
 		t.Fatal("the alert raised is not listed")
 	}
 	id := acctest.Str(alert["id"])
+	if !acctest.BoolOf(alert["one_shot"]) {
+		t.Errorf("an alert raised once is listed as %v", alert)
+	}
 
-	if dry := suite.Call(t, "alert_dismiss", map[string]any{"id": id, "dry_run": true}); len(changes(t, dry)) != 1 || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) == nil {
+	if back := suite.Call(t, "alert_restore", map[string]any{"id": id}); len(changes(t, back)) != 0 || !strings.Contains(acctest.Str(back["note"]), "already not dismissed") {
+		t.Errorf("bringing back an alert never dismissed: %v", back)
+	}
+	if dry := suite.Call(t, "alert_dismiss", map[string]any{"id": id, "dry_run": true}); len(changes(t, dry)) != 1 || !strings.Contains(acctest.Str(dry["note"]), "for good") || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) == nil {
 		t.Errorf("a dry run answered %v", dry)
 	}
 	gone := suite.Call(t, "alert_dismiss", map[string]any{"id": id})
-	if row := acctest.Object(t, gone["alert"], "alert"); !acctest.BoolOf(row["dismissed"]) || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) != nil {
+	if len(changes(t, gone)) != 1 || rowWith(listed(t, "alert_list", "alerts", map[string]any{"dismissed": true}), "id", id) != nil {
 		t.Errorf("dismissed %v", gone)
 	}
-	back := suite.Call(t, "alert_restore", map[string]any{"id": id})
-	if row := acctest.Object(t, back["alert"], "alert"); acctest.BoolOf(row["dismissed"]) || rowWith(listed(t, "alert_list", "alerts", nil), "id", id) == nil {
-		t.Errorf("brought back %v", back)
+	if row, ok := gone["alert"].(map[string]any); ok && !acctest.BoolOf(row["dismissed"]) {
+		t.Errorf("read back after it was dismissed as %v", row)
 	}
 }

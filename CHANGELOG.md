@@ -10,8 +10,13 @@
 - the first tools that change a NAS, registered only with `--enable-write`: make and change a dataset or volume (`dataset_create`, `dataset_update`, toolset `storage`) and take a snapshot (`snapshot_create`). Each takes `dry_run`, says each setting it moved from what to what, and reads back what it made
 - tools that make, change and run the tasks that take snapshots (`snapshottask_create`, `snapshottask_update`, `snapshottask_run`) and that scrub a pool (`pool_scrub_create`, `pool_scrub_update`), and that start, pause and stop a scrub now (`pool_scrub_start`, `pool_scrub_pause`, `pool_scrub_stop`). A change to how long a task keeps its snapshots names the snapshots it took whose removal moves
 - tools that share a directory over SMB or NFS and change the share (`sharing_smb_create`, `sharing_smb_update`, `sharing_nfs_create`, `sharing_nfs_update`, with `add_hosts`, `remove_hosts`, `add_networks` and `remove_networks`); each says when the service that serves it is not running
-- tools that start, stop, restart and reload a service and set whether it starts with the NAS (`service_start`, `service_stop`, `service_restart`, `service_reload`, `service_update`), and that dismiss an alert and bring it back (`alert_dismiss`, `alert_restore`, toolset `alerts`)
+- tools that start, stop, restart and reload a service and set whether it starts with the NAS (`service_start`, `service_stop`, `service_restart`, `service_reload`, `service_update`), and that dismiss an alert and bring it back (`alert_dismiss`, `alert_restore`, toolset `alerts`). An alert the NAS raised once for something that happened may be removed for good when dismissed, and the answer says so first
 - the first tools that remove, registered only with `--enable-delete` as well: an SMB or NFS share (`sharing_smb_delete`, `sharing_nfs_delete`, the files staying where they are), a snapshot task (`snapshottask_delete`, saying which snapshots it took are then kept until removed by hand), a scrub task (`pool_scrub_delete`), a dataset (`dataset_delete`), a snapshot (`snapshot_delete`), and everything written since a snapshot (`snapshot_rollback`). Without `confirm: true` each only says what would go: the datasets under it, its snapshots, the shares and tasks the NAS removes with it, the snapshots newer than the one gone back to
+
+### Changed
+
+- a connection turned away before TrueNAS's API is reached says so (`sdk/truenasrpc`): an HTTP 401, 403 or 407 there comes from a proxy or firewall in front of the NAS, and never from the key, and a 502, 503 or 504 from a web server that could not reach the API behind it. Read in a log, it no longer looks like the NAS turning the key down
+- the live tests set the throwaway NAS up through the typed client, and every call that setup sends is held to TrueNAS's description of its API
 
 ### Fixed
 

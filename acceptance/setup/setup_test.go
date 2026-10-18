@@ -127,7 +127,8 @@ func standIn(t *testing.T, has *holding) *truenastest.NAS {
 
 		has.users = append(has.users, named(params, "username"))
 
-		return 71, nil
+		// a NAS answers the user it made, as the description says
+		return map[string]any{"id": 71, "username": named(params, "username")}, nil
 	})
 	nas.Handle("api_key.create", func(params []json.RawMessage) (any, error) {
 		has.mu.Lock()
@@ -355,9 +356,9 @@ func TestANASIsFurnishedWithOneOfEachThingAndFurnishingItAgainChangesNothing(t *
 	}
 }
 
-// The setup is first run for real on a machine nobody is watching, against an API whose argument names are easy to get one letter wrong. Every
-// call it makes is held to the NAS's own description: that the method is there, that it is a job where the setup waits for one, and that no
-// argument is given a name the method does not take or left without one it needs.
+// The setup is first run for real on a machine nobody is watching, against an API whose argument names are easy to get one letter wrong. The typed
+// client is generated from the NAS's own description, and every call the setup and the furnishing send a stand-in is held to that description all
+// the same: that the method is there, and that no argument is given a name the method does not take or left without one it needs.
 func TestEveryCallTheSetupMakesIsOneTheNASDescribes(t *testing.T) {
 	t.Parallel()
 
@@ -366,13 +367,17 @@ func TestEveryCallTheSetupMakesIsOneTheNASDescribes(t *testing.T) {
 		t.Fatalf("no description of the API under api-defs (%v)", err)
 	}
 
-	calls := []setup.Call{
-		setup.SystemInfo(), setup.NetworkConfig(), setup.Pools(), setup.Pools([]any{"name", "=", layout.Pool}), setup.SetHostname(), setup.UnusedDisks(), setup.CreatePool([]string{"vdb", "vdc"}),
-		setup.FindDatasets(layout.Datasets), setup.CreateDataset(layout.Datasets[0]), setup.FindUser(layout.ReadOnlyUser), setup.FindGroup("a-group"),
-		setup.CreateUser(layout.ReadOnlyUser, 44, "a-password"), setup.CreateKey("a-key", layout.AdminUser),
-		setup.CreateSMBUser("a-password"), setup.FindSMBShare(), setup.CreateSMBShare(), setup.FindNFSShare(), setup.CreateNFSShare(), setup.FindTarget(), setup.CreateTarget(),
-		setup.FindMachine(), setup.CreateMachine(), setup.FindSnapshotTask(), setup.CreateSnapshotTask(), setup.RunSnapshotTask(1), setup.FindReplication(), setup.CreateReplication(),
-		setup.FindCopyTask(), setup.CreateCopyTask(), setup.RunCopyTask(1),
+	nas := standIn(t, &holding{hostname: "truenas"})
+	n := administrator(t, nas)
+	if _, err := n.All(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	if err := n.Furnish(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	calls := nas.Calls()
+	if len(calls) < 30 {
+		t.Fatalf("the setup and the furnishing made %d calls, which is too few to have done it all", len(calls))
 	}
 
 	for _, document := range documents {
@@ -382,7 +387,6 @@ func TestEveryCallTheSetupMakesIsOneTheNASDescribes(t *testing.T) {
 		}
 
 		var methods map[string]struct {
-			Job     bool              `json:"job"`
 			Accepts []json.RawMessage `json:"accepts"`
 		}
 		if err := json.Unmarshal(raw, &methods); err != nil {
@@ -396,9 +400,6 @@ func TestEveryCallTheSetupMakesIsOneTheNASDescribes(t *testing.T) {
 
 				continue
 			}
-			if described.Job != call.Job {
-				t.Errorf("%s: %s is a job: %v, and the setup treats it as one: %v", document, call.Method, described.Job, call.Job)
-			}
 			if len(call.Params) > len(described.Accepts) {
 				t.Errorf("%s: %s is given %d arguments and takes %d", document, call.Method, len(call.Params), len(described.Accepts))
 
@@ -406,8 +407,8 @@ func TestEveryCallTheSetupMakesIsOneTheNASDescribes(t *testing.T) {
 			}
 
 			for at, param := range call.Params {
-				given, isObject := param.(map[string]any)
-				if !isObject {
+				var given map[string]any
+				if json.Unmarshal(param, &given) != nil {
 					continue
 				}
 				if problem := fits(given, described.Accepts[at]); problem != "" {

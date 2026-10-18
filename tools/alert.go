@@ -23,11 +23,12 @@ type alertRow struct {
 	Raised    string `json:"raised,omitempty"    jsonschema:"when it was raised"`
 	LastSeen  string `json:"last_seen,omitempty" jsonschema:"when the NAS last found it still so"`
 	Dismissed bool   `json:"dismissed"           jsonschema:"whether someone has dismissed it; the NAS clears an alert by itself once what raised it is gone"`
+	OneShot   bool   `json:"one_shot,omitempty"  jsonschema:"whether the NAS raised it once, for something that happened, rather than for something it keeps finding: such an alert may go for good when dismissed"`
 }
 
 // alertRowOf is an alert as a list answers it.
 func alertRowOf(a *truenas.Alert) alertRow {
-	return alertRow{ID: a.Uuid, Level: a.Level, Class: a.Klass, Text: a.Formatted, Raised: when(a.Datetime.Time), LastSeen: when(a.LastOccurrence.Time), Dismissed: a.Dismissed}
+	return alertRow{ID: a.Uuid, Level: a.Level, Class: a.Klass, Text: a.Formatted, Raised: when(a.Datetime.Time), LastSeen: when(a.LastOccurrence.Time), Dismissed: a.Dismissed, OneShot: a.OneShot}
 }
 
 func registerAlertTools(r *registry) {

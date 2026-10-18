@@ -2,7 +2,9 @@ package truenasrpc
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -458,6 +460,28 @@ func TestACallThatCarriesAnotherCallsArgumentsOrAnswerShowsNeither(t *testing.T)
 			if got := c.shown(method, answered); strings.Contains(got, marker) {
 				t.Errorf("%s shows what it answered: %s", method, got)
 			}
+		}
+	}
+}
+
+// A socket turned away before TrueNAS's API is reached says so, and where to look: read in a log, a proxy's refusal must not look like the NAS
+// turning the key down.
+func TestARefusedSocketSaysWhereTheRefusalCameFrom(t *testing.T) {
+	t.Parallel()
+
+	dial := errors.New("failed to WebSocket dial: expected handshake response status code 101")
+	for status, want := range map[int]string{
+		http.StatusForbidden:         "before TrueNAS's API was reached, so the key was never looked at: a proxy or firewall",
+		http.StatusUnauthorized:      "before TrueNAS's API was reached",
+		http.StatusProxyAuthRequired: "before TrueNAS's API was reached",
+		http.StatusBadGateway:        "could not reach the API behind it, as when the NAS is still starting",
+		http.StatusGatewayTimeout:    "could not reach the API behind it",
+		http.StatusNotFound:          "nothing answers at that path",
+		http.StatusTeapot:            "it answered HTTP 418",
+	} {
+		err := refused(&http.Response{StatusCode: status}, dial)
+		if !strings.Contains(err.Error(), want) || !errors.Is(err, dial) {
+			t.Errorf("HTTP %d is said as %q, want it to say %q", status, err, want)
 		}
 	}
 }

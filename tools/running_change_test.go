@@ -139,3 +139,38 @@ func TestAnAlertIsDismissedAndBroughtBack(t *testing.T) {
 		t.Errorf("an alert there is none of: %q", msg)
 	}
 }
+
+// An alert the NAS raised once, for something that happened, is said to be one that may go for good before it is dismissed, and when the NAS removes
+// it on being dismissed the answer says it cannot be brought back rather than that it could not be read.
+func TestAnAlertRaisedOnceMayGoForGoodWhenDismissed(t *testing.T) {
+	t.Parallel()
+
+	nas := truenastest.New(t)
+	var mu sync.Mutex
+	raised := true
+	nas.Handle("alert.list", func([]json.RawMessage) (any, error) {
+		mu.Lock()
+		defer mu.Unlock()
+		if !raised {
+			return []map[string]any{}, nil
+		}
+
+		return []map[string]any{{"uuid": "o1", "level": "WARNING", "klass": "ShareLocked", "formatted": "the share is on a locked dataset", "dismissed": false, "one_shot": true, "datetime": map[string]any{"$date": 1790000000000}, "last_occurrence": map[string]any{"$date": 1790000000000}}}, nil
+	})
+	nas.Handle("alert.dismiss", func([]json.RawMessage) (any, error) {
+		mu.Lock()
+		defer mu.Unlock()
+		raised = false
+
+		return nil, nil
+	})
+	suite := session(t, nas, everything)
+
+	if dry := suite.Call(t, "alert_dismiss", map[string]any{"id": "o1", "dry_run": true}); !strings.Contains(acctest.Str(dry["note"]), "may remove such an alert for good") {
+		t.Errorf("a dry run of dismissing an alert raised once: %v", dry)
+	}
+	gone := suite.Call(t, "alert_dismiss", map[string]any{"id": "o1"})
+	if gone["alert"] != nil || !strings.Contains(acctest.Str(gone["note"]), "removed it for good") || len(acctest.Strs(t, gone["changes"], "changes")) != 1 {
+		t.Errorf("dismissed for good: %v", gone)
+	}
+}

@@ -195,7 +195,7 @@ func registerAlertChanges(r *registry) {
 		dismiss           bool
 		would, done       string
 	}{
-		{name: "alert_dismiss", description: "Dismiss an alert, so it is no longer counted among what is wrong or listed unless dismissed alerts are asked for. What raised it is not fixed, and alert_restore brings it back. dry_run says what would be done.", dismiss: true, would: "would dismiss the alert %s", done: "dismissed the alert %s"},
+		{name: "alert_dismiss", description: "Dismiss an alert, so it is no longer counted among what is wrong or listed unless dismissed alerts are asked for. What raised it is not fixed, and alert_restore brings it back, but for some alerts the NAS raised once for something that happened, which it removes for good when dismissed. dry_run says what would be done.", dismiss: true, would: "would dismiss the alert %s", done: "dismissed the alert %s"},
 		{name: "alert_restore", description: "Bring back an alert that was dismissed, so it is counted among what is wrong again. dry_run says what would be done.", would: "would bring back the alert %s", done: "brought back the alert %s"},
 	} {
 		add(r, writeTool, &mcp.Tool{Name: change.name, Description: change.description}, func(ctx context.Context, _ *mcp.CallToolRequest, in alertChangeIn) (*mcp.CallToolResult, alertChangeOut, error) {
@@ -212,6 +212,9 @@ func registerAlertChanges(r *registry) {
 				return nil, out, nil
 			}
 			out.did(change.would, change.done, row.Class)
+			if change.dismiss && row.OneShot {
+				out.noted("the NAS raised it once, for something that happened, and may remove such an alert for good when it is dismissed")
+			}
 			if in.DryRun {
 				return nil, out, nil
 			}
@@ -224,7 +227,11 @@ func registerAlertChanges(r *registry) {
 			if err != nil {
 				return nil, out, fmt.Errorf("the alert %s was not changed: %w", id, err)
 			}
-			if out.Alert, err = alertFound(ctx, id); err != nil {
+			switch out.Alert, err = alertFound(ctx, id); {
+			case err == nil:
+			case change.dismiss && row.OneShot && strings.HasPrefix(err.Error(), "the NAS has no alert"):
+				out.Note = "the NAS removed it for good when it was dismissed, as it does with some alerts raised once: it cannot be brought back"
+			default:
 				out.noted("it could not be read back afterwards: %v", err)
 			}
 

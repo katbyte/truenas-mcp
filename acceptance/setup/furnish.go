@@ -2,191 +2,199 @@ package setup
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"slices"
 	"time"
 
+	"github.com/katbyte/go-kt/pointer"
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/sdk/truenas"
+	"github.com/katbyte/truenas-mcp/sdk/truenas/client"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
 // named is the filter that finds what goes by a name, under whatever a kind of thing calls its name.
 func named(field, name string) []any {
-	return []any{[]any{[]any{field, "=", name}}}
+	return []any{[]any{field, "=", name}}
 }
 
-func CreateSMBUser(password string) Call {
-	return Call{Method: "user.create", Params: []any{map[string]any{"username": layout.SMBUser, "full_name": "A user who may use SMB", "password": password, "group_create": true, "smb": true}}}
+// kind is one kind of thing a furnished NAS has: how many of it the NAS has by the furnished NAS's name for it, and how to make it.
+type kind struct {
+	what   string
+	count  func(ctx context.Context, api *client.Client) (int, error)
+	create func(ctx context.Context, api *client.Client) error
 }
 
-func FindSMBShare() Call {
-	return Call{Method: "sharing.smb.query", Params: named("name", layout.SMBShare)}
+// kinds are the things a furnished NAS has one of, but for the tasks, which are run once after they are made.
+var kinds = []kind{
+	{
+		what: "the SMB share",
+		count: func(ctx context.Context, api *client.Client) (int, error) {
+			found, err := api.SharingSmb.Query(ctx, named("name", layout.SMBShare), truenas.SharingSmbQueryOptions{})
+			return len(found.Answer), err
+		},
+		create: func(ctx context.Context, api *client.Client) error {
+			_, err := api.SharingSmb.Create(ctx, truenas.SharingSmbCreateData{Name: layout.SMBShare, Path: "/mnt/" + layout.SMBDataset})
+			return err
+		},
+	},
+	{
+		what: "the NFS share",
+		count: func(ctx context.Context, api *client.Client) (int, error) {
+			found, err := api.SharingNfs.Query(ctx, named("path", "/mnt/"+layout.NFSDataset), truenas.SharingNfsQueryOptions{})
+			return len(found.Answer), err
+		},
+		create: func(ctx context.Context, api *client.Client) error {
+			_, err := api.SharingNfs.Create(ctx, truenas.SharingNfsCreateData{Path: "/mnt/" + layout.NFSDataset})
+			return err
+		},
+	},
+	{
+		what: "the iSCSI target",
+		count: func(ctx context.Context, api *client.Client) (int, error) {
+			found, err := api.IscsiTarget.Query(ctx, named("name", layout.Target), truenas.IscsiTargetQueryOptions{})
+			return len(found.Answer), err
+		},
+		create: func(ctx context.Context, api *client.Client) error {
+			_, err := api.IscsiTarget.Create(ctx, truenas.IscsiTargetCreate{Name: layout.Target})
+			return err
+		},
+	},
+	{
+		what: "the virtual machine",
+		count: func(ctx context.Context, api *client.Client) (int, error) {
+			found, err := api.Vm.Query(ctx, named("name", layout.Machine), truenas.VmQueryOptions{})
+			return len(found.Answer), err
+		},
+		create: func(ctx context.Context, api *client.Client) error {
+			_, err := api.Vm.Create(ctx, truenas.VmCreate{Name: layout.Machine, Memory: 256, Autostart: pointer.To(false)})
+			return err
+		},
+	},
+	{
+		what: "the replication",
+		count: func(ctx context.Context, api *client.Client) (int, error) {
+			found, err := api.Replication.Query(ctx, named("name", layout.Replication), truenas.ReplicationQueryOptions{})
+			return len(found.Answer), err
+		},
+		create: func(ctx context.Context, api *client.Client) error {
+			_, err := api.Replication.Create(ctx, truenas.ReplicationCreate{Name: layout.Replication, Direction: truenas.ReplicationDirectionPUSH, Transport: truenas.ReplicationTransportLOCAL, SourceDatasets: []string{layout.TaskDataset}, TargetDataset: layout.ReplicationTarget, Recursive: pointer.To(false), Auto: pointer.To(false), RetentionPolicy: truenas.ReplicationRetentionPolicyNONE, AlsoIncludeNamingSchema: []string{layout.SnapshotSchema}})
+			return err
+		},
+	},
 }
 
-func CreateSMBShare() Call {
-	return Call{Method: "sharing.smb.create", Params: []any{map[string]any{"name": layout.SMBShare, "path": "/mnt/" + layout.SMBDataset}}}
+// snapshotTasks is the furnished NAS's snapshot task, as the NAS has it: none, or the one.
+func snapshotTasks(ctx context.Context, api *client.Client) ([]truenas.PoolSnapshotTaskQueryResultItem, error) {
+	found, err := api.PoolSnapshottask.Query(ctx, []any{[]any{"dataset", "=", layout.TaskDataset}, []any{"naming_schema", "=", layout.SnapshotSchema}}, truenas.PoolSnapshottaskQueryOptions{})
+	return found.Answer, err
 }
 
-func FindNFSShare() Call {
-	return Call{Method: "sharing.nfs.query", Params: named("path", "/mnt/"+layout.NFSDataset)}
+// copyTasks is the furnished NAS's copy task, as the NAS has it: none, or the one.
+func copyTasks(ctx context.Context, api *client.Client) ([]truenas.RsyncTaskQueryResultItem, error) {
+	found, err := api.Rsynctask.Query(ctx, named("desc", layout.CopyTask), truenas.RsynctaskQueryOptions{})
+	return found.Answer, err
 }
 
-func CreateNFSShare() Call {
-	return Call{Method: "sharing.nfs.create", Params: []any{map[string]any{"path": "/mnt/" + layout.NFSDataset}}}
-}
-
-func FindTarget() Call {
-	return Call{Method: "iscsi.target.query", Params: named("name", layout.Target)}
-}
-
-func CreateTarget() Call {
-	return Call{Method: "iscsi.target.create", Params: []any{map[string]any{"name": layout.Target}}}
-}
-
-func FindMachine() Call { return Call{Method: "vm.query", Params: named("name", layout.Machine)} }
-
-func CreateMachine() Call {
-	return Call{Method: "vm.create", Params: []any{map[string]any{"name": layout.Machine, "memory": 256, "autostart": false}}}
-}
-
-func FindSnapshotTask() Call {
-	return Call{Method: "pool.snapshottask.query", Params: []any{[]any{[]any{"dataset", "=", layout.TaskDataset}, []any{"naming_schema", "=", layout.SnapshotSchema}}}}
-}
-
-func CreateSnapshotTask() Call {
-	return Call{Method: "pool.snapshottask.create", Params: []any{map[string]any{"dataset": layout.TaskDataset, "naming_schema": layout.SnapshotSchema, "lifetime_value": 1, "lifetime_unit": "WEEK"}}}
-}
-
-func RunSnapshotTask(id int64) Call {
-	return Call{Method: "pool.snapshottask.run", Params: []any{id}}
-}
-
-func FindReplication() Call {
-	return Call{Method: "replication.query", Params: named("name", layout.Replication)}
-}
-
-func CreateReplication() Call {
-	return Call{Method: "replication.create", Params: []any{map[string]any{"name": layout.Replication, "direction": "PUSH", "transport": "LOCAL", "source_datasets": []string{layout.TaskDataset}, "target_dataset": layout.ReplicationTarget, "recursive": false, "auto": false, "retention_policy": "NONE", "also_include_naming_schema": []string{layout.SnapshotSchema}}}}
-}
-
-func FindCopyTask() Call {
-	return Call{Method: "rsynctask.query", Params: named("desc", layout.CopyTask)}
-}
-
-func CreateCopyTask() Call {
-	return Call{Method: "rsynctask.create", Params: []any{map[string]any{"path": "/mnt/" + layout.TaskDataset, "user": "root", "mode": "MODULE", "remotehost": "127.0.0.1", "remotemodule": "nothing-listens-here", "direction": "PUSH", "desc": layout.CopyTask, "enabled": false}}}
-}
-
-func RunCopyTask(id int64) Call {
-	return Call{Method: "rsynctask.run", Job: true, Params: []any{id}}
-}
-
-// listed is a row of any list, as far as furnishing a NAS reads one: its number, and how a task says its last run went.
-type listed struct {
-	ID    int64 `json:"id"`
-	State struct {
-		State string `json:"state"`
-	} `json:"state"`
-	Job json.RawMessage `json:"job"`
-}
-
-// one finds what a kind of thing has by the furnished NAS's name for it, and makes it if there is none.
-func (n *NAS) one(ctx context.Context, find, create Call) (listed, error) {
-	var rows []listed
-	if err := n.run(ctx, find, &rows, nil); err != nil {
-		return listed{}, err
-	}
-	if len(rows) > 0 {
-		return rows[0], nil
-	}
-
-	n.logf("making it: %s", create.Method)
-	if err := n.run(ctx, create, nil, nil); err != nil {
-		return listed{}, err
-	}
-	if err := n.run(ctx, find, &rows, nil); err != nil {
-		return listed{}, err
-	}
-	if len(rows) != 1 {
-		return listed{}, fmt.Errorf("%s was called, and %s then finds %d of what it made", create.Method, find.Method, len(rows))
+// one makes sure the NAS has one of a kind of thing, making it if it has none.
+func (n *NAS) one(ctx context.Context, api *client.Client, k kind) error {
+	have, err := k.count(ctx, api)
+	if err != nil || have > 0 {
+		return err
 	}
 
-	return rows[0], nil
+	n.logf("making %s", k.what)
+	if err := k.create(ctx, api); err != nil {
+		return fmt.Errorf("making %s: %w", k.what, err)
+	}
+	if have, err = k.count(ctx, api); err != nil {
+		return err
+	}
+	if have != 1 {
+		return fmt.Errorf("%s was made, and the NAS then has %d of it", k.what, have)
+	}
+
+	return nil
 }
 
 // Furnish gives a NAS that has been set up one of each thing a NAS is watched for, as acceptance/layout lists them, making only what is
 // missing: run again it changes nothing. It is for whatever wants more to look at than a pool and two datasets, the tests of what an
 // exporter reads above all.
 func (n *NAS) Furnish(ctx context.Context) error {
+	api, err := n.api()
+	if err != nil {
+		return err
+	}
+
 	// a NAS shares nothing over SMB until it has a user who may use it, who is never logged in as, so nobody is told the password
-	var users []json.RawMessage
-	if err := n.run(ctx, FindUser(layout.SMBUser), &users, nil); err != nil {
+	users, err := api.User.Query(ctx, named("username", layout.SMBUser), truenas.UserQueryOptions{})
+	if err != nil {
 		return err
 	}
-	if len(users) == 0 {
-		password := make([]byte, 16)
-		if _, err := rand.Read(password); err != nil {
-			return err
+	if len(users.Answer) == 0 {
+		password, unmade := secret()
+		if unmade != nil {
+			return unmade
 		}
-		if err := n.run(ctx, CreateSMBUser("A1-"+hex.EncodeToString(password)), nil, nil); err != nil {
+		if _, err := api.User.Create(ctx, truenas.UserCreate{Username: layout.SMBUser, FullName: "A user who may use SMB", Password: password, GroupCreate: pointer.To(true), Smb: pointer.To(true)}); err != nil {
 			return err
 		}
 	}
 
-	shared := []string{layout.SMBDataset, layout.NFSDataset}
-	var have []struct {
-		ID string `json:"id"`
-	}
-	if err := n.run(ctx, FindDatasets(shared), &have, nil); err != nil {
+	if _, err := n.datasetsOf(ctx, []string{layout.SMBDataset, layout.NFSDataset}); err != nil {
 		return err
 	}
-	for _, name := range shared {
-		if slices.ContainsFunc(have, func(d struct {
-			ID string `json:"id"`
-		},
-		) bool {
-			return d.ID == name
-		}) {
-			continue
-		}
-		if err := n.run(ctx, CreateDataset(name), nil, nil); err != nil {
-			return err
-		}
-	}
-
-	for _, kind := range []struct{ find, create Call }{
-		{FindSMBShare(), CreateSMBShare()}, {FindNFSShare(), CreateNFSShare()}, {FindTarget(), CreateTarget()}, {FindMachine(), CreateMachine()}, {FindReplication(), CreateReplication()},
-	} {
-		if _, err := n.one(ctx, kind.find, kind.create); err != nil {
+	for _, k := range kinds {
+		if err := n.one(ctx, api, k); err != nil {
 			return err
 		}
 	}
 
 	// the snapshot task is run once, so that it has a last run and the run went well
-	snapshots, err := n.one(ctx, FindSnapshotTask(), CreateSnapshotTask())
+	tasks, err := snapshotTasks(ctx, api)
 	if err != nil {
 		return err
 	}
-	if snapshots.State.State == "PENDING" {
-		if err := n.run(ctx, RunSnapshotTask(snapshots.ID), nil, nil); err != nil {
+	if len(tasks) == 0 {
+		n.logf("making the snapshot task")
+		if _, err := api.PoolSnapshottask.Create(ctx, truenas.PoolSnapshottaskCreateData{Dataset: layout.TaskDataset, NamingSchema: layout.SnapshotSchema, LifetimeValue: 1, LifetimeUnit: truenas.PoolLifetimeUnitWEEK}); err != nil {
 			return err
 		}
-		if err := n.settled(ctx, FindSnapshotTask()); err != nil {
+		if tasks, err = snapshotTasks(ctx, api); err != nil {
+			return err
+		}
+	}
+	if len(tasks) != 1 {
+		return fmt.Errorf("the NAS has %d of the snapshot task", len(tasks))
+	}
+	if t := tasks[0]; t.State != nil && t.State.State == "PENDING" {
+		if _, err := api.PoolSnapshottask.Run(ctx, t.Id); err != nil {
+			return err
+		}
+		if err := settled(ctx, api); err != nil {
 			return err
 		}
 	}
 
 	// and the copy task once, which fails, since nothing listens where it copies to: that it failed is the point
-	copying, err := n.one(ctx, FindCopyTask(), CreateCopyTask())
+	copies, err := copyTasks(ctx, api)
 	if err != nil {
 		return err
 	}
-	if len(copying.Job) == 0 || string(copying.Job) == "null" {
-		err := n.run(ctx, RunCopyTask(copying.ID), nil, nil)
+	if len(copies) == 0 {
+		n.logf("making the copy task")
+		if _, err := api.Rsynctask.Create(ctx, truenas.RsyncTaskCreate{Path: "/mnt/" + layout.TaskDataset, User: "root", Mode: truenas.RsyncTaskModeMODULE, Remotehost: "127.0.0.1", Remotemodule: "nothing-listens-here", Direction: truenas.RsyncTaskDirectionPUSH, Desc: layout.CopyTask, Enabled: pointer.To(false)}); err != nil {
+			return err
+		}
+		if copies, err = copyTasks(ctx, api); err != nil {
+			return err
+		}
+	}
+	if len(copies) != 1 {
+		return fmt.Errorf("the NAS has %d of the copy task", len(copies))
+	}
+	if copies[0].Job == nil {
+		_, err := api.Rsynctask.Run(ctx, copies[0].Id)
 		if _, refused := errors.AsType[*truenasrpc.Error](err); err != nil && !refused {
 			return err
 		}
@@ -198,22 +206,22 @@ func (n *NAS) Furnish(ctx context.Context) error {
 	return nil
 }
 
-// settled waits for a task that was just run to say how the run went.
-func (n *NAS) settled(ctx context.Context, find Call) error {
+// settled waits for the snapshot task that was just run to say how the run went.
+func settled(ctx context.Context, api *client.Client) error {
 	for try := 0; ; try++ {
-		var rows []listed
-		if err := n.run(ctx, find, &rows, nil); err != nil {
+		tasks, err := snapshotTasks(ctx, api)
+		if err != nil {
 			return err
 		}
-		if len(rows) == 1 && rows[0].State.State != "PENDING" && rows[0].State.State != "RUNNING" {
-			if rows[0].State.State != "FINISHED" {
-				return fmt.Errorf("%s: the task was run and says %s", find.Method, rows[0].State.State)
+		if len(tasks) == 1 && tasks[0].State != nil && tasks[0].State.State != "PENDING" && tasks[0].State.State != "RUNNING" {
+			if state := tasks[0].State.State; state != "FINISHED" {
+				return fmt.Errorf("the snapshot task was run and says %s", state)
 			}
 
 			return nil
 		}
 		if try >= 60 {
-			return fmt.Errorf("%s: the task was run and never said how the run went", find.Method)
+			return errors.New("the snapshot task was run and never said how the run went")
 		}
 
 		select {

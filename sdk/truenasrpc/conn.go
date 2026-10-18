@@ -231,6 +231,11 @@ func refused(resp *http.Response, err error) error {
 		return fmt.Errorf("nothing answers at that path (HTTP 404): TrueNAS serves this API from version 25.04 on: %w", err)
 	case http.StatusOK:
 		return fmt.Errorf("it answered a web page where the API should be: is the address a TrueNAS's, with nothing in front of it that drops websockets? %w", err)
+	// TrueNAS asks for nothing before its API is reached, so a refusal here is from something in front of it, and the key was never looked at
+	case http.StatusUnauthorized, http.StatusForbidden, http.StatusProxyAuthRequired:
+		return fmt.Errorf("something turned the connection away (HTTP %d) before TrueNAS's API was reached, so the key was never looked at: a proxy or firewall in front of the NAS, and whether it lets this machine through, is the place to look: %w", resp.StatusCode, err)
+	case http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusGatewayTimeout:
+		return fmt.Errorf("the web server in front of TrueNAS's API, the NAS's own or a proxy, answered HTTP %d: it could not reach the API behind it, as when the NAS is still starting or a proxy is not pointed at it: %w", resp.StatusCode, err)
 	default:
 		return fmt.Errorf("it answered HTTP %d: %w", resp.StatusCode, err)
 	}

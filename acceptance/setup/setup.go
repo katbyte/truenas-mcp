@@ -17,7 +17,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/katbyte/go-kt/pointer"
+	pandorest "github.com/katbyte/pandorest/client"
 	"github.com/katbyte/truenas-mcp/acceptance/layout"
+	"github.com/katbyte/truenas-mcp/sdk/truenas"
+	"github.com/katbyte/truenas-mcp/sdk/truenas/client"
+	"github.com/katbyte/truenas-mcp/sdk/truenas/pool"
 	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 )
 
@@ -29,6 +34,8 @@ type NAS struct {
 	Conn *truenasrpc.Conn
 	// Logf is told what is being done, and may be nil
 	Logf func(format string, args ...any)
+	// typed is the client over Conn, made when the first step is taken
+	typed *client.Client
 }
 
 // Made is what a test needs to log into a NAS that has been set up, beside the administrator's password.
@@ -38,78 +45,36 @@ type Made struct {
 	ReadOnlyKey string
 }
 
-// Call is one call a step makes, written down as what it is so that a test can hold every one of them to the NAS's own description of its API.
-type Call struct {
-	Method string
-	Params []any
-	// Job says the NAS runs the method as a job, which is started and waited for
-	Job bool
-}
-
-func SystemInfo() Call { return Call{Method: "system.info"} }
-
-func NetworkConfig() Call { return Call{Method: "network.configuration.config"} }
-
-func Pools(filters ...any) Call {
-	return Call{Method: "pool.query", Params: []any{append([]any{}, filters...)}}
-}
-
-func SetHostname() Call {
-	return Call{Method: "network.configuration.update", Params: []any{map[string]any{"hostname": layout.Hostname}}}
-}
-
-func UnusedDisks() Call {
-	return Call{Method: "disk.details", Params: []any{map[string]any{"type": "UNUSED"}}}
-}
-
-func CreatePool(disks []string) Call {
-	return Call{Method: "pool.create", Job: true, Params: []any{map[string]any{"name": layout.Pool, "topology": map[string]any{"data": []any{map[string]any{"type": "MIRROR", "disks": disks}}}}}}
-}
-
-func FindDatasets(names []string) Call {
-	return Call{Method: "pool.dataset.query", Params: []any{[]any{[]any{"id", "in", names}}}}
-}
-
-func CreateDataset(name string) Call {
-	return Call{Method: "pool.dataset.create", Params: []any{map[string]any{"name": name}}}
-}
-
-func FindUser(username string) Call {
-	return Call{Method: "user.query", Params: []any{[]any{[]any{"username", "=", username}}}}
-}
-
-func FindGroup(name string) Call {
-	return Call{Method: "group.query", Params: []any{[]any{[]any{"group", "=", name}}}}
-}
-
-func CreateUser(username string, group int, password string) Call {
-	return Call{Method: "user.create", Params: []any{map[string]any{"username": username, "full_name": "May read and not change", "group_create": true, "groups": []int{group}, "password": password, "smb": false}}}
-}
-
-func CreateKey(name, username string) Call {
-	return Call{Method: "api_key.create", Params: []any{map[string]any{"name": name, "username": username}}}
-}
-
 func (n *NAS) logf(format string, args ...any) {
 	if n.Logf != nil {
 		n.Logf(format, args...)
 	}
 }
 
-// run makes a call the way the NAS runs it: at once, or as a job that is started, followed and waited for.
-func (n *NAS) run(ctx context.Context, c Call, into any, follow func(truenasrpc.JobStatus)) error {
-	if !c.Job {
-		return n.Conn.Call(ctx, c.Method, c.Params, into)
+// api is the client generated from the NAS's description, over the administrator's connection: every step is made through it, so making a NAS
+// is a test of the typed client as much as of the connection.
+func (n *NAS) api() (*client.Client, error) {
+	if n.typed == nil {
+		typed, err := client.New(n.Conn)
+		if err != nil {
+			return nil, err
+		}
+		n.typed = typed
 	}
 
-	job, err := n.Conn.Start(ctx, c.Method, c.Params)
+	return n.typed, nil
+}
+
+// follow starts a job and waits for it, telling follow how it goes, for the one step whose progress a test watches.
+func (n *NAS) follow(ctx context.Context, method string, params []any, follow func(truenasrpc.JobStatus)) error {
+	job, err := n.Conn.Start(ctx, method, params)
 	if err != nil {
 		return err
 	}
 
 	ended := make(chan struct{})
 	job.OnUpdate(func(s truenasrpc.JobStatus) {
-		n.logf("  %s: %s %.0f%% %s", c.Method, s.State, s.Percent, s.Description)
+		n.logf("  %s: %s %.0f%% %s", method, s.State, s.Percent, s.Description)
 		if follow != nil {
 			follow(s)
 		}
@@ -118,7 +83,7 @@ func (n *NAS) run(ctx context.Context, c Call, into any, follow func(truenasrpc.
 		}
 	})
 
-	if err := job.Wait(ctx, into); err != nil {
+	if err := job.Wait(ctx, nil); err != nil {
 		return err
 	}
 
@@ -127,30 +92,37 @@ func (n *NAS) run(ctx context.Context, c Call, into any, follow func(truenasrpc.
 	case <-ended:
 		return nil
 	case <-ctx.Done():
-		return fmt.Errorf("%s: its end was never told to whoever followed it: %w", c.Method, context.Cause(ctx))
+		return fmt.Errorf("%s: its end was never told to whoever followed it: %w", method, context.Cause(ctx))
 	}
 }
 
 // Disposable is nil for a NAS that may be set up and tested against: one already named as a test NAS is, or one with no pool at all, which is
 // what a NAS is straight out of its installer. Any other NAS is somebody's, and is refused before anything is asked of it but what it has.
 func (n *NAS) Disposable(ctx context.Context) error {
-	// the name it is set to have, which is the one a setup gives: the name it answers to at this moment can lag a change by a little
-	var info struct {
-		Hostname string `json:"hostname"`
-	}
-	if err := n.run(ctx, NetworkConfig(), &info, nil); err != nil {
+	api, err := n.api()
+	if err != nil {
 		return err
 	}
-	if info.Hostname == layout.Hostname {
+
+	// the name it is set to have, which is the one a setup gives: the name it answers to at this moment can lag a change by a little
+	config, err := api.NetworkConfiguration.Config(ctx)
+	if err != nil {
+		return err
+	}
+	hostname := ""
+	if config.Answer != nil {
+		hostname = config.Answer.Hostname
+	}
+	if hostname == layout.Hostname {
 		return nil
 	}
 
-	var pools []json.RawMessage
-	if err := n.run(ctx, Pools(), &pools, nil); err != nil {
+	pools, err := api.Pool.Query(ctx, nil, truenas.PoolQueryOptions{})
+	if err != nil {
 		return err
 	}
-	if len(pools) > 0 {
-		return fmt.Errorf("the TrueNAS at %s is named %q and has %d pools: a test NAS is one named %q, or one fresh out of its installer with no pool, and this is neither", n.Conn.Address(), info.Hostname, len(pools), layout.Hostname)
+	if len(pools.Answer) > 0 {
+		return fmt.Errorf("the TrueNAS at %s is named %q and has %d pools: a test NAS is one named %q, or one fresh out of its installer with no pool, and this is neither", n.Conn.Address(), hostname, len(pools.Answer), layout.Hostname)
 	}
 
 	return nil
@@ -158,35 +130,44 @@ func (n *NAS) Disposable(ctx context.Context) error {
 
 // Name gives the NAS the name a test NAS goes by, and answers the version it runs.
 func (n *NAS) Name(ctx context.Context) (version string, err error) {
-	var info struct {
-		Version string `json:"version"`
-	}
-	if err := n.run(ctx, SystemInfo(), &info, nil); err != nil {
+	api, err := n.api()
+	if err != nil {
 		return "", err
 	}
-
-	var config struct {
-		Hostname string `json:"hostname"`
-	}
-	if err := n.run(ctx, NetworkConfig(), &config, nil); err != nil {
+	info, err := api.System.Info(ctx)
+	if err != nil {
 		return "", err
 	}
-	if config.Hostname == layout.Hostname {
-		return info.Version, nil
+	if info.Answer == nil {
+		return "", errors.New("system.info: the TrueNAS answered nothing")
+	}
+	version = info.Answer.Version
+
+	config, err := api.NetworkConfiguration.Config(ctx)
+	if err != nil {
+		return "", err
+	}
+	if config.Answer != nil && config.Answer.Hostname == layout.Hostname {
+		return version, nil
 	}
 
-	n.logf("naming TrueNAS %s %s", info.Version, layout.Hostname)
+	n.logf("naming TrueNAS %s %s", version, layout.Hostname)
+	_, err = api.NetworkConfiguration.Update(ctx, truenas.NetworkConfigurationUpdateData{Hostname: layout.Hostname})
 
-	return info.Version, n.run(ctx, SetHostname(), nil, nil)
+	return version, err
 }
 
 // Pool makes the pool, of the two disks layout says, unless the NAS has it. made says it was made now, and follow is told how the making went.
 func (n *NAS) Pool(ctx context.Context, follow func(truenasrpc.JobStatus)) (made bool, err error) {
-	var pools []json.RawMessage
-	if err := n.run(ctx, Pools([]any{"name", "=", layout.Pool}), &pools, nil); err != nil {
+	api, err := n.api()
+	if err != nil {
 		return false, err
 	}
-	if len(pools) > 0 {
+	pools, err := api.Pool.Query(ctx, []any{[]any{"name", "=", layout.Pool}}, truenas.PoolQueryOptions{})
+	if err != nil {
+		return false, err
+	}
+	if len(pools.Answer) > 0 {
 		return false, nil
 	}
 
@@ -196,29 +177,41 @@ func (n *NAS) Pool(ctx context.Context, follow func(truenasrpc.JobStatus)) (made
 	}
 	n.logf("making the pool %s of %s", layout.Pool, strings.Join(disks, " and "))
 
-	return true, n.run(ctx, CreatePool(disks), nil, follow)
+	mirror, err := pandorest.UnionOf(truenas.PoolCreateTopologyDataVdevNonDRAID{Type: truenas.PoolCreateTopologyDataVdevNonDRAIDTypeMIRROR, Disks: disks})
+	if err != nil {
+		return false, err
+	}
+	method, params := pool.CreateCall(truenas.PoolCreateData{Name: layout.Pool, Topology: &truenas.DataTopology{Data: []truenas.DataTopologyData{{Union: mirror}}}})
+
+	return true, n.follow(ctx, method, params, follow)
 }
 
 // Datasets makes whichever of the pool's datasets the NAS has not got, and answers those it made.
 func (n *NAS) Datasets(ctx context.Context) (made []string, err error) {
-	var have []struct {
-		ID string `json:"id"`
+	return n.datasetsOf(ctx, layout.Datasets)
+}
+
+// datasetsOf makes whichever of these datasets the NAS has not got, and answers those it made.
+func (n *NAS) datasetsOf(ctx context.Context, names []string) (made []string, err error) {
+	api, err := n.api()
+	if err != nil {
+		return nil, err
 	}
-	if err := n.run(ctx, FindDatasets(layout.Datasets), &have, nil); err != nil {
+	have, err := api.PoolDataset.Query(ctx, []any{[]any{"id", "in", names}}, truenas.PoolDatasetQueryOptions{})
+	if err != nil {
 		return nil, err
 	}
 
-	for _, name := range layout.Datasets {
-		if slices.ContainsFunc(have, func(d struct {
-			ID string `json:"id"`
-		},
-		) bool {
-			return d.ID == name
-		}) {
+	for _, name := range names {
+		if slices.ContainsFunc(have.Answer, func(d truenas.PoolDatasetQueryResultItem) bool { return d.Id == name }) {
 			continue
 		}
 
-		if err := n.run(ctx, CreateDataset(name), nil, nil); err != nil {
+		dataset, err := pandorest.UnionOf(truenas.PoolDatasetCreateFilesystem{Name: name})
+		if err != nil {
+			return made, err
+		}
+		if _, err := api.PoolDataset.Create(ctx, truenas.PoolDatasetCreateData{Union: dataset}); err != nil {
 			return made, err
 		}
 		made = append(made, name)
@@ -229,47 +222,62 @@ func (n *NAS) Datasets(ctx context.Context) (made []string, err error) {
 
 // ReadOnlyUser makes the user who may read everything and change nothing, unless the NAS has one. made says it was made now.
 func (n *NAS) ReadOnlyUser(ctx context.Context) (made bool, err error) {
-	var users []json.RawMessage
-	if err := n.run(ctx, FindUser(layout.ReadOnlyUser), &users, nil); err != nil {
+	api, err := n.api()
+	if err != nil {
 		return false, err
 	}
-	if len(users) > 0 {
+	users, err := api.User.Query(ctx, []any{[]any{"username", "=", layout.ReadOnlyUser}}, truenas.UserQueryOptions{})
+	if err != nil {
+		return false, err
+	}
+	if len(users.Answer) > 0 {
 		return false, nil
 	}
 
-	var groups []struct {
-		ID int `json:"id"`
-	}
-	if err := n.run(ctx, FindGroup(readOnlyGroup), &groups, nil); err != nil {
+	groups, err := api.Group.Query(ctx, []any{[]any{"group", "=", readOnlyGroup}}, truenas.GroupQueryOptions{})
+	if err != nil {
 		return false, err
 	}
-	if len(groups) != 1 {
-		return false, fmt.Errorf("the TrueNAS has %d groups named %s, and a user who may only read is made a member of the one", len(groups), readOnlyGroup)
+	if len(groups.Answer) != 1 {
+		return false, fmt.Errorf("the TrueNAS has %d groups named %s, and a user who may only read is made a member of the one", len(groups.Answer), readOnlyGroup)
 	}
 
 	// the user logs in with a key and never with this, so nobody is told it
-	password := make([]byte, 16)
-	if _, err := rand.Read(password); err != nil {
+	password, err := secret()
+	if err != nil {
 		return false, err
 	}
+	_, err = api.User.Create(ctx, truenas.UserCreate{Username: layout.ReadOnlyUser, FullName: "May read and not change", GroupCreate: pointer.To(true), Groups: []int{groups.Answer[0].Id}, Password: password, Smb: pointer.To(false)})
 
-	return true, n.run(ctx, CreateUser(layout.ReadOnlyUser, groups[0].ID, hex.EncodeToString(password)), nil, nil)
+	return true, err
 }
 
 // Key makes an API key for a user and answers it. A key can be read only when it is made, so each asking makes another, named apart from the
 // last by the time: a NAS that is set up twice has the keys of both, and both work.
 func (n *NAS) Key(ctx context.Context, username string) (string, error) {
-	var key struct {
-		Key string `json:"key"`
-	}
-	if err := n.run(ctx, CreateKey("truenas-mcp-test-"+username+"-"+strconv.FormatInt(time.Now().UnixNano(), 36), username), &key, nil); err != nil {
+	api, err := n.api()
+	if err != nil {
 		return "", err
 	}
-	if key.Key == "" {
+	key, err := api.ApiKey.Create(ctx, truenas.ApiKeyCreate{Name: "truenas-mcp-test-" + username + "-" + strconv.FormatInt(time.Now().UnixNano(), 36), Username: username})
+	if err != nil {
+		return "", err
+	}
+	if key.Answer == nil || key.Answer.Key == "" {
 		return "", errors.New("the TrueNAS made a key and did not say what it is")
 	}
 
-	return key.Key, nil
+	return key.Answer.Key, nil
+}
+
+// secret is a password nobody chose and nobody is told, for a user who never logs in with one.
+func secret() (string, error) {
+	raw := make([]byte, 16)
+	if _, err := rand.Read(raw); err != nil {
+		return "", err
+	}
+
+	return "A1-" + hex.EncodeToString(raw), nil
 }
 
 // All takes every step in order, and answers what a test needs to log into the NAS that results.
@@ -311,10 +319,15 @@ type Disk struct {
 
 // Unused is the disks nothing on the NAS uses.
 func (n *NAS) Unused(ctx context.Context) ([]Disk, error) {
-	var raw json.RawMessage
-	if err := n.run(ctx, UnusedDisks(), &raw, nil); err != nil {
+	api, err := n.api()
+	if err != nil {
 		return nil, err
 	}
+	details, err := api.Disk.Details(ctx, truenas.DiskDetailsData{Type: truenas.DiskDetailsDataTypeUNUSED})
+	if err != nil {
+		return nil, err
+	}
+	raw := details.Answer
 
 	// asked for the unused disks alone a NAS answers a list, and asked for both kinds, each under its own name: either is read
 	var unused []Disk
