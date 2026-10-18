@@ -13,6 +13,8 @@
 - tools that start, stop, restart and reload a service and set whether it starts with the NAS (`service_start`, `service_stop`, `service_restart`, `service_reload`, `service_update`), and that dismiss an alert and bring it back (`alert_dismiss`, `alert_restore`, toolset `alerts`). An alert the NAS raised once for something that happened may be removed for good when dismissed, and the answer says so first
 - the first tools that remove, registered only with `--enable-delete` as well: an SMB or NFS share (`sharing_smb_delete`, `sharing_nfs_delete`, the files staying where they are), a snapshot task (`snapshottask_delete`, saying which snapshots it took are then kept until removed by hand), a scrub task (`pool_scrub_delete`), a dataset (`dataset_delete`), a snapshot (`snapshot_delete`), and everything written since a snapshot (`snapshot_rollback`). Without `confirm: true` each only says what would go: the datasets under it, its snapshots, the shares and tasks the NAS removes with it, the snapshots newer than the one gone back to
 
+- `docs/tools.md`: every tool by toolset, what it needs to load and what it does, and what each set costs a client's context, written from the tools themselves by a test that fails while the page is out of date
+
 ### Changed
 
 - a connection turned away before TrueNAS's API is reached says so (`sdk/truenasrpc`): an HTTP 401, 403 or 407 there comes from a proxy or firewall in front of the NAS, and never from the key, and a 502, 503 or 504 from a web server that could not reach the API behind it. Read in a log, it no longer looks like the NAS turning the key down

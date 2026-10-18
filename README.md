@@ -51,7 +51,7 @@ What is coming: the tools that change the rest of a NAS, each with a dry run.
 
 ## Toolsets
 
-A session loads `core` and `audit` unless `--toolsets` names others, or `all`. A session only reads.
+A session loads `core` and `audit` unless `--toolsets` names others, or `all`. It only reads until `--enable-write` is given, and removes nothing until `--enable-delete` is given as well. [Tools](docs/tools.md) lists every tool, what it needs to load, and what each set costs a client.
 
 | toolset | what it covers |
 |---|---|
@@ -133,6 +133,7 @@ One connection is shared by any number of calls. It reconnects by itself, and it
 
 ## More
 
+- [Tools](docs/tools.md): every tool by toolset, what it needs to load, and what each set costs a client
 - [Audits](docs/audits.md): every rule each audit holds a NAS to
 - [Connecting to a TrueNAS](docs/connecting.md): certificates, and how the key is used
 - [Using the connection from Go](docs/sdk.md): jobs, events, files, and TrueNAS's own client compared
