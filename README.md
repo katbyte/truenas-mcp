@@ -4,7 +4,7 @@ An [MCP](https://modelcontextprotocol.io) server, CLI and Go SDK for looking aft
 
 **It was made mainly to get a Go SDK for [truenas-exporter](https://github.com/katbyte/truenas-exporter).** A server with a tool for much of the NAS tests an SDK far harder than an exporter that reads a handful of things. So the SDK lives here, and the exporter imports it.
 
-**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server that reads most of a NAS and audits it. The tools that change a NAS are being built.
+**This is being built.** What works today is the Go connection to a TrueNAS, a typed client with a method for every API call, a stand-in NAS to test against, and an MCP server that reads most of a NAS and audits it, and makes, changes and removes its datasets and snapshots. The tools that change the rest of a NAS are being built.
 
 **Detection is code, correction is judgment.** The audits only report what is wrong. Nothing on a NAS is changed unless a separate tool is asked to change it.
 
@@ -47,7 +47,7 @@ claude mcp add truenas -e TRUENAS_SERVER=nas.example.net -e TRUENAS_USERNAME=mcp
 | `truenas-mcp tools` | lists the tools the flags would load, with no NAS |
 | `truenas-mcp info` | checks an address, a certificate and a key |
 
-What is coming: the tools that change a NAS, each with a dry run.
+What is coming: the tools that change the rest of a NAS, each with a dry run.
 
 ## Toolsets
 
@@ -57,8 +57,9 @@ A session loads `core` and `audit` unless `--toolsets` names others, or `all`. A
 |---|---|
 | `core` | which NAS this is, its pools and datasets, and its alerts |
 | `audit` | what is wrong, from every audit below |
+| `storage` | make, change and remove datasets and volumes |
 | `disks` | the disks, with the pool each is in and how warm it is |
-| `protection` | snapshots, and the tasks that take them, copy data elsewhere and scrub the pools |
+| `protection` | snapshots, taken, gone back to and removed, and the tasks that take them, copy data elsewhere and scrub the pools |
 | `shares` | SMB and NFS shares, and iSCSI targets with what they offer |
 | `services` | the services, running or not |
 | `apps` | the apps the NAS runs in containers |

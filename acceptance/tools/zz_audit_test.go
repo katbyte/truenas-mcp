@@ -29,16 +29,12 @@ func planter(t *testing.T) (*truenasrpc.Conn, *client.Client) {
 	if !suite.Ready {
 		t.Skip(suite.NotReady)
 	}
-	conn, err := connection(truenasrpc.APIKey(nas.username, nas.made.Key))
-	if err != nil {
-		t.Fatal(err)
-	}
-	typed, err := client.New(conn)
+	typed, err := client.New(planting)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return conn, typed
+	return planting, typed
 }
 
 // found is each finding of an audit, asked with nothing, as check:name.

@@ -11,6 +11,7 @@ import (
 
 	"github.com/katbyte/go-kt/pointer"
 	"github.com/katbyte/truenas-mcp/sdk/truenas"
+	"github.com/katbyte/truenas-mcp/sdk/truenasrpc"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
@@ -154,16 +155,36 @@ func registerSnapshotTools(r *registry) {
 // snapshotProperties are the properties of a snapshot a list answers, the only ones the NAS is asked to read.
 var snapshotProperties = []string{"creation", "used", "referenced", "userrefs"}
 
+// snapshotFound reads one snapshot by its whole name, which a NAS answers from that snapshot alone: nil when it has none by that name.
+func snapshotFound(ctx context.Context, r *registry, name string) (*truenas.PoolSnapshotQueryResultItem, error) {
+	found, err := r.typed.PoolSnapshot.Query(ctx, []any{[]any{"id", "=", name}}, truenas.PoolSnapshotQueryOptions{Extra: map[string]any{"properties": snapshotProperties}})
+	switch {
+	case truenasrpc.IsNotFound(err):
+		return nil, nil
+	case err != nil:
+		return nil, fmt.Errorf("reading the snapshot %s: %w", name, err)
+	case len(found.Answer) == 0:
+		return nil, nil
+	}
+
+	return &found.Answer[0], nil
+}
+
 // snapshotOf is one snapshot as a list answers it, asked after by its whole name.
 func snapshotOf(ctx context.Context, r *registry, name string) (snapshotRow, error) {
-	found, err := r.typed.PoolSnapshot.Query(ctx, []any{[]any{"id", "=", name}}, truenas.PoolSnapshotQueryOptions{Extra: map[string]any{"properties": snapshotProperties}})
-	if err != nil {
-		return snapshotRow{}, fmt.Errorf("reading the snapshot %s: %w", name, err)
-	}
-	if len(found.Answer) == 0 {
+	s, err := snapshotFound(ctx, r, name)
+	switch {
+	case err != nil:
+		return snapshotRow{}, err
+	case s == nil:
 		return snapshotRow{}, fmt.Errorf("the snapshot %s went while it was being listed: list again", name)
 	}
-	s := found.Answer[0]
+
+	return snapshotRowOf(s), nil
+}
+
+// snapshotRowOf is a snapshot as a list answers it.
+func snapshotRowOf(s *truenas.PoolSnapshotQueryResultItem) snapshotRow {
 	raw := func(property string) string { return s.Properties[property].Rawvalue }
 	number := func(property string) int64 {
 		n, _ := strconv.ParseInt(raw(property), 10, 64)
@@ -176,21 +197,36 @@ func snapshotOf(ctx context.Context, r *registry, name string) (snapshotRow, err
 		row.Created = when(time.Unix(created, 0))
 	}
 
-	return row, nil
+	return row
+}
+
+// snapshotTaskRow is a snapshot task as a list answers it.
+type snapshotTaskRow struct {
+	ID           int       `json:"id"                      jsonschema:"the task's number"`
+	Dataset      string    `json:"dataset"                 jsonschema:"the dataset it takes snapshots of"`
+	Recursive    bool      `json:"recursive"               jsonschema:"whether it takes the datasets under it too"`
+	NamingSchema string    `json:"naming_schema"           jsonschema:"how its snapshots are named, in strftime terms: auto-%Y-%m-%d_%H-%M"`
+	Schedule     string    `json:"schedule"                jsonschema:"when it runs, as cron: minute hour day-of-month month day-of-week"`
+	KeepFor      string    `json:"keep_for"                jsonschema:"how long its snapshots are kept before it deletes them: 2 WEEK"`
+	Enabled      bool      `json:"enabled"                 jsonschema:"whether it runs; a task switched off takes no snapshots"`
+	State        *standing `json:"state,omitempty"         jsonschema:"where it stands, as the NAS says"`
+	LastSnapshot string    `json:"last_snapshot,omitempty" jsonschema:"the last snapshot it took"`
+}
+
+// snapshotTaskRowOf is a snapshot task as a list answers it.
+func snapshotTaskRowOf(t *truenas.PoolSnapshotTaskQueryResultItem) snapshotTaskRow {
+	row := snapshotTaskRow{ID: t.Id, Dataset: t.Dataset, Recursive: t.Recursive, NamingSchema: t.NamingSchema, KeepFor: fmt.Sprintf("%d %s", t.LifetimeValue, t.LifetimeUnit), Enabled: t.Enabled, State: standingOf(t.State)}
+	if s := t.Schedule; s != nil {
+		row.Schedule = cron(s.Minute, s.Hour, s.Dom, s.Month, s.Dow)
+	}
+	if t.State != nil {
+		row.LastSnapshot = t.State.LastSnapshot
+	}
+
+	return row
 }
 
 func registerSnapshotTaskTools(r *registry) {
-	type snapshotTaskRow struct {
-		ID           int       `json:"id"                      jsonschema:"the task's number"`
-		Dataset      string    `json:"dataset"                 jsonschema:"the dataset it takes snapshots of"`
-		Recursive    bool      `json:"recursive"               jsonschema:"whether it takes the datasets under it too"`
-		NamingSchema string    `json:"naming_schema"           jsonschema:"how its snapshots are named, in strftime terms: auto-%Y-%m-%d_%H-%M"`
-		Schedule     string    `json:"schedule"                jsonschema:"when it runs, as cron: minute hour day-of-month month day-of-week"`
-		KeepFor      string    `json:"keep_for"                jsonschema:"how long its snapshots are kept before it deletes them: 2 WEEK"`
-		Enabled      bool      `json:"enabled"                 jsonschema:"whether it runs; a task switched off takes no snapshots"`
-		State        *standing `json:"state,omitempty"         jsonschema:"where it stands, as the NAS says"`
-		LastSnapshot string    `json:"last_snapshot,omitempty" jsonschema:"the last snapshot it took"`
-	}
 	type snapshotTaskListIn struct {
 		pageIn
 	}
@@ -208,15 +244,8 @@ func registerSnapshotTaskTools(r *registry) {
 		}
 
 		rows := make([]snapshotTaskRow, 0, len(found.Answer))
-		for _, t := range found.Answer {
-			row := snapshotTaskRow{ID: t.Id, Dataset: t.Dataset, Recursive: t.Recursive, NamingSchema: t.NamingSchema, KeepFor: fmt.Sprintf("%d %s", t.LifetimeValue, t.LifetimeUnit), Enabled: t.Enabled, State: standingOf(t.State)}
-			if s := t.Schedule; s != nil {
-				row.Schedule = cron(s.Minute, s.Hour, s.Dom, s.Month, s.Dow)
-			}
-			if t.State != nil {
-				row.LastSnapshot = t.State.LastSnapshot
-			}
-			rows = append(rows, row)
+		for i := range found.Answer {
+			rows = append(rows, snapshotTaskRowOf(&found.Answer[i]))
 		}
 		out := snapshotTaskListOut{}
 		out.Tasks, out.pageOut = pageRows(rows, in.pageIn)

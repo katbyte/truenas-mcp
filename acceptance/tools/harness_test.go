@@ -33,6 +33,9 @@ var (
 	suite = &acctest.Suite{NotReady: "the live tests need the throwaway NAS: make testacc-tools"}
 	// conns are the connections the run made, closed when it ends
 	conns []*truenasrpc.Conn
+	// planting is the administrator's own connection for making what a test needs, apart from the tools' one; there is one for the run, as the NAS
+	// takes only twenty logins a minute
+	planting *truenasrpc.Conn
 )
 
 // runSuite checks the NAS is the throwaway one, sets it up, runs the tests and holds the run to having called every tool and shown no key, returning
@@ -111,6 +114,9 @@ func start(ctx context.Context) error {
 
 	admin, err := connection(truenasrpc.APIKey(nas.username, nas.made.Key))
 	if err != nil {
+		return err
+	}
+	if planting, err = connection(truenasrpc.APIKey(nas.username, nas.made.Key)); err != nil {
 		return err
 	}
 	connected, err := served(ctx, admin, tools.Options{Toolsets: []string{registry.All}, EnableWrite: true, EnableDelete: true})

@@ -7,6 +7,12 @@
 - tools that list what keeps a NAS's data safe: a dataset's snapshots (`snapshot_list`, read a page at a time without the NAS reading every snapshot it has), and the snapshot, replication, rsync, cloud sync, cloud backup and scrub tasks, with how each last went (toolset `protection`)
 - tools that list the SMB and NFS shares and the iSCSI targets and extents (`shares`), the services (`services`), the apps (`apps`), the virtual machines (`vms`), the network interfaces and the name, gateways and name servers in force (`networking`), and the users and groups (`accounts`)
 - a list never asks the NAS for a secret it would only have to hide: a replication's key, a cloud account's keys, a backup's password, an app's settings and a user's password hashes are left out of what is asked
+- the first tools that change a NAS, registered only with `--enable-write`: make and change a dataset or volume (`dataset_create`, `dataset_update`, toolset `storage`) and take a snapshot (`snapshot_create`). Each takes `dry_run`, says each setting it moved from what to what, and reads back what it made
+- the first tools that remove, registered only with `--enable-delete` as well: a dataset (`dataset_delete`), a snapshot (`snapshot_delete`), and everything written since a snapshot (`snapshot_rollback`). Without `confirm: true` each only says what would go: the datasets under it, its snapshots, the shares and tasks the NAS removes with it, the snapshots newer than the one gone back to
+
+### Fixed
+
+- `group_list` asked the NAS to order the groups by a field it does not have, and was refused
 
 ## v0.1.0 (2026-10-18)
 

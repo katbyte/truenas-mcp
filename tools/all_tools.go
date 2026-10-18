@@ -49,6 +49,10 @@ var Toolsets = map[string][]string{
 	"audit": {
 		"audit_all", "audit_pools", "audit_space", "audit_tasks", "audit_disks", "audit_system",
 	},
+	// make, change and remove datasets and volumes
+	"storage": {
+		"dataset_create", "dataset_update", "dataset_delete",
+	},
 	// the machine's disks, whatever pool they are in
 	"disks": {
 		"disk_list",
@@ -56,6 +60,7 @@ var Toolsets = map[string][]string{
 	// what keeps the data safe: snapshots and the tasks that take them, copy data elsewhere, and check it
 	"protection": {
 		"snapshot_list", "snapshottask_list", "replication_list", "rsynctask_list", "cloudsync_list", "cloud_backup_list", "pool_scrub_list",
+		"snapshot_create", "snapshot_delete", "snapshot_rollback",
 	},
 	// what the NAS offers other machines: SMB and NFS shares, and iSCSI targets with what they offer
 	"shares": {
@@ -84,7 +89,7 @@ var Toolsets = map[string][]string{
 }
 
 // ToolsetOrder is the order a listing shows the sets in: the base first.
-var ToolsetOrder = []string{mcpregistry.Core, "audit", "disks", "protection", "shares", "services", "apps", "vms", "networking", "accounts"}
+var ToolsetOrder = []string{mcpregistry.Core, "audit", "storage", "disks", "protection", "shares", "services", "apps", "vms", "networking", "accounts"}
 
 // EssentialTools is the preset --allow-tools essential asks for: enough to know which NAS this is, what it holds and what it says is wrong.
 var EssentialTools = []string{
@@ -94,7 +99,9 @@ var EssentialTools = []string{
 // The kinds a tool is added with, in go-kt's registry's terms: a read tool never changes what the NAS holds, a write tool does, and a delete tool
 // removes what cannot be put back.
 const (
-	readTool = mcpregistry.Read
+	readTool   = mcpregistry.Read
+	writeTool  = mcpregistry.Write
+	deleteTool = mcpregistry.Delete
 )
 
 // registry is this application's tools and what they share. Which of them a session gets, and what each tells a client about itself, is go-kt's
@@ -113,7 +120,11 @@ type registry struct {
 // toolHints are what a write tool tells a client about itself beyond its kind: additive when it only ever adds, idempotent when calling it again
 // with the same arguments changes nothing more. Every write tool has an entry, decided on its own; one missing is marked destructive, and fails
 // TestEveryWriteToolIsHinted.
-var toolHints = map[string]mcpregistry.Hints{}
+var toolHints = map[string]mcpregistry.Hints{
+	"dataset_create":  {Additive: true},
+	"dataset_update":  {Idempotent: true},
+	"snapshot_create": {Additive: true},
+}
 
 // queued is every tool queued so far, in go-kt's registry, which is made when the first tool is.
 func (r *registry) queued() *mcpregistry.Registry {
@@ -143,9 +154,11 @@ func queueTools(r *registry) {
 	registerServerTools(r)
 	registerPoolTools(r)
 	registerDatasetTools(r)
+	registerDatasetChanges(r)
 	registerDiskTools(r)
 	registerAlertTools(r)
 	registerProtectionTools(r)
+	registerSnapshotChanges(r)
 	registerSharingTools(r)
 	registerServiceTools(r)
 	registerAppTools(r)

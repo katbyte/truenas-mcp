@@ -11,13 +11,15 @@ import (
 
 // What runs on the NAS: its services, the apps it runs in containers, and its virtual machines.
 
+// serviceRow is a service as a list answers it.
+type serviceRow struct {
+	ID      int    `json:"id"      jsonschema:"the service's number"`
+	Service string `json:"service" jsonschema:"the service, as the NAS names it: cifs is SMB, nfs, ssh, iscsitarget, ups, snmp, ftp and the like"`
+	State   string `json:"state"   jsonschema:"RUNNING or STOPPED"`
+	Enabled bool   `json:"enabled" jsonschema:"whether it starts when the NAS does"`
+}
+
 func registerServiceTools(r *registry) {
-	type serviceRow struct {
-		ID      int    `json:"id"      jsonschema:"the service's number"`
-		Service string `json:"service" jsonschema:"the service, as the NAS names it: cifs is SMB, nfs, ssh, iscsitarget, ups, snmp, ftp and the like"`
-		State   string `json:"state"   jsonschema:"RUNNING or STOPPED"`
-		Enabled bool   `json:"enabled" jsonschema:"whether it starts when the NAS does"`
-	}
 	type serviceListIn struct {
 		pageIn
 	}

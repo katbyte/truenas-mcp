@@ -94,7 +94,7 @@ func registerAccountTools(r *registry) {
 		if !in.Builtin {
 			filters = []any{[]any{"builtin", "=", false}}
 		}
-		found, err := r.typed.Group.Query(ctx, filters, truenas.GroupQueryOptions{OrderBy: []string{"name"}})
+		found, err := r.typed.Group.Query(ctx, filters, truenas.GroupQueryOptions{OrderBy: []string{"group"}})
 		if err != nil {
 			return nil, groupListOut{}, fmt.Errorf("listing the groups: %w", err)
 		}

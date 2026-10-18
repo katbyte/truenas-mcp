@@ -265,7 +265,7 @@ func TestTheBinaryRegistersWhatTheFlagsAsk(t *testing.T) {
 		{name: "the default sets are core and the audits", want: defaults},
 		{name: "a toolset from the environment, with core beside it", env: []string{"TRUENAS_TOOLSETS=disks"}, want: append([]string{"disk_list"}, core...)},
 		{name: "--allow-tools alone is only the tools it names", args: []string{"--allow-tools", "server_*"}, want: []string{"server_info"}},
-		{name: "--deny-tools takes away", args: []string{"--toolsets", "all", "--deny-tools", "server_*,*_get"}, want: []string{"alert_list", "audit_all", "audit_disks", "audit_pools", "audit_space", "audit_system", "audit_tasks", "dataset_list", "disk_list", "pool_list"}},
+		{name: "--deny-tools takes away", args: []string{"--toolsets", "all", "--deny-tools", "server_*,*_get,*_list"}, want: []string{"audit_all", "audit_disks", "audit_pools", "audit_space", "audit_system", "audit_tasks"}},
 		{name: "--deny-tools from the environment", env: []string{"TRUENAS_DENY_TOOLS=*_info,*_get"}, want: []string{"alert_list", "audit_all", "audit_disks", "audit_pools", "audit_space", "audit_system", "audit_tasks", "dataset_list", "pool_list"}},
 	} {
 		t.Run(c.name, func(t *testing.T) { //nolint:paralleltest // as the test

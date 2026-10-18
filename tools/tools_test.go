@@ -85,7 +85,7 @@ func TestASessionReadsUntilItIsToldItMayChangeOrDelete(t *testing.T) {
 	}
 }
 
-// The surface is 31 tools, all of which read. A tool added, merged, removed or moved between kinds changes these on purpose, and this is where that is
+// The surface is 37 tools: 31 read, 3 write and 3 delete. A tool added, merged, removed or moved between kinds changes these on purpose, and this is where that is
 // said.
 func TestTheSurfaceIsTheSizeItIsSaidToBe(t *testing.T) {
 	t.Parallel()
@@ -95,8 +95,8 @@ func TestTheSurfaceIsTheSizeItIsSaidToBe(t *testing.T) {
 	for _, kind := range kinds {
 		counts[kind]++
 	}
-	if len(kinds) != 31 || counts["read"] != 31 || counts["write"] != 0 || counts["delete"] != 0 {
-		t.Errorf("surface = %d tools: %v, want 31 with 31 read, 0 write, 0 delete", len(kinds), counts)
+	if len(kinds) != 37 || counts["read"] != 31 || counts["write"] != 3 || counts["delete"] != 3 {
+		t.Errorf("surface = %d tools: %v, want 37 with 31 read, 3 write, 3 delete", len(kinds), counts)
 	}
 }
 
