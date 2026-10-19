@@ -13,6 +13,11 @@ echo "==> fetching source tarball for ${TAG}..."
 curl -sSfL "https://github.com/katbyte/truenas-mcp/archive/refs/tags/${TAG}.tar.gz" -o "$tmp/src.tar.gz"
 SHA256="$(sha256sum "$tmp/src.tar.gz" | cut -d' ' -f1)"
 
+# the short commit the tag names, which a release is stamped with: the source download carries no history to read it from. An annotated tag is
+# listed twice, the second time (^{}) as the commit it names, which sorts last
+COMMIT="$(git ls-remote "https://github.com/katbyte/truenas-mcp.git" "refs/tags/${TAG}" "refs/tags/${TAG}^{}" | sort -k2 | tail -1 | cut -c1-7)"
+[ -n "$COMMIT" ] || { echo "no tag ${TAG} on GitHub to find the commit of" >&2; exit 1; }
+
 cat > "$tmp/truenas-mcp.rb" <<FORMULA
 # typed: false
 # frozen_string_literal: true
@@ -29,11 +34,11 @@ class TruenasMcp < Formula
   depends_on "go" => :build
 
   def install
-    system "go", "build", *std_go_args(ldflags: "-s -w -X github.com/katbyte/go-kt/version.Version=${TAG} -X github.com/katbyte/go-kt/version.GitCommit=homebrew")
+    system "go", "build", *std_go_args(ldflags: "-s -w -X github.com/katbyte/go-kt/version.Version=${TAG} -X github.com/katbyte/go-kt/version.GitCommit=${COMMIT}")
   end
 
   test do
-    assert_match "${TAG}", shell_output("#{bin}/truenas-mcp version")
+    assert_match "${TAG} (commit ${COMMIT})", shell_output("#{bin}/truenas-mcp version")
   end
 end
 FORMULA
