@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2 (2026-10-19)
+
+### Fixed
+
+- a Homebrew install says the commit it was built from, as a release does: it said `(commit homebrew)`, as the formula never knew the commit
+
 ## v0.2.1 (2026-10-18)
 
 ### Changed
