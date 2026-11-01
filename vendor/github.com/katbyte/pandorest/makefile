@@ -1,6 +1,9 @@
 # recipes use bash for pipefail support (ubuntu's default sh is dash)
 SHELL := /bin/bash
 
+# a bare make formats and builds; without this it runs the first rule, which builds a lint tool
+.DEFAULT_GOAL := default
+
 TEST_TIMEOUT?=5m
 
 # dev tool binaries are built into .tools/bin (gitignored) from the versions pinned in

@@ -116,7 +116,7 @@ func (g *gen) writeCallMethod(b *strings.Builder, o *definitions.Operation, resp
 	if o.Deprecated {
 		b.WriteString("//\n// Deprecated: the document marks this method deprecated.\n")
 	}
-	fmt.Fprintf(b, "func (c Client) %s(%s) (result %s, err error) {\n", name, strings.Join(append([]string{"ctx context.Context"}, params...), ", "), responseType)
+	fmt.Fprintf(b, "func (c Client) %s(%s) (result %s, err error) {\n", name, signature(append([]string{"ctx context.Context"}, params...)...), responseType)
 	if embedded := g.embedded(o); embedded != "" {
 		// a zero record until one is decoded, so a promoted field reads empty rather than panicking
 		fmt.Fprintf(b, "\tresult.%s = &%s{}\n", embeddedField(embedded), embedded)
@@ -149,7 +149,7 @@ func (g *gen) writeCallMethod(b *strings.Builder, o *definitions.Operation, resp
 	if o.Call.Job && !o.Call.Uploadable && o.Call.Form == "" {
 		// the call itself, for a connection of the repository's own that starts a job and follows it rather than waiting
 		g.declare(name+"Call", "operation "+o.Name)
-		fmt.Fprintf(b, "\n// %sCall is the call %s makes, the method's name and its arguments as sent, for a connection that starts the job and\n// follows it rather than waiting for it.\nfunc %sCall(%s) (call string, params []any) {\n", name, name, name, strings.Join(params, ", "))
+		fmt.Fprintf(b, "\n// %sCall is the call %s makes, the method's name and its arguments as sent, for a connection that starts the job and\n// follows it rather than waiting for it.\nfunc %sCall(%s) (call string, params []any) {\n", name, name, name, signature(params...))
 		if len(call) == 0 {
 			fmt.Fprintf(b, "\treturn %q, nil\n}\n", o.Call.Method)
 		} else {
@@ -159,7 +159,7 @@ func (g *gen) writeCallMethod(b *strings.Builder, o *definitions.Operation, resp
 	if o.Call.Downloadable {
 		// the file the method answers, written out through the connection
 		g.declare("Client."+name+"To", "operation "+o.Name)
-		fmt.Fprintf(b, "\n// %sTo calls %s for the file it answers and writes it to w, answering how many bytes, through a connection that can carry\n// a file (client.Downloader).\nfunc (c Client) %sTo(%s) (int64, error) {\n", name, o.Call.Method, name, strings.Join(append([]string{"ctx context.Context", "w io.Writer"}, params...), ", "))
+		fmt.Fprintf(b, "\n// %sTo calls %s for the file it answers and writes it to w, answering how many bytes, through a connection that can carry\n// a file (client.Downloader).\nfunc (c Client) %sTo(%s) (int64, error) {\n", name, o.Call.Method, name, signature(append([]string{"ctx context.Context", "w io.Writer"}, params...)...))
 		if len(call) == 0 {
 			b.WriteString("\tvar params []any\n")
 		} else {
@@ -515,12 +515,14 @@ func (g *gen) sampleArgument(a definitions.Argument) string {
 	return g.sampleOf(a.Type)
 }
 
-// sampleElement is a value of a type inside a list or a map literal, where a list or a map of its own goes without its type, as gofmt
-// would have it.
+// sampleElement is a value of a type inside a list or a map literal, where a record, a list or a map of its own goes without its type,
+// as gofmt -s would have it.
 func (g *gen) sampleElement(t definitions.TypeRef) string {
 	sample := g.sampleOf(t)
-	if t.Type == definitions.List || t.Type == definitions.Dictionary {
-		return strings.TrimPrefix(sample, g.goType(t))
+	if typ := g.goType(t); strings.HasPrefix(sample, typ+"{") {
+		return strings.TrimPrefix(sample, typ)
+	} else if strings.HasPrefix(typ, "*") && strings.HasPrefix(sample, "&"+typ[1:]+"{") {
+		return strings.TrimPrefix(sample, "&"+typ[1:])
 	}
 
 	return sample

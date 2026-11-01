@@ -16,13 +16,13 @@ github.com/go-viper/mapstructure/v2/internal/errors
 # github.com/google/jsonschema-go v0.4.3
 ## explicit; go 1.23.0
 github.com/google/jsonschema-go/jsonschema
-# github.com/gookit/color v1.6.1
+# github.com/gookit/color v1.6.3
 ## explicit; go 1.18
 github.com/gookit/color
 # github.com/inconshreveable/mousetrap v1.1.0
 ## explicit; go 1.18
 github.com/inconshreveable/mousetrap
-# github.com/katbyte/go-kt v0.9.0
+# github.com/katbyte/go-kt v0.9.1
 ## explicit; go 1.27.0
 github.com/katbyte/go-kt/clog
 github.com/katbyte/go-kt/httpc
@@ -34,7 +34,7 @@ github.com/katbyte/go-kt/mcp/server
 github.com/katbyte/go-kt/outside
 github.com/katbyte/go-kt/pointer
 github.com/katbyte/go-kt/version
-# github.com/katbyte/pandorest v0.13.1
+# github.com/katbyte/pandorest v0.13.3
 ## explicit; go 1.27.0
 github.com/katbyte/pandorest
 github.com/katbyte/pandorest/client

@@ -8,6 +8,7 @@ import (
 	"go/token"
 	"path"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -548,7 +549,7 @@ func comment(indent, text string) string {
 	for line := range strings.SplitSeq(text, "\n") {
 		b.WriteString(indent)
 		b.WriteString("//")
-		if line = strings.TrimRight(line, " \t"); line != "" {
+		if line = deprecatedLine(strings.TrimRight(line, " \t")); line != "" {
 			b.WriteString(" ")
 			b.WriteString(line)
 		}
@@ -556,6 +557,20 @@ func comment(indent, text string) string {
 	}
 
 	return b.String()
+}
+
+// deprecatedNote matches a document's own way of opening a deprecation, "Deprecated, use X" or "DEPRECATED - gone in v2".
+var deprecatedNote = regexp.MustCompile(`^(?i)deprecated\b[\s:,.;!-]*`)
+
+// deprecatedLine rewrites a line that opens with the document's deprecation wording to Go's "Deprecated: ...", which readers and
+// linters (gocritic's deprecatedComment) look for, so a deprecated field reads as one.
+func deprecatedLine(line string) string {
+	loc := deprecatedNote.FindStringIndex(line)
+	if loc == nil || strings.HasPrefix(line, "Deprecated: ") {
+		return line
+	}
+
+	return strings.TrimSpace("Deprecated: " + line[loc[1]:])
 }
 
 // firstSentence trims text to its first sentence, for one-line doc comments.
@@ -791,7 +806,7 @@ func (g *gen) writeRequestDoc(b *strings.Builder) {
 // when nothing was answered, and Record() hands it back by value with an
 // error when none came. HttpResponse is set whenever the server answered,
 // including alongside an error. An operation that answers a file has no
-// Answer: WriteTo(w) copies the file out and closes the body, Bytes(max)
+// Answer: WriteTo(w) copies the file out and closes the body, Bytes(limit)
 // reads it whole up to a size, Reader() hands the body over with its content
 // type, ContentLength() and Filename() say what the server said of it, and
 // the body is also still in HttpResponse.Body. A status the operation does
