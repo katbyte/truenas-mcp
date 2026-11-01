@@ -4,9 +4,9 @@ go 1.27.0
 
 require (
 	github.com/coder/websocket v1.8.15
-	github.com/gookit/color v1.6.1
-	github.com/katbyte/go-kt v0.9.0
-	github.com/katbyte/pandorest v0.13.1
+	github.com/gookit/color v1.6.3
+	github.com/katbyte/go-kt v0.9.1
+	github.com/katbyte/pandorest v0.13.3
 	github.com/modelcontextprotocol/go-sdk v1.8.0
 	github.com/sirupsen/logrus v1.10.2
 	github.com/spf13/cobra v1.10.2

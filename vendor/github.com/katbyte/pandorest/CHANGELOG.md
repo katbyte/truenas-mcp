@@ -1,3 +1,12 @@
+## v0.13.3 (2026-10-20)
+
+- **A bare `make` formats and builds.** It used to stop at the first rule, which builds a lint tool.
+
+## v0.13.2 (2026-10-19)
+
+- **More of the repositories' checks pass on the generated code.** Neighbouring arguments of one type are written together, a document's own "Deprecated, ..." wording becomes Go's, an error no longer opens with the operation's name, and a list of records in a test is written the short way.
+- **The package doc names Bytes's argument as the method does.**
+
 ## v0.13.1 (2026-10-18)
 
 - **A grouped package's tests pass staticcheck.** Their options live in another package, so every deprecated option a generated test set was a finding. The line now says why it is set.

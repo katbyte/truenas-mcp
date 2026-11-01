@@ -157,7 +157,7 @@ func (g *gen) writeResponse(b *strings.Builder, o *definitions.Operation, respon
 		fmt.Fprintf(b, "// Answered reports whether the server answered with a body that was decoded:\n// false for a 204, or a call that failed before one came.\nfunc (r %s) Answered() bool { return r.Answer != nil }\n\n", responseType)
 	}
 	if embedded != "" {
-		fmt.Fprintf(b, "// Record is the %[2]s answered, as a value to change and write back, or an\n// error when the server answered none.\nfunc (r %[1]s) Record() (%[2]s, error) {\n\tif r.Answer == nil {\n\t\treturn %[2]s{}, errors.New(\"%[3]s answered no %[2]s\")\n\t}\n\n\treturn *r.Answer, nil\n}\n\n", responseType, embedded, o.Name)
+		fmt.Fprintf(b, "// Record is the %[2]s answered, as a value to change and write back, or an\n// error when the server answered none.\nfunc (r %[1]s) Record() (%[2]s, error) {\n\tif r.Answer == nil {\n\t\treturn %[2]s{}, errors.New(\"no %[2]s answered by %[3]s\")\n\t}\n\n\treturn *r.Answer, nil\n}\n\n", responseType, embedded, o.Name)
 	}
 	if file {
 		fmt.Fprintf(b, readerMethods, responseType)
@@ -419,6 +419,25 @@ func (g *gen) pathExpression(o *definitions.Operation) string {
 	return strings.Join(parts, " + ")
 }
 
+// signature joins a method's parameters, writing neighbours of one type together (id, index string) as gofmt's readers and
+// gocritic's paramTypeCombine expect.
+func signature(params ...string) string {
+	var out []string
+	for _, p := range params {
+		cut := strings.LastIndex(p, " ")
+		name, typ := p[:cut], p[cut+1:]
+		if n := len(out); n > 0 {
+			if prevCut := strings.LastIndex(out[n-1], " "); out[n-1][prevCut+1:] == typ && !strings.HasPrefix(typ, "...") {
+				out[n-1] = out[n-1][:prevCut] + ", " + name + " " + typ
+				continue
+			}
+		}
+		out = append(out, p)
+	}
+
+	return strings.Join(out, ", ")
+}
+
 // arguments renders the method's parameters after ctx, and the call that
 // passes them on.
 func (g *gen) arguments(o *definitions.Operation, optionsType string) (params, call []string) {
@@ -531,11 +550,11 @@ func (g *gen) writeOptionsPreludeFailing(b *strings.Builder, o *definitions.Oper
 		case opt.Type.Type == definitions.List:
 			fmt.Fprintf(b, "\tif len(%s) > 0 {\n\t\toption.%s = %s\n\t}\n\n", arg, opt.Field, arg)
 		default:
-			fmt.Fprintf(b, "\tif len(%s) > 1 {\n\t\t%s\n\t}\n", arg, fail(fmt.Sprintf("fmt.Errorf(\"%s takes one %s at most, not %%d\", len(%s))", method, arg, arg)))
+			fmt.Fprintf(b, "\tif len(%s) > 1 {\n\t\t%s\n\t}\n", arg, fail(fmt.Sprintf("fmt.Errorf(\"at most one %s for %s, not %%d\", len(%s))", arg, method, arg)))
 			fmt.Fprintf(b, "\tif len(%s) == 1 {\n\t\toption.%s = %s\n\t}\n\n", arg, opt.Field, held(opt, arg+"[0]"))
 		}
 	case g.optional(o):
-		fmt.Fprintf(b, "\tif len(options) > 1 {\n\t\t%s\n\t}\n", fail(fmt.Sprintf("fmt.Errorf(\"%s takes one options struct at most, not %%d\", len(options))", method)))
+		fmt.Fprintf(b, "\tif len(options) > 1 {\n\t\t%s\n\t}\n", fail(fmt.Sprintf("fmt.Errorf(\"at most one options struct for %s, not %%d\", len(options))", method)))
 		fmt.Fprintf(b, "\tvar option %s\n\tif len(options) == 1 {\n\t\toption = options[0]\n\t}\n\n", optionsType)
 	}
 }
@@ -636,7 +655,7 @@ func (g *gen) writeAndWait(b *strings.Builder, o *definitions.Operation) {
 	fmt.Fprintf(b, "\n// %s queues the %s command and waits for it as WaitForCommand does, answering it as it stands.\n", method, o.Command)
 	fmt.Fprintf(b, "func (c Client) %s(ctx context.Context, input %s, wait time.Duration) (result %s, err error) {\n", method, g.goType(o.Request.Type), g.typeName(get.Name+"Response"))
 	fmt.Fprintf(b, "\tqueued, err := c.%s(ctx, input)\n\tif err != nil {\n\t\treturn result, err\n\t}\n", o.Name)
-	fmt.Fprintf(b, "\tif queued.Answer == nil {\n\t\treturn result, errors.New(\"%s answered no command to wait for\")\n\t}\n\n", o.Name)
+	fmt.Fprintf(b, "\tif queued.Answer == nil {\n\t\treturn result, errors.New(\"no command to wait for answered by %s\")\n\t}\n\n", o.Name)
 	// the id as the poll takes it, converted only when the answer holds it as something else
 	id, idType := "queued.Answer."+g.fieldFor(o.Response.Type.ReferenceName, "id"), g.goType(get.PathParameters[0].Type)
 	if g.heldAs(o.Response.Type.ReferenceName, g.fieldFor(o.Response.Type.ReferenceName, "id")) != idType {
@@ -779,7 +798,7 @@ func (g *gen) writeMethod(b *strings.Builder, o *definitions.Operation, response
 		b.WriteString("//\n// Deprecated: the document marks this operation deprecated.\n")
 	}
 	fmt.Fprintf(b, "func (c Client) %s(%s) (result %s, err error) {\n",
-		o.Name, strings.Join(append([]string{"ctx context.Context"}, params...), ", "), responseType)
+		o.Name, signature(append([]string{"ctx context.Context"}, params...)...), responseType)
 	g.writeOptionsPrelude(b, o, o.Name, optionsType)
 	g.writeShapeChecks(b, o)
 	if o.Command != "" {
@@ -882,7 +901,7 @@ func (g *gen) writeCompleteMethod(b *strings.Builder, o *definitions.Operation, 
 		fmt.Fprintf(b, "// %s calls %s page by page from options.%s until every\n", method, o.Name, p.StartIndexOption)
 		fmt.Fprintf(b, "// result is loaded. options.%s is the page size, client.DefaultPageSize when\n// unset.\n", p.LimitOption)
 	}
-	fmt.Fprintf(b, "func (c Client) %s(%s) (result %s, err error) {\n", method, strings.Join(append([]string{"ctx context.Context"}, params...), ", "), resultType)
+	fmt.Fprintf(b, "func (c Client) %s(%s) (result %s, err error) {\n", method, signature(append([]string{"ctx context.Context"}, params...)...), resultType)
 	g.writeOptionsPrelude(b, o, method, optionsType)
 	ov := g.optionsVar(o)
 	writePageSetup(b, p, ov, "\t")
@@ -910,7 +929,7 @@ func (g *gen) writeEachMethod(b *strings.Builder, o *definitions.Operation, opti
 	b.WriteString("// loop that stops ends the paging:\n//\n")
 	fmt.Fprintf(b, "//\tfor item, err := range c.%s(ctx) {\n//\t\tif err != nil {\n//\t\t\treturn err\n//\t\t}\n//\t\tif found(item) {\n//\t\t\tbreak\n//\t\t}\n//\t}\n//\n", method)
 	fmt.Fprintf(b, "// An error is the last pair handed out, with a zero %s. The pages are asked for as %sComplete asks for them.\n", strings.TrimPrefix(itemType, "*"), o.Name)
-	fmt.Fprintf(b, "func (c Client) %s(%s) iter.Seq2[%s, error] {\n", method, strings.Join(append([]string{"ctx context.Context"}, params...), ", "), itemType)
+	fmt.Fprintf(b, "func (c Client) %s(%s) iter.Seq2[%s, error] {\n", method, signature(append([]string{"ctx context.Context"}, params...)...), itemType)
 	fmt.Fprintf(b, "\treturn func(yield func(%s, error) bool) {\n", itemType)
 	fmt.Fprintf(b, "\t\tvar zero %s\n", itemType)
 	g.writeOptionsPreludeFailing(b, o, method, optionsType, func(expr string) string { return "yield(zero, " + expr + ")\n\t\t\treturn" })
